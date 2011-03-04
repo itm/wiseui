@@ -4,13 +4,43 @@ WiseUI
 The WiseUI is a [GWT][gwt] based web client for the [Testbed Runtime][testbedruntime].
 
 
-Quick Install
--------------
-Just follow the instructions provided in [our Wiki][quick].
+What do I need?
+---------------
+   * Git
+   * JDK >= 1.6
+   * Maven 2.2 or 3.0
+
+Git Workflow
+------------
+
+The Web UI is developed in a separate branch "gwt-web-ui" of the testbed-runtime project. To set up a working branch on your local machine, please follow the instructions below:
+
+    $ git clone git@github.com:itm/wiseui.git
+    $ cd wiseui
+    $ (edit files)
+    $ git add (files)
+    $ git commit -a -m "Explain what I changed"
+    $ git status
+    $ git push origin master
+
+
+Build and Start the WiseUI with Maven
+-------------------------------------
+
+On the command-line go to the place where your clone of the testbed-runtime resides. Perform a clean build on the project to make sure, that all Maven artifacts are installed in your local Maven repository (~/.m2/repository). If you are running Maven for the first time, this will take a while as Maven downloads all project dependencies from the internet.
+
+    $ cd wiseui
+    $ mvn clean install
+
+To start the WiseUI in "hosted mode", do the following:
+
+    $ cd wiseui/client
+    $ mvn gwt:run # or mvn gwt:debug
 
 
 Deploy to a Remote Tomcat
 -------------------------
+
 To use this profile, make sure you settings.xml (~.m2/settings.xml) looks like the example below. Replace the property values with your specific credentials, hostname, etc.
 
 > Also, it is highly recommended that you SSH client is configured to log in on you remote server (deployment target) without password. This requires a special SSH setup. 
@@ -38,7 +68,7 @@ This is how your settings.xml should look like:
 You can deploy the resulting war-file with:
 
     $ pwd
-    $ [...]/testbed-runtime/wiseui
+    > [...]/wiseui
     $ cd client
     $ mvn install -Ddeploy=remote
     
