@@ -13,7 +13,7 @@ What do I need?
 Git Workflow
 ------------
 
-The Web UI is developed in a separate branch "gwt-web-ui" of the testbed-runtime project. To set up a working branch on your local machine, please follow the instructions below:
+The following commands show how to clone the WiseUI repository and how to make first changes.
 
     $ git clone git@github.com:itm/wiseui.git
     $ cd wiseui
@@ -27,7 +27,7 @@ The Web UI is developed in a separate branch "gwt-web-ui" of the testbed-runtime
 Build and Start the WiseUI with Maven
 -------------------------------------
 
-On the command-line go to the place where your clone of the testbed-runtime resides. Perform a clean build on the project to make sure, that all Maven artifacts are installed in your local Maven repository (~/.m2/repository). If you are running Maven for the first time, this will take a while as Maven downloads all project dependencies from the internet.
+On the command-line go to the WiseUI directory. Perform a clean build on the project to make sure, that all Maven artifacts are installed in your local Maven repository (~/.m2/repository). If you are running Maven for the first time, this will take a while as Maven downloads all project dependencies from the internet.
 
     $ cd wiseui
     $ mvn clean install
@@ -52,14 +52,14 @@ This is how your settings.xml should look like:
         <profiles>
             <profile>
                 <id>inject-deployment-details</id>
-                    <properties>
-                        <deployment.artifact.name>wiseui</deployment.artifact.name>
-                        <deployment.user>root</deployment.user>
-                        <deployment.host>10.0.0.1</deployment.host>
-                        <deployment.directory>/usr/local/tomcat/webapps/</deployment.directory>
-                    </properties>
-                </profile>
-            </profiles>
+                <properties>
+                    <deployment.artifact.name>wiseui</deployment.artifact.name>
+                    <deployment.user>root</deployment.user>
+                    <deployment.host>10.0.0.1</deployment.host>
+                    <deployment.directory>/usr/local/tomcat/webapps/</deployment.directory>
+                </properties>
+            </profile>
+        </profiles>
         <activeProfiles>
             <activeProfile>inject-deployment-details</activeProfile>
         </activeProfiles>
