@@ -1,12 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-    <parent>
-        <groupId>de.uniluebeck.itm</groupId>
-        <artifactId>tr</artifactId>
-        <version>0.5.4-SNAPSHOT</version>
-        <relativePath>../</relativePath>
-    </parent>
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>eu.wisebed</groupId>
@@ -16,7 +10,8 @@
     <name>WiseUI - Experimentation Web Client</name>
 
     <properties>
-        <gwt.version>2.2.0</gwt.version>
+        <gwt.version>2.1.0</gwt.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
     <dependencyManagement>
@@ -41,7 +36,7 @@
                 <artifactId>server</artifactId>
                 <version>${project.version}</version>
             </dependency>
-            <!-- Other testbed-runtime dependencies -->
+            <!-- testbed-runtime dependencies -->
             <dependency>
                 <groupId>de.uniluebeck.itm</groupId>
                 <artifactId>tr.snaa-api</artifactId>
@@ -113,6 +108,7 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
+            <version>4.8.2</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -123,11 +119,11 @@
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>gwt-maven-plugin</artifactId>
-                    <version>2.1.0</version>
+                    <version>2.1.0-1</version>
                 </plugin>
                 <plugin>
                     <artifactId>maven-war-plugin</artifactId>
-                    <version>2.1</version>
+                    <version>2.1.1</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -158,4 +154,42 @@
         <module>client</module>
         <module>widgets</module>
     </modules>
+
+    <repositories>
+        <repository>
+            <id>google-maven-repository</id>
+            <name>Google Maven Repository</name>
+            <url>http://google-maven-repository.googlecode.com/svn/repository/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>itm-maven-repository-releases</id>
+            <url>http://www.itm.uni-luebeck.de/projects/maven/releases/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>itm-maven-repository-snapshots</id>
+            <url>http://www.itm.uni-luebeck.de/projects/maven/snapshots/</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+
+    <scm>
+        <connection>scm:git:https://itm@github.com/itm/wiseui.git</connection>
+    </scm>
 </project>
