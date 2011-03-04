@@ -1,0 +1,8 @@
+.celllist-entry {
+    padding: 4px 4px 4px 8px;
+    border-bottom: 1px solid #e3e8f3;
+}
+
+.gwt-DialogBox .dialogMiddleCenter {
+	padding: 0px !important; 
+}

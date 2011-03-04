@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<module rename-to="wiseui">
+    <!-- Inherit the core Web Toolkit stuff.                        -->
+    <inherits name="com.google.gwt.user.User"/>
+
+    <!-- Inherit the default GWT style sheet.  You can change       -->
+    <!-- the theme of your GWT application by uncommenting          -->
+    <!-- any one of the following lines.                            -->
+    <inherits name="com.google.gwt.user.theme.standard.Standard"/>
+
+    <!-- Define custom user agent to speedup the compile process    -->
+    <set-property name="user.agent" value="gecko1_8,safari"/>
+
+    <!-- <inherits name='com.google.gwt.user.theme.chrome.Chrome'/> -->
+    <!-- <inherits name='com.google.gwt.user.theme.dark.Dark'/>     -->
+    <!-- Other module inherits                                      -->
+    <inherits name="com.google.gwt.activity.Activity"/>
+    <inherits name="com.google.gwt.place.Place"/>
+    <inherits name="com.google.gwt.inject.Inject"/>
+    <inherits name="com.google.gwt.maps.GoogleMaps"/>
+
+    <!-- Other WiseUi Projects -->
+    <inherits name="eu.wisebed.wiseui.WiseUiApi"/>
+    <inherits name="eu.wisebed.wiseui.WiseUiShared"/>
+
+    <!-- Specify the app entry point class.                         -->
+    <entry-point class="eu.wisebed.wiseui.client.WiseUi"/>
+
+    <!-- Specify the paths for translatable code                    -->
+    <source path="client"/>
+</module>

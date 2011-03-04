@@ -1,0 +1,45 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+             xmlns:g="urn:import:com.google.gwt.user.client.ui" xmlns:c="urn:import:com.google.gwt.user.cellview.client"
+             xmlns:my="urn:import:eu.wisebed.wiseui.client.util.view">
+    <ui:style>
+        .buttonPanel {
+        width: 100%;
+        background-color: #d0e4f6;
+        }
+        .buttonTable {
+        margin-left: auto;
+        margin-right: 0px;
+        padding: 2px;
+        }
+
+        .innerPadding {
+        width: 500px;
+        padding: 10px;
+        }
+
+        .imagePadding {
+        margin-right: 10px;
+        }
+    </ui:style>
+    <my:MessageBoxViewImpl>
+        <g:VerticalPanel>
+            <g:SimplePanel styleName="{style.innerPadding}">
+                <g:HorizontalPanel>
+                    <g:Image ui:field="image" styleName="{style.imagePadding}"/>
+                    <g:Label ui:field="message"/>
+                </g:HorizontalPanel>
+            </g:SimplePanel>
+            <g:DisclosurePanel ui:field="stacktracePanel" title="Stacktrace" animationEnabled="true" open="false"
+                               visible="false">
+                <g:header>Show Stacktrace</g:header>
+                <g:ScrollPanel width="500">
+                    <g:Label ui:field="stacktraceLabel" width="500" wordWrap="true" height="300">...</g:Label>
+                </g:ScrollPanel>
+            </g:DisclosurePanel>
+            <g:HTMLPanel styleName="{style.buttonPanel}">
+                <g:FlexTable ui:field="buttonTable" styleName="{style.buttonTable}"/>
+            </g:HTMLPanel>
+        </g:VerticalPanel>
+    </my:MessageBoxViewImpl>
+</ui:UiBinder> 
