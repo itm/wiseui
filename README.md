@@ -10,6 +10,8 @@ What do I need?
    * JDK >= 1.6
    * Maven 2.2 or 3.0
 
+All library dependencies are downloaded by Maven.
+
 Git Workflow
 ------------
 
@@ -80,7 +82,6 @@ More Documentation
 Take a look at our [wiki][].
 
 
-[gwt]:http://code.google.com/webtoolkit/doc/2.1/DevGuide.html
-[wiki]:https://www.itm.uni-luebeck.de/projects/testbed-runtime/wiki/WisebedWebUiDesign
-[quick]:https://www.itm.uni-luebeck.de/projects/testbed-runtime/wiki/WisebedWebUiDevQuickStart
+[gwt]:http://code.google.com/webtoolkit/doc/2.2/DevGuide.html
+[wiki]:https://github.com/itm/wiseui/wiki
 [testbedruntime]:https://github.com/itm/testbed-runtime
