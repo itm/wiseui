@@ -10,16 +10,22 @@ public interface TestbedSelectionView extends IsWidget {
     void setPresenter(Presenter presenter);
 
     AcceptsOneWidget getConfigurationContainer();
+    
+    AcceptsOneWidget getRawWisemlContainer();
 
     AcceptsOneWidget getDetailContainer();
 
-    AcceptsOneWidget getNetworkContainer();
+    AcceptsOneWidget getMapContainer();
 
     HasEnabled getLoginEnabled();
 
     HasEnabled getReloadEnabled();
+    
+    void setContentSelection(Integer index);
 
     public interface Presenter {
+    	
+    	void setContentSelection(Integer index);
 
         void reload();
 

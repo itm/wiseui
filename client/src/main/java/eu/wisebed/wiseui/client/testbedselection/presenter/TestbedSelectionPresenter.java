@@ -26,6 +26,7 @@ public class TestbedSelectionPresenter implements Presenter, ConfigurationSelect
     public TestbedSelectionPresenter(final EventBus eventBus, final TestbedSelectionView view) {
         this.eventBus = eventBus;
         this.view = view;
+        view.setContentSelection(0);
         view.getLoginEnabled().setEnabled(false);
         view.getReloadEnabled().setEnabled(false);
         bind();
@@ -68,4 +69,9 @@ public class TestbedSelectionPresenter implements Presenter, ConfigurationSelect
             MessageBox.error(title, message, event.getThrowable(), null);
         }
     }
+
+	@Override
+	public void setContentSelection(Integer index) {
+		view.setContentSelection(index);
+	}
 }

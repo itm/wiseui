@@ -18,6 +18,8 @@ import eu.wisebed.wiseui.client.reservation.gin.ReservationGinjector;
 import eu.wisebed.wiseui.client.reservation.gin.ReservationModule;
 import eu.wisebed.wiseui.client.testbedselection.gin.TestbedSelectionGinjector;
 import eu.wisebed.wiseui.client.testbedselection.gin.TestbedSelectionModule;
+import eu.wisebed.wiseui.client.testbedselection.presenter.RawWisemlPresenter;
+import eu.wisebed.wiseui.client.testbedselection.view.RawWisemlView;
 import eu.wisebed.wiseui.client.util.AuthenticationManager;
 
 @GinModules({

@@ -6,7 +6,9 @@ import eu.wisebed.wiseui.client.testbedselection.TestbedSelectionActivity;
 import eu.wisebed.wiseui.client.testbedselection.presenter.ConfigurationPresenter;
 import eu.wisebed.wiseui.client.testbedselection.presenter.DetailPresenter;
 import eu.wisebed.wiseui.client.testbedselection.presenter.LoginDialogPresenter;
+import eu.wisebed.wiseui.client.testbedselection.presenter.MapPresenter;
 import eu.wisebed.wiseui.client.testbedselection.presenter.NetworkPresenter;
+import eu.wisebed.wiseui.client.testbedselection.presenter.RawWisemlPresenter;
 import eu.wisebed.wiseui.client.testbedselection.view.*;
 
 public class TestbedSelectionModule extends AbstractGinModule {
@@ -18,13 +20,16 @@ public class TestbedSelectionModule extends AbstractGinModule {
         bind(DetailView.class).to(DetailViewImpl.class).in(Singleton.class);
         bind(NetworkView.class).to(NetworkViewImpl.class).in(Singleton.class);
         bind(LoginDialogView.class).to(LoginDialogViewImpl.class).in(Singleton.class);
+        bind(MapView.class).to(MapViewImpl.class).in(Singleton.class);
+        bind(RawWisemlView.class).to(RawWisemlViewImpl.class).in(Singleton.class);
 
         bind(ConfigurationPresenter.class);
         bind(NetworkPresenter.class);
         bind(DetailPresenter.class);
         bind(LoginDialogPresenter.class);
+        bind(MapPresenter.class);
+        bind(RawWisemlPresenter.class);
 
         bind(TestbedSelectionActivity.class);
     }
-
 }

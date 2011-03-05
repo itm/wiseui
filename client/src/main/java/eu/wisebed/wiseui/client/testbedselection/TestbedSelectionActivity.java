@@ -8,6 +8,7 @@ import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
+
 import eu.wisebed.wiseui.api.SessionManagementServiceAsync;
 import eu.wisebed.wiseui.client.WiseUiGinjector;
 import eu.wisebed.wiseui.client.testbedselection.event.ConfigurationSelectedEvent;
@@ -17,12 +18,14 @@ import eu.wisebed.wiseui.client.testbedselection.event.WisemlLoadedEvent;
 import eu.wisebed.wiseui.client.testbedselection.presenter.ConfigurationPresenter;
 import eu.wisebed.wiseui.client.testbedselection.presenter.DetailPresenter;
 import eu.wisebed.wiseui.client.testbedselection.presenter.LoginDialogPresenter;
-import eu.wisebed.wiseui.client.testbedselection.presenter.NetworkPresenter;
+import eu.wisebed.wiseui.client.testbedselection.presenter.MapPresenter;
+import eu.wisebed.wiseui.client.testbedselection.presenter.RawWisemlPresenter;
 import eu.wisebed.wiseui.client.testbedselection.presenter.TestbedSelectionPresenter;
 import eu.wisebed.wiseui.client.testbedselection.view.ConfigurationView;
 import eu.wisebed.wiseui.client.testbedselection.view.DetailView;
 import eu.wisebed.wiseui.client.testbedselection.view.LoginDialogView;
-import eu.wisebed.wiseui.client.testbedselection.view.NetworkView;
+import eu.wisebed.wiseui.client.testbedselection.view.MapView;
+import eu.wisebed.wiseui.client.testbedselection.view.RawWisemlView;
 import eu.wisebed.wiseui.client.testbedselection.view.TestbedSelectionView;
 import eu.wisebed.wiseui.shared.TestbedConfiguration;
 import eu.wisebed.wiseui.shared.wiseml.Wiseml;
@@ -69,8 +72,9 @@ public class TestbedSelectionActivity extends AbstractActivity implements Config
         final TestbedSelectionView testbedSelectionView = injector.getTestbedSelectionView();
         testbedSelectionView.setPresenter(testbedSelectionPresenter);
         initConfigurationPart(testbedSelectionView);
+        initMapPart(testbedSelectionView);
         initDetailPart(testbedSelectionView);
-        initNetworkPart(testbedSelectionView);
+        initRawWisemlPart(testbedSelectionView);
         container.setWidget(testbedSelectionView.asWidget());
     }
 
@@ -92,13 +96,20 @@ public class TestbedSelectionActivity extends AbstractActivity implements Config
         testbedSelectionView.getDetailContainer().setWidget(detailView);
     }
 
-    private void initNetworkPart(final TestbedSelectionView testbedSelectionView) {
-        GWT.log("Init Testbed Network Part");
-        final NetworkPresenter networkPresenter = injector.getNetworkPresenter();
-        networkPresenter.setPlace(place);
-        final NetworkView networkView = injector.getNetworkView();
-        networkView.setPresenter(networkPresenter);
-        testbedSelectionView.getNetworkContainer().setWidget(networkView);
+    private void initMapPart(final TestbedSelectionView testbedSelectionView) {
+        GWT.log("Init Testbed Map Part");
+        final MapPresenter mapPresenter = injector.getMapPresenter();
+        mapPresenter.setPlace(place);
+        final MapView mapView = injector.getMapView();
+        mapView.setPresenter(mapPresenter);
+        testbedSelectionView.getMapContainer().setWidget(mapView);
+    }
+    
+    private void initRawWisemlPart(final TestbedSelectionView testbedSelectionView) {
+    	GWT.log("Init Testbed Raw WiseML Part");
+    	final RawWisemlPresenter rawWisemlPresenter = injector.getRawWisemlPresenter();
+    	final RawWisemlView rawWisemlView = injector.getRawWisemlView();
+    	testbedSelectionView.getRawWisemlContainer().setWidget(rawWisemlView);
     }
 
     private void initLoginDialogPart() {
