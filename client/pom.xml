@@ -53,13 +53,16 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>com.googlecode.gwt.inject</groupId>
+            <groupId>com.google.gwt.inject</groupId>
             <artifactId>gin</artifactId>
         </dependency>
+        <!-- Compatible version for GWT 2.2. See Issue 447 in the gwt-google-api issue tracker. -->
         <dependency>
             <groupId>com.google.code</groupId>
             <artifactId>gwt-maps</artifactId>
             <version>1.1.0</version>
+            <scope>system</scope>
+            <systemPath>${basedir}/src/main/webapp/WEB-INF/lib/gwt-maps.jar</systemPath>
         </dependency>
     </dependencies>
 

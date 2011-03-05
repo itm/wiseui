@@ -33,13 +33,12 @@ public class ConfigurationViewImpl extends Composite implements ConfigurationVie
     public CellList<TestbedConfiguration> createTestbedConfigurationCellList() {
         final Cell<TestbedConfiguration> cell = new AbstractCell<TestbedConfiguration>() {
 
-            @Override
-            public void render(final TestbedConfiguration configuration,
-                               final Object paramObject, final SafeHtmlBuilder sb) {
-                sb.appendHtmlConstant("<div class=\"celllist-entry\">");
-                sb.appendEscaped(configuration.getName());
-                sb.appendHtmlConstant("</div>");
-            }
+        	@Override
+        	public void render(Context context, TestbedConfiguration configuration, SafeHtmlBuilder builder) {
+        		builder.appendHtmlConstant("<div class=\"celllist-entry\">");
+                builder.appendEscaped(configuration.getName());
+                builder.appendHtmlConstant("</div>");
+        	}
         };
         return new CellList<TestbedConfiguration>(cell);
     }

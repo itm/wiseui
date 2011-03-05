@@ -20,7 +20,7 @@ public class DetailViewImpl extends Composite implements DetailView {
     /**
      * Google Maps API Key for http://uni-luebeck.de
      */
-    private final static String GOOGLE_MAPS_API_KEY = "ABQIAAAAJF12r4xVlog3DZkEwDC09BRisPSeHzj7Yhj17FYCkK1ytSRbxBQV16SxQgD_zuTEDGaTRK9sHFtMDQ";
+    private final static String GOOGLE_MAPS_API_KEY = "";
 
     private static DetailViewImplUiBinder uiBinder = GWT
             .create(DetailViewImplUiBinder.class);

@@ -10,8 +10,7 @@ public class StacktraceUtil {
     public static String stacktraceToString(final Throwable throwable) {
         if (throwable == null) return DEFAULT;
 
-        String result = null;
-        result += throwable.toString();
+        String result = throwable.toString();
         result += LINE_SEPARATOR;
 
         int i = 0;

@@ -10,7 +10,7 @@
     <name>WiseUI - Experimentation Web Client</name>
 
     <properties>
-        <gwt.version>2.1.0</gwt.version>
+        <gwt.version>2.2.0</gwt.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
@@ -40,22 +40,22 @@
             <dependency>
                 <groupId>de.uniluebeck.itm</groupId>
                 <artifactId>tr.snaa-api</artifactId>
-                <version>0.5.6-SNAPSHOT</version>
+                <version>0.5.5</version>
             </dependency>
             <dependency>
                 <groupId>de.uniluebeck.itm</groupId>
                 <artifactId>tr.wsn-api</artifactId>
-                <version>0.5.6-SNAPSHOT</version>
+                <version>0.5.5</version>
             </dependency>
             <dependency>
                 <groupId>de.uniluebeck.itm</groupId>
                 <artifactId>tr.wiseml</artifactId>
-                <version>0.5.6-SNAPSHOT</version>
+                <version>0.5.5</version>
             </dependency>
             <dependency>
                 <groupId>de.uniluebeck.itm</groupId>
                 <artifactId>tr.util</artifactId>
-                <version>0.5.6-SNAPSHOT</version>
+                <version>0.5.5</version>
             </dependency>
             <!-- GWT dependencies (from central repo) -->
             <dependency>
@@ -71,19 +71,19 @@
                 <scope>provided</scope>
             </dependency>
             <dependency>
-                <groupId>com.googlecode.gwt.inject</groupId>
+                <groupId>com.google.gwt.inject</groupId>
                 <artifactId>gin</artifactId>
-                <version>1.0</version>
+                <version>1.5.0</version>
             </dependency>
             <dependency>
                 <groupId>com.google.inject</groupId>
                 <artifactId>guice</artifactId>
-                <version>2.0</version>
+                <version>3.0-rc2</version>
             </dependency>
             <dependency>
                 <groupId>com.google.inject.extensions</groupId>
                 <artifactId>guice-servlet</artifactId>
-                <version>2.0</version>
+                <version>3.0-rc2</version>
             </dependency>
             <dependency>
                 <groupId>javax.servlet</groupId>

@@ -45,23 +45,26 @@ public class LoginDialogViewImpl extends HasWidgetsDialogBox implements LoginDia
         public UrnPrefixInfoCell() {
             super("change", "keydown");
         }
-
+        
         @Override
-        public void onBrowserEvent(final Element parent, final UrnPrefixInfo info, final Object key, final NativeEvent event,
-                                   final ValueUpdater<UrnPrefixInfo> valueUpdater) {
-
-            final Element checkboxParent = parent.getFirstChildElement().getFirstChildElement().getFirstChildElement().getFirstChildElement();
-            cell.onBrowserEvent(checkboxParent, info.isChecked(), key, event, new ValueUpdater<Boolean>() {
+        public void onBrowserEvent(Context context, Element parent, final UrnPrefixInfo info, NativeEvent event, ValueUpdater<UrnPrefixInfo> valueUpdater) {
+        	final Element checkboxParent = parent.getFirstChildElement().getFirstChildElement().getFirstChildElement().getFirstChildElement();
+            cell.onBrowserEvent(context, checkboxParent, info.isChecked(), event, new ValueUpdater<Boolean>() {
                 public void update(final Boolean value) {
                     info.setChecked(value);
                 }
             });
-            super.onBrowserEvent(parent, info, key, event, valueUpdater);
+        	super.onBrowserEvent(context, parent, info, event, valueUpdater);
         }
 
-        @Override
-        public void render(final UrnPrefixInfo info, final Object key, final SafeHtmlBuilder sb) {
-            // Value can be null, so do a null check..
+		@Override
+		public boolean isEditing(Context context, Element element, UrnPrefixInfo arg2) {
+			return true;
+		}
+
+		@Override
+		public void render(Context context, UrnPrefixInfo info, SafeHtmlBuilder sb) {
+			// Value can be null, so do a null check..
             if (info == null) {
                 return;
             }
@@ -75,19 +78,14 @@ public class LoginDialogViewImpl extends HasWidgetsDialogBox implements LoginDia
 
             sb.appendHtmlConstant("<table style='background-color:" + color + "'>");
             sb.appendHtmlConstant("<tr><td rowspan='2'>");
-            cell.render(info.isChecked(), key, sb);
+            cell.render(context, info.isChecked(), sb);
             sb.appendHtmlConstant("</td>");
             sb.appendHtmlConstant("<td style='width:100%'>");
             sb.appendEscaped(info.getUrnPrefix());
             sb.appendHtmlConstant("</td></tr><tr><td>");
             sb.appendEscaped(info.getState().toString());
             sb.appendHtmlConstant("</td></tr></table>");
-        }
-
-        @Override
-        public boolean isEditing(final Element parent, final UrnPrefixInfo value, final Object key) {
-            return cell.isEditing(parent, value.isChecked(), key);
-        }
+		}
     }
 
     @UiField
