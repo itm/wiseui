@@ -5,12 +5,11 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.cellview.client.CellTree;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.TreeViewModel;
-
-import eu.wisebed.wiseui.shared.wiseml.Node;
 
 public class DetailViewImpl extends Composite implements DetailView {
 	
@@ -24,7 +23,11 @@ public class DetailViewImpl extends Composite implements DetailView {
 	SimplePanel treeContainer;
 	
 	@UiField
-	Label generalLabel;
+	Label idLabel;
+	@UiField
+	Label positionLabel;
+	@UiField
+	Label gatewayLabel;
 	@UiField
 	Label descriptionLabel;
 	@UiField
@@ -53,10 +56,27 @@ public class DetailViewImpl extends Composite implements DetailView {
 	}
 
 	@Override
-	public void setNodeDetails(Node node) {
-		generalLabel.setText("ID: " + node.getId());
-		descriptionLabel.setText(node.getDescription());
-		programDetailsLabel.setText(node.getProgramDetails());
-		
+	public HasText getNodeIdHasText() {
+		return idLabel;
+	}
+
+	@Override
+	public HasText getNodePositionHasText() {
+		return positionLabel;
+	}
+
+	@Override
+	public HasText getNodeGatewayHasText() {
+		return gatewayLabel;
+	}
+
+	@Override
+	public HasText getNodeProgramDetailsHasText() {
+		return programDetailsLabel;
+	}
+
+	@Override
+	public HasText getNodeDescriptionHasText() {
+		return descriptionLabel;
 	}
 }

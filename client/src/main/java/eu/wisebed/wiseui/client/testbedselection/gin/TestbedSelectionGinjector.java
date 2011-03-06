@@ -7,14 +7,12 @@ import eu.wisebed.wiseui.client.testbedselection.presenter.ConfigurationPresente
 import eu.wisebed.wiseui.client.testbedselection.presenter.DetailPresenter;
 import eu.wisebed.wiseui.client.testbedselection.presenter.LoginDialogPresenter;
 import eu.wisebed.wiseui.client.testbedselection.presenter.MapPresenter;
-import eu.wisebed.wiseui.client.testbedselection.presenter.NetworkPresenter;
 import eu.wisebed.wiseui.client.testbedselection.presenter.RawWisemlPresenter;
 import eu.wisebed.wiseui.client.testbedselection.presenter.TestbedSelectionPresenter;
 import eu.wisebed.wiseui.client.testbedselection.view.ConfigurationView;
 import eu.wisebed.wiseui.client.testbedselection.view.DetailView;
 import eu.wisebed.wiseui.client.testbedselection.view.LoginDialogView;
 import eu.wisebed.wiseui.client.testbedselection.view.MapView;
-import eu.wisebed.wiseui.client.testbedselection.view.NetworkView;
 import eu.wisebed.wiseui.client.testbedselection.view.RawWisemlView;
 import eu.wisebed.wiseui.client.testbedselection.view.TestbedSelectionView;
 
@@ -27,8 +25,6 @@ public interface TestbedSelectionGinjector extends Ginjector {
     TestbedSelectionPresenter getTestbedSelectionPresenter();
 
     DetailPresenter getDetailPresenter();
-
-    NetworkPresenter getNetworkPresenter();
     
     MapPresenter getMapPresenter();
 
@@ -39,8 +35,6 @@ public interface TestbedSelectionGinjector extends Ginjector {
     ConfigurationView getConfigurationView();
 
     DetailView getDetailView();
-
-    NetworkView getNetworkView();
     
     MapView getMapView();
 

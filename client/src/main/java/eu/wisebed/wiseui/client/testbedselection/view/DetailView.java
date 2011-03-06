@@ -1,5 +1,6 @@
 package eu.wisebed.wiseui.client.testbedselection.view;
 
+import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.view.client.TreeViewModel;
 
@@ -12,7 +13,15 @@ public interface DetailView extends IsWidget {
     
     void setTreeViewModel(TreeViewModel model);
     
-    void setNodeDetails(Node node);
+    HasText getNodeIdHasText();
+    
+    HasText getNodePositionHasText();
+    
+    HasText getNodeGatewayHasText();
+    
+    HasText getNodeProgramDetailsHasText();
+    
+    HasText getNodeDescriptionHasText();
 
     public interface Presenter {
 

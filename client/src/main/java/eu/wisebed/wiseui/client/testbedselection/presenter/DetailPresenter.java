@@ -46,9 +46,33 @@ public class DetailPresenter implements Presenter, ConfigurationSelectedHandler,
 			@Override
 			public void onSelectionChange(final SelectionChangeEvent event) {
 				final Node node = nodeSelectionModel.getSelectedObject();
-				view.setNodeDetails(node);
+				onNodeSelection(node);
 			}
 		});
+    }
+    
+    private void onNodeSelection(Node node) {
+    	view.getNodeIdHasText().setText(node.getId());
+		view.getNodePositionHasText().setText(node.getPosition().toString());
+		
+		final Boolean isGateway = node.isGateway();
+		String gateway = "Unknown";
+		if (isGateway != null) {
+			gateway = isGateway ? "Yes" : "No";
+		}
+		view.getNodeGatewayHasText().setText(gateway);
+		
+		String description = node.getDescription();
+		if (description == null || description.isEmpty()) {
+			description = "No details available for this node.";
+		}
+		view.getNodeDescriptionHasText().setText(description);
+		
+		String programDetails = node.getProgramDetails();
+		if (programDetails == null || programDetails.isEmpty()) {
+			programDetails = "No program details available for this node.";
+		}
+		view.getNodeProgramDetailsHasText().setText(programDetails);
     }
 
     public void setPlace(final TestbedSelectionPlace place) {
