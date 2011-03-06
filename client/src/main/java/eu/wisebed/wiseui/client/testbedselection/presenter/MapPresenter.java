@@ -32,18 +32,17 @@ public class MapPresenter implements MapView.Presenter, WisemlLoadedHandler, Con
 		eventBus.addHandler(WisemlLoadedEvent.TYPE, this);
 	}
 	
-	public void setPlace(TestbedSelectionPlace place) {
-		// TODO Auto-generated method stub
-
+	public void setPlace(final TestbedSelectionPlace place) {
+		
 	}
 
-	public void onWisemlLoaded(WisemlLoadedEvent event) {
+	public void onWisemlLoaded(final WisemlLoadedEvent event) {
 		final Setup setup = event.getWiseml().getSetup();
 		view.setTestbedCoordinate(setup.getOrigin(), configuration.getName(), setup.getDescription());
-		view.setNodes(setup.getNode());
+		//view.setNodes(setup.getNode());
 	}
 
-	public void onTestbedConfigurationSelected(ConfigurationSelectedEvent event) {
+	public void onTestbedConfigurationSelected(final ConfigurationSelectedEvent event) {
 		this.configuration = event.getConfiguration();
 		view.setTestbedCoordinate(null, null, null);
 	}

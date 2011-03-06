@@ -35,7 +35,7 @@ public class MapViewImpl extends Composite implements MapView {
 	
     private static final int DEFAULT_ZOOM_LEVEL = 2;
 
-    private static final int ZOOM_LEVEL = 8;
+    private static final int ZOOM_LEVEL = 9;
 	
 	@UiField
 	SimplePanel mapContainer;
@@ -51,10 +51,6 @@ public class MapViewImpl extends Composite implements MapView {
     private String title;
     
     private String description;
-    
-    private List<Node> nodes;
-    
-    private List<Marker> nodeMarkers = new ArrayList<Marker>();
 	
 	public MapViewImpl() {
 		initWidget(uiBinder.createAndBindUi(this));
@@ -65,9 +61,8 @@ public class MapViewImpl extends Composite implements MapView {
 		});
 	}
 
-	public void setPresenter(Presenter presenter) {
-		// TODO Auto-generated method stub
-
+	public void setPresenter(final Presenter presenter) {
+		
 	}
 	
 	public void initMap() {
@@ -91,7 +86,6 @@ public class MapViewImpl extends Composite implements MapView {
         mapContainer.add(mapWidget);
         
         updateMap();
-        updateNodes();
 	}
 	
     private void updateMap() {
@@ -102,7 +96,8 @@ public class MapViewImpl extends Composite implements MapView {
     	
     	LatLng center = LatLng.newInstance(0.0, 0.0);
     	if (coordinate != null) {
-	        testbedMarker = new Marker(convert(coordinate));
+    		center = convert(coordinate);
+	        testbedMarker = new Marker(center);
 	        
 	        mapWidget.addOverlay(testbedMarker);
 	        mapWidget.setZoomLevel(ZOOM_LEVEL);
@@ -114,37 +109,7 @@ public class MapViewImpl extends Composite implements MapView {
     		mapWidget.setZoomLevel(DEFAULT_ZOOM_LEVEL);
     	}
         mapWidget.setCenter(center);
-        
-	    
-    }
-    
-    private void updateNodes() {
-		for (final Marker marker : nodeMarkers) {
-			mapWidget.removeOverlay(marker);
-		}
-		nodeMarkers.clear();
-    	
-		if (nodes != null) {
-	    	final Icon icon = Icon.newInstance("http://labs.google.com/ridefinder/images/mm_20_red.png");
-		    icon.setShadowURL("http://labs.google.com/ridefinder/images/mm_20_shadow.png");
-		    icon.setIconSize(Size.newInstance(12, 20));
-		    icon.setShadowSize(Size.newInstance(22, 20));
-		    icon.setIconAnchor(Point.newInstance(6, 20));
-		    icon.setInfoWindowAnchor(Point.newInstance(5, 1));
-		    
-		    final MarkerOptions options = MarkerOptions.newInstance();
-		    options.setIcon(icon);
-		    
-		    final LatLng center = convert(coordinate);
-	    	for (final Node node : nodes) {
-	    		final LatLng point = LatLng.newInstance(center.getLatitude() + node.getPosition().getX(), 
-	    				center.getLongitude() + node.getPosition().getY());
-
-	    		final Marker marker = new Marker(point, options);
-	    		mapWidget.addOverlay(marker);
-	    		nodeMarkers.add(marker);
-	    	}
-		}
+        mapWidget.checkResizeAndCenter();
     }
 
 	public void setTestbedCoordinate(final Coordinate coordinate, final String title, final String description) {
@@ -155,14 +120,6 @@ public class MapViewImpl extends Composite implements MapView {
 		if (mapWidget != null) {
 			updateMap();
 		}	
-	}
-
-	public void setNodes(List<Node> nodes) {
-		this.nodes = nodes;
-		
-		if (mapWidget != null) {
-			updateNodes();
-		}
 	}
 
 	public static LatLng convert(final Coordinate coordinate) {
