@@ -39,7 +39,6 @@ public class MapPresenter implements MapView.Presenter, WisemlLoadedHandler, Con
 	public void onWisemlLoaded(final WisemlLoadedEvent event) {
 		final Setup setup = event.getWiseml().getSetup();
 		view.setTestbedCoordinate(setup.getOrigin(), configuration.getName(), setup.getDescription());
-		//view.setNodes(setup.getNode());
 	}
 
 	public void onTestbedConfigurationSelected(final ConfigurationSelectedEvent event) {

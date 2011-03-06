@@ -1,8 +1,5 @@
 package eu.wisebed.wiseui.client.testbedselection.view;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.maps.client.InfoWindow;
 import com.google.gwt.maps.client.InfoWindowContent;
@@ -10,11 +7,8 @@ import com.google.gwt.maps.client.MapUIOptions;
 import com.google.gwt.maps.client.MapWidget;
 import com.google.gwt.maps.client.Maps;
 import com.google.gwt.maps.client.geom.LatLng;
-import com.google.gwt.maps.client.geom.Point;
 import com.google.gwt.maps.client.geom.Size;
-import com.google.gwt.maps.client.overlay.Icon;
 import com.google.gwt.maps.client.overlay.Marker;
-import com.google.gwt.maps.client.overlay.MarkerOptions;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
@@ -23,7 +17,6 @@ import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
 import eu.wisebed.wiseui.shared.wiseml.Coordinate;
-import eu.wisebed.wiseui.shared.wiseml.Node;
 
 public class MapViewImpl extends Composite implements MapView {
 	
@@ -119,7 +112,7 @@ public class MapViewImpl extends Composite implements MapView {
 		
 		if (mapWidget != null) {
 			updateMap();
-		}	
+		}
 	}
 
 	public static LatLng convert(final Coordinate coordinate) {
