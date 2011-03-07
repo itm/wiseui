@@ -1,7 +1,9 @@
 package eu.wisebed.wiseui.client.testbedselection.presenter;
 
 import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.place.shared.PlaceController;
 import com.google.inject.Inject;
+
 import eu.wisebed.wiseui.client.testbedselection.TestbedSelectionPlace;
 import eu.wisebed.wiseui.client.testbedselection.event.ConfigurationSelectedEvent;
 import eu.wisebed.wiseui.client.testbedselection.event.ConfigurationSelectedEvent.ConfigurationSelectedHandler;
@@ -19,12 +21,15 @@ import eu.wisebed.wiseui.shared.exception.WisemlException;
 public class TestbedSelectionPresenter implements Presenter, ConfigurationSelectedHandler, WisemlLoadedHandler, ThrowableHandler {
 
     private final EventBus eventBus;
+    private final PlaceController placeController;
     private final TestbedSelectionView view;
+    private TestbedSelectionPlace place;
     private TestbedConfiguration configuration;
 
     @Inject
-    public TestbedSelectionPresenter(final EventBus eventBus, final TestbedSelectionView view) {
+    public TestbedSelectionPresenter(final EventBus eventBus, final PlaceController placeController, final TestbedSelectionView view) {
         this.eventBus = eventBus;
+        this.placeController = placeController;
         this.view = view;
         view.setContentSelection(0);
         view.getLoginEnabled().setEnabled(false);
@@ -48,6 +53,8 @@ public class TestbedSelectionPresenter implements Presenter, ConfigurationSelect
     }
 
     public void setPlace(final TestbedSelectionPlace place) {
+    	this.place = place;
+    	view.setContentSelection(place.getView());
     }
 
     public void onWisemlLoaded(final WisemlLoadedEvent event) {
@@ -72,6 +79,6 @@ public class TestbedSelectionPresenter implements Presenter, ConfigurationSelect
 
 	@Override
 	public void setContentSelection(final Integer index) {
-		view.setContentSelection(index);
+		placeController.goTo(new TestbedSelectionPlace(place.getSelection(), index));
 	}
 }
