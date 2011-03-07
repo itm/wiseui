@@ -71,7 +71,7 @@ public class TestbedSelectionPresenter implements Presenter, ConfigurationSelect
     }
 
 	@Override
-	public void setContentSelection(Integer index) {
+	public void setContentSelection(final Integer index) {
 		view.setContentSelection(index);
 	}
 }
