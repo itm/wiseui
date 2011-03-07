@@ -7,6 +7,8 @@ public interface RawWisemlView extends IsWidget {
 
 	HasHTML getXmlHasHTML();
 	
+	void setPresenter(Presenter presenter);
+	
 	public interface Presenter {
 		
 	}

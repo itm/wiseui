@@ -26,6 +26,10 @@
             <artifactId>shared</artifactId>
         </dependency>
         <dependency>
+            <groupId>eu.wisebed.wiseui</groupId>
+            <artifactId>widgets</artifactId>
+        </dependency>
+        <dependency>
             <groupId>com.google.gwt</groupId>
             <artifactId>gwt-user</artifactId>
             <scope>provided</scope>
