@@ -12,6 +12,7 @@ import java.util.List;
 @Singleton
 public class AuthenticationManager {
 
+
     private static final String SEPARATOR = "&";
 
     private static final String PREFIX = AuthenticationManager.class.getName() + SEPARATOR;

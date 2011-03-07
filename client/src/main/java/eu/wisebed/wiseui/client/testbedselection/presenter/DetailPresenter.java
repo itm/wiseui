@@ -5,7 +5,6 @@ import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
 import com.google.inject.Inject;
-
 import eu.wisebed.wiseui.client.testbedselection.TestbedSelectionPlace;
 import eu.wisebed.wiseui.client.testbedselection.common.TestbedTreeViewModel;
 import eu.wisebed.wiseui.client.testbedselection.event.ConfigurationSelectedEvent;
@@ -31,8 +30,8 @@ public class DetailPresenter implements Presenter, ConfigurationSelectedHandler,
     private final ListDataProvider<Capability> capabilityListDataProvider = new ListDataProvider<Capability>();
 
     private TestbedConfiguration configuration;
-    
-    private SingleSelectionModel<Node> nodeSelectionModel = new SingleSelectionModel<Node>(); 
+
+    private SingleSelectionModel<Node> nodeSelectionModel = new SingleSelectionModel<Node>();
 
     @Inject
     public DetailPresenter(final EventBus eventBus, final DetailView view) {
@@ -48,15 +47,15 @@ public class DetailPresenter implements Presenter, ConfigurationSelectedHandler,
         eventBus.addHandler(WisemlLoadedEvent.TYPE, this);
         eventBus.addHandler(ThrowableEvent.TYPE, this);
         nodeSelectionModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
-        	
-			@Override
-			public void onSelectionChange(final SelectionChangeEvent event) {
-				final Node node = nodeSelectionModel.getSelectedObject();
-				onNodeSelection(node);
-			}
-		});
+
+            @Override
+            public void onSelectionChange(final SelectionChangeEvent event) {
+                final Node node = nodeSelectionModel.getSelectedObject();
+                onNodeSelection(node);
+            }
+        });
     }
-    
+
     private void onNodeSelection(final Node node) {
     	view.getNodeIdHasText().setText(node.getId());
 		view.getNodePositionHasText().setText(node.getPosition().toString());

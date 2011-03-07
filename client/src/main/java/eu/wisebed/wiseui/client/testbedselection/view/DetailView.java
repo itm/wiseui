@@ -31,7 +31,5 @@ public interface DetailView extends IsWidget {
     public interface Presenter {
 
         void setPlace(TestbedSelectionPlace place);
-    }
-
-	
+    }	
 }

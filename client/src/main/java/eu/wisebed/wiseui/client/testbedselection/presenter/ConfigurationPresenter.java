@@ -44,6 +44,7 @@ public class ConfigurationPresenter implements Presenter {
         view.setTestbedConfigurationSelectionModel(configurationSelectionModel);
     }
 
+    @Override
     public void setPlace(final TestbedSelectionPlace place) {
         this.place = place;
         loadTestbedConfigurations();
@@ -53,6 +54,7 @@ public class ConfigurationPresenter implements Presenter {
     private void bind() {
         configurationSelectionModel.addSelectionChangeHandler(new Handler() {
 
+            @Override
             public void onSelectionChange(final SelectionChangeEvent event) {
                 onConfigurationSelectionChange(event);
             }
@@ -71,18 +73,21 @@ public class ConfigurationPresenter implements Presenter {
     private void loadTestbedConfigurations() {
         final AsyncCallback<List<TestbedConfiguration>> callback = new AsyncCallback<List<TestbedConfiguration>>() {
 
+            @Override
             public void onSuccess(final List<TestbedConfiguration> result) {
                 configurations = result;
                 view.setConfigurations(result);
                 loadConfigurationSelectionFromPlace();
             }
 
+            @Override
             public void onFailure(final Throwable caught) {
                 GWT.log(caught.getMessage());
             }
         };
         Scheduler.get().scheduleDeferred(new ScheduledCommand() {
 
+            @Override
             public void execute() {
                 configurationService.getConfigurations(callback);
             }
@@ -105,6 +110,4 @@ public class ConfigurationPresenter implements Presenter {
             }
         }
     }
-
-
 }

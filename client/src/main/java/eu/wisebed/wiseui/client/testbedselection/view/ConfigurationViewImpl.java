@@ -21,7 +21,6 @@ public class ConfigurationViewImpl extends Composite implements ConfigurationVie
 
     interface ConfigurationViewImplUiBinder extends UiBinder<Widget, ConfigurationViewImpl> {
     }
-
     @UiField
     CellList<TestbedConfiguration> configurationList;
 
@@ -33,25 +32,29 @@ public class ConfigurationViewImpl extends Composite implements ConfigurationVie
     public CellList<TestbedConfiguration> createTestbedConfigurationCellList() {
         final Cell<TestbedConfiguration> cell = new AbstractCell<TestbedConfiguration>() {
 
-        	@Override
-        	public void render(Context context, TestbedConfiguration configuration, SafeHtmlBuilder builder) {
-        		builder.appendHtmlConstant("<div class=\"celllist-entry\">");
+            @Override
+            public void render(final Context context,
+                               final TestbedConfiguration configuration,
+                               final SafeHtmlBuilder builder) {
+                builder.appendHtmlConstant("<div class=\"celllist-entry\">");
                 builder.appendEscaped(configuration.getName());
                 builder.appendHtmlConstant("</div>");
-        	}
+            }
         };
         return new CellList<TestbedConfiguration>(cell);
     }
 
+    @Override
     public void setPresenter(final Presenter presenter) {
-
     }
 
+    @Override
     public void setConfigurations(final List<TestbedConfiguration> configurations) {
         configurationList.setRowCount(configurations.size());
         configurationList.setRowData(0, configurations);
     }
 
+    @Override
     public void setTestbedConfigurationSelectionModel(final SelectionModel<TestbedConfiguration> selectionModel) {
         configurationList.setSelectionModel(selectionModel);
     }
