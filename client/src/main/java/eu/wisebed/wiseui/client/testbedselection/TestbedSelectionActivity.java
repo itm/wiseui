@@ -72,10 +72,21 @@ public class TestbedSelectionActivity extends AbstractActivity implements Config
         final TestbedSelectionView testbedSelectionView = injector.getTestbedSelectionView();
         testbedSelectionView.setPresenter(testbedSelectionPresenter);
         initConfigurationPart(testbedSelectionView);
-        initMapPart(testbedSelectionView);
-        initDetailPart(testbedSelectionView);
-        initRawWisemlPart(testbedSelectionView);
+        initContentPart(testbedSelectionView, place.getView());
         container.setWidget(testbedSelectionView.asWidget());
+    }
+    
+    private void initContentPart(final TestbedSelectionView testbedSelectionView, final int index) {
+    	switch (index) {
+    	case 1:
+    		initDetailPart(testbedSelectionView);
+    		break;
+    	case 2:
+    		initRawWisemlPart(testbedSelectionView);
+    		break;
+    	default:
+    		initMapPart(testbedSelectionView);
+    	}
     }
 
     private void initConfigurationPart(final TestbedSelectionView testbedSelectionView) {
@@ -93,7 +104,7 @@ public class TestbedSelectionActivity extends AbstractActivity implements Config
         detailPresenter.setPlace(place);
         final DetailView detailView = injector.getDetailView();
         detailView.setPresenter(detailPresenter);
-        testbedSelectionView.getDetailContainer().setWidget(detailView);
+        testbedSelectionView.getContentContainer().setWidget(detailView);
     }
 
     private void initMapPart(final TestbedSelectionView testbedSelectionView) {
@@ -102,14 +113,14 @@ public class TestbedSelectionActivity extends AbstractActivity implements Config
         mapPresenter.setPlace(place);
         final MapView mapView = injector.getMapView();
         mapView.setPresenter(mapPresenter);
-        testbedSelectionView.getMapContainer().setWidget(mapView);
+        testbedSelectionView.getContentContainer().setWidget(mapView);
     }
     
     private void initRawWisemlPart(final TestbedSelectionView testbedSelectionView) {
     	GWT.log("Init Testbed Raw WiseML Part");
     	final RawWisemlPresenter rawWisemlPresenter = injector.getRawWisemlPresenter();
     	final RawWisemlView rawWisemlView = injector.getRawWisemlView();
-    	testbedSelectionView.getRawWisemlContainer().setWidget(rawWisemlView);
+    	testbedSelectionView.getContentContainer().setWidget(rawWisemlView);
     }
 
     private void initLoginDialogPart() {

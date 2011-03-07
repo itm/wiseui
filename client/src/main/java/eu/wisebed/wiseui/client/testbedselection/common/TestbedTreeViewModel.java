@@ -27,7 +27,7 @@ public class TestbedTreeViewModel implements TreeViewModel {
 	
 	private final int nodeCount;
 	
-	public TestbedTreeViewModel(final TestbedConfiguration configuration, final List<Node> nodes, SelectionModel<Node> nodeSelectionModel) {
+	public TestbedTreeViewModel(final TestbedConfiguration configuration, final List<Node> nodes, final SelectionModel<Node> nodeSelectionModel) {
 		this.configuration = configuration;
 		this.groups = initGroups(nodes);
 		this.nodeSelectionModel = nodeSelectionModel;

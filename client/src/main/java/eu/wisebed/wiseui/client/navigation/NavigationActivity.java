@@ -50,10 +50,9 @@ public class NavigationActivity extends AbstractActivity implements
     public NavigationActivity(final WiseUiGinjector injector) {
         this.injector = injector;
 
-        navigation.add(new Entry("Testbed Selection", new TestbedSelectionPlace(null)));
+        navigation.add(new Entry("Testbed Selection", new TestbedSelectionPlace()));
         navigation.add(new Entry("Reservation", new ReservationPlace()));
-        navigation
-                .add(new Entry("Experimentation", new ExperimentationPlace()));
+        navigation.add(new Entry("Experimentation", new ExperimentationPlace()));
         navigation.add(new Entry("Administration", new AdministrationPlace()));
     }
 
@@ -80,8 +79,7 @@ public class NavigationActivity extends AbstractActivity implements
         }
         int i = 0;
         for (Entry entry : navigation) {
-            if (place != null
-                    && place.getClass().equals(entry.getPlace().getClass())) {
+            if (place != null && place.getClass().equals(entry.getPlace().getClass())) {
                 navigationView.select(i);
             }
             i++;

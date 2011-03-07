@@ -9,5 +9,7 @@ import eu.wisebed.wiseui.shared.wiseml.Wiseml;
 @RemoteServiceRelativePath("sessionmanagement.rpc")
 public interface SessionManagementService extends RemoteService {
 
+	String getWisemlAsXml(String urn) throws WisemlException;
+	
     Wiseml getWiseml(String urn) throws WisemlException;
 }

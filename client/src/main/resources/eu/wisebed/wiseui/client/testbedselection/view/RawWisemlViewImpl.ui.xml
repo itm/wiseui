@@ -10,6 +10,10 @@
             cursor: default;
             border-bottom: 1px solid #bbbbbb;
         }
+        
+        .xmlPanel {
+        	margin: 7px;
+        }
 
         .fullLayout {
             width: 100%;
@@ -21,7 +25,11 @@
             <g:Label styleName="{style.caption}">Raw WiseML</g:Label>
         </g:north>
         <g:center>
-            <g:SimplePanel/>
+        	<g:ScrollPanel>
+        		<g:SimplePanel styleName="{style.xmlPanel}">
+        			<g:HTML ui:field="xml"/>
+        		</g:SimplePanel>
+        	</g:ScrollPanel>
         </g:center>
     </g:DockLayoutPanel>
 </ui:UiBinder> 

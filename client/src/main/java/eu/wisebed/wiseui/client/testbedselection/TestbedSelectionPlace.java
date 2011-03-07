@@ -1,44 +1,76 @@
 package eu.wisebed.wiseui.client.testbedselection;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceTokenizer;
 
 public class TestbedSelectionPlace extends Place {
 
-    private Integer selection;
+	private static final String SEPARATOR = "&";
+	
+	private final Map<String, String> variables = new HashMap<String, String>();
 
     public TestbedSelectionPlace() {
-        this.selection = null;
+    	this(null, 0);
     }
 
-    public TestbedSelectionPlace(final Integer selection) {
-        this.selection = selection;
+    public TestbedSelectionPlace(final Integer selection, final Integer view) {
+        set("selection", selection);
+        set("view", view);
     }
-
-    public void setSelection(final Integer selection) {
-        this.selection = selection;
+    
+    public String get(String key) {
+    	return variables.get(key);
+    }
+    
+    public void set(String key, Object value) {
+    	variables.put(key, value == null ? null : value.toString());
     }
 
     public Integer getSelection() {
-        return selection;
+    	final String selection = get("selection");
+        return selection == null ? null : Integer.parseInt(selection);
+    }
+    
+    public Integer getView() {
+		return Integer.parseInt(get("view"));
+	}
+    
+    public static TestbedSelectionPlace parse(String token) {
+    	final TestbedSelectionPlace place = new TestbedSelectionPlace();
+    	final String[] variables = token.split(SEPARATOR);
+    	for (final String variable : variables) {
+    		final String[] tokens = variable.split("=");
+    		place.set(tokens[0], tokens[1]);
+    	}
+    	return place;
+    }
+    
+    @Override
+    public String toString() {
+    	final StringBuilder builder = new StringBuilder();
+    	for (final String key : variables.keySet()) {
+    		String value = variables.get(key);
+    		if (value != null) {
+    			builder.append(key).append("=").append(value).append(SEPARATOR);
+    		}
+    	}
+    	if (builder.length() > 0) {
+    		builder.deleteCharAt(builder.length() - 1);
+    	}
+    	return builder.toString();
     }
 
     public static class Tokenizer implements PlaceTokenizer<TestbedSelectionPlace> {
 
         public String getToken(final TestbedSelectionPlace place) {
-            final StringBuilder builder = new StringBuilder();
-            if (place.getSelection() != null) {
-                builder.append("selection=").append(place.getSelection());
-            }
-            return builder.toString();
+            return place.toString();
         }
 
         public TestbedSelectionPlace getPlace(final String token) {
-            final String[] tokens = token.split("=");
-            if (tokens.length > 1) {
-                return new TestbedSelectionPlace(Integer.parseInt(tokens[1]));
-            }
-            return new TestbedSelectionPlace();
+        	return TestbedSelectionPlace.parse(token);
         }
     }
 }

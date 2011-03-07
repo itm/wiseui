@@ -52,10 +52,19 @@ public class DetailViewImpl extends Composite implements DetailView {
         treeContainer.add(tree);
     }
 
+<<<<<<< HEAD
     @Override
     public HasText getNodeIdHasText() {
         return idLabel;
     }
+=======
+	@Override
+	public void setTreeViewModel(final TreeViewModel model) {
+		final CellTree tree = createTree(model);
+		treeContainer.clear();
+		treeContainer.add(tree);
+	}
+>>>>>>> c1e550e1c2d9d78cf7e0f0e785c229680f9ffe85
 
     @Override
     public HasText getNodePositionHasText() {
@@ -72,8 +81,27 @@ public class DetailViewImpl extends Composite implements DetailView {
         return programDetailsLabel;
     }
 
+<<<<<<< HEAD
     @Override
     public HasText getNodeDescriptionHasText() {
         return descriptionLabel;
     }
 }
+=======
+	@Override
+	public HasText getNodeProgramDetailsHasText() {
+		return programDetailsLabel;
+	}
+
+	@Override
+	public HasText getNodeDescriptionHasText() {
+		return descriptionLabel;
+	}
+
+	@Override
+	public void showMessage(String message) {
+		treeContainer.clear();
+		treeContainer.add(new Label(message));
+	}
+}
+>>>>>>> c1e550e1c2d9d78cf7e0f0e785c229680f9ffe85

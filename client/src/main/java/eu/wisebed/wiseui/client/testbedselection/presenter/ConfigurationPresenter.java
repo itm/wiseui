@@ -66,7 +66,7 @@ public class ConfigurationPresenter implements Presenter {
         if (null == configuration) return;
         final Integer index = configurations.indexOf(configuration);
         if (!index.equals(place.getSelection())) {
-            placeController.goTo(new TestbedSelectionPlace(index));
+            placeController.goTo(new TestbedSelectionPlace(index, place.getView()));
         }
     }
 

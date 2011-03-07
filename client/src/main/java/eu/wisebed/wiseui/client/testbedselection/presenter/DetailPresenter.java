@@ -4,7 +4,6 @@ import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
 import com.google.inject.Inject;
-
 import eu.wisebed.wiseui.client.testbedselection.TestbedSelectionPlace;
 import eu.wisebed.wiseui.client.testbedselection.common.TestbedTreeViewModel;
 import eu.wisebed.wiseui.client.testbedselection.event.ConfigurationSelectedEvent;
@@ -23,8 +22,11 @@ import eu.wisebed.wiseui.shared.wiseml.Setup;
 public class DetailPresenter implements Presenter, ConfigurationSelectedHandler, WisemlLoadedHandler, ThrowableHandler {
 
     private final DetailView view;
+
     private final EventBus eventBus;
+
     private TestbedConfiguration configuration;
+
     private SingleSelectionModel<Node> nodeSelectionModel = new SingleSelectionModel<Node>();
 
     @Inject
@@ -32,6 +34,7 @@ public class DetailPresenter implements Presenter, ConfigurationSelectedHandler,
         this.view = view;
         this.eventBus = eventBus;
         bind();
+        view.showMessage("Select a Testbed Configuration.");
     }
 
     private void bind() {
@@ -48,7 +51,7 @@ public class DetailPresenter implements Presenter, ConfigurationSelectedHandler,
         });
     }
 
-    private void onNodeSelection(Node node) {
+    private void onNodeSelection(final Node node) {
         view.getNodeIdHasText().setText(node.getId());
         view.getNodePositionHasText().setText(node.getPosition().toString());
 
@@ -72,28 +75,24 @@ public class DetailPresenter implements Presenter, ConfigurationSelectedHandler,
         view.getNodeProgramDetailsHasText().setText(programDetails);
     }
 
-    @Override
     public void setPlace(final TestbedSelectionPlace place) {
+
     }
 
-    @Override
     public void onTestbedConfigurationSelected(final ConfigurationSelectedEvent event) {
         configuration = event.getConfiguration();
+        view.showMessage("Loading Testbed...");
     }
 
-    @Override
     public void onWisemlLoaded(final WisemlLoadedEvent event) {
         final Setup setup = event.getWiseml().getSetup();
-        if (null == setup) {
-            return;
-        }
+        if (null == setup) return;
         view.setTreeViewModel(new TestbedTreeViewModel(configuration, setup.getNode(), nodeSelectionModel));
     }
 
-    @Override
     public void onThrowable(final ThrowableEvent event) {
-        // TODO SNO Cleanup
-//        if (event.getThrowable() instanceof WisemlException) {
-//        }
+        if (event.getThrowable() instanceof WisemlException) {
+            view.showMessage("Unable to load Testbed.");
+        }
     }
 }

@@ -11,11 +11,7 @@ public interface TestbedSelectionView extends IsWidget {
 
     AcceptsOneWidget getConfigurationContainer();
     
-    AcceptsOneWidget getRawWisemlContainer();
-
-    AcceptsOneWidget getDetailContainer();
-
-    AcceptsOneWidget getMapContainer();
+    AcceptsOneWidget getContentContainer();
 
     HasEnabled getLoginEnabled();
 

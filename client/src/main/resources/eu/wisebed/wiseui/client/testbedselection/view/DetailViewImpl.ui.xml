@@ -9,6 +9,10 @@
 			border-bottom: 1px solid #bbbbbb;
 		}
 		
+		.content {
+			padding: 7px;
+		}
+		
 		.general {
 			padding: 3px;
 		}
@@ -23,8 +27,6 @@
 		}
 	</ui:style>
 
-
-
 	<g:SplitLayoutPanel styleName="{style.fullLayout}">
 		<g:center>
 			<g:DockLayoutPanel styleName="{style.fullLayout}">
@@ -33,7 +35,7 @@
 				</g:north>
 				<g:center>
 					<g:ScrollPanel styleName="{style.fullLayout}">
-						<g:SimplePanel ui:field="treeContainer"/>
+						<g:SimplePanel styleName="{style.content}" ui:field="treeContainer"/>
 					</g:ScrollPanel>
 				</g:center>
 			</g:DockLayoutPanel>
@@ -44,40 +46,42 @@
 					<g:Label styleName="{style.caption}">Node Information</g:Label>
 				</g:north>
 				<g:center>
-					<g:VerticalPanel styleName="{style.fullWidth}">
-						<g:HTMLPanel styleName="{style.general}">
-							<table>
-								<tr>
-									<td>ID:</td>
-									<td><g:Label ui:field="idLabel"/></td>
-								</tr>
-								<tr>
-									<td>Position:</td>
-									<td><g:Label ui:field="positionLabel"/></td>
-								</tr>
-								<tr>
-									<td>Gateway:</td>
-									<td><g:Label ui:field="gatewayLabel"/></td>
-								</tr>
-							</table>
-						</g:HTMLPanel>
-						
-						<g:Label styleName="{style.caption}">Node Description</g:Label>
-						<g:HTMLPanel>
-							<p style="padding:7px">
-								<g:Label ui:field="descriptionLabel"/>
-							</p>
-						</g:HTMLPanel>
-						
-						<g:Label styleName="{style.caption}">Node Program Details</g:Label>
-						<g:HTMLPanel>
-							<p style="padding:7px">
-								<g:Label ui:field="programDetailsLabel"/>
-							</p>
-						</g:HTMLPanel>
-						
-						<g:Label styleName="{style.caption}">Node Capabilities</g:Label>
-					</g:VerticalPanel>
+					<g:ScrollPanel>
+						<g:VerticalPanel styleName="{style.fullWidth}">
+							<g:HTMLPanel styleName="{style.general}">
+								<table>
+									<tr>
+										<td>ID:</td>
+										<td><g:Label ui:field="idLabel"/></td>
+									</tr>
+									<tr>
+										<td>Position:</td>
+										<td><g:Label ui:field="positionLabel"/></td>
+									</tr>
+									<tr>
+										<td>Gateway:</td>
+										<td><g:Label ui:field="gatewayLabel"/></td>
+									</tr>
+								</table>
+							</g:HTMLPanel>
+							
+							<g:Label styleName="{style.caption}">Node Description</g:Label>
+							<g:HTMLPanel>
+								<p style="padding:7px">
+									<g:Label ui:field="descriptionLabel"/>
+								</p>
+							</g:HTMLPanel>
+							
+							<g:Label styleName="{style.caption}">Node Program Details</g:Label>
+							<g:HTMLPanel>
+								<p style="padding:7px">
+									<g:Label ui:field="programDetailsLabel"/>
+								</p>
+							</g:HTMLPanel>
+							
+							<g:Label styleName="{style.caption}">Node Capabilities</g:Label>
+						</g:VerticalPanel>
+					</g:ScrollPanel>
 				</g:center>
 			</g:DockLayoutPanel>
 		</g:east>

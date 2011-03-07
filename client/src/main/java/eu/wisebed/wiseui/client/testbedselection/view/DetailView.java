@@ -5,7 +5,6 @@ import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.view.client.TreeViewModel;
 
 import eu.wisebed.wiseui.client.testbedselection.TestbedSelectionPlace;
-import eu.wisebed.wiseui.shared.wiseml.Node;
 
 public interface DetailView extends IsWidget {
 
@@ -22,6 +21,8 @@ public interface DetailView extends IsWidget {
     HasText getNodeProgramDetailsHasText();
     
     HasText getNodeDescriptionHasText();
+    
+    void showMessage(String message);
 
     public interface Presenter {
 

@@ -19,6 +19,10 @@
 			padding: 2px;
 		}
 		
+		.content {
+			padding: 17px;
+		}
+		
 		.button {
 			width: 160px;
 		}
@@ -37,7 +41,7 @@
 		<g:center>
 			<g:SplitLayoutPanel>
 				<g:center>
-					<g:DeckPanel styleName="{style.fullLayout}" ui:field="contentDeckPanel"/>
+					<g:SimplePanel styleName="{style.fullLayout}" ui:field="contentPanel"/>
 				</g:center>
 				<g:west size="250">
 					<g:SimplePanel ui:field="configurationContainer" />
