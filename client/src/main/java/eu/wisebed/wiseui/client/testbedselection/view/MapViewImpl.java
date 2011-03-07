@@ -3,6 +3,8 @@ package eu.wisebed.wiseui.client.testbedselection.view;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.common.base.Function;
+import com.google.common.collect.Lists;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.maps.client.InfoWindow;
 import com.google.gwt.maps.client.InfoWindowContent;
@@ -21,6 +23,7 @@ import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
 import eu.wisebed.wiseui.shared.wiseml.Coordinate;
+import eu.wisebed.wiseui.shared.wiseml.Node;
 
 public class MapViewImpl extends Composite implements MapView {
 
@@ -115,10 +118,12 @@ public class MapViewImpl extends Composite implements MapView {
     		return;
     	}
     	
-    	final List<LatLng> latLngs = new ArrayList<LatLng>(coordinates.size() + 1);
-    	for (final Coordinate coordinate : coordinates) {
-    		latLngs.add(convert(coordinate));
-    	}
+    	final List<LatLng> latLngs = new ArrayList<LatLng>(Lists.transform(coordinates, new Function<Coordinate, LatLng>() {
+			@Override
+			public LatLng apply(Coordinate input) {
+				return convert(input);
+			}
+		}));
     	latLngs.add(latLngs.get(0));
     	testbedShape = new Polygon(latLngs.toArray(new LatLng[0]));
     	mapWidget.addOverlay(testbedShape);

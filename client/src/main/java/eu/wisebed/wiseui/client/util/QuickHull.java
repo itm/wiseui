@@ -2,28 +2,22 @@ package eu.wisebed.wiseui.client.util;
 
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Vector;
 
 import eu.wisebed.wiseui.shared.wiseml.Coordinate;
 
 public class QuickHull {
-	final Coordinate[] originalCoordinates;
-	int fullSteps = 0;
-	final Vector<Coordinate> hullCoordinates = new Vector<Coordinate>();
+	
+	final List<Coordinate> hullCoordinates = new Vector<Coordinate>();
 
-	public QuickHull(Coordinate[] originalCoordinates) {
-		this.originalCoordinates = originalCoordinates;
-		qhull(originalCoordinates, 0, 0);
+	private QuickHull(final List<Coordinate> originalCoordinates) {
+		qhull(originalCoordinates.toArray(new Coordinate[0]), 0, 0);
 		reorderCoordinates(hullCoordinates);
 	}
-
-	/**
-	 * Returns original {@link Coordinate} array.
-	 * 
-	 * @return original {@link Coordinate} array
-	 */
-	public Coordinate[] getOriginalCoordinates() {
-		return originalCoordinates;
+	
+	public static List<Coordinate> calcuate(List<Coordinate> coordinates) {
+		return new QuickHull(coordinates).getHullCoordinates();
 	}
 
 	/**
@@ -31,31 +25,16 @@ public class QuickHull {
 	 * 
 	 * @return convex hull Coordinates as {@link Vector}.
 	 */
-	public Vector<Coordinate> getHullCoordinatesAsVector() {
+	public List<Coordinate> getHullCoordinates() {
 		return hullCoordinates;
 	}
 
-	/**
-	 * Returns convex hull Coordinates as {@link Coordinate}[].
-	 * 
-	 * @return convex hull Coordinates as {@link Coordinate}[].
-	 */
-	public Coordinate[] getHullCoordinatesAsArray() {
-		if (hullCoordinates == null)
-			return null;
-		Coordinate[] hulldots = new Coordinate[hullCoordinates.size()];
-		for (int i = 0; i < hulldots.length; i++) {
-			hulldots[i] = (Coordinate) hullCoordinates.elementAt(i);
-		}
-		return hulldots;
-	}
-
-	void reorderCoordinates(Vector<Coordinate> v) {
+	void reorderCoordinates(List<Coordinate> v) {
 		AngleWrapper[] angleWrappers = new AngleWrapper[v.size()];
 		double xc = 0;
 		double yc = 0;
 		for (int i = 0; i < v.size(); i++) {
-			Coordinate pt = (Coordinate) v.elementAt(i);
+			Coordinate pt = v.get(i);
 			xc += pt.getX();
 			yc += pt.getY();
 		}
@@ -64,22 +43,21 @@ public class QuickHull {
 		yc /= v.size();
 
 		for (int i = 0; i < angleWrappers.length; i++) {
-			angleWrappers[i] = createAngleWrapper((Coordinate) v.elementAt(i),
+			angleWrappers[i] = createAngleWrapper(v.get(i),
 					xc, yc);
 		}
 		Arrays.sort(angleWrappers, new AngleComparator());
-		v.removeAllElements();
+		v.clear();
 		for (int i = 0; i < angleWrappers.length; i++) {
 			v.add(angleWrappers[i].pt);
 		}
 	}
 
 	void qhull(Coordinate[] dots0, int up, int step) {
-		fullSteps++;
 		if (dots0 == null || dots0.length < 1 || step > 200)
 			return;
 		if (dots0.length < 2) {
-			addHullCoordinate((Coordinate) dots0[0]);
+			addHullCoordinate(dots0[0]);
 			return;
 		}
 		try {
@@ -93,8 +71,8 @@ public class QuickHull {
 					rightIndex = i;
 				}
 			}
-			Coordinate leftCoordinate = (Coordinate) dots0[leftIndex];
-			Coordinate rightCoordinate = (Coordinate) dots0[rightIndex];
+			Coordinate leftCoordinate = dots0[leftIndex];
+			Coordinate rightCoordinate = dots0[rightIndex];
 			addHullCoordinate(leftCoordinate);
 			addHullCoordinate(rightCoordinate);
 			if (dots0.length == 3) {
@@ -105,7 +83,7 @@ public class QuickHull {
 					middleCoordinate = i;
 					break;
 				}
-				addHullCoordinate((Coordinate) dots0[middleCoordinate]);
+				addHullCoordinate(dots0[middleCoordinate]);
 			} else if (dots0.length > 3) {
 				Vector<Coordinate> vIn = new Vector<Coordinate>();
 				Vector<Coordinate> vOut = new Vector<Coordinate>();
@@ -146,12 +124,13 @@ public class QuickHull {
 		}
 	}
 
-	void addHullCoordinate(Coordinate pt) {
-		if (!hullCoordinates.contains(pt))
+	private void addHullCoordinate(Coordinate pt) {
+		if (!hullCoordinates.contains(pt)) {
 			hullCoordinates.add(pt);
+		}
 	}
 
-	static int selectCoordinates(Object[] pIn, Coordinate pLeft,
+	private static int selectCoordinates(Coordinate[] pIn, Coordinate pLeft,
 			Coordinate pRight, boolean up, Vector<Coordinate> vOut) {
 		int retValue = -1;
 		if (pIn == null || vOut == null)
@@ -185,8 +164,7 @@ public class QuickHull {
 		return retValue;
 	}
 
-	static int selectCoordinates(Vector<Coordinate> vIn, Coordinate pLeft,
-			Coordinate pRight, boolean up, Vector<Coordinate> vOut) {
+	private static int selectCoordinates(List<Coordinate> vIn, Coordinate pLeft, Coordinate pRight, boolean up, List<Coordinate> vOut) {
 		int retValue = -1;
 		if (vIn == null || vOut == null)
 			return retValue;
@@ -197,7 +175,7 @@ public class QuickHull {
 		double C = k * pLeft.getX() - pLeft.getY();
 		double dup = 0;
 		for (int i = 0; i < vIn.size(); i++) {
-			Coordinate pt = (Coordinate) vIn.elementAt(i);
+			Coordinate pt = (Coordinate) vIn.get(i);
 			if (pt.equals(pLeft) || pt.equals(pRight))
 				continue;
 			double px = pt.getX();
@@ -219,14 +197,14 @@ public class QuickHull {
 		return retValue;
 	}
 
-	static AngleWrapper createAngleWrapper(Coordinate pt, double xc, double yc) {
+	private static AngleWrapper createAngleWrapper(Coordinate pt, double xc, double yc) {
 		double angle = Math.atan2(pt.getY() - yc, pt.getX() - xc);
 		if (angle < 0)
 			angle += 2 * Math.PI;
 		return new AngleWrapper(angle, new Coordinate(pt));
 	}
 
-	static class AngleComparator implements Comparator<AngleWrapper> {
+	private static class AngleComparator implements Comparator<AngleWrapper> {
 		public int compare(AngleWrapper obj1, AngleWrapper obj2) {
 			AngleWrapper ac1 = (AngleWrapper) obj1;
 			AngleWrapper ac2 = (AngleWrapper) obj2;
@@ -234,9 +212,9 @@ public class QuickHull {
 		}
 	}
 
-	static class AngleWrapper implements Comparable<AngleWrapper> {
-		double angle;
-		Coordinate pt;
+	private static class AngleWrapper implements Comparable<AngleWrapper> {
+		final double angle;
+		final Coordinate pt;
 
 		AngleWrapper(double angle, Coordinate pt) {
 			this.angle = angle;
