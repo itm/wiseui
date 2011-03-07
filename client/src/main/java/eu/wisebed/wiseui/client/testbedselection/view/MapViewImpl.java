@@ -111,6 +111,9 @@ public class MapViewImpl extends Composite implements MapView {
     	if (testbedShape != null) {
     		mapWidget.removeOverlay(testbedShape);
     	}
+    	if (coordinates == null) {
+    		return;
+    	}
     	
     	final List<LatLng> latLngs = new ArrayList<LatLng>(coordinates.size() + 1);
     	for (final Coordinate coordinate : coordinates) {

@@ -1,6 +1,7 @@
 package eu.wisebed.wiseui.client.testbedselection.presenter;
 
 import com.google.gwt.event.shared.EventBus;
+import com.google.common.base.Strings;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
@@ -68,13 +69,13 @@ public class DetailPresenter implements Presenter, ConfigurationSelectedHandler,
 		view.getNodeGatewayHasText().setText(gateway);
 		
 		String description = node.getDescription();
-		if (description == null || description.isEmpty()) {
+		if (Strings.isNullOrEmpty(description)) {
 			description = "No details available for this node.";
 		}
 		view.getNodeDescriptionHasText().setText(description);
 		
 		String programDetails = node.getProgramDetails();
-		if (programDetails == null || programDetails.isEmpty()) {
+		if (Strings.isNullOrEmpty(programDetails)) {
 			programDetails = "No program details available for this node.";
 		}
 		view.getNodeProgramDetailsHasText().setText(programDetails);

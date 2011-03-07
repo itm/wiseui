@@ -18,6 +18,7 @@
     <inherits name="com.google.gwt.place.Place"/>
     <inherits name="com.google.gwt.inject.Inject"/>
     <inherits name="com.google.gwt.maps.GoogleMaps"/>
+    <inherits name="com.google.common.collect.Collect"/>
 
     <!-- Other WiseUi Projects -->
     <inherits name="eu.wisebed.wiseui.WiseUiApi"/>
