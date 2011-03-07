@@ -1,6 +1,7 @@
 package eu.wisebed.wiseui.client.testbedselection.presenter;
 
 import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
 import com.google.inject.Inject;
@@ -17,6 +18,7 @@ import eu.wisebed.wiseui.client.testbedselection.view.DetailView;
 import eu.wisebed.wiseui.client.testbedselection.view.DetailView.Presenter;
 import eu.wisebed.wiseui.shared.TestbedConfiguration;
 import eu.wisebed.wiseui.shared.exception.WisemlException;
+import eu.wisebed.wiseui.shared.wiseml.Capability;
 import eu.wisebed.wiseui.shared.wiseml.Node;
 import eu.wisebed.wiseui.shared.wiseml.Setup;
 
@@ -25,6 +27,8 @@ public class DetailPresenter implements Presenter, ConfigurationSelectedHandler,
     private final DetailView view;
 
     private final EventBus eventBus;
+    
+    private final ListDataProvider<Capability> capabilityListDataProvider = new ListDataProvider<Capability>();
 
     private TestbedConfiguration configuration;
     
@@ -34,6 +38,7 @@ public class DetailPresenter implements Presenter, ConfigurationSelectedHandler,
     public DetailPresenter(final EventBus eventBus, final DetailView view) {
         this.view = view;
         this.eventBus = eventBus;
+        capabilityListDataProvider.addDataDisplay(view.getCapababilitesList());
         bind();
         view.showMessage("Select a Testbed Configuration.");
     }
@@ -74,6 +79,7 @@ public class DetailPresenter implements Presenter, ConfigurationSelectedHandler,
 			programDetails = "No program details available for this node.";
 		}
 		view.getNodeProgramDetailsHasText().setText(programDetails);
+		capabilityListDataProvider.setList(node.getCapability());
     }
 
     public void setPlace(final TestbedSelectionPlace place) {

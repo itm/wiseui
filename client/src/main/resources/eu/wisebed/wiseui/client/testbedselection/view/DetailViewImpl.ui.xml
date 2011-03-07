@@ -1,6 +1,7 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
-	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+	xmlns:g="urn:import:com.google.gwt.user.client.ui"
+	xmlns:c="urn:import:com.google.gwt.user.cellview.client">
 	<ui:style>
 		.caption {
 			background: #e3e8f3 url(images/hborder.png) repeat-x 0px -2003px;
@@ -80,6 +81,7 @@
 							</g:HTMLPanel>
 							
 							<g:Label styleName="{style.caption}">Node Capabilities</g:Label>
+							<c:CellTable styleName="{style.fullWidth}" ui:field="capabilitesTable"/>
 						</g:VerticalPanel>
 					</g:ScrollPanel>
 				</g:center>

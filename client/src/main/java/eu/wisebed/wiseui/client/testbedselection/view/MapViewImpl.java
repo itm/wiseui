@@ -70,7 +70,7 @@ public class MapViewImpl extends Composite implements MapView {
 		options.setScaleControl(true);
 		options.setDoubleClick(true);
 		options.setNormalMapType(true);
-		options.setKeyboard(true);		
+		options.setKeyboard(true);
 		
 		mapWidget = new MapWidget();
 		mapWidget.setUI(options);
