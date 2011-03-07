@@ -30,7 +30,8 @@ public class TestbedSelectionPlace extends Place {
     }
 
     public Integer getSelection() {
-        return Integer.parseInt(get("selection"));
+    	final String selection = get("selection");
+        return selection == null ? null : Integer.parseInt(selection);
     }
     
     public Integer getView() {
@@ -51,9 +52,14 @@ public class TestbedSelectionPlace extends Place {
     public String toString() {
     	final StringBuilder builder = new StringBuilder();
     	for (final String key : variables.keySet()) {
-    		builder.append(key).append("=").append(variables.get(key)).append(SEPARATOR);
+    		String value = variables.get(key);
+    		if (value != null) {
+    			builder.append(key).append("=").append(value).append(SEPARATOR);
+    		}
     	}
-    	builder.deleteCharAt(builder.length() - 1);
+    	if (builder.length() > 0) {
+    		builder.deleteCharAt(builder.length() - 1);
+    	}
     	return builder.toString();
     }
 

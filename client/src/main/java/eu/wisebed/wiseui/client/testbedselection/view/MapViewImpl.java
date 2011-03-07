@@ -28,7 +28,7 @@ public class MapViewImpl extends Composite implements MapView {
 	
     private static final int DEFAULT_ZOOM_LEVEL = 2;
 
-    private static final int ZOOM_LEVEL = 9;
+    private static final int ZOOM_LEVEL = 12;
 	
 	@UiField
 	SimplePanel mapContainer;

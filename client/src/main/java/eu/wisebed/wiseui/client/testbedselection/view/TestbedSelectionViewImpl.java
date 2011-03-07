@@ -9,7 +9,6 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.DeckPanel;
 import com.google.gwt.user.client.ui.HasEnabled;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -26,28 +25,21 @@ public class TestbedSelectionViewImpl extends Composite implements TestbedSelect
     @UiField
     SimplePanel configurationContainer;
     @UiField
-    DeckPanel contentDeckPanel;
+    SimplePanel contentPanel;
     @UiField
     ListBox contentListBox;
     @UiField
     Button reloadButton;
     @UiField
     Button loginButton;
-    private final SimplePanel rawWisemlContainer = new SimplePanel();
-    private final SimplePanel mapContainer = new SimplePanel();
-    private final SimplePanel detailContainer = new SimplePanel();
+
     private Presenter presenter;
 
     @Inject
     public TestbedSelectionViewImpl() {
         initWidget(uiBinder.createAndBindUi(this));
-        contentDeckPanel.add(mapContainer);
         contentListBox.addItem("Map");
-        
-        contentDeckPanel.add(detailContainer);
         contentListBox.addItem("Details");
-        
-        contentDeckPanel.add(rawWisemlContainer);
         contentListBox.addItem("Raw WiseML");
     }
     
@@ -72,18 +64,8 @@ public class TestbedSelectionViewImpl extends Composite implements TestbedSelect
     }
 
     @Override
-    public AcceptsOneWidget getRawWisemlContainer() {
-        return rawWisemlContainer;
-    }
-
-    @Override
-    public AcceptsOneWidget getDetailContainer() {
-        return detailContainer;
-    }
-
-    @Override
-    public AcceptsOneWidget getMapContainer() {
-        return mapContainer;
+    public AcceptsOneWidget getContentContainer() {
+        return contentPanel;
     }
 
     @Override
@@ -103,6 +85,6 @@ public class TestbedSelectionViewImpl extends Composite implements TestbedSelect
 
 	@Override
 	public void setContentSelection(Integer index) {
-		contentDeckPanel.showWidget(index);
+		contentListBox.setSelectedIndex(index);
 	}
 }

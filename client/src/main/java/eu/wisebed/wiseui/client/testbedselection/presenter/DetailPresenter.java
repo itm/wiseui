@@ -35,6 +35,7 @@ public class DetailPresenter implements Presenter, ConfigurationSelectedHandler,
         this.view = view;
         this.eventBus = eventBus;
         bind();
+        view.showMessage("Select a Testbed Configuration.");
     }
 
     private void bind() {
@@ -51,7 +52,7 @@ public class DetailPresenter implements Presenter, ConfigurationSelectedHandler,
 		});
     }
     
-    private void onNodeSelection(Node node) {
+    private void onNodeSelection(final Node node) {
     	view.getNodeIdHasText().setText(node.getId());
 		view.getNodePositionHasText().setText(node.getPosition().toString());
 		
@@ -81,6 +82,7 @@ public class DetailPresenter implements Presenter, ConfigurationSelectedHandler,
 
     public void onTestbedConfigurationSelected(final ConfigurationSelectedEvent event) {
         configuration = event.getConfiguration();
+        view.showMessage("Loading Testbed...");
     }
 
     public void onWisemlLoaded(final WisemlLoadedEvent event) {
@@ -91,7 +93,7 @@ public class DetailPresenter implements Presenter, ConfigurationSelectedHandler,
 
     public void onThrowable(final ThrowableEvent event) {
         if (event.getThrowable() instanceof WisemlException) {
-            
+            view.showMessage("Unable to load Testbed.");
         }
     }
 }

@@ -21,6 +21,8 @@ public interface DetailView extends IsWidget {
     HasText getNodeProgramDetailsHasText();
     
     HasText getNodeDescriptionHasText();
+    
+    void showMessage(String message);
 
     public interface Presenter {
 

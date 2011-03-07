@@ -49,7 +49,7 @@ public class DetailViewImpl extends Composite implements DetailView {
 	}
 
 	@Override
-	public void setTreeViewModel(TreeViewModel model) {
+	public void setTreeViewModel(final TreeViewModel model) {
 		final CellTree tree = createTree(model);
 		treeContainer.clear();
 		treeContainer.add(tree);
@@ -78,5 +78,11 @@ public class DetailViewImpl extends Composite implements DetailView {
 	@Override
 	public HasText getNodeDescriptionHasText() {
 		return descriptionLabel;
+	}
+
+	@Override
+	public void showMessage(String message) {
+		treeContainer.clear();
+		treeContainer.add(new Label(message));
 	}
 }
