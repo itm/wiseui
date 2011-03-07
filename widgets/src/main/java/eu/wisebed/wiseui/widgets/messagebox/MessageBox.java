@@ -1,10 +1,11 @@
-package eu.wisebed.wiseui.client.util;
+package eu.wisebed.wiseui.widgets.messagebox;
 
 import com.google.gwt.core.client.GWT;
 import com.google.inject.Inject;
-import eu.wisebed.wiseui.client.util.gin.UtilGinjector;
-import eu.wisebed.wiseui.client.util.view.MessageBoxView;
-import eu.wisebed.wiseui.client.util.view.MessageBoxView.Presenter;
+import eu.wisebed.wiseui.widgets.WidgetsClientBundle;
+import eu.wisebed.wiseui.widgets.gin.WidgetsGinjector;
+import eu.wisebed.wiseui.widgets.messagebox.MessageBoxView.Presenter;
+import eu.wisebed.wiseui.widgets.util.StacktraceUtil;
 
 public class MessageBox implements Presenter {
 
@@ -44,8 +45,8 @@ public class MessageBox implements Presenter {
         void onButtonClicked(final Button button);
     }
 
-    private static final UtilGinjector INJECTOR = GWT.create(UtilGinjector.class);
-    private static final UtilClientBundle BUNDLE = GWT.create(UtilClientBundle.class);
+    private static final WidgetsGinjector INJECTOR = GWT.create(WidgetsGinjector.class);
+    private static final WidgetsClientBundle BUNDLE = GWT.create(WidgetsClientBundle.class);
     private final MessageBoxView view;
     private Callback callback;
 

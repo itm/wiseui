@@ -41,6 +41,10 @@
             <groupId>eu.wisebed.wiseui</groupId>
             <artifactId>shared</artifactId>
         </dependency>
+        <dependency>
+            <groupId>eu.wisebed.wiseui</groupId>
+            <artifactId>widgets</artifactId>
+        </dependency>
         <!-- GWT dependencies (from central repo) -->
         <dependency>
             <groupId>com.google.gwt</groupId>
@@ -51,12 +55,6 @@
             <groupId>com.google.gwt</groupId>
             <artifactId>gwt-user</artifactId>
             <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.google.gwt</groupId>
-            <artifactId>gwt-dev</artifactId>
-            <version>2.2.0</version>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.google.gwt.inject</groupId>

@@ -36,6 +36,11 @@
                 <artifactId>server</artifactId>
                 <version>${project.version}</version>
             </dependency>
+            <dependency>
+                <groupId>eu.wisebed.wiseui</groupId>
+                <artifactId>widgets</artifactId>
+                <version>${project.version}</version>
+            </dependency>
             <!-- testbed-runtime dependencies -->
             <dependency>
                 <groupId>de.uniluebeck.itm</groupId>
@@ -69,13 +74,6 @@
                 <artifactId>gwt-user</artifactId>
                 <version>${gwt.version}</version>
                 <scope>provided</scope>
-            </dependency>
-            <dependency>
-                <groupId>com.google.gwt</groupId>
-                <artifactId>gwt-dev</artifactId>
-                <version>${gwt.version}</version>
-                <type>jar</type>
-                <scope>compile</scope>
             </dependency>
             <dependency>
                 <groupId>com.google.gwt.inject</groupId>
@@ -124,11 +122,6 @@
         <pluginManagement>
             <plugins>
                 <plugin>
-                    <groupId>org.codehaus.mojo</groupId>
-                    <artifactId>gwt-maven-plugin</artifactId>
-                    <version>2.1.0-1</version>
-                </plugin>
-                <plugin>
                     <artifactId>maven-war-plugin</artifactId>
                     <version>2.1.1</version>
                 </plugin>
@@ -136,6 +129,11 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
                     <version>2.3.2</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>gwt-maven-plugin</artifactId>
+                    <version>${gwt.version}</version>
                 </plugin>
             </plugins>
         </pluginManagement>
@@ -195,6 +193,15 @@
             </snapshots>
         </repository>
     </repositories>
+
+    <pluginRepositories>
+        <pluginRepository>
+            <id>gwtplatform.plugin</id>
+            <name>Gwtplatform custom plugin epository</name>
+            <url>http://maven.gwt-platform.googlecode.com/hg/</url>
+            <layout>default</layout>
+        </pluginRepository>
+    </pluginRepositories>
 
     <scm>
         <connection>scm:git:https://itm@github.com/itm/wiseui.git</connection>

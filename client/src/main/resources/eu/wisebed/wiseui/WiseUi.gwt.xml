@@ -22,6 +22,7 @@
     <!-- Other WiseUi Projects -->
     <inherits name="eu.wisebed.wiseui.WiseUiApi"/>
     <inherits name="eu.wisebed.wiseui.WiseUiShared"/>
+    <inherits name="eu.wisebed.wiseui.WiseUiWidgets"/>
 
     <!-- Specify the app entry point class.                         -->
     <entry-point class="eu.wisebed.wiseui.client.WiseUi"/>

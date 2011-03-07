@@ -23,7 +23,7 @@ import com.google.gwt.view.client.HasData;
 import com.google.inject.Inject;
 import eu.wisebed.wiseui.client.testbedselection.common.UrnPrefixInfo;
 import eu.wisebed.wiseui.client.testbedselection.common.UrnPrefixInfo.State;
-import eu.wisebed.wiseui.client.util.HasWidgetsDialogBox;
+import eu.wisebed.wiseui.widgets.HasWidgetsDialogBox;
 
 public class LoginDialogViewImpl extends HasWidgetsDialogBox implements LoginDialogView {
 

@@ -1,4 +1,4 @@
-package eu.wisebed.wiseui.client.util.view;
+package eu.wisebed.wiseui.widgets.messagebox;
 
 import com.google.gwt.user.client.ui.IsWidget;
 

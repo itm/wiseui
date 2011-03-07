@@ -1,4 +1,4 @@
-package eu.wisebed.wiseui.client.util;
+package eu.wisebed.wiseui.widgets.util;
 
 public class StacktraceUtil {
 
