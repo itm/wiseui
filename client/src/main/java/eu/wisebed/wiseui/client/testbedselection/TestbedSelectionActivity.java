@@ -120,6 +120,7 @@ public class TestbedSelectionActivity extends AbstractActivity implements Config
     	GWT.log("Init Testbed Raw WiseML Part");
     	final RawWisemlPresenter rawWisemlPresenter = injector.getRawWisemlPresenter();
     	final RawWisemlView rawWisemlView = injector.getRawWisemlView();
+    	rawWisemlView.setPresenter(rawWisemlPresenter);
     	testbedSelectionView.getContentContainer().setWidget(rawWisemlView);
     }
 

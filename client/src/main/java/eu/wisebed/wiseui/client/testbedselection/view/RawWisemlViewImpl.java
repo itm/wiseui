@@ -26,4 +26,9 @@ public class RawWisemlViewImpl extends Composite implements RawWisemlView {
 	public HasHTML getXmlHasHTML() {
 		return xml;
 	}
+
+	@Override
+	public void setPresenter(Presenter presenter) {
+		
+	}
 }
