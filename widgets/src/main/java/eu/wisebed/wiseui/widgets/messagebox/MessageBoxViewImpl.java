@@ -47,22 +47,27 @@ public class MessageBoxViewImpl extends HasWidgetsDialogBox implements MessageBo
         return this;
     }
 
+    @Override
     public void setPresenter(final Presenter presenter) {
         this.presenter = presenter;
     }
 
+    @Override
     public String getMessage() {
         return message.getText();
     }
 
+    @Override
     public void setMessage(final String text) {
         message.setText(text);
     }
 
+    @Override
     public void setMessageImageUrl(final String url) {
         image.setUrl(url);
     }
 
+    @Override
     public void setButtons(final String... buttons) {
         buttonTable.clear();
         int i = 0;
@@ -73,11 +78,13 @@ public class MessageBoxViewImpl extends HasWidgetsDialogBox implements MessageBo
         }
     }
 
+    @Override
     public void onClick(final ClickEvent event) {
         final Button button = (Button) event.getSource();
         presenter.buttonClicked(button.getText());
     }
 
+    @Override
     public void setCaption(final String title) {
         setText(title);
     }
@@ -88,10 +95,12 @@ public class MessageBoxViewImpl extends HasWidgetsDialogBox implements MessageBo
         center();
     }
 
+    @Override
     public void setStacktrace(final String stacktrace) {
         stacktraceLabel.setText(stacktrace);
     }
 
+    @Override
     public void setStacktracePanelVisible(final boolean isVisible) {
         stacktracePanel.setVisible(isVisible);
     }

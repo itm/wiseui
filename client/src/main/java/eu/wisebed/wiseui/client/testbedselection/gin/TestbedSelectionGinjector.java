@@ -25,7 +25,7 @@ public interface TestbedSelectionGinjector extends Ginjector {
     TestbedSelectionPresenter getTestbedSelectionPresenter();
 
     DetailPresenter getDetailPresenter();
-    
+
     MapPresenter getMapPresenter();
 
     LoginDialogPresenter getLoginDialogPresenter();
@@ -35,12 +35,12 @@ public interface TestbedSelectionGinjector extends Ginjector {
     ConfigurationView getConfigurationView();
 
     DetailView getDetailView();
-    
+
     MapView getMapView();
 
     LoginDialogView getLoginDialogView();
-    
-	RawWisemlPresenter getRawWisemlPresenter();
 
-	RawWisemlView getRawWisemlView();
+    RawWisemlPresenter getRawWisemlPresenter();
+
+    RawWisemlView getRawWisemlView();
 }

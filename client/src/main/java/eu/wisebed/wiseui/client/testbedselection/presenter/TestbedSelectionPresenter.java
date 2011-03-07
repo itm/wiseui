@@ -38,40 +38,46 @@ public class TestbedSelectionPresenter implements Presenter, ConfigurationSelect
         eventBus.addHandler(ThrowableEvent.TYPE, this);
     }
 
+    @Override
     public void reload() {
         view.getReloadEnabled().setEnabled(false);
         eventBus.fireEvent(new ConfigurationSelectedEvent(configuration));
     }
 
+    @Override
     public void showLoginDialog() {
         eventBus.fireEventFromSource(new ShowLoginDialogEvent(), this);
     }
 
+    @Override
     public void setPlace(final TestbedSelectionPlace place) {
     }
 
+    @Override
     public void onWisemlLoaded(final WisemlLoadedEvent event) {
         view.getReloadEnabled().setEnabled(true);
     }
 
+    @Override
     public void onTestbedConfigurationSelected(final ConfigurationSelectedEvent event) {
         configuration = event.getConfiguration();
         view.getLoginEnabled().setEnabled(true);
     }
 
+    @Override
     public void onThrowable(final ThrowableEvent event) {
         if (event.getThrowable() instanceof WisemlException) {
             final String title = "Unavailable Testbed " + configuration.getName();
-            final String message = "The Testbed "
-                    + configuration.getName()
-                    + " is not available.\n"
-                    + event.getThrowable().getMessage();
+            final String message =
+                    String.format("The Testbed %s is not available.\n%s",
+                    configuration.getName(),
+                    event.getThrowable().getMessage());
             MessageBox.error(title, message, event.getThrowable(), null);
         }
     }
 
-	@Override
-	public void setContentSelection(Integer index) {
-		view.setContentSelection(index);
-	}
+    @Override
+    public void setContentSelection(final Integer index) {
+        view.setContentSelection(index);
+    }
 }

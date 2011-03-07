@@ -19,105 +19,98 @@ import com.google.gwt.user.client.ui.Widget;
 import eu.wisebed.wiseui.shared.wiseml.Coordinate;
 
 public class MapViewImpl extends Composite implements MapView {
-	
-	private static MapViewImplUiBinder uiBinder = GWT
-			.create(MapViewImplUiBinder.class);
 
-	interface MapViewImplUiBinder extends UiBinder<Widget, MapViewImpl> {
-	}
-	
+    private static MapViewImplUiBinder uiBinder = GWT.create(MapViewImplUiBinder.class);
+
+    interface MapViewImplUiBinder extends UiBinder<Widget, MapViewImpl> {
+    }
     private static final int DEFAULT_ZOOM_LEVEL = 2;
-
     private static final int ZOOM_LEVEL = 9;
-	
-	@UiField
-	SimplePanel mapContainer;
-	
-	private MapWidget mapWidget;
-	
+    @UiField
+    SimplePanel mapContainer;
+    private MapWidget mapWidget;
     private Marker testbedMarker;
-    
     private InfoWindow testbedInfoWindow;
-    
     private Coordinate coordinate;
-    
     private String title;
-    
     private String description;
-	
-	public MapViewImpl() {
-		initWidget(uiBinder.createAndBindUi(this));
-		Maps.loadMapsApi("", "2", false, new Runnable() {
-			public void run() {
-				initMap();
-			}
-		});
-	}
 
-	public void setPresenter(final Presenter presenter) {
-		
-	}
-	
-	public void initMap() {
-		final Size size = Size.newInstance(100, 100);
-		final MapUIOptions options = MapUIOptions.newInstance(size);
-		options.setScrollwheel(true);
-		options.setMapTypeControl(true);
-		options.setHybridMapType(true);
-		options.setLargeMapControl3d(true);
-		options.setPhysicalMapType(true);
-		options.setSatelliteMapType(true);
-		options.setScaleControl(true);
-		options.setDoubleClick(true);
-		options.setNormalMapType(true);
-		options.setKeyboard(true);		
-		
-		mapWidget = new MapWidget();
-		mapWidget.setUI(options);
+    public MapViewImpl() {
+        initWidget(uiBinder.createAndBindUi(this));
+        Maps.loadMapsApi("", "2", false, new Runnable() {
+
+            @Override
+            public void run() {
+                initMap();
+            }
+        });
+    }
+
+    @Override
+    public void setPresenter(final Presenter presenter) {
+    }
+
+    public void initMap() {
+        final Size size = Size.newInstance(100, 100);
+        final MapUIOptions options = MapUIOptions.newInstance(size);
+        options.setScrollwheel(true);
+        options.setMapTypeControl(true);
+        options.setHybridMapType(true);
+        options.setLargeMapControl3d(true);
+        options.setPhysicalMapType(true);
+        options.setSatelliteMapType(true);
+        options.setScaleControl(true);
+        options.setDoubleClick(true);
+        options.setNormalMapType(true);
+        options.setKeyboard(true);
+
+        mapWidget = new MapWidget();
+        mapWidget.setUI(options);
         mapWidget.setSize("100%", "100%");
         mapWidget.setContinuousZoom(true);
         mapContainer.add(mapWidget);
-        
+
         updateMap();
-	}
-	
+    }
+
     private void updateMap() {
-    	if (testbedMarker != null && testbedInfoWindow != null) {
+        if (testbedMarker != null && testbedInfoWindow != null) {
             mapWidget.removeOverlay(testbedMarker);
             testbedInfoWindow.close();
         }
-    	
-    	LatLng center = LatLng.newInstance(0.0, 0.0);
-    	if (coordinate != null) {
-    		center = convert(coordinate);
-	        testbedMarker = new Marker(center);
-	        
-	        mapWidget.addOverlay(testbedMarker);
-	        mapWidget.setZoomLevel(ZOOM_LEVEL);
-	        
-	        final HTML htmlWidget = new HTML("<b>" + title + "</b><p>" + description + "</p>");
-	        testbedInfoWindow = mapWidget.getInfoWindow();
-	        testbedInfoWindow.open(testbedMarker, new InfoWindowContent(htmlWidget));
-    	} else {
-    		mapWidget.setZoomLevel(DEFAULT_ZOOM_LEVEL);
-    	}
+
+        LatLng center = LatLng.newInstance(0.0, 0.0);
+        if (coordinate != null) {
+            center = convert(coordinate);
+            testbedMarker = new Marker(center);
+
+            mapWidget.addOverlay(testbedMarker);
+            mapWidget.setZoomLevel(ZOOM_LEVEL);
+
+            final HTML htmlWidget = new HTML("<b>" + title + "</b><p>" + description + "</p>");
+            testbedInfoWindow = mapWidget.getInfoWindow();
+            testbedInfoWindow.open(testbedMarker, new InfoWindowContent(htmlWidget));
+        } else {
+            mapWidget.setZoomLevel(DEFAULT_ZOOM_LEVEL);
+        }
         mapWidget.setCenter(center);
         mapWidget.checkResizeAndCenter();
     }
 
-	public void setTestbedCoordinate(final Coordinate coordinate, final String title, final String description) {
-		this.coordinate = coordinate;
-		this.title = title;
-		this.description = description;
-		
-		if (mapWidget != null) {
-			updateMap();
-		}
-	}
+    @Override
+    public void setTestbedCoordinate(final Coordinate coordinate, final String title, final String description) {
+        this.coordinate = coordinate;
+        this.title = title;
+        this.description = description;
 
-	public static LatLng convert(final Coordinate coordinate) {
-		final double x = coordinate.getX();
+        if (mapWidget != null) {
+            updateMap();
+        }
+    }
+
+    public static LatLng convert(final Coordinate coordinate) {
+        final double x = coordinate.getX();
         final double y = coordinate.getY();
         return LatLng.newInstance(x, y);
-	}
+    }
 }

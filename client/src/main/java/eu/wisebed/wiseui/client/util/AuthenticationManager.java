@@ -12,9 +12,9 @@ import java.util.List;
 @Singleton
 public class AuthenticationManager {
 
-    private static final String separator = "&";
+    private static final String SEPERATOR = "&";
 
-    private static final String prefix = AuthenticationManager.class.getName() + separator;
+    private static final String PREFIX = AuthenticationManager.class.getName() + SEPERATOR;
 
     private final List<SecretAuthenticationKey> secretAuthenticationKeys = new ArrayList<SecretAuthenticationKey>();
 
@@ -29,7 +29,7 @@ public class AuthenticationManager {
         }
 
         for (final String name : Cookies.getCookieNames()) {
-            if (name.startsWith(prefix)) {
+            if (name.startsWith(PREFIX)) {
                 final String token = Cookies.getCookie(name);
                 secretAuthenticationKeys.add(deserialize(token));
             }
@@ -37,7 +37,7 @@ public class AuthenticationManager {
     }
 
     private SecretAuthenticationKey deserialize(final String token) {
-        final String[] tokens = token.split(separator, 3);
+        final String[] tokens = token.split(SEPERATOR, 3);
         final SecretAuthenticationKey key = new SecretAuthenticationKey();
         key.setUrnPrefix(tokens[0]);
         key.setUsername(tokens[1]);
@@ -47,9 +47,9 @@ public class AuthenticationManager {
 
     private String serialize(final SecretAuthenticationKey key) {
         final StringBuilder builder = new StringBuilder();
-        builder.append(AuthenticationManager.class.getName()).append(separator);
-        builder.append(key.getUrnPrefix()).append(separator);
-        builder.append(key.getUsername()).append(separator);
+        builder.append(AuthenticationManager.class.getName()).append(SEPERATOR);
+        builder.append(key.getUrnPrefix()).append(SEPERATOR);
+        builder.append(key.getUsername()).append(SEPERATOR);
         builder.append(key.getSecretAuthenticationKey());
         return builder.toString();
     }
@@ -57,7 +57,7 @@ public class AuthenticationManager {
     public void addSecretAuthenticationKey(final SecretAuthenticationKey key) {
         secretAuthenticationKeys.add(key);
         if (Cookies.isCookieEnabled()) {
-            final String name = prefix + key.getUrnPrefix();
+            final String name = PREFIX + key.getUrnPrefix();
             Cookies.setCookie(name, serialize(key), new Date());
         }
     }

@@ -1,5 +1,6 @@
 package eu.wisebed.wiseui.client.testbedselection.util;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 import eu.wisebed.wiseui.api.SNAAServiceAsync;
@@ -42,6 +43,7 @@ public class AuthenticationHelper implements AsyncCallback<SecretAuthenticationK
         this.authenticationService = authenticationService;
     }
 
+    @Override
     public void onSuccess(final SecretAuthenticationKey result) {
         callback.onSuccess(result);
         current.setState(State.SUCCESS);
@@ -49,8 +51,9 @@ public class AuthenticationHelper implements AsyncCallback<SecretAuthenticationK
         proceedNext();
     }
 
+    @Override
     public void onFailure(final Throwable caught) {
-        caught.printStackTrace();
+        GWT.log(caught.getMessage());
         current.setState(State.FAILED);
         callback.onStateChanged(current, State.FAILED);
         proceedNext();

@@ -24,6 +24,6 @@ public class StacktraceUtil {
             i++;
         }
 
-        return result.toString();
+        return result;
     }
 }

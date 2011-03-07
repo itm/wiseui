@@ -56,10 +56,12 @@ public class LoginDialogPresenter implements Presenter, ConfigurationSelectedHan
         eventBus.addHandler(ShowLoginDialogEvent.TYPE, this);
     }
 
+    @Override
     public void setPlace(final TestbedSelectionPlace place) {
 
     }
 
+    @Override
     public void submit() {
         view.getUsernameEnabled().setEnabled(false);
         view.getPasswordEnabled().setEnabled(false);
@@ -73,6 +75,7 @@ public class LoginDialogPresenter implements Presenter, ConfigurationSelectedHan
 
             private boolean hideAfterComplete = true;
 
+            @Override
             public void onStateChanged(final UrnPrefixInfo info, final State state) {
                 dataProvider.refresh();
                 if (state.equals(State.FAILED) || state.equals(State.SKIPPED)) {
@@ -80,11 +83,13 @@ public class LoginDialogPresenter implements Presenter, ConfigurationSelectedHan
                 }
             }
 
+            @Override
             public void onSuccess(SecretAuthenticationKey result) {
                 authenticationManager.addSecretAuthenticationKey(result);
                 eventBus.fireEventFromSource(new LoggedInEvent(result), this);
             }
 
+            @Override
             public void onFinish() {
                 view.getUsernameEnabled().setEnabled(true);
                 view.getPasswordEnabled().setEnabled(true);
@@ -96,11 +101,13 @@ public class LoginDialogPresenter implements Presenter, ConfigurationSelectedHan
         });
     }
 
+    @Override
     public void cancel() {
         //authenticationProvider.cancel();
         view.hide();
     }
 
+    @Override
     public void onTestbedConfigurationSelected(final ConfigurationSelectedEvent event) {
         configuration = event.getConfiguration();
         dataProvider.getList().clear();
@@ -111,6 +118,7 @@ public class LoginDialogPresenter implements Presenter, ConfigurationSelectedHan
         dataProvider.refresh();
     }
 
+    @Override
     public void onShowLoginDialog(final ShowLoginDialogEvent event) {
         view.show("Login to " + configuration.getName());
     }

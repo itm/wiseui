@@ -35,36 +35,39 @@ public class LoginDialogViewImpl extends HasWidgetsDialogBox implements LoginDia
     private class UrnPrefixInfoCell extends AbstractEditableCell<UrnPrefixInfo, Boolean> {
 
         public static final String FAILURE_COLOR = "#FFBBBB";
-
         public static final String SUCCESS_COLOR = "#BBFFBB";
-
         public static final String DEFAULT_COLOR = "#FFFFFF";
-
         private CheckboxCell cell = new CheckboxCell();
 
         public UrnPrefixInfoCell() {
             super("change", "keydown");
         }
-        
+
         @Override
-        public void onBrowserEvent(Context context, Element parent, final UrnPrefixInfo info, NativeEvent event, ValueUpdater<UrnPrefixInfo> valueUpdater) {
-        	final Element checkboxParent = parent.getFirstChildElement().getFirstChildElement().getFirstChildElement().getFirstChildElement();
+        public void onBrowserEvent(final Context context,
+                                   final Element parent,
+                                   final UrnPrefixInfo info,
+                                   final NativeEvent event,
+                                   final ValueUpdater<UrnPrefixInfo> valueUpdater) {
+            final Element checkboxParent = parent.getFirstChildElement().getFirstChildElement().getFirstChildElement().getFirstChildElement();
             cell.onBrowserEvent(context, checkboxParent, info.isChecked(), event, new ValueUpdater<Boolean>() {
+
+                @Override
                 public void update(final Boolean value) {
                     info.setChecked(value);
                 }
             });
-        	super.onBrowserEvent(context, parent, info, event, valueUpdater);
+            super.onBrowserEvent(context, parent, info, event, valueUpdater);
         }
 
-		@Override
-		public boolean isEditing(Context context, Element element, UrnPrefixInfo arg2) {
-			return true;
-		}
+        @Override
+        public boolean isEditing(final Context context, final Element element,final UrnPrefixInfo urnPrefixInfo) {
+            return true;
+        }
 
-		@Override
-		public void render(Context context, UrnPrefixInfo info, SafeHtmlBuilder sb) {
-			// Value can be null, so do a null check..
+        @Override
+        public void render(final Context context, final UrnPrefixInfo info, final SafeHtmlBuilder sb) {
+            // Value can be null, so do a null check..
             if (info == null) {
                 return;
             }
@@ -85,24 +88,18 @@ public class LoginDialogViewImpl extends HasWidgetsDialogBox implements LoginDia
             sb.appendHtmlConstant("</td></tr><tr><td>");
             sb.appendEscaped(info.getState().toString());
             sb.appendHtmlConstant("</td></tr></table>");
-		}
+        }
     }
-
     @UiField
     CellList<UrnPrefixInfo> urnPrefixList;
-
     @UiField
     TextBox username;
-
     @UiField
     PasswordTextBox password;
-
     @UiField
     Button submit;
-
     @UiField
     Button cancel;
-
     private Presenter presenter;
 
     @Inject
@@ -134,40 +131,49 @@ public class LoginDialogViewImpl extends HasWidgetsDialogBox implements LoginDia
         presenter.cancel();
     }
 
+    @Override
     public void setPresenter(final Presenter presenter) {
         this.presenter = presenter;
     }
 
+    @Override
     public HasText getUsernameText() {
         return username;
     }
 
+    @Override
     public HasText getPasswordText() {
         return password;
     }
 
+    @Override
     public HasEnabled getUsernameEnabled() {
         return username;
     }
 
+    @Override
     public HasEnabled getPasswordEnabled() {
         return password;
     }
 
+    @Override
     public void show(final String title) {
         setText(title);
         center();
         show();
     }
 
+    @Override
     public HasData<UrnPrefixInfo> getUrnPrefixList() {
         return urnPrefixList;
     }
 
+    @Override
     public HasEnabled getSubmitEnabled() {
         return submit;
     }
 
+    @Override
     public HasEnabled getCancelEnabled() {
         return cancel;
     }

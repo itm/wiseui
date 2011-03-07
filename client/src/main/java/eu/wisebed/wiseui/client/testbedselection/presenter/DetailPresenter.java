@@ -23,12 +23,9 @@ import eu.wisebed.wiseui.shared.wiseml.Setup;
 public class DetailPresenter implements Presenter, ConfigurationSelectedHandler, WisemlLoadedHandler, ThrowableHandler {
 
     private final DetailView view;
-
     private final EventBus eventBus;
-
     private TestbedConfiguration configuration;
-    
-    private SingleSelectionModel<Node> nodeSelectionModel = new SingleSelectionModel<Node>(); 
+    private SingleSelectionModel<Node> nodeSelectionModel = new SingleSelectionModel<Node>();
 
     @Inject
     public DetailPresenter(final EventBus eventBus, final DetailView view) {
@@ -42,56 +39,61 @@ public class DetailPresenter implements Presenter, ConfigurationSelectedHandler,
         eventBus.addHandler(WisemlLoadedEvent.TYPE, this);
         eventBus.addHandler(ThrowableEvent.TYPE, this);
         nodeSelectionModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
-        	
-			@Override
-			public void onSelectionChange(final SelectionChangeEvent event) {
-				final Node node = nodeSelectionModel.getSelectedObject();
-				onNodeSelection(node);
-			}
-		});
+
+            @Override
+            public void onSelectionChange(final SelectionChangeEvent event) {
+                final Node node = nodeSelectionModel.getSelectedObject();
+                onNodeSelection(node);
+            }
+        });
     }
-    
+
     private void onNodeSelection(Node node) {
-    	view.getNodeIdHasText().setText(node.getId());
-		view.getNodePositionHasText().setText(node.getPosition().toString());
-		
-		final Boolean isGateway = node.isGateway();
-		String gateway = "Unknown";
-		if (isGateway != null) {
-			gateway = isGateway ? "Yes" : "No";
-		}
-		view.getNodeGatewayHasText().setText(gateway);
-		
-		String description = node.getDescription();
-		if (description == null || description.isEmpty()) {
-			description = "No details available for this node.";
-		}
-		view.getNodeDescriptionHasText().setText(description);
-		
-		String programDetails = node.getProgramDetails();
-		if (programDetails == null || programDetails.isEmpty()) {
-			programDetails = "No program details available for this node.";
-		}
-		view.getNodeProgramDetailsHasText().setText(programDetails);
+        view.getNodeIdHasText().setText(node.getId());
+        view.getNodePositionHasText().setText(node.getPosition().toString());
+
+        final Boolean isGateway = node.isGateway();
+        String gateway = "Unknown";
+        if (isGateway != null) {
+            gateway = isGateway ? "Yes" : "No";
+        }
+        view.getNodeGatewayHasText().setText(gateway);
+
+        String description = node.getDescription();
+        if (description == null || description.isEmpty()) {
+            description = "No details available for this node.";
+        }
+        view.getNodeDescriptionHasText().setText(description);
+
+        String programDetails = node.getProgramDetails();
+        if (programDetails == null || programDetails.isEmpty()) {
+            programDetails = "No program details available for this node.";
+        }
+        view.getNodeProgramDetailsHasText().setText(programDetails);
     }
 
+    @Override
     public void setPlace(final TestbedSelectionPlace place) {
-
     }
 
+    @Override
     public void onTestbedConfigurationSelected(final ConfigurationSelectedEvent event) {
         configuration = event.getConfiguration();
     }
 
+    @Override
     public void onWisemlLoaded(final WisemlLoadedEvent event) {
         final Setup setup = event.getWiseml().getSetup();
-        if (null == setup) return;
+        if (null == setup) {
+            return;
+        }
         view.setTreeViewModel(new TestbedTreeViewModel(configuration, setup.getNode(), nodeSelectionModel));
     }
 
+    @Override
     public void onThrowable(final ThrowableEvent event) {
-        if (event.getThrowable() instanceof WisemlException) {
-            
-        }
+        // TODO SNO Cleanup
+//        if (event.getThrowable() instanceof WisemlException) {
+//        }
     }
 }
