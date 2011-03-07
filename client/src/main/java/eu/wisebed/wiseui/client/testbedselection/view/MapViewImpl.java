@@ -1,5 +1,8 @@
 package eu.wisebed.wiseui.client.testbedselection.view;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.maps.client.InfoWindow;
 import com.google.gwt.maps.client.InfoWindowContent;
@@ -9,6 +12,7 @@ import com.google.gwt.maps.client.Maps;
 import com.google.gwt.maps.client.geom.LatLng;
 import com.google.gwt.maps.client.geom.Size;
 import com.google.gwt.maps.client.overlay.Marker;
+import com.google.gwt.maps.client.overlay.Polygon;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
@@ -33,8 +37,10 @@ public class MapViewImpl extends Composite implements MapView {
 	private MapWidget mapWidget;
 
     private Marker testbedMarker;
+    private Polygon testbedShape;
     private InfoWindow testbedInfoWindow;
     private Coordinate coordinate;
+    private List<Coordinate> coordinates;
     private String title;
     private String description;
 
@@ -74,6 +80,7 @@ public class MapViewImpl extends Composite implements MapView {
         mapContainer.add(mapWidget);
 
         updateMap();
+        updatePolygon();
     }
 
     private void updateMap() {
@@ -99,6 +106,20 @@ public class MapViewImpl extends Composite implements MapView {
         mapWidget.setCenter(center);
         mapWidget.checkResizeAndCenter();
     }
+    
+    private void updatePolygon() {
+    	if (testbedShape != null) {
+    		mapWidget.removeOverlay(testbedShape);
+    	}
+    	
+    	final List<LatLng> latLngs = new ArrayList<LatLng>(coordinates.size() + 1);
+    	for (final Coordinate coordinate : coordinates) {
+    		latLngs.add(convert(coordinate));
+    	}
+    	latLngs.add(latLngs.get(0));
+    	testbedShape = new Polygon(latLngs.toArray(new LatLng[0]));
+    	mapWidget.addOverlay(testbedShape);
+    }
 
     @Override
     public void setTestbedCoordinate(final Coordinate coordinate, final String title, final String description) {
@@ -116,4 +137,13 @@ public class MapViewImpl extends Composite implements MapView {
         final double y = coordinate.getY();
         return LatLng.newInstance(x, y);
     }
+
+	@Override
+	public void setTestbedShape(List<Coordinate> coordinates) {
+		this.coordinates = coordinates;
+		
+		if (mapWidget != null) {
+			updatePolygon();
+		}
+	}
 }
