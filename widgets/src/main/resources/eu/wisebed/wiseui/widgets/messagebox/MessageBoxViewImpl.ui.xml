@@ -1,25 +1,25 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
              xmlns:g="urn:import:com.google.gwt.user.client.ui" xmlns:c="urn:import:com.google.gwt.user.cellview.client"
-             xmlns:my="urn:import:eu.wisebed.wiseui.client.util.view">
+             xmlns:my="urn:import:eu.wisebed.wiseui.widgets.messagebox">
     <ui:style>
         .buttonPanel {
-        width: 100%;
-        background-color: #d0e4f6;
+            width: 100%;
+            background-color: #d0e4f6;
         }
         .buttonTable {
-        margin-left: auto;
-        margin-right: 0px;
-        padding: 2px;
+            margin-left: auto;
+            margin-right: 0px;
+            padding: 2px;
         }
 
         .innerPadding {
-        width: 500px;
-        padding: 10px;
+            width: 500px;
+            padding: 10px;
         }
 
         .imagePadding {
-        margin-right: 10px;
+            margin-right: 10px;
         }
     </ui:style>
     <my:MessageBoxViewImpl>

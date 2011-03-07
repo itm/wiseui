@@ -1,4 +1,4 @@
-package eu.wisebed.wiseui.client.util;
+package eu.wisebed.wiseui.widgets;
 
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.HasWidgets;
