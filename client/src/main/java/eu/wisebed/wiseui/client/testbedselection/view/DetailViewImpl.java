@@ -12,82 +12,64 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.TreeViewModel;
 
 public class DetailViewImpl extends Composite implements DetailView {
+	
+	private static DetailViewImplUiBinder uiBinder = GWT
+			.create(DetailViewImplUiBinder.class);
 
-    private static DetailViewImplUiBinder uiBinder = GWT.create(DetailViewImplUiBinder.class);
+	interface DetailViewImplUiBinder extends UiBinder<Widget, DetailViewImpl> {
+	}
 
-    interface DetailViewImplUiBinder extends UiBinder<Widget, DetailViewImpl> {
-    }
-    @UiField
-    SimplePanel treeContainer;
-    @UiField
-    Label idLabel;
-    @UiField
-    Label positionLabel;
-    @UiField
-    Label gatewayLabel;
-    @UiField
-    Label descriptionLabel;
-    @UiField
-    Label programDetailsLabel;
+	@UiField
+	SimplePanel treeContainer;
+	
+	@UiField
+	Label idLabel;
+	@UiField
+	Label positionLabel;
+	@UiField
+	Label gatewayLabel;
+	@UiField
+	Label descriptionLabel;
+	@UiField
+	Label programDetailsLabel;
 
-    public DetailViewImpl() {
-        initWidget(uiBinder.createAndBindUi(this));
-    }
+	public DetailViewImpl() {
+		initWidget(uiBinder.createAndBindUi(this));
+	}
 
-    @Override
-    public void setPresenter(final Presenter presenter) {
-    }
+	public void setPresenter(final Presenter presenter) {
 
-    private CellTree createTree(final TreeViewModel model) {
-        final CellTree.Resources res = GWT.create(CellTree.BasicResources.class);
-        final CellTree cellTree = new CellTree(model, null, res);
-        cellTree.setAnimationEnabled(true);
-        return cellTree;
-    }
+	}
 
-    @Override
-    public void setTreeViewModel(TreeViewModel model) {
-        final CellTree tree = createTree(model);
-        treeContainer.clear();
-        treeContainer.add(tree);
-    }
+	private CellTree createTree(final TreeViewModel model) {
+		final CellTree.Resources res = GWT.create(CellTree.BasicResources.class);
+		final CellTree cellTree = new CellTree(model, null, res);
+		cellTree.setAnimationEnabled(true);
+		return cellTree;
+	}
 
-<<<<<<< HEAD
-    @Override
-    public HasText getNodeIdHasText() {
-        return idLabel;
-    }
-=======
 	@Override
 	public void setTreeViewModel(final TreeViewModel model) {
 		final CellTree tree = createTree(model);
 		treeContainer.clear();
 		treeContainer.add(tree);
 	}
->>>>>>> c1e550e1c2d9d78cf7e0f0e785c229680f9ffe85
 
-    @Override
-    public HasText getNodePositionHasText() {
-        return positionLabel;
-    }
+	@Override
+	public HasText getNodeIdHasText() {
+		return idLabel;
+	}
 
-    @Override
-    public HasText getNodeGatewayHasText() {
-        return gatewayLabel;
-    }
+	@Override
+	public HasText getNodePositionHasText() {
+		return positionLabel;
+	}
 
-    @Override
-    public HasText getNodeProgramDetailsHasText() {
-        return programDetailsLabel;
-    }
+	@Override
+	public HasText getNodeGatewayHasText() {
+		return gatewayLabel;
+	}
 
-<<<<<<< HEAD
-    @Override
-    public HasText getNodeDescriptionHasText() {
-        return descriptionLabel;
-    }
-}
-=======
 	@Override
 	public HasText getNodeProgramDetailsHasText() {
 		return programDetailsLabel;
@@ -104,4 +86,3 @@ public class DetailViewImpl extends Composite implements DetailView {
 		treeContainer.add(new Label(message));
 	}
 }
->>>>>>> c1e550e1c2d9d78cf7e0f0e785c229680f9ffe85

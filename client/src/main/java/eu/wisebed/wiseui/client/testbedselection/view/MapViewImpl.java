@@ -22,23 +22,16 @@ public class MapViewImpl extends Composite implements MapView {
 
     private static MapViewImplUiBinder uiBinder = GWT.create(MapViewImplUiBinder.class);
 
-<<<<<<< HEAD
     interface MapViewImplUiBinder extends UiBinder<Widget, MapViewImpl> {
     }
     private static final int DEFAULT_ZOOM_LEVEL = 2;
-    private static final int ZOOM_LEVEL = 9;
-    @UiField
-    SimplePanel mapContainer;
-    private MapWidget mapWidget;
-=======
     private static final int ZOOM_LEVEL = 12;
-	
+
 	@UiField
 	SimplePanel mapContainer;
-	
+
 	private MapWidget mapWidget;
-	
->>>>>>> c1e550e1c2d9d78cf7e0f0e785c229680f9ffe85
+
     private Marker testbedMarker;
     private InfoWindow testbedInfoWindow;
     private Coordinate coordinate;

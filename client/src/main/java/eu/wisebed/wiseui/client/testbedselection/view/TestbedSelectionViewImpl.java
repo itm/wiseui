@@ -21,6 +21,7 @@ public class TestbedSelectionViewImpl extends Composite implements TestbedSelect
 
     interface TestbedSelectionViewImplUiBinder extends UiBinder<Widget, TestbedSelectionViewImpl> {
     }
+
     @UiField
     SimplePanel configurationContainer;
     @UiField
@@ -38,21 +39,13 @@ public class TestbedSelectionViewImpl extends Composite implements TestbedSelect
     public TestbedSelectionViewImpl() {
         initWidget(uiBinder.createAndBindUi(this));
         contentListBox.addItem("Map");
-<<<<<<< HEAD
-
-        contentDeckPanel.add(detailContainer);
         contentListBox.addItem("Details");
-
-        contentDeckPanel.add(rawWisemlContainer);
-=======
-        contentListBox.addItem("Details");
->>>>>>> c1e550e1c2d9d78cf7e0f0e785c229680f9ffe85
         contentListBox.addItem("Raw WiseML");
     }
-
+    
     @UiHandler("contentListBox")
     public void handleListBoxChange(final ChangeEvent event) {
-        presenter.setContentSelection(contentListBox.getSelectedIndex());
+    	presenter.setContentSelection(contentListBox.getSelectedIndex());
     }
 
     @UiHandler("reloadButton")
@@ -85,20 +78,13 @@ public class TestbedSelectionViewImpl extends Composite implements TestbedSelect
         return reloadButton;
     }
 
-    @Override
-    public AcceptsOneWidget getConfigurationContainer() {
-        return configurationContainer;
-    }
+	@Override
+	public AcceptsOneWidget getConfigurationContainer() {
+		return configurationContainer;
+	}
 
-<<<<<<< HEAD
-    @Override
-    public void setContentSelection(final Integer index) {
-        contentDeckPanel.showWidget(index);
-    }
-=======
 	@Override
 	public void setContentSelection(Integer index) {
 		contentListBox.setSelectedIndex(index);
 	}
->>>>>>> c1e550e1c2d9d78cf7e0f0e785c229680f9ffe85
 }

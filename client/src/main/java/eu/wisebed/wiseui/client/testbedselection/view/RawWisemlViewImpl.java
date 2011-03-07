@@ -12,14 +12,6 @@ public class RawWisemlViewImpl extends Composite implements RawWisemlView {
 
     private static RawWisemlViewImplUiBinder uiBinder = GWT.create(RawWisemlViewImplUiBinder.class);
 
-<<<<<<< HEAD
-    interface RawWisemlViewImplUiBinder extends UiBinder<Widget, RawWisemlViewImpl> {
-    }
-
-    public RawWisemlViewImpl() {
-        initWidget(uiBinder.createAndBindUi(this));
-    }
-=======
 	interface RawWisemlViewImplUiBinder extends UiBinder<Widget, RawWisemlViewImpl> {
 	}
 	
@@ -34,5 +26,4 @@ public class RawWisemlViewImpl extends Composite implements RawWisemlView {
 	public HasHTML getXmlHasHTML() {
 		return xml;
 	}
->>>>>>> c1e550e1c2d9d78cf7e0f0e785c229680f9ffe85
 }
