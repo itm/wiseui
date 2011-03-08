@@ -38,18 +38,18 @@ public class RawWisemlPresenter implements Presenter, ConfigurationSelectedHandl
 	}
 	
 	@Override
-	public void onTestbedConfigurationSelected(ConfigurationSelectedEvent event) {
+	public void onTestbedConfigurationSelected(final ConfigurationSelectedEvent event) {
 		configuration = event.getConfiguration();
 		view.getXmlHasHTML().setText("Loading WiseML...");
 		sessionManagementService.getWisemlAsXml(configuration.getSessionmanagementEndointUrl(), new AsyncCallback<String>() {
 			
 			@Override
-			public void onSuccess(String result) {
+			public void onSuccess(final String result) {
 				view.getXmlHasHTML().setHTML("<pre>" + SafeHtmlUtils.htmlEscape(result) + "</pre>");
 			}
 			
 			@Override
-			public void onFailure(Throwable caught) {
+			public void onFailure(final Throwable caught) {
 				view.getXmlHasHTML().setText("Unable to load WiseML.");
 			}
 		});

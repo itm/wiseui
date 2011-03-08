@@ -84,7 +84,7 @@ public class LoginDialogPresenter implements Presenter, ConfigurationSelectedHan
             }
 
             @Override
-            public void onSuccess(SecretAuthenticationKey result) {
+            public void onSuccess(final SecretAuthenticationKey result) {
                 authenticationManager.addSecretAuthenticationKey(result);
                 eventBus.fireEventFromSource(new LoggedInEvent(result), this);
             }

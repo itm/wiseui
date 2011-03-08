@@ -1,60 +1,34 @@
 package eu.wisebed.wiseui.client.testbedselection;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import com.google.common.base.Joiner;
-import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceTokenizer;
 
-public class TestbedSelectionPlace extends Place {
+import eu.wisebed.wiseui.client.util.Ints2;
+import eu.wisebed.wiseui.client.util.KeyValuePlace;
+import eu.wisebed.wiseui.client.util.Objects2;
 
-	private static final String SEPARATOR = "&";
-	
-	private final Map<String, String> variables = new HashMap<String, String>();
+public class TestbedSelectionPlace extends KeyValuePlace {
 
     public TestbedSelectionPlace() {
     	this(null, 0);
     }
 
     public TestbedSelectionPlace(final Integer selection, final Integer view) {
-    	set("selection", selection);
-        set("view", view);
+    	set("selection", Objects2.nullOrToString(selection));
+        set("view", Objects2.nullOrToString(view));
     }
     
-    public String get(final String key) {
-    	return variables.get(key);
-    }
-    
-    public void set(final String key, final Object value) {
-    	if (value != null) {
-    		variables.put(key, value.toString());
-    	}
+    public TestbedSelectionPlace(final String token) {
+    	this(null, 0);
+    	parse(token);
     }
 
     public Integer getSelection() {
-    	final String selection = get("selection");
-        return selection == null ? null : Integer.parseInt(selection);
+        return Ints2.nullOrValueOf(get("selection"));
     }
     
     public Integer getView() {
-		return Integer.parseInt(get("view"));
+		return Ints2.nullOrValueOf(get("view"));
 	}
-    
-    public static TestbedSelectionPlace parse(final String token) {
-    	final TestbedSelectionPlace place = new TestbedSelectionPlace();
-    	final String[] variables = token.split(SEPARATOR);
-    	for (final String variable : variables) {
-    		final String[] tokens = variable.split("=");
-    		place.set(tokens[0], tokens[1]);
-    	}
-    	return place;
-    }
-    
-    @Override
-    public String toString() {
-    	return Joiner.on(SEPARATOR).withKeyValueSeparator("=").join(variables);
-    }
 
     public static class Tokenizer implements PlaceTokenizer<TestbedSelectionPlace> {
 
@@ -63,7 +37,7 @@ public class TestbedSelectionPlace extends Place {
         }
 
         public TestbedSelectionPlace getPlace(final String token) {
-        	return TestbedSelectionPlace.parse(token);
+        	return new TestbedSelectionPlace(token);
         }
     }
 }
