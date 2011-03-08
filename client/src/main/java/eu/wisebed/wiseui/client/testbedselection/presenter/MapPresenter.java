@@ -4,7 +4,6 @@ import java.util.List;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
-import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.shared.EventBus;
 import com.google.inject.Inject;
 
@@ -46,28 +45,19 @@ public class MapPresenter implements MapView.Presenter, WisemlLoadedHandler, Con
     public void onWisemlLoaded(final WisemlLoadedEvent event) {
         final Setup setup = event.getWiseml().getSetup();
         view.setTestbedCoordinate(setup.getOrigin(), configuration.getName(), setup.getDescription());
-        Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
-			
+        final List<Coordinate> coordinates = Lists.transform(setup.getNode(), new Function<Node, Coordinate>() {
 			@Override
-			public void execute() {
-				final List<Node> nodes = setup.getNode();
-				if (nodes.size() < 3) {
-					return;
-				}
-				final List<Coordinate> coordinates = Lists.transform(nodes, new Function<Node, Coordinate>() {
-					@Override
-					public Coordinate apply(Node input) {
-						return input.getPosition();
-					}
-				});
-				view.setTestbedShape(QuickHull.calcuate(coordinates));
+			public Coordinate apply(final Node input) {
+				return input.getPosition();
 			}
 		});
+		view.setTestbedShape(QuickHull.calcuate(coordinates));
     }
 
     @Override
     public void onTestbedConfigurationSelected(final ConfigurationSelectedEvent event) {
         this.configuration = event.getConfiguration();
         view.setTestbedCoordinate(null, null, null);
+        view.setTestbedShape(null);
     }
 }

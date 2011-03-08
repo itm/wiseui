@@ -3,6 +3,7 @@ package eu.wisebed.wiseui.client.testbedselection;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.google.common.base.Joiner;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceTokenizer;
 
@@ -17,7 +18,7 @@ public class TestbedSelectionPlace extends Place {
     }
 
     public TestbedSelectionPlace(final Integer selection, final Integer view) {
-        set("selection", selection);
+    	set("selection", selection);
         set("view", view);
     }
     
@@ -26,7 +27,9 @@ public class TestbedSelectionPlace extends Place {
     }
     
     public void set(final String key, final Object value) {
-    	variables.put(key, value == null ? null : value.toString());
+    	if (value != null) {
+    		variables.put(key, value.toString());
+    	}
     }
 
     public Integer getSelection() {
@@ -50,17 +53,7 @@ public class TestbedSelectionPlace extends Place {
     
     @Override
     public String toString() {
-    	final StringBuilder builder = new StringBuilder();
-    	for (final String key : variables.keySet()) {
-    		final String value = variables.get(key);
-    		if (value != null) {
-    			builder.append(key).append("=").append(value).append(SEPARATOR);
-    		}
-    	}
-    	if (builder.length() > 0) {
-    		builder.deleteCharAt(builder.length() - 1);
-    	}
-    	return builder.toString();
+    	return Joiner.on(SEPARATOR).withKeyValueSeparator("=").join(variables);
     }
 
     public static class Tokenizer implements PlaceTokenizer<TestbedSelectionPlace> {

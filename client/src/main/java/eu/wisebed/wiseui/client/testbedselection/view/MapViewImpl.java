@@ -120,7 +120,7 @@ public class MapViewImpl extends Composite implements MapView {
     	
     	final List<LatLng> latLngs = new ArrayList<LatLng>(Lists.transform(coordinates, new Function<Coordinate, LatLng>() {
 			@Override
-			public LatLng apply(Coordinate input) {
+			public LatLng apply(final Coordinate input) {
 				return convert(input);
 			}
 		}));
@@ -147,7 +147,7 @@ public class MapViewImpl extends Composite implements MapView {
     }
 
 	@Override
-	public void setTestbedShape(List<Coordinate> coordinates) {
+	public void setTestbedShape(final List<Coordinate> coordinates) {
 		this.coordinates = coordinates;
 		
 		if (mapWidget != null) {
