@@ -13,6 +13,7 @@ import com.google.gwt.maps.client.MapUIOptions;
 import com.google.gwt.maps.client.MapWidget;
 import com.google.gwt.maps.client.Maps;
 import com.google.gwt.maps.client.control.OverviewMapControl;
+import com.google.gwt.maps.client.event.MarkerClickHandler;
 import com.google.gwt.maps.client.geom.LatLng;
 import com.google.gwt.maps.client.geom.Size;
 import com.google.gwt.maps.client.overlay.Marker;
@@ -82,6 +83,7 @@ public class MapViewImpl extends Composite implements MapView {
         mapWidget.addControl(new OverviewMapControl());
         mapWidget.setContinuousZoom(true);
         mapWidget.setSize("100%", "100%");
+        mapWidget.setZoomLevel(DEFAULT_ZOOM_LEVEL);
         mapContainer.add(mapWidget);
 
         markerManager.ready(mapWidget);
@@ -103,14 +105,21 @@ public class MapViewImpl extends Composite implements MapView {
         LatLng center = LatLng.newInstance(0.0, 0.0);
         if (coordinate != null) {
             center = convert(coordinate);
+            final HTML htmlWidget = new HTML("<b>" + title + "</b><p>" + description + "</p>");
+            final InfoWindowContent testbedInfoWindowContent = new InfoWindowContent(htmlWidget);
             testbedMarker = new Marker(center);
+            testbedMarker.addMarkerClickHandler(new MarkerClickHandler() {
+				@Override
+				public void onClick(MarkerClickEvent event) {
+					testbedInfoWindow.open(testbedMarker, testbedInfoWindowContent);
+				}
+            });
 
             mapWidget.addOverlay(testbedMarker);
             mapWidget.setZoomLevel(ZOOM_LEVEL);
 
-            final HTML htmlWidget = new HTML("<b>" + title + "</b><p>" + description + "</p>");
             testbedInfoWindow = mapWidget.getInfoWindow();
-            testbedInfoWindow.open(testbedMarker, new InfoWindowContent(htmlWidget));
+            testbedInfoWindow.open(testbedMarker, testbedInfoWindowContent);
         } else {
             mapWidget.setZoomLevel(DEFAULT_ZOOM_LEVEL);
         }
