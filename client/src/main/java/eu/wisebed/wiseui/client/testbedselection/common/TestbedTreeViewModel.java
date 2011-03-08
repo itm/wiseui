@@ -126,5 +126,4 @@ public class TestbedTreeViewModel implements TreeViewModel {
 	public boolean isLeaf(final Object value) {
 		return value instanceof Capability;
 	}
-
 }

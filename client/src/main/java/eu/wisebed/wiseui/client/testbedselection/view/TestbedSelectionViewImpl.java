@@ -84,7 +84,7 @@ public class TestbedSelectionViewImpl extends Composite implements TestbedSelect
 	}
 
 	@Override
-	public void setContentSelection(Integer index) {
+	public void setContentSelection(final Integer index) {
 		contentListBox.setSelectedIndex(index);
 	}
 }

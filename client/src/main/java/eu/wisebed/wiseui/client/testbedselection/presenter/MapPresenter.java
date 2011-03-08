@@ -22,6 +22,7 @@ import eu.wisebed.wiseui.shared.wiseml.Setup;
 
 public class MapPresenter implements MapView.Presenter, WisemlLoadedHandler, ConfigurationSelectedHandler {
 
+    private final static int NO_OF_NODES = 3;
     private final EventBus eventBus;
     private final MapView view;
     private TestbedConfiguration configuration;
@@ -51,12 +52,12 @@ public class MapPresenter implements MapView.Presenter, WisemlLoadedHandler, Con
 			@Override
 			public void execute() {
 				final List<Node> nodes = setup.getNode();
-				if (nodes.size() < 3) {
+				if (nodes.size() < NO_OF_NODES) {
 					return;
 				}
 				final List<Coordinate> coordinates = Lists.transform(nodes, new Function<Node, Coordinate>() {
 					@Override
-					public Coordinate apply(Node input) {
+					public Coordinate apply(final Node input) {
 						return input.getPosition();
 					}
 				});
