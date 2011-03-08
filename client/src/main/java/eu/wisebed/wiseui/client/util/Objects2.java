@@ -7,7 +7,7 @@ package eu.wisebed.wiseui.client.util;
  */
 public class Objects2 {
 
-    public static String nullOrToString(Object value) {
+    public static String nullOrToString(final Object value) {
     	return value == null ? null : value.toString();
     }
 }

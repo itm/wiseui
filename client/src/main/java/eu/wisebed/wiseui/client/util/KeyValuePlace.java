@@ -7,6 +7,7 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Predicates;
 import com.google.common.collect.Maps;
 import com.google.gwt.place.shared.Place;
+import com.google.gwt.thirdparty.guava.common.base.Splitter;
 
 
 /**
@@ -53,8 +54,8 @@ public class KeyValuePlace extends Place {
 	}
 	
     public void parse(final String token) {
-    	final String[] variables = token.split(joiner);
-    	for (final String variable : variables) {
+    	final Iterable<String> vars = Splitter.on(joiner).split(token);
+    	for (final String variable : vars) {
     		final String[] tokens = variable.split(separator);
     		if (tokens.length == 2) {
     			set(tokens[0], tokens[1]);
@@ -64,7 +65,7 @@ public class KeyValuePlace extends Place {
     
     @Override
     public String toString() {
-    	final Map<String, String> variables = Maps.filterValues(this.variables, Predicates.notNull());
-    	return Joiner.on(joiner).withKeyValueSeparator(separator).join(variables);
+    	final Map<String, String> vars = Maps.filterValues(this.variables, Predicates.notNull());
+    	return Joiner.on(joiner).withKeyValueSeparator(separator).join(vars);
     }
 }
