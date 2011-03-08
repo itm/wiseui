@@ -24,6 +24,7 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
+import eu.wisebed.wiseui.client.util.AsyncManager;
 import eu.wisebed.wiseui.shared.wiseml.Coordinate;
 
 public class MapViewImpl extends Composite implements MapView {
@@ -44,14 +45,12 @@ public class MapViewImpl extends Composite implements MapView {
     private Polygon testbedShape;
     private InfoWindow testbedInfoWindow;
     private Coordinate coordinate;
-    private List<Coordinate> coordinates;
-    private String title;
-    private String description;
+    private final AsyncManager<MapWidget> markerManager = new AsyncManager<MapWidget>();
+    private final AsyncManager<MapWidget> polygonManager = new AsyncManager<MapWidget>();
 
     public MapViewImpl() {
         initWidget(uiBinder.createAndBindUi(this));
         Maps.loadMapsApi("", "2", false, new Runnable() {
-
             @Override
             public void run() {
                 initMap();
@@ -81,16 +80,22 @@ public class MapViewImpl extends Composite implements MapView {
         mapWidget.setUI(options);
         mapWidget.setCurrentMapType(MapType.getHybridMap());
         mapWidget.addControl(new OverviewMapControl());
-        mapWidget.setSize("100%", "100%");
         mapWidget.setContinuousZoom(true);
+        mapWidget.setSize("100%", "100%");
         mapContainer.add(mapWidget);
 
-        updateMap();
-        updatePolygon();
+        markerManager.ready(mapWidget);
+        polygonManager.ready(mapWidget);
     }
-
-    private void updateMap() {
-        if (testbedMarker != null && testbedInfoWindow != null) {
+    
+    public static LatLng convert(final Coordinate coordinate) {
+        final double x = coordinate.getX();
+        final double y = coordinate.getY();
+        return LatLng.newInstance(x, y);
+    }
+    
+    private void drawTestbedCoordinate(final MapWidget mapWidget, final Coordinate coordinate, final String title, final String description) {
+    	if (testbedMarker != null && testbedInfoWindow != null) {
             mapWidget.removeOverlay(testbedMarker);
             testbedInfoWindow.close();
         }
@@ -112,8 +117,19 @@ public class MapViewImpl extends Composite implements MapView {
         mapWidget.setCenter(center);
         mapWidget.checkResizeAndCenter();
     }
+
+    @Override
+    public void setTestbedCoordinate(final Coordinate coordinate, final String title, final String description) {
+    	this.coordinate = coordinate;
+        markerManager.setHandler(new AsyncManager.Handler<MapWidget>() {
+			@Override
+			public void execute(final MapWidget mapWidget) {
+				drawTestbedCoordinate(mapWidget, coordinate, title, description);
+			}
+		});
+    }
     
-    private void updatePolygon() {
+    private void drawTestbedShape(final MapWidget mapWidget, final List<Coordinate> coordinates) {
     	if (testbedShape != null) {
     		mapWidget.removeOverlay(testbedShape);
     	}
@@ -136,29 +152,13 @@ public class MapViewImpl extends Composite implements MapView {
     	mapWidget.addOverlay(testbedShape);
     }
 
-    @Override
-    public void setTestbedCoordinate(final Coordinate coordinate, final String title, final String description) {
-        this.coordinate = coordinate;
-        this.title = title;
-        this.description = description;
-
-        if (mapWidget != null) {
-            updateMap();
-        }
-    }
-
-    public static LatLng convert(final Coordinate coordinate) {
-        final double x = coordinate.getX();
-        final double y = coordinate.getY();
-        return LatLng.newInstance(x, y);
-    }
-
 	@Override
 	public void setTestbedShape(final List<Coordinate> coordinates) {
-		this.coordinates = coordinates;
-		
-		if (mapWidget != null) {
-			updatePolygon();
-		}
+		polygonManager.setHandler(new AsyncManager.Handler<MapWidget>() {
+			@Override
+			public void execute(final MapWidget mapWidget) {
+				drawTestbedShape(mapWidget, coordinates);
+			}
+		});
 	}
 }
