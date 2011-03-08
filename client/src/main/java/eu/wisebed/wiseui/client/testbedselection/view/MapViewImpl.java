@@ -12,6 +12,7 @@ import com.google.gwt.maps.client.MapType;
 import com.google.gwt.maps.client.MapUIOptions;
 import com.google.gwt.maps.client.MapWidget;
 import com.google.gwt.maps.client.Maps;
+import com.google.gwt.maps.client.control.OverviewMapControl;
 import com.google.gwt.maps.client.geom.LatLng;
 import com.google.gwt.maps.client.geom.Size;
 import com.google.gwt.maps.client.overlay.Marker;
@@ -79,6 +80,7 @@ public class MapViewImpl extends Composite implements MapView {
         mapWidget = new MapWidget();
         mapWidget.setUI(options);
         mapWidget.setCurrentMapType(MapType.getHybridMap());
+        mapWidget.addControl(new OverviewMapControl());
         mapWidget.setSize("100%", "100%");
         mapWidget.setContinuousZoom(true);
         mapContainer.add(mapWidget);
