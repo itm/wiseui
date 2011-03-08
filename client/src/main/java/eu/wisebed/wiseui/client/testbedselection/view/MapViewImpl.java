@@ -120,6 +120,10 @@ public class MapViewImpl extends Composite implements MapView {
     	final List<LatLng> latLngs = new ArrayList<LatLng>(Lists.transform(coordinates, new Function<Coordinate, LatLng>() {
 			@Override
 			public LatLng apply(final Coordinate input) {
+				final double x = input.getX() / 111120 + coordinate.getX();
+				final double y = input.getY() / 111120 * Math.cos(x) + coordinate.getY();
+				input.setX(x);
+				input.setY(y);
 				return convert(input);
 			}
 		}));
