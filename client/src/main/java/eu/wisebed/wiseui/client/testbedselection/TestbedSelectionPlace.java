@@ -21,11 +21,11 @@ public class TestbedSelectionPlace extends Place {
         set("view", view);
     }
     
-    public String get(String key) {
+    public String get(final String key) {
     	return variables.get(key);
     }
     
-    public void set(String key, Object value) {
+    public void set(final String key, final Object value) {
     	variables.put(key, value == null ? null : value.toString());
     }
 
@@ -38,7 +38,7 @@ public class TestbedSelectionPlace extends Place {
 		return Integer.parseInt(get("view"));
 	}
     
-    public static TestbedSelectionPlace parse(String token) {
+    public static TestbedSelectionPlace parse(final String token) {
     	final TestbedSelectionPlace place = new TestbedSelectionPlace();
     	final String[] variables = token.split(SEPARATOR);
     	for (final String variable : variables) {
@@ -52,7 +52,7 @@ public class TestbedSelectionPlace extends Place {
     public String toString() {
     	final StringBuilder builder = new StringBuilder();
     	for (final String key : variables.keySet()) {
-    		String value = variables.get(key);
+    		final String value = variables.get(key);
     		if (value != null) {
     			builder.append(key).append("=").append(value).append(SEPARATOR);
     		}

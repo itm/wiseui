@@ -7,34 +7,45 @@ import java.util.Vector;
 
 import eu.wisebed.wiseui.shared.wiseml.Coordinate;
 
+
+/**
+ * An implementation of the quick hull algorithm that is used to calculate the convex hull of a amount of points.
+ * This code was taken from http://source.concord.org/swing/ and optimized for GWT.
+ * 
+ * @author Malte Legenhausen
+ */
 public class QuickHull {
 	
-	final List<Coordinate> hullCoordinates = new Vector<Coordinate>();
+	private static final int MAX_STEPS = 200;
+	
+	private static final int MIN_POINTS = 3;
+	
+	private final List<Coordinate> hullCoordinates = new Vector<Coordinate>();
 
 	private QuickHull(final List<Coordinate> originalCoordinates) {
-		qhull(originalCoordinates.toArray(new Coordinate[0]), 0, 0);
+		quickHull(originalCoordinates.toArray(new Coordinate[0]), 0, 0);
 		reorderCoordinates(hullCoordinates);
 	}
 	
-	public static List<Coordinate> calcuate(List<Coordinate> coordinates) {
+	public static List<Coordinate> calcuate(final List<Coordinate> coordinates) {
 		return new QuickHull(coordinates).getHullCoordinates();
 	}
 
 	/**
-	 * Returns convex hull Coordinates as {@link Vector}.
+	 * Returns convex hull Coordinates.
 	 * 
-	 * @return convex hull Coordinates as {@link Vector}.
+	 * @return convex hull Coordinates.
 	 */
 	public List<Coordinate> getHullCoordinates() {
 		return hullCoordinates;
 	}
 
-	void reorderCoordinates(List<Coordinate> v) {
-		AngleWrapper[] angleWrappers = new AngleWrapper[v.size()];
+	private void reorderCoordinates(final List<Coordinate> v) {
+		final AngleWrapper[] angleWrappers = new AngleWrapper[v.size()];
 		double xc = 0;
 		double yc = 0;
 		for (int i = 0; i < v.size(); i++) {
-			Coordinate pt = v.get(i);
+			final Coordinate pt = v.get(i);
 			xc += pt.getX();
 			yc += pt.getY();
 		}
@@ -43,8 +54,7 @@ public class QuickHull {
 		yc /= v.size();
 
 		for (int i = 0; i < angleWrappers.length; i++) {
-			angleWrappers[i] = createAngleWrapper(v.get(i),
-					xc, yc);
+			angleWrappers[i] = createAngleWrapper(v.get(i), xc, yc);
 		}
 		Arrays.sort(angleWrappers, new AngleComparator());
 		v.clear();
@@ -53,104 +63,95 @@ public class QuickHull {
 		}
 	}
 
-	void qhull(Coordinate[] dots0, int up, int step) {
-		if (dots0 == null || dots0.length < 1 || step > 200)
+	private void quickHull(final Coordinate[] dots0, final int up, final int step) {
+		if (dots0 == null || dots0.length < 1 || step > MAX_STEPS) {
 			return;
+		}
 		if (dots0.length < 2) {
 			addHullCoordinate(dots0[0]);
 			return;
 		}
-		try {
-			int leftIndex = 0;
-			int rightIndex = 0;
-			for (int i = 1; i < dots0.length; i++) {
-				if (dots0[i].getX() < dots0[leftIndex].getX()) {
-					leftIndex = i;
+		int leftIndex = 0;
+		int rightIndex = 0;
+		for (int i = 1; i < dots0.length; i++) {
+			if (dots0[i].getX() < dots0[leftIndex].getX()) {
+				leftIndex = i;
+			}
+			if (dots0[i].getX() > dots0[rightIndex].getX()) {
+				rightIndex = i;
+			}
+		}
+		final Coordinate leftCoordinate = dots0[leftIndex];
+		final Coordinate rightCoordinate = dots0[rightIndex];
+		addHullCoordinate(leftCoordinate);
+		addHullCoordinate(rightCoordinate);
+		if (dots0.length == MIN_POINTS) {
+			int middleCoordinate = -1;
+			for (int i = 0; i < dots0.length; i++) {
+				if (i == leftIndex || i == rightIndex) {
+					continue;
 				}
-				if (dots0[i].getX() > dots0[rightIndex].getX()) {
-					rightIndex = i;
+				middleCoordinate = i;
+				break;
+			}
+			addHullCoordinate(dots0[middleCoordinate]);
+		} else if (dots0.length > MIN_POINTS) {
+			final List<Coordinate> vIn = new Vector<Coordinate>();
+			final List<Coordinate> vOut = new Vector<Coordinate>();
+			if (up >= 0) {
+				final int upIndex = selectCoordinates(dots0, leftCoordinate, rightCoordinate, true, vIn);
+				if (upIndex >= 0 && vIn.size() > 0) {
+					final Coordinate upCoordinate = vIn.get(upIndex);
+					vOut.clear();
+					selectCoordinates(vIn, leftCoordinate, upCoordinate, true, vOut);
+					quickHull(vOut.toArray(new Coordinate[0]), 1, step + 1);
+					vOut.clear();
+					selectCoordinates(vIn, upCoordinate, rightCoordinate, true, vOut);
+					quickHull(vOut.toArray(new Coordinate[0]), 1, step + 1);
 				}
 			}
-			Coordinate leftCoordinate = dots0[leftIndex];
-			Coordinate rightCoordinate = dots0[rightIndex];
-			addHullCoordinate(leftCoordinate);
-			addHullCoordinate(rightCoordinate);
-			if (dots0.length == 3) {
-				int middleCoordinate = -1;
-				for (int i = 0; i < dots0.length; i++) {
-					if (i == leftIndex || i == rightIndex)
-						continue;
-					middleCoordinate = i;
-					break;
-				}
-				addHullCoordinate(dots0[middleCoordinate]);
-			} else if (dots0.length > 3) {
-				Vector<Coordinate> vIn = new Vector<Coordinate>();
-				Vector<Coordinate> vOut = new Vector<Coordinate>();
-				if (up >= 0) {
-					int upIndex = selectCoordinates(dots0, leftCoordinate,
-							rightCoordinate, true, vIn);
-					if (upIndex >= 0 && vIn.size() > 0) {
-						Coordinate upCoordinate = (Coordinate) vIn
-								.elementAt(upIndex);
-						vOut.removeAllElements();
-						selectCoordinates(vIn, leftCoordinate, upCoordinate,
-								true, vOut);
-						qhull(vOut.toArray(new Coordinate[0]), 1, step + 1);
-						vOut.removeAllElements();
-						selectCoordinates(vIn, upCoordinate, rightCoordinate, true, vOut);
-						qhull(vOut.toArray(new Coordinate[0]), 1, step + 1);
-					}
-				}
-				if (up <= 0) {
-					vIn.removeAllElements();
-					int downIndex = selectCoordinates(dots0, rightCoordinate,
-							leftCoordinate, false, vIn);
-					if (downIndex >= 0 && vIn.size() > 0) {
-						Coordinate downCoordinate = (Coordinate) vIn
-								.elementAt(downIndex);
-						vOut.removeAllElements();
-						selectCoordinates(vIn, rightCoordinate, downCoordinate,
-								false, vOut);
-						qhull(vOut.toArray(new Coordinate[0]), -1, step + 1);
-						vOut.removeAllElements();
-						selectCoordinates(vIn, downCoordinate, leftCoordinate,
-								false, vOut);
-						qhull(vOut.toArray(new Coordinate[0]), -1, step + 1);
-					}
+			if (up <= 0) {
+				vIn.clear();
+				final int downIndex = selectCoordinates(dots0, rightCoordinate, leftCoordinate, false, vIn);
+				if (downIndex >= 0 && vIn.size() > 0) {
+					final Coordinate downCoordinate = vIn.get(downIndex);
+					vOut.clear();
+					selectCoordinates(vIn, rightCoordinate, downCoordinate, false, vOut);
+					quickHull(vOut.toArray(new Coordinate[0]), -1, step + 1);
+					vOut.clear();
+					selectCoordinates(vIn, downCoordinate, leftCoordinate, false, vOut);
+					quickHull(vOut.toArray(new Coordinate[0]), -1, step + 1);
 				}
 			}
-		} catch (Throwable t) {
 		}
 	}
 
-	private void addHullCoordinate(Coordinate pt) {
+	private void addHullCoordinate(final Coordinate pt) {
 		if (!hullCoordinates.contains(pt)) {
 			hullCoordinates.add(pt);
 		}
 	}
 
-	private static int selectCoordinates(Coordinate[] pIn, Coordinate pLeft,
-			Coordinate pRight, boolean up, Vector<Coordinate> vOut) {
+	private static int selectCoordinates(final Coordinate[] pIn, final Coordinate pLeft, final Coordinate pRight, final boolean up, final List<Coordinate> vOut) {
 		int retValue = -1;
 		if (pIn == null || vOut == null)
 			return retValue;
-		double k = (pRight.getY() - pLeft.getY())
-				/ (pRight.getX() - pLeft.getX());
-		double A = -k;
-		double B = 1;
-		double C = k * pLeft.getX() - pLeft.getY();
+		final double k = (pRight.getY() - pLeft.getY()) / (pRight.getX() - pLeft.getX());
+		final double A = -k;
+		final double B = 1;
+		final double C = k * pLeft.getX() - pLeft.getY();
 		double dup = 0;
 		for (int i = 0; i < pIn.length; i++) {
-			Coordinate pt = (Coordinate) pIn[i];
-			if (pt.equals(pLeft) || pt.equals(pRight))
+			final Coordinate pt = pIn[i];
+			if (pt.equals(pLeft) || pt.equals(pRight)) {
 				continue;
-			double px = pt.getX();
-			double py = pt.getY();
-			double y = pLeft.getY() + k * (px - pLeft.getX());
+			}
+			final double px = pt.getX();
+			final double py = pt.getY();
+			final double y = pLeft.getY() + k * (px - pLeft.getX());
 			if ((!up && y < py) || (up && y > py)) {
 				vOut.add(pt);
-				double d = (A * px + B * py + C);
+				double d = A * px + B * py + C;
 				if (d < 0)
 					d = -d;
 				if (d > dup) {
@@ -164,26 +165,27 @@ public class QuickHull {
 		return retValue;
 	}
 
-	private static int selectCoordinates(List<Coordinate> vIn, Coordinate pLeft, Coordinate pRight, boolean up, List<Coordinate> vOut) {
+	private static int selectCoordinates(final List<Coordinate> vIn, final Coordinate pLeft, final Coordinate pRight, final boolean up, final List<Coordinate> vOut) {
 		int retValue = -1;
-		if (vIn == null || vOut == null)
+		if (vIn == null || vOut == null) {
 			return retValue;
-		double k = (pRight.getY() - pLeft.getY())
-				/ (pRight.getY() - pLeft.getY());
-		double A = -k;
-		double B = 1;
-		double C = k * pLeft.getX() - pLeft.getY();
+		}
+		final double k = (pRight.getY() - pLeft.getY()) / (pRight.getY() - pLeft.getY());
+		final double A = -k;
+		final double B = 1;
+		final double C = k * pLeft.getX() - pLeft.getY();
 		double dup = 0;
 		for (int i = 0; i < vIn.size(); i++) {
-			Coordinate pt = (Coordinate) vIn.get(i);
-			if (pt.equals(pLeft) || pt.equals(pRight))
+			final Coordinate pt = vIn.get(i);
+			if (pt.equals(pLeft) || pt.equals(pRight)) {
 				continue;
-			double px = pt.getX();
-			double py = pt.getY();
-			double y = pLeft.getY() + k * (px - pLeft.getX());
+			}
+			final double px = pt.getX();
+			final double py = pt.getY();
+			final double y = pLeft.getY() + k * (px - pLeft.getX());
 			if ((!up && y < py) || (up && y > py)) {
 				vOut.add(pt);
-				double d = (A * px + B * py + C);
+				double d = A * px + B * py + C;
 				if (d < 0)
 					d = -d;
 				if (d > dup) {
@@ -197,34 +199,31 @@ public class QuickHull {
 		return retValue;
 	}
 
-	private static AngleWrapper createAngleWrapper(Coordinate pt, double xc, double yc) {
+	private static AngleWrapper createAngleWrapper(final Coordinate pt, final double xc, final double yc) {
 		double angle = Math.atan2(pt.getY() - yc, pt.getX() - xc);
-		if (angle < 0)
+		if (angle < 0) {
 			angle += 2 * Math.PI;
+		}
 		return new AngleWrapper(angle, new Coordinate(pt));
 	}
 
 	private static class AngleComparator implements Comparator<AngleWrapper> {
-		public int compare(AngleWrapper obj1, AngleWrapper obj2) {
-			AngleWrapper ac1 = (AngleWrapper) obj1;
-			AngleWrapper ac2 = (AngleWrapper) obj2;
-			return (ac1.angle < ac2.angle) ? -1 : 1;
+		public int compare(final AngleWrapper obj1, final AngleWrapper obj2) {
+			return (obj1.angle < obj2.angle) ? -1 : 1;
 		}
 	}
 
 	private static class AngleWrapper implements Comparable<AngleWrapper> {
-		final double angle;
-		final Coordinate pt;
+		private final double angle;
+		private final Coordinate pt;
 
-		AngleWrapper(double angle, Coordinate pt) {
+		public AngleWrapper(final double angle, final Coordinate pt) {
 			this.angle = angle;
 			this.pt = pt;
 		}
 
-		public int compareTo(AngleWrapper obj) {
-			AngleWrapper ac = (AngleWrapper) obj;
-			return (ac.angle < angle) ? -1 : 1;
+		public int compareTo(final AngleWrapper obj) {
+			return (obj.angle < angle) ? -1 : 1;
 		}
 	}
-
 }
