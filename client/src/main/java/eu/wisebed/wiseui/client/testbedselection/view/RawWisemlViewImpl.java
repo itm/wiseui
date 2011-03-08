@@ -1,5 +1,7 @@
 package eu.wisebed.wiseui.client.testbedselection.view;
 
+// import at.wizzart.gwt.widgets.client.CodeMirror;
+// import at.wizzart.gwt.widgets.client.CodeMirrorConfiguration;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -14,9 +16,12 @@ public class RawWisemlViewImpl extends Composite implements RawWisemlView {
 
 	interface RawWisemlViewImplUiBinder extends UiBinder<Widget, RawWisemlViewImpl> {
 	}
-	
+
 	@UiField
 	HTML xml;
+
+//    @UiField
+//    CodeMirror codeMirror;
 	
 	public RawWisemlViewImpl() {
 		initWidget(uiBinder.createAndBindUi(this));
@@ -27,7 +32,16 @@ public class RawWisemlViewImpl extends Composite implements RawWisemlView {
 		return xml;
 	}
 
-	@Override
+//    public void setCodeMirrorContent(String content) {
+//        codeMirror.setContent(content);
+//    }
+//
+//    @Override
+//    public String getCodeMirrorContent() {
+//        return codeMirror.getContent();
+//    }
+
+    @Override
 	public void setPresenter(Presenter presenter) {
 		
 	}

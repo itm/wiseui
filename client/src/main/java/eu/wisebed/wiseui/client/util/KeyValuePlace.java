@@ -5,9 +5,9 @@ import java.util.Map;
 
 import com.google.common.base.Joiner;
 import com.google.common.base.Predicates;
+import com.google.common.base.Splitter;
 import com.google.common.collect.Maps;
 import com.google.gwt.place.shared.Place;
-import com.google.gwt.thirdparty.guava.common.base.Splitter;
 
 
 /**
