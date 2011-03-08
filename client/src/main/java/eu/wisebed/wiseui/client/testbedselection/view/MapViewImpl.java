@@ -23,7 +23,6 @@ import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
 import eu.wisebed.wiseui.shared.wiseml.Coordinate;
-import eu.wisebed.wiseui.shared.wiseml.Node;
 
 public class MapViewImpl extends Composite implements MapView {
 
