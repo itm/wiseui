@@ -8,6 +8,7 @@ import com.google.common.collect.Lists;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.maps.client.InfoWindow;
 import com.google.gwt.maps.client.InfoWindowContent;
+import com.google.gwt.maps.client.MapType;
 import com.google.gwt.maps.client.MapUIOptions;
 import com.google.gwt.maps.client.MapWidget;
 import com.google.gwt.maps.client.Maps;
@@ -31,7 +32,7 @@ public class MapViewImpl extends Composite implements MapView {
     interface MapViewImplUiBinder extends UiBinder<Widget, MapViewImpl> {
     }
     private static final int DEFAULT_ZOOM_LEVEL = 2;
-    private static final int ZOOM_LEVEL = 12;
+    private static final int ZOOM_LEVEL = 18;
 
 	@UiField
 	SimplePanel mapContainer;
@@ -77,6 +78,7 @@ public class MapViewImpl extends Composite implements MapView {
 
         mapWidget = new MapWidget();
         mapWidget.setUI(options);
+        mapWidget.setCurrentMapType(MapType.getHybridMap());
         mapWidget.setSize("100%", "100%");
         mapWidget.setContinuousZoom(true);
         mapContainer.add(mapWidget);
