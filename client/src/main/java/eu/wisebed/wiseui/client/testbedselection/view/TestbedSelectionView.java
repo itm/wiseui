@@ -16,12 +16,10 @@ public interface TestbedSelectionView extends IsWidget {
     HasEnabled getLoginEnabled();
 
     HasEnabled getReloadEnabled();
-    
-    void setContentSelection(Integer index);
 
     public interface Presenter {
     	
-    	void setContentSelection(Integer index);
+    	void setContentSelection(String view);
 
         void reload();
 

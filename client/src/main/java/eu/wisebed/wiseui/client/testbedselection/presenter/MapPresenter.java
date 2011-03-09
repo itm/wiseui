@@ -62,6 +62,4 @@ public class MapPresenter implements MapView.Presenter, WisemlLoadedHandler, Con
         view.setTestbedCoordinate(null, null, null);
         view.setTestbedShape(null);
     }
-    
-
 }

@@ -7,6 +7,7 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
+import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasEnabled;
@@ -14,6 +15,7 @@ import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
+import eu.wisebed.wiseui.client.testbedselection.common.TestbedSelectionConstants;
 
 public class TestbedSelectionViewImpl extends Composite implements TestbedSelectionView {
 
@@ -27,25 +29,21 @@ public class TestbedSelectionViewImpl extends Composite implements TestbedSelect
     @UiField
     SimplePanel contentPanel;
     @UiField
-    ListBox contentListBox;
-    @UiField
     Button reloadButton;
     @UiField
     Button loginButton;
+    @UiField
+    Anchor mapAnchor;
+    @UiField
+    Anchor detailAnchor;
+    @UiField
+    Anchor rawAnchor;
 
     private Presenter presenter;
 
     @Inject
     public TestbedSelectionViewImpl() {
         initWidget(uiBinder.createAndBindUi(this));
-        contentListBox.addItem("Map");
-        contentListBox.addItem("Details");
-        contentListBox.addItem("Raw WiseML");
-    }
-    
-    @UiHandler("contentListBox")
-    public void handleListBoxChange(final ChangeEvent event) {
-    	presenter.setContentSelection(contentListBox.getSelectedIndex());
     }
 
     @UiHandler("reloadButton")
@@ -56,6 +54,21 @@ public class TestbedSelectionViewImpl extends Composite implements TestbedSelect
     @UiHandler("loginButton")
     public void handleLoginClick(final ClickEvent event) {
         presenter.showLoginDialog();
+    }
+
+    @UiHandler("mapAnchor")
+    public void handleMapAnchorClicked(final ClickEvent event) {
+        presenter.setContentSelection(TestbedSelectionConstants.MAP_VIEW);
+    }
+
+    @UiHandler("detailAnchor")
+    public void handleDetailAnchorClicked(final ClickEvent event) {
+        presenter.setContentSelection(TestbedSelectionConstants.DETAIL_VIEW);
+    }
+
+    @UiHandler("rawAnchor")
+    public void handleRawAnchorClicked(final ClickEvent event) {
+        presenter.setContentSelection(TestbedSelectionConstants.RAW_WISEML_VIEW);
     }
 
     @Override
@@ -81,10 +94,5 @@ public class TestbedSelectionViewImpl extends Composite implements TestbedSelect
 	@Override
 	public AcceptsOneWidget getConfigurationContainer() {
 		return configurationContainer;
-	}
-
-	@Override
-	public void setContentSelection(final Integer index) {
-		contentListBox.setSelectedIndex(index);
 	}
 }

@@ -27,11 +27,12 @@ public class TestbedSelectionPresenter implements Presenter, ConfigurationSelect
     private TestbedConfiguration configuration;
 
     @Inject
-    public TestbedSelectionPresenter(final EventBus eventBus, final PlaceController placeController, final TestbedSelectionView view) {
+    public TestbedSelectionPresenter(final EventBus eventBus,
+                                     final PlaceController placeController,
+                                     final TestbedSelectionView view) {
         this.eventBus = eventBus;
         this.placeController = placeController;
         this.view = view;
-        view.setContentSelection(0);
         view.getLoginEnabled().setEnabled(false);
         view.getReloadEnabled().setEnabled(false);
         bind();
@@ -54,7 +55,7 @@ public class TestbedSelectionPresenter implements Presenter, ConfigurationSelect
 
     public void setPlace(final TestbedSelectionPlace place) {
     	this.place = place;
-    	view.setContentSelection(place.getView());
+//    	view.setContentSelection(place.getView());
     }
 
     public void onWisemlLoaded(final WisemlLoadedEvent event) {
@@ -78,7 +79,7 @@ public class TestbedSelectionPresenter implements Presenter, ConfigurationSelect
     }
 
 	@Override
-	public void setContentSelection(final Integer index) {
-		placeController.goTo(new TestbedSelectionPlace(place.getSelection(), index));
+	public void setContentSelection(final String view) {
+		placeController.goTo(new TestbedSelectionPlace(place.getSelection(), view));
 	}
 }
