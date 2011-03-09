@@ -10,6 +10,7 @@ import com.google.gwt.maps.client.InfoWindowContent;
 import com.google.gwt.maps.client.MapType;
 import com.google.gwt.maps.client.MapUIOptions;
 import com.google.gwt.maps.client.MapWidget;
+import com.google.gwt.maps.client.Maps;
 import com.google.gwt.maps.client.control.OverviewMapControl;
 import com.google.gwt.maps.client.event.MarkerClickHandler;
 import com.google.gwt.maps.client.geom.LatLng;
@@ -23,6 +24,7 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
+import eu.wisebed.wiseui.client.WiseUiResources;
 import eu.wisebed.wiseui.client.util.AsyncManager;
 import eu.wisebed.wiseui.client.util.MapApiLoader;
 import eu.wisebed.wiseui.shared.wiseml.Coordinate;
