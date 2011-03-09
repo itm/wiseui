@@ -57,17 +57,17 @@ public class TestbedSelectionViewImpl extends Composite implements TestbedSelect
 
     @UiHandler("mapToggleButton")
     public void handleMapAnchorClicked(final ClickEvent event) {
-        presenter.setContentSelection(TestbedSelectionConstants.INSTANCE.mapView());
+        presenter.setContentSelection(TestbedSelectionConstants.MAP_VIEW);
     }
 
     @UiHandler("detailToggleButton")
     public void handleDetailAnchorClicked(final ClickEvent event) {
-        presenter.setContentSelection(TestbedSelectionConstants.INSTANCE.detailView());
+        presenter.setContentSelection(TestbedSelectionConstants.DETAIL_VIEW);
     }
 
     @UiHandler("rawToggleButton")
     public void handleRawAnchorClicked(final ClickEvent event) {
-        presenter.setContentSelection(TestbedSelectionConstants.INSTANCE.rawWisemlView());
+        presenter.setContentSelection(TestbedSelectionConstants.RAW_WISEML_VIEW);
     }
 
     @Override
@@ -97,8 +97,8 @@ public class TestbedSelectionViewImpl extends Composite implements TestbedSelect
 
 	@Override
 	public void setContentSelection(final String view) {
-		mapToggleButton.setDown(TestbedSelectionConstants.INSTANCE.mapView().equals(view));
-		detailToggleButton.setDown(TestbedSelectionConstants.INSTANCE.detailView().equals(view));
-		rawToggleButton.setDown(TestbedSelectionConstants.INSTANCE.rawWisemlView().equals(view));
+		mapToggleButton.setDown(TestbedSelectionConstants.MAP_VIEW.equals(view));
+		detailToggleButton.setDown(TestbedSelectionConstants.DETAIL_VIEW.equals(view));
+		rawToggleButton.setDown(TestbedSelectionConstants.RAW_WISEML_VIEW.equals(view));
 	}
 }

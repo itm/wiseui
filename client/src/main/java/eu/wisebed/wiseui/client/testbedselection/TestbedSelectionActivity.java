@@ -78,13 +78,13 @@ public class TestbedSelectionActivity extends AbstractActivity implements Config
     }
     
     private void initContentPart(final TestbedSelectionView testbedSelectionView, final String view) {
-        if (TestbedSelectionConstants.INSTANCE.mapView().equals(view)) {
+        if (TestbedSelectionConstants.MAP_VIEW.equals(view)) {
             initMapPart(testbedSelectionView);
         }
-        else if (TestbedSelectionConstants.INSTANCE.detailView().equals(view)) {
+        else if (TestbedSelectionConstants.DETAIL_VIEW.equals(view)) {
             initDetailPart(testbedSelectionView);
         }
-        else if (TestbedSelectionConstants.INSTANCE.rawWisemlView().equals(view)) {
+        else if (TestbedSelectionConstants.RAW_WISEML_VIEW.equals(view)) {
             initRawWisemlPart(testbedSelectionView);
         }
         else {
