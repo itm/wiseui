@@ -58,17 +58,17 @@ public class TestbedSelectionViewImpl extends Composite implements TestbedSelect
 
     @UiHandler("mapAnchor")
     public void handleMapAnchorClicked(final ClickEvent event) {
-        presenter.setContentSelection(TestbedSelectionConstants.MAP_VIEW);
+        presenter.setContentSelection(TestbedSelectionConstants.INSTANCE.mapView());
     }
 
     @UiHandler("detailAnchor")
     public void handleDetailAnchorClicked(final ClickEvent event) {
-        presenter.setContentSelection(TestbedSelectionConstants.DETAIL_VIEW);
+        presenter.setContentSelection(TestbedSelectionConstants.INSTANCE.detailView());
     }
 
     @UiHandler("rawAnchor")
     public void handleRawAnchorClicked(final ClickEvent event) {
-        presenter.setContentSelection(TestbedSelectionConstants.RAW_WISEML_VIEW);
+        presenter.setContentSelection(TestbedSelectionConstants.INSTANCE.rawWisemlView());
     }
 
     @Override

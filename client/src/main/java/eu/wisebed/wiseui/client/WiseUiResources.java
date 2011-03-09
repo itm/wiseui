@@ -2,7 +2,6 @@ package eu.wisebed.wiseui.client;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ClientBundle;
-import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.resources.client.TextResource;
 
 /**
@@ -10,9 +9,6 @@ import com.google.gwt.resources.client.TextResource;
  */
 public interface WiseUiResources extends ClientBundle {
     public static final WiseUiResources INSTANCE = GWT.create(WiseUiResources.class);
-
-    @Source("google-maps-api-key.txt")
-    public TextResource googleMapsApiKey();
 
 //    @Source("WiseUi.css")
 //    public CssResource css();
