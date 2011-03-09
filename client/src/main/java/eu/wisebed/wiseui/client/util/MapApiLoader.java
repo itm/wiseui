@@ -3,13 +3,16 @@ package eu.wisebed.wiseui.client.util;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.maps.client.Maps;
 
 public class MapApiLoader implements Runnable {
-
+	
 	private enum State {
 		NOT_LOADED, LOADING, LOADED
 	}
+	
+	private static final MapConstants CONSTANTS = GWT.create(MapConstants.class);
 	
 	private static MapApiLoader INSTANCE;
 	
@@ -32,7 +35,7 @@ public class MapApiLoader implements Runnable {
 		if (State.NOT_LOADED.equals(state)) {
 			state = State.LOADING;
 			runnables.add(runnable);
-			Maps.loadMapsApi("", "2", false, this);
+			Maps.loadMapsApi(CONSTANTS.key(), CONSTANTS.version(), CONSTANTS.useSensors(), this);
 		} else if (State.LOADING.equals(state)) {
 			runnables.add(runnable);
 		} else {
