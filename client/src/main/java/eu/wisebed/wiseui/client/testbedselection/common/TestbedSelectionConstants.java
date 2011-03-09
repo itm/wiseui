@@ -1,28 +1,19 @@
 package eu.wisebed.wiseui.client.testbedselection.common;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.i18n.client.Constants;
-
 /**
  * Constants for the testbed-selection-view and -place.
  *
  * @author Sönke Nommensen
  */
-public interface TestbedSelectionConstants extends Constants {
-    public static final TestbedSelectionConstants INSTANCE = GWT.create(TestbedSelectionConstants.class);
+public interface TestbedSelectionConstants {
 
-    @DefaultStringValue("selection")
-    String testbedSelectionString();
+    static final String TESTBED_SELECTION_STRING = "selection";
 
-    @DefaultStringValue("view")
-    String testbedViewString();
+    static final String TESTBED_VIEW_STRING = "view";
 
-    @DefaultStringValue("map")
-    String mapView();
+    static final String MAP_VIEW = "map";
 
-    @DefaultStringValue("detail")
-    String detailView();
+    static final String DETAIL_VIEW = "detail";
 
-    @DefaultStringValue("raw")
-    String rawWisemlView();
+    static final String RAW_WISEML_VIEW = "raw";
 }
