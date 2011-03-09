@@ -1,20 +1,19 @@
 package eu.wisebed.wiseui.client.testbedselection.view;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
-import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasEnabled;
-import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.ui.ToggleButton;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
+
 import eu.wisebed.wiseui.client.testbedselection.common.TestbedSelectionConstants;
 
 public class TestbedSelectionViewImpl extends Composite implements TestbedSelectionView {
@@ -33,11 +32,11 @@ public class TestbedSelectionViewImpl extends Composite implements TestbedSelect
     @UiField
     Button loginButton;
     @UiField
-    Anchor mapAnchor;
+    ToggleButton mapToggleButton;
     @UiField
-    Anchor detailAnchor;
+    ToggleButton detailToggleButton;
     @UiField
-    Anchor rawAnchor;
+    ToggleButton rawToggleButton;
 
     private Presenter presenter;
 
@@ -56,17 +55,17 @@ public class TestbedSelectionViewImpl extends Composite implements TestbedSelect
         presenter.showLoginDialog();
     }
 
-    @UiHandler("mapAnchor")
+    @UiHandler("mapToggleButton")
     public void handleMapAnchorClicked(final ClickEvent event) {
         presenter.setContentSelection(TestbedSelectionConstants.MAP_VIEW);
     }
 
-    @UiHandler("detailAnchor")
+    @UiHandler("detailToggleButton")
     public void handleDetailAnchorClicked(final ClickEvent event) {
         presenter.setContentSelection(TestbedSelectionConstants.DETAIL_VIEW);
     }
 
-    @UiHandler("rawAnchor")
+    @UiHandler("rawToggleButton")
     public void handleRawAnchorClicked(final ClickEvent event) {
         presenter.setContentSelection(TestbedSelectionConstants.RAW_WISEML_VIEW);
     }
@@ -94,5 +93,12 @@ public class TestbedSelectionViewImpl extends Composite implements TestbedSelect
 	@Override
 	public AcceptsOneWidget getConfigurationContainer() {
 		return configurationContainer;
+	}
+
+	@Override
+	public void setContentSelection(final String view) {
+		mapToggleButton.setDown(TestbedSelectionConstants.MAP_VIEW.equals(view));
+		detailToggleButton.setDown(TestbedSelectionConstants.DETAIL_VIEW.equals(view));
+		rawToggleButton.setDown(TestbedSelectionConstants.RAW_WISEML_VIEW.equals(view));
 	}
 }

@@ -36,9 +36,12 @@
             border-top: 7px solid #d0e4f6;
         }
 
-        .anchors {
+        .viewButton {
             float: left;
-            padding: 8px;
+            margin-top: 5px;
+            padding: 2px;
+            width: 55px;
+            text-align: center;
         }
     </ui:style>
 
@@ -56,12 +59,9 @@
         <g:south size="35">
             <g:HTMLPanel styleName="{style.buttonPanel}">
                 <label style="float:left;margin: 8px 8px">Testbed View:</label>
-                <!--g:ListBox styleName="{style.listBox}" ui:field="contentListBox"/-->
-                <div class="{style.anchors}">
-                    <g:Anchor ui:field="mapAnchor">Map</g:Anchor> |
-                    <g:Anchor ui:field="detailAnchor">Detail</g:Anchor> |
-                    <g:Anchor ui:field="rawAnchor">WiseML</g:Anchor>
-                </div>
+                <g:ToggleButton addStyleNames="{style.viewButton}" ui:field="mapToggleButton">Map</g:ToggleButton>
+                <g:ToggleButton addStyleNames="{style.viewButton}" ui:field="detailToggleButton">Detail</g:ToggleButton>
+                <g:ToggleButton addStyleNames="{style.viewButton}" ui:field="rawToggleButton">WiseML</g:ToggleButton>
                 <table class="{style.buttonTable}">
                     <tr>
                         <td>

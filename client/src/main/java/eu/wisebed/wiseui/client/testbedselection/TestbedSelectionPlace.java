@@ -24,11 +24,11 @@ public class TestbedSelectionPlace extends KeyValuePlace {
 
     public TestbedSelectionPlace(final Integer selection, final String view) {
     	set(TestbedSelectionConstants.TESTBED_SELECTION_STRING, Objects2.nullOrToString(selection));
-        set(TestbedSelectionConstants.TESTBED_VIEW_STRING, Objects2.nullOrToString(view));
+        set(TestbedSelectionConstants.TESTBED_VIEW_STRING, view);
     }
     
     public TestbedSelectionPlace(final String token) {
-    	this(null, null);
+    	this(null, TestbedSelectionConstants.MAP_VIEW);
     	parse(token);
     }
 

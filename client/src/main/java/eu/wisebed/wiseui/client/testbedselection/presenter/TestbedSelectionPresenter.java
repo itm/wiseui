@@ -55,7 +55,7 @@ public class TestbedSelectionPresenter implements Presenter, ConfigurationSelect
 
     public void setPlace(final TestbedSelectionPlace place) {
     	this.place = place;
-//    	view.setContentSelection(place.getView());
+    	view.setContentSelection(place.getView());
     }
 
     public void onWisemlLoaded(final WisemlLoadedEvent event) {
