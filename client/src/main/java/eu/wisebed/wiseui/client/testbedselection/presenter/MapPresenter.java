@@ -15,7 +15,7 @@ import eu.wisebed.wiseui.client.testbedselection.event.WisemlLoadedEvent;
 import eu.wisebed.wiseui.client.testbedselection.event.WisemlLoadedEvent.WisemlLoadedHandler;
 import eu.wisebed.wiseui.client.testbedselection.view.MapView;
 import eu.wisebed.wiseui.client.util.Coordinates;
-import eu.wisebed.wiseui.client.util.QuickHull;
+import eu.wisebed.wiseui.client.util.GrahamScan;
 import eu.wisebed.wiseui.shared.TestbedConfiguration;
 import eu.wisebed.wiseui.shared.wiseml.Coordinate;
 import eu.wisebed.wiseui.shared.wiseml.Node;
@@ -58,7 +58,7 @@ public class MapPresenter implements MapView.Presenter, WisemlLoadedHandler, Con
 			
 			@Override
 			public void execute() {
-				view.setTestbedShape(QuickHull.calcuate(coordinates));
+				view.setTestbedShape(GrahamScan.calculate(coordinates));
 			}
 		});
     }
