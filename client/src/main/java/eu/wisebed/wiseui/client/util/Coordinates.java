@@ -24,4 +24,19 @@ public class Coordinates {
     	final Double x = coordinate.getX() * 0.00001 + origin.getX();
     	return new Coordinate(x, y, coordinate.getZ(), coordinate.getPhi(), coordinate.getTheta());
     }
+    
+	public static Coordinate difference(Coordinate source, Coordinate vector) {
+		return new Coordinate(vector.getX() - source.getX(), vector.getY() - source.getY(), 0.0, 0.0, 0.0);
+	}
+	
+	public static double angle(Coordinate source, Coordinate vector) {
+        return Math.atan2(vector.getY(), vector.getX()) - Math.atan2(source.getY(), source.getX());
+	}
+
+	public static double location(Coordinate point, Coordinate linePoint1, Coordinate linePoint2) {
+		return (linePoint2.getX() - linePoint1.getX())
+				* (point.getY() - linePoint1.getY())
+				- (point.getX() - linePoint1.getX())
+				* (linePoint2.getY() - linePoint1.getY());
+	}
 }
