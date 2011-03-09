@@ -6,6 +6,14 @@ import java.util.List;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.maps.client.Maps;
 
+
+/**
+ * Use this class when loading the map api. It prevents the multiple loading of the api at the same time
+ * which can leads to errors.
+ * The map api properties lik api key, version and sensor usage is loaded from the resource bundle MapConstants.
+ * 
+ * @author Malte Legenhausen
+ */
 public class MapApiLoader implements Runnable {
 	
 	private enum State {
