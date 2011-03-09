@@ -27,7 +27,7 @@ public class QuickHull {
 		reorderCoordinates(hullCoordinates);
 	}
 	
-	public static List<Coordinate> calcuate(final List<Coordinate> coordinates) {
+	public static List<Coordinate> calculate(final List<Coordinate> coordinates) {
 		return new QuickHull(coordinates).getHullCoordinates();
 	}
 

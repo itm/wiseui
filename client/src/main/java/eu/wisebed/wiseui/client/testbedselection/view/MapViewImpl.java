@@ -1,5 +1,6 @@
 package eu.wisebed.wiseui.client.testbedselection.view;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.google.common.base.Function;
@@ -143,14 +144,16 @@ public class MapViewImpl extends Composite implements MapView {
     		return;
     	}
     	
-    	coordinates.add(coordinates.get(0));
     	final List<LatLng> latLngs = Lists.transform(coordinates, new Function<Coordinate, LatLng>() {
 			@Override
 			public LatLng apply(final Coordinate input) {
 				return convert(input);
 			}
 		});
-    	testbedShape = new Polygon(latLngs.toArray(new LatLng[0]));
+    	final List<LatLng> polyPoints = new ArrayList<LatLng>(latLngs.size() + 1);
+    	polyPoints.addAll(latLngs);
+    	polyPoints.add(polyPoints.get(0));
+    	testbedShape = new Polygon(polyPoints.toArray(new LatLng[0]));
     	mapWidget.addOverlay(testbedShape);
     }
 
