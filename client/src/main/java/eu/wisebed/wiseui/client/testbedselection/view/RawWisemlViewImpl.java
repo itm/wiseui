@@ -1,7 +1,5 @@
 package eu.wisebed.wiseui.client.testbedselection.view;
 
-// import at.wizzart.gwt.widgets.client.CodeMirror;
-// import at.wizzart.gwt.widgets.client.CodeMirrorConfiguration;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -14,35 +12,23 @@ public class RawWisemlViewImpl extends Composite implements RawWisemlView {
 
     private static RawWisemlViewImplUiBinder uiBinder = GWT.create(RawWisemlViewImplUiBinder.class);
 
-	interface RawWisemlViewImplUiBinder extends UiBinder<Widget, RawWisemlViewImpl> {
-	}
+    interface RawWisemlViewImplUiBinder extends UiBinder<Widget, RawWisemlViewImpl> {
+    }
 
-	@UiField
-	HTML xml;
+    @UiField
+    HTML xml;
 
-//    @UiField
-//    CodeMirror codeMirror;
-	
-	public RawWisemlViewImpl() {
-		initWidget(uiBinder.createAndBindUi(this));
-	}
-
-	@Override
-	public HasHTML getXmlHasHTML() {
-		return xml;
-	}
-
-//    public void setCodeMirrorContent(String content) {
-//        codeMirror.setContent(content);
-//    }
-//
-//    @Override
-//    public String getCodeMirrorContent() {
-//        return codeMirror.getContent();
-//    }
+    public RawWisemlViewImpl() {
+        initWidget(uiBinder.createAndBindUi(this));
+    }
 
     @Override
-	public void setPresenter(Presenter presenter) {
-		
-	}
+    public HasHTML getXmlHasHTML() {
+        return xml;
+    }
+
+    @Override
+    public void setPresenter(Presenter presenter) {
+
+    }
 }

@@ -19,25 +19,25 @@ import eu.wisebed.wiseui.client.testbedselection.common.TestbedSelectionConstant
 public class TestbedSelectionPlace extends KeyValuePlace {
 
     public TestbedSelectionPlace() {
-    	this(null, TestbedSelectionConstants.MAP_VIEW);
+    	this(null, TestbedSelectionConstants.INSTANCE.mapView());
     }
 
     public TestbedSelectionPlace(final Integer selection, final String view) {
-    	set(TestbedSelectionConstants.TESTBED_SELECTION_STRING, Objects2.nullOrToString(selection));
-        set(TestbedSelectionConstants.TESTBED_VIEW_STRING, view);
+    	set(TestbedSelectionConstants.INSTANCE.testbedSelectionString(), Objects2.nullOrToString(selection));
+        set(TestbedSelectionConstants.INSTANCE.testbedViewString(), view);
     }
     
     public TestbedSelectionPlace(final String token) {
-    	this(null, TestbedSelectionConstants.MAP_VIEW);
+    	this(null, TestbedSelectionConstants.INSTANCE.mapView());
     	parse(token);
     }
 
     public Integer getSelection() {
-        return Ints2.nullOrValueOf(get(TestbedSelectionConstants.TESTBED_SELECTION_STRING));
+        return Ints2.nullOrValueOf(get(TestbedSelectionConstants.INSTANCE.testbedSelectionString()));
     }
     
     public String getView() {
-		return Objects2.nullOrToString(get(TestbedSelectionConstants.TESTBED_VIEW_STRING));
+		return Objects2.nullOrToString(get(TestbedSelectionConstants.INSTANCE.testbedViewString()));
 	}
 
     public static class Tokenizer implements PlaceTokenizer<TestbedSelectionPlace> {
