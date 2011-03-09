@@ -12,8 +12,10 @@ public class Coordinates {
 
     public static Coordinate rotate(final Coordinate coordinate, final Double phi) {
     	final Double rad = Math.toRadians(phi);
-    	final Double x = coordinate.getX() * Math.cos(rad) - coordinate.getY() * Math.sin(rad);
-    	final Double y = coordinate.getY() * Math.cos(rad) + coordinate.getX() * Math.sin(rad);
+    	final Double cos = Math.cos(rad);
+    	final Double sin = Math.sin(rad);
+    	final Double x = coordinate.getX() * cos - coordinate.getY() * sin;
+    	final Double y = coordinate.getY() * cos + coordinate.getX() * sin;
     	return new Coordinate(x, y, coordinate.getZ(), coordinate.getPhi(), coordinate.getTheta());
     }
     
