@@ -61,14 +61,17 @@ public class MapPresenter implements MapView.Presenter, WisemlLoadedHandler, Con
         view.setTestbedCoordinate(null, null, null);
         view.setTestbedShape(null);
     }
-    
+
+    // TODO Documentation
     private static Coordinate rotate(final Coordinate coordinate, final Double phi) {
     	final Double rad = Math.toRadians(phi);
     	final Double x = coordinate.getX() * Math.cos(rad) - coordinate.getY() * Math.sin(rad);
     	final Double y = coordinate.getY() * Math.cos(rad) + coordinate.getX() * Math.sin(rad);
-    	return new Coordinate(x, y, coordinate.getZ(), coordinate.getPhi(), coordinate.getTheta());
+    	//return new Coordinate(x, y, coordinate.getZ(), coordinate.getPhi(), coordinate.getTheta());
+        return new Coordinate(x, y , coordinate.getZ(), 0.0, 0.0);
     }
-    
+
+    // TODO Documentation
     private static Coordinate abs(final Coordinate origin, final Coordinate coordinate) {
     	final Double y = coordinate.getY() * 0.00001 + origin.getY();
     	final Double x = coordinate.getX() * 0.00001 + origin.getX();

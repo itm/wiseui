@@ -11,6 +11,7 @@ import com.google.inject.Inject;
 
 import eu.wisebed.wiseui.api.SessionManagementServiceAsync;
 import eu.wisebed.wiseui.client.WiseUiGinjector;
+import eu.wisebed.wiseui.client.testbedselection.common.TestbedSelectionConstants;
 import eu.wisebed.wiseui.client.testbedselection.event.ConfigurationSelectedEvent;
 import eu.wisebed.wiseui.client.testbedselection.event.ConfigurationSelectedEvent.ConfigurationSelectedHandler;
 import eu.wisebed.wiseui.client.testbedselection.event.ThrowableEvent;
@@ -76,17 +77,19 @@ public class TestbedSelectionActivity extends AbstractActivity implements Config
         container.setWidget(testbedSelectionView.asWidget());
     }
     
-    private void initContentPart(final TestbedSelectionView testbedSelectionView, final int index) {
-    	switch (index) {
-    	case 1:
-    		initDetailPart(testbedSelectionView);
-    		break;
-    	case 2:
-    		initRawWisemlPart(testbedSelectionView);
-    		break;
-    	default:
-    		initMapPart(testbedSelectionView);
-    	}
+    private void initContentPart(final TestbedSelectionView testbedSelectionView, final String view) {
+        if (TestbedSelectionConstants.MAP_VIEW.equals(view)) {
+            initMapPart(testbedSelectionView);
+        }
+        else if (TestbedSelectionConstants.DETAIL_VIEW.equals(view)) {
+            initDetailPart(testbedSelectionView);
+        }
+        else if (TestbedSelectionConstants.RAW_WISEML_VIEW.equals(view)) {
+            initRawWisemlPart(testbedSelectionView);
+        }
+        else {
+            initMapPart(testbedSelectionView);
+        }
     }
 
     private void initConfigurationPart(final TestbedSelectionView testbedSelectionView) {
