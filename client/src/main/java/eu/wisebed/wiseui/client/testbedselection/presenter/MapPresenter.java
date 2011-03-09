@@ -44,11 +44,12 @@ public class MapPresenter implements MapView.Presenter, WisemlLoadedHandler, Con
     @Override
     public void onWisemlLoaded(final WisemlLoadedEvent event) {
         final Setup setup = event.getWiseml().getSetup();
-        view.setTestbedCoordinate(setup.getOrigin(), configuration.getName(), setup.getDescription());
+        final Coordinate origin = setup.getOrigin();
+        view.setTestbedCoordinate(origin, configuration.getName(), setup.getDescription());
         final List<Coordinate> coordinates = Lists.transform(setup.getNode(), new Function<Node, Coordinate>() {
 			@Override
 			public Coordinate apply(final Node input) {
-				return input.getPosition();
+				return abs(origin, rotate(input.getPosition(), origin.getPhi()));
 			}
 		});
 		view.setTestbedShape(QuickHull.calcuate(coordinates));
@@ -59,5 +60,18 @@ public class MapPresenter implements MapView.Presenter, WisemlLoadedHandler, Con
         this.configuration = event.getConfiguration();
         view.setTestbedCoordinate(null, null, null);
         view.setTestbedShape(null);
+    }
+    
+    private static Coordinate rotate(final Coordinate coordinate, final Double phi) {
+    	final Double rad = Math.toRadians(phi);
+    	final Double x = coordinate.getX() * Math.cos(rad) - coordinate.getY() * Math.sin(rad);
+    	final Double y = coordinate.getY() * Math.cos(rad) + coordinate.getX() * Math.sin(rad);
+    	return new Coordinate(x, y, coordinate.getZ(), coordinate.getPhi(), coordinate.getTheta());
+    }
+    
+    private static Coordinate abs(final Coordinate origin, final Coordinate coordinate) {
+    	final Double y = coordinate.getY() * 0.00001 + origin.getY();
+    	final Double x = coordinate.getX() * 0.00001 + origin.getX();
+    	return new Coordinate(x, y, coordinate.getZ(), coordinate.getPhi(), coordinate.getTheta());
     }
 }

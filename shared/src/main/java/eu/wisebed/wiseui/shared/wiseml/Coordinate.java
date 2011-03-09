@@ -14,6 +14,14 @@ public class Coordinate implements Serializable {
     public Coordinate() {
     }
     
+    public Coordinate(final Double x, final Double y, final Double z, final Double phi, final Double theta) {
+    	this.x = x;
+    	this.y = y;
+    	this.z = z;
+    	this.phi = phi;
+    	this.theta = theta;
+    }
+    
     public Coordinate(final Coordinate coordinate) {
     	x = coordinate.getX();
     	y = coordinate.getY();

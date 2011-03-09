@@ -1,6 +1,5 @@
 package eu.wisebed.wiseui.client.testbedselection.view;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.google.common.base.Function;
@@ -45,7 +44,6 @@ public class MapViewImpl extends Composite implements MapView {
     private Marker testbedMarker;
     private Polygon testbedShape;
     private InfoWindow testbedInfoWindow;
-    private Coordinate coordinate;
     private final AsyncManager<MapWidget> markerManager = new AsyncManager<MapWidget>();
     private final AsyncManager<MapWidget> polygonManager = new AsyncManager<MapWidget>();
 
@@ -129,7 +127,6 @@ public class MapViewImpl extends Composite implements MapView {
 
     @Override
     public void setTestbedCoordinate(final Coordinate coordinate, final String title, final String description) {
-    	this.coordinate = coordinate;
         markerManager.setHandler(new AsyncManager.Handler<MapWidget>() {
 			@Override
 			public void execute(final MapWidget mapWidget) {
@@ -146,17 +143,13 @@ public class MapViewImpl extends Composite implements MapView {
     		return;
     	}
     	
-    	final List<LatLng> latLngs = new ArrayList<LatLng>(Lists.transform(coordinates, new Function<Coordinate, LatLng>() {
+    	coordinates.add(coordinates.get(0));
+    	final List<LatLng> latLngs = Lists.transform(coordinates, new Function<Coordinate, LatLng>() {
 			@Override
 			public LatLng apply(final Coordinate input) {
-				final double x = input.getX() / 111120 + coordinate.getX();
-				final double y = input.getY() / 111120 * Math.cos(x) + coordinate.getY();
-				input.setX(x);
-				input.setY(y);
 				return convert(input);
 			}
-		}));
-    	latLngs.add(latLngs.get(0));
+		});
     	testbedShape = new Polygon(latLngs.toArray(new LatLng[0]));
     	mapWidget.addOverlay(testbedShape);
     }
