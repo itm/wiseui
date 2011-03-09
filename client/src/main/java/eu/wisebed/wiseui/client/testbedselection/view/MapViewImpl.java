@@ -10,7 +10,6 @@ import com.google.gwt.maps.client.InfoWindowContent;
 import com.google.gwt.maps.client.MapType;
 import com.google.gwt.maps.client.MapUIOptions;
 import com.google.gwt.maps.client.MapWidget;
-import com.google.gwt.maps.client.Maps;
 import com.google.gwt.maps.client.control.OverviewMapControl;
 import com.google.gwt.maps.client.event.MarkerClickHandler;
 import com.google.gwt.maps.client.geom.LatLng;
@@ -25,6 +24,7 @@ import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
 import eu.wisebed.wiseui.client.util.AsyncManager;
+import eu.wisebed.wiseui.client.util.MapApiLoader;
 import eu.wisebed.wiseui.shared.wiseml.Coordinate;
 
 public class MapViewImpl extends Composite implements MapView {
@@ -49,12 +49,12 @@ public class MapViewImpl extends Composite implements MapView {
 
     public MapViewImpl() {
         initWidget(uiBinder.createAndBindUi(this));
-        Maps.loadMapsApi("", "2", false, new Runnable() {
-            @Override
-            public void run() {
-                initMap();
-            }
-        });
+        MapApiLoader.get().loadMapApi(new Runnable() {
+			@Override
+			public void run() {
+				initMap();
+			}
+		});
     }
 
     @Override

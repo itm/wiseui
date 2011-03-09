@@ -13,6 +13,7 @@ import eu.wisebed.wiseui.client.testbedselection.event.ConfigurationSelectedEven
 import eu.wisebed.wiseui.client.testbedselection.event.WisemlLoadedEvent;
 import eu.wisebed.wiseui.client.testbedselection.event.WisemlLoadedEvent.WisemlLoadedHandler;
 import eu.wisebed.wiseui.client.testbedselection.view.MapView;
+import eu.wisebed.wiseui.client.util.Coordinates;
 import eu.wisebed.wiseui.client.util.QuickHull;
 import eu.wisebed.wiseui.shared.TestbedConfiguration;
 import eu.wisebed.wiseui.shared.wiseml.Coordinate;
@@ -49,7 +50,7 @@ public class MapPresenter implements MapView.Presenter, WisemlLoadedHandler, Con
         final List<Coordinate> coordinates = Lists.transform(setup.getNode(), new Function<Node, Coordinate>() {
 			@Override
 			public Coordinate apply(final Node input) {
-				return abs(origin, rotate(input.getPosition(), origin.getPhi()));
+				return Coordinates.absolute(origin, Coordinates.rotate(input.getPosition(), origin.getPhi()));
 			}
 		});
 		view.setTestbedShape(QuickHull.calcuate(coordinates));
@@ -62,16 +63,5 @@ public class MapPresenter implements MapView.Presenter, WisemlLoadedHandler, Con
         view.setTestbedShape(null);
     }
     
-    private static Coordinate rotate(final Coordinate coordinate, final Double phi) {
-    	final Double rad = Math.toRadians(phi);
-    	final Double x = coordinate.getX() * Math.cos(rad) - coordinate.getY() * Math.sin(rad);
-    	final Double y = coordinate.getY() * Math.cos(rad) + coordinate.getX() * Math.sin(rad);
-    	return new Coordinate(x, y, coordinate.getZ(), coordinate.getPhi(), coordinate.getTheta());
-    }
-    
-    private static Coordinate abs(final Coordinate origin, final Coordinate coordinate) {
-    	final Double y = coordinate.getY() * 0.00001 + origin.getY();
-    	final Double x = coordinate.getX() * 0.00001 + origin.getX();
-    	return new Coordinate(x, y, coordinate.getZ(), coordinate.getPhi(), coordinate.getTheta());
-    }
+
 }
