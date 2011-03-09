@@ -11,6 +11,13 @@ package eu.wisebed.wiseui.client.util;
  */
 public class AsyncManager<T> {
 
+	/**
+	 * Use this handler to execute operations when the async manager calls the ready method.
+	 * 
+	 * @author Malte Legenhausen
+	 *
+	 * @param <T>
+	 */
 	public interface Handler<T> {
 		void execute(T value);
 	}

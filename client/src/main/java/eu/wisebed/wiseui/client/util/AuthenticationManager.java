@@ -9,6 +9,12 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+
+/**
+ * Manager for storing a session when logging in to a testbed.
+ * 
+ * @author Malte Legenhausen
+ */
 @Singleton
 public class AuthenticationManager {
 
