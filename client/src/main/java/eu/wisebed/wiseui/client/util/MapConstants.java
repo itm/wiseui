@@ -5,7 +5,7 @@ import com.google.gwt.i18n.client.Constants;
 
 
 /**
- * Constants that are loading the map api from google.
+ * Constants that are used for loading the map api from google.
  * 
  * @author Malte Legenhausen
  */
