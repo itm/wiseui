@@ -18,10 +18,15 @@ import com.google.gwt.view.client.TreeViewModel;
 
 import eu.wisebed.wiseui.shared.wiseml.Capability;
 
+
+/**
+ * View for the testbed details.
+ * 
+ * @author Malte Legenhausen
+ */
 public class DetailViewImpl extends Composite implements DetailView {
 	
-	private static DetailViewImplUiBinder uiBinder = GWT
-			.create(DetailViewImplUiBinder.class);
+	private static DetailViewImplUiBinder uiBinder = GWT.create(DetailViewImplUiBinder.class);
 
 	interface DetailViewImplUiBinder extends UiBinder<Widget, DetailViewImpl> {
 	}
@@ -53,7 +58,7 @@ public class DetailViewImpl extends Composite implements DetailView {
         final CellTable<Capability> cellTable = new CellTable<Capability>();
         final Column<Capability, String> nameColumn = new Column<Capability, String>(new TextCell()) {
 			@Override
-			public String getValue(Capability value) {
+			public String getValue(final Capability value) {
 				return value.getName();
 			}
 		};
@@ -61,7 +66,7 @@ public class DetailViewImpl extends Composite implements DetailView {
         
         final Column<Capability, String> datatypeColumn = new Column<Capability, String>(new TextCell()) {
         	@Override
-        	public String getValue(Capability value) {
+        	public String getValue(final Capability value) {
         		return value.getDatatype().toString();
         	}
         };
@@ -69,7 +74,7 @@ public class DetailViewImpl extends Composite implements DetailView {
         
         final Column<Capability, String> unitsColumn = new Column<Capability, String>(new TextCell()) {
         	@Override
-        	public String getValue(Capability value) {
+        	public String getValue(final Capability value) {
         		return value.getUnit().toString();
         	}
         };
