@@ -40,7 +40,7 @@
 				</g:center>
 				<g:south size="100">
 					<my:CaptionPanel caption='Testbed Description'>
-						<g:ScrollPanel>
+						<g:ScrollPanel styleName="{style.fullLayout}">
 							<g:Label styleName="{style.content}" ui:field="description"/>
 						</g:ScrollPanel>
 					</my:CaptionPanel>
