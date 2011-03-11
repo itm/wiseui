@@ -14,13 +14,16 @@
         
         .xmlPanel {
         	margin: 7px;
+        }
+        
+        .fullLayout {
         	width: 100%;
             height: 100%;
         }
     </ui:style>
     
     <my:CaptionPanel caption='Raw WiseML'>
-    	<g:ScrollPanel>
+    	<g:ScrollPanel styleName="{style.fullLayout}">
       		<g:HTML ui:field="xml" styleName="{style.xmlPanel}"/>
       	</g:ScrollPanel>
     </my:CaptionPanel>
