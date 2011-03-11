@@ -7,7 +7,7 @@ public class UrnPrefixInfo {
         NOT_AUTHENTICATED("Not authenticated"),
         AUTHENTICATE("Authenticate..."),
         SUCCESS("Successful"),
-        FAILED("Failed due an error"),
+        FAILED("Failed due to an error"),
         CANCELED("Canceled"),
         SKIPPED("Skipped");
 
