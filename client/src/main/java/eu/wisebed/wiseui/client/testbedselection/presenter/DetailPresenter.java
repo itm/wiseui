@@ -94,6 +94,7 @@ public class DetailPresenter implements Presenter, ConfigurationSelectedHandler,
     public void onWisemlLoaded(final WisemlLoadedEvent event) {
         final Setup setup = event.getWiseml().getSetup();
         if (null == setup) return;
+        view.getDescriptionHasText().setText(setup.getDescription());
         view.setTreeViewModel(new TestbedTreeViewModel(configuration, setup.getNode(), nodeSelectionModel));
     }
 

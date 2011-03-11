@@ -30,11 +30,22 @@
 
 	<g:SplitLayoutPanel styleName="{style.fullLayout}">
 		<g:center>
-			<my:CaptionPanel caption='Testbed Details'>
-				<g:ScrollPanel styleName="{style.fullLayout}">
-					<g:SimplePanel styleName="{style.content}" ui:field="treeContainer" />
-				</g:ScrollPanel>
-			</my:CaptionPanel>
+			<g:SplitLayoutPanel>
+				<g:center>
+					<my:CaptionPanel caption='Testbed Details'>
+						<g:ScrollPanel styleName="{style.fullLayout}">
+							<g:SimplePanel styleName="{style.content}" ui:field="treeContainer" />
+						</g:ScrollPanel>
+					</my:CaptionPanel>
+				</g:center>
+				<g:south size="100">
+					<my:CaptionPanel caption='Testbed Description'>
+						<g:ScrollPanel>
+							<g:Label styleName="{style.content}" ui:field="description"/>
+						</g:ScrollPanel>
+					</my:CaptionPanel>
+				</g:south>
+			</g:SplitLayoutPanel>
 		</g:center>
 		<g:east size="500">
 			<my:CaptionPanel caption='Node Information'>
