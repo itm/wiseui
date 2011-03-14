@@ -80,12 +80,6 @@
             <groupId>com.google.code</groupId>
             <artifactId>gwt-guava</artifactId>
         </dependency>
-        <!--
-        <dependency>
-            <groupId>com.google.code</groupId>
-            <artifactId>gwt-codemirror-widget</artifactId>
-        </dependency>
-        -->
     </dependencies>
 
     <profiles>
@@ -111,12 +105,16 @@
                                 <goals>
                                     <goal>generateAsync</goal>
                                     <goal>compile</goal>
+                                    <goal>resources</goal>
                                 </goals>
                             </execution>
                         </executions>
                         <configuration>
                             <runTarget>WiseUi.html</runTarget>
                             <hostedWebapp>${webappDirectory}</hostedWebapp>
+                            <compileSourcesArtifacts>
+                                <artifact>com.alexgorbatchev:gwt-syntaxhighlighter</artifact>
+                            </compileSourcesArtifacts>
                         </configuration>
                     </plugin>
                     <!-- Copy static web files before executing gwt:run -->
@@ -146,18 +144,7 @@
                 </plugins>
             </build>
         </profile>
-
-        <!-- To use this profile, make sure you settings.xml (~.m2/settings.xml)
-              looks like the example below. Replace the property values with your specific
-              credentials, hostname, etc. Also, it is highly recommended, that you SSH
-              client is configured to log in on you remote server (deployment target) without
-              password. This requires you to create a private key with ssh-keygen and copy
-              it into the file ~.ssh/authorized_keys on your remote system. <settings>
-              <profiles> <profile> <id>inject-deployment-details</id> <properties> <deployment.artifact.name>wiseui</deployment.artifact.name>
-              <deployment.user>root</deployment.user> <deployment.host>141.83.0.100</deployment.host>
-              <deployment.directory>/usr/local/tomcat/webapps/</deployment.directory> </properties>
-              </profile> </profiles> <activeProfiles> <activeProfile>inject-deployment-details</activeProfile>
-              </activeProfiles> </settings> -->
+        
         <profile>
             <id>deploy-remote</id>
             <activation>

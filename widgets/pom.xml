@@ -12,6 +12,10 @@
     <version>0.3</version>
     <name>WiseUI - Widgets</name>
     <packaging>jar</packaging>
+    <dependencyManagement>
+    	<dependencies>
+    	</dependencies>
+    </dependencyManagement>
     <properties>
         <!-- tell the compiler we can use 1.5 -->
         <maven.compiler.source>1.6</maven.compiler.source>
@@ -32,6 +36,17 @@
             <groupId>com.google.gwt.inject</groupId>
             <artifactId>gin</artifactId>
         </dependency>
+        <dependency>
+        	<groupId>com.googlecode.gwtupload</groupId>
+        	<artifactId>gwtupload</artifactId>
+        	<version>0.6.1</version>
+        	<type>jar</type>
+        	<scope>compile</scope>
+        </dependency>
+        <dependency>
+        	<groupId>eu.wisebed.wiseui</groupId>
+        	<artifactId>shared</artifactId>
+        </dependency>
     </dependencies>
     <build>
         <plugins>
@@ -45,6 +60,7 @@
                         </goals>
                     </execution>
                 </executions>
+                <version>2.2.0</version>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

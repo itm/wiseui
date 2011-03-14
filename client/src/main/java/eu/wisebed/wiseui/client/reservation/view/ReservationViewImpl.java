@@ -1,16 +1,45 @@
 package eu.wisebed.wiseui.client.reservation.view;
 
+import java.util.ArrayList;
+
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.uibinder.client.UiTemplate;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HTMLPanel;
+import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+
+import eu.wisebed.wiseui.shared.SensorDetails;
+import eu.wisebed.wiseui.widgets.CalendarWidget;
+import eu.wisebed.wiseui.widgets.ImageUploadWidget;
+import eu.wisebed.wiseui.widgets.SensorListWidget;
+import eu.wisebed.wiseui.widgets.TimeSelectorWidget;
 
 public class ReservationViewImpl extends Composite implements ReservationView {
 
+	@UiTemplate("ReservationViewImpl.ui.xml")
     interface ReservationViewImplUiBinder extends
             UiBinder<Widget, ReservationViewImpl> {
     }
 
+	private CalendarWidget calendarWidget = new CalendarWidget();
+	private TimeSelectorWidget timeWidget = new TimeSelectorWidget();
+	private ImageUploadWidget imageUploadWidget = new ImageUploadWidget();
+	private SensorListWidget sensorListWidget = new SensorListWidget();
+	private Presenter presenter;
+
+	@UiField VerticalPanel outerPanel;
+	@UiField HorizontalPanel dateTimeImagePanel;
+	@UiField VerticalPanel imagePanel;
+	@UiField HTMLPanel errorPanel;
+	@UiField Button reserveButton;
+	
     private static ReservationViewImplUiBinder uiBinder = GWT
             .create(ReservationViewImplUiBinder.class);
 
@@ -19,7 +48,40 @@ public class ReservationViewImpl extends Composite implements ReservationView {
     }
 
     public void setPresenter(final Presenter presenter) {
-
+    	this.presenter = presenter;
     }
+    
+	/**
+	 * Initialize reservation view by internally calling initialization 
+	 * procedure for each widget the view consists of.
+	 */
+	public void initRsView() {
+		dateTimeImagePanel.add(calendarWidget);
+		dateTimeImagePanel.add(imagePanel);
+		imagePanel.add(this.timeWidget);
+		imagePanel.add(this.imageUploadWidget);
+		outerPanel.add(this.sensorListWidget);
+	    errorPanel(false);
+	}
+	
+	public void renderNodes(ArrayList<SensorDetails> nodes) {
+		this.sensorListWidget.renderNodes(nodes);
+	}
+	
+	public void errorPanel(boolean visible){
+		errorPanel.setVisible(visible);
+	}
+	
+	/**
+	 * Tells the listener to continue with a new reservation after checking
+	 * that all reservation details have properly been set
+	 * 
+	 * @param e ClickEvent
+	 */
+	@UiHandler("reserveButton")
+	void onClickReserveButton(ClickEvent e) {
+		if(presenter.checkRsDetails())
+			presenter.makeReservation();
+	}
 
 }

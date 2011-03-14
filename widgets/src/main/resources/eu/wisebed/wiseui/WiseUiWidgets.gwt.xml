@@ -2,7 +2,6 @@
 <module>
     <!-- Inherit the core Web Toolkit stuff.                        -->
     <inherits name="com.google.gwt.user.User"/>
-
 	<inherits name="com.google.gwt.inject.Inject"/>
     <!-- Specify the paths for translatable code                    -->
     <source path="widgets"/>

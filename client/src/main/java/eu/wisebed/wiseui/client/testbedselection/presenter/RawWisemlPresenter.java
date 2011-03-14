@@ -46,7 +46,6 @@ public class RawWisemlPresenter implements Presenter, ConfigurationSelectedHandl
 			@Override
 			public void onSuccess(final String result) {
 				view.getXmlHasHTML().setHTML("<pre>" + SafeHtmlUtils.htmlEscape(result) + "</pre>");
-//                view.setCodeMirrorContent(result);
 			}
 			
 			@Override

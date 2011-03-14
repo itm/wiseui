@@ -115,6 +115,11 @@
                 <artifactId>gwt-guava</artifactId>
                 <version>r08</version>
             </dependency>
+            <dependency>
+                <groupId>com.alexgorbatchev</groupId>
+                <artifactId>gwt-syntaxhighlighter</artifactId>
+                <version>1.1.1</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -171,6 +176,12 @@
     </modules>
 
     <repositories>
+    	<repository>
+    		<id>gilead</id>
+    		<name>Gilead repository</name>
+			<url>http://gilead.svn.sourceforge.net/svnroot/gilead/gilead/maven-repo/</url>
+		</repository>
+    
         <repository>
             <id>google-maven-repository</id>
             <name>Google Maven Repository</name>

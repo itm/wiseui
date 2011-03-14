@@ -1,0 +1,19 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent"><!--
+					<tp:TimePicker ui:field="startTimePicker"/>
+					<tp:TimePicker ui:field="stopTimePicker"></tp:TimePicker>
+-->
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+			xmlns:g="urn:import:com.google.gwt.user.client.ui">
+
+	<ui:with field='common' type='eu.wisebed.wiseui.widgets.resources.CommonResources'/>
+	<g:HTMLPanel>
+		<div class='{common.style.label}'>Time</div>
+		<g:FlowPanel ui:field="timePanel">
+			<g:TextBox ui:field="startTimePicker"></g:TextBox>
+			<g:TextBox ui:field="stopTimePicker"></g:TextBox>
+		</g:FlowPanel>
+		<span ui:field="timeSpan"></span>
+		
+	</g:HTMLPanel>
+	
+</ui:UiBinder>
