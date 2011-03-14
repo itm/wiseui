@@ -9,6 +9,8 @@ import eu.wisebed.wiseui.shared.wiseml.Coordinate;
  * @author Malte Legenhausen
  */
 public class Coordinates {
+	
+	private static final double RAD_TO_METER = 0.00001;
 
     public static Coordinate rotate(final Coordinate coordinate, final Double phi) {
     	final Double rad = Math.toRadians(phi);
@@ -20,20 +22,20 @@ public class Coordinates {
     }
     
     public static Coordinate absolute(final Coordinate origin, final Coordinate coordinate) {
-    	final Double y = coordinate.getY() * 0.00001 + origin.getY();
-    	final Double x = coordinate.getX() * 0.00001 + origin.getX();
+    	final Double y = coordinate.getY() * RAD_TO_METER + origin.getY();
+    	final Double x = coordinate.getX() * RAD_TO_METER + origin.getX();
     	return new Coordinate(x, y, coordinate.getZ(), coordinate.getPhi(), coordinate.getTheta());
     }
     
-	public static Coordinate difference(Coordinate source, Coordinate vector) {
+	public static Coordinate difference(final Coordinate source, final Coordinate vector) {
 		return new Coordinate(vector.getX() - source.getX(), vector.getY() - source.getY(), 0.0, 0.0, 0.0);
 	}
 	
-	public static double angle(Coordinate source, Coordinate vector) {
+	public static double angle(final Coordinate source, final Coordinate vector) {
         return Math.atan2(vector.getY(), vector.getX()) - Math.atan2(source.getY(), source.getX());
 	}
 
-	public static double location(Coordinate point, Coordinate linePoint1, Coordinate linePoint2) {
+	public static double location(final Coordinate point, final Coordinate linePoint1, final Coordinate linePoint2) {
 		return (linePoint2.getX() - linePoint1.getX())
 				* (point.getY() - linePoint1.getY())
 				- (point.getX() - linePoint1.getX())

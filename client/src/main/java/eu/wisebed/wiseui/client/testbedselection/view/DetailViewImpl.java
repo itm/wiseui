@@ -30,6 +30,8 @@ public class DetailViewImpl extends Composite implements DetailView {
 	SimplePanel treeContainer;
 	
 	@UiField
+	Label description;
+	@UiField
 	Label idLabel;
 	@UiField
 	Label positionLabel;
@@ -127,5 +129,10 @@ public class DetailViewImpl extends Composite implements DetailView {
 	@Override
 	public HasData<Capability> getCapababilitesList() {
 		return capabilitesTable;
+	}
+
+	@Override
+	public HasText getDescriptionHasText() {
+		return description;
 	}
 }

@@ -8,8 +8,16 @@ import java.util.Stack;
 
 import eu.wisebed.wiseui.shared.wiseml.Coordinate;
 
+
+/**
+ * 
+ * 
+ * @author Malte Legenhausen
+ */
 public class GrahamScan {
 
+	private static final int MINIMUM_POINTS = 3;
+	
 	/**
 	 * Comparator class to compare points by their angle from the positive
 	 * x-axis with reference from a given point.
@@ -31,20 +39,15 @@ public class GrahamScan {
 		 * @param reference
 		 *            the reference point for finding angles
 		 */
-		public PointComparator(Coordinate reference) {
+		public PointComparator(final Coordinate reference) {
 			this.reference = reference;
 		}
 
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
-		 */
 		@Override
-		public int compare(Coordinate o1, Coordinate o2) {
+		public int compare(final Coordinate o1, final Coordinate o2) {
 			// get the vectors from p to the points
-			Coordinate v1 = Coordinates.difference(reference, o1);
-			Coordinate v2 = Coordinates.difference(reference, o2);
+			final Coordinate v1 = Coordinates.difference(reference, o1);
+			final Coordinate v2 = Coordinates.difference(reference, o2);
 			// compare the vector's angles with the x-axis
 			return (int) Math.signum(Coordinates.angle(v2, x) - Coordinates.angle(v1, x));
 		}
@@ -54,17 +57,14 @@ public class GrahamScan {
 		return new GrahamScan().generate(new ArrayList<Coordinate>(coordinate));
 	}
 
-	private List<Coordinate> generate(List<Coordinate> points) {
-		// check for null points array
-		if (points == null)
-			throw new NullPointerException(
-					"Cannot generate a convex hull from a null point array.");
+	private List<Coordinate> generate(final List<Coordinate> points) {
 		// get the size
-		int size = points.size();
+		final int size = points.size();
 
 		// check the size
-		if (size == 1 || size == 2)
+		if (size < MINIMUM_POINTS) {
 			return points;
+		}
 
 		// find the point of minimum y (choose the point of minimum x if there
 		// is a tie)
@@ -80,12 +80,12 @@ public class GrahamScan {
 		}
 
 		// create the comparator for the array
-		PointComparator pc = new PointComparator(minY);
+		final PointComparator pc = new PointComparator(minY);
 		// sort the array by angle
 		Collections.sort(points, pc);
 
 		// build the hull
-		Stack<Coordinate> stack = new Stack<Coordinate>();
+		final Stack<Coordinate> stack = new Stack<Coordinate>();
 		stack.push(points.get(0));
 		stack.push(points.get(1));
 		int i = 2;
@@ -99,14 +99,14 @@ public class GrahamScan {
 				continue;
 			}
 			// otherwise get the top two items off the stack
-			Coordinate p1 = stack.get(stack.size() - 2);
-			Coordinate p2 = stack.peek();
+			final Coordinate p1 = stack.get(stack.size() - 2);
+			final Coordinate p2 = stack.peek();
 			// get the current point
-			Coordinate p3 = points.get(i);
+			final Coordinate p3 = points.get(i);
 			// test if the current point is to the left of the line
 			// created by the top two items in the stack (the last edge
 			// on the current convex hull)
-			double location = Coordinates.location(p3, p1, p2);
+			final double location = Coordinates.location(p3, p1, p2);
 			if (location > 0.0) {
 				// if its to the left, then push the new point on
 				// the stack since it maintains convexity

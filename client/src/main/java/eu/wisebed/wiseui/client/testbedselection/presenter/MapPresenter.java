@@ -4,7 +4,6 @@ import java.util.List;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
-import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.shared.EventBus;
 import com.google.inject.Inject;
 
@@ -21,6 +20,11 @@ import eu.wisebed.wiseui.shared.wiseml.Coordinate;
 import eu.wisebed.wiseui.shared.wiseml.Node;
 import eu.wisebed.wiseui.shared.wiseml.Setup;
 
+/**
+ * The presenter for the MapView.
+ * 
+ * @author Malte Legenhausen
+ */
 public class MapPresenter implements MapView.Presenter, WisemlLoadedHandler, ConfigurationSelectedHandler {
 
     private final EventBus eventBus;
@@ -54,13 +58,7 @@ public class MapPresenter implements MapView.Presenter, WisemlLoadedHandler, Con
 				return Coordinates.absolute(origin, Coordinates.rotate(input.getPosition(), origin.getPhi()));
 			}
 		});
-        Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
-			
-			@Override
-			public void execute() {
-				view.setTestbedShape(GrahamScan.calculate(coordinates));
-			}
-		});
+        view.setTestbedShape(GrahamScan.calculate(coordinates));
     }
 
     @Override

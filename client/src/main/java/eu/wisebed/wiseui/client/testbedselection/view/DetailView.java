@@ -14,6 +14,8 @@ public interface DetailView extends IsWidget {
     
     void setTreeViewModel(TreeViewModel model);
     
+    HasText getDescriptionHasText();
+    
     HasText getNodeIdHasText();
     
     HasText getNodePositionHasText();
