@@ -1,7 +1,7 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
-             xmlns:g="urn:import:com.google.gwt.user.client.ui">
-             <!--xmlns:c="urn:import:at.wizzart.gwt.widgets.client"-->
+             xmlns:g="urn:import:com.google.gwt.user.client.ui"
+             xmlns:c="urn:import:com.alexgorbatchev.syntaxhighlighter.client">
     <ui:style>
 
         .caption {
@@ -20,6 +20,7 @@
             height: 100%;
         }
     </ui:style>
+    <ui:with field="brushes" type="com.alexgorbatchev.syntaxhighlighter.client.Brush.Brushes"/>
     <g:DockLayoutPanel styleName="{style.fullLayout}">
         <g:north size="28">
             <g:Label styleName="{style.caption}">Raw WiseML</g:Label>
@@ -27,8 +28,8 @@
         <g:center>
         	<g:ScrollPanel>
         		<g:SimplePanel styleName="{style.xmlPanel}">
-        			<g:HTML ui:field="xml"/>
-                    <!--<c:CodeMirror ui:field="codeMirror" /-->
+        			<c:Highlighter ui:field="xml" brush="{brushes.XML}"/>
+                    <!--g:HTML ui:field="xml" /-->
         		</g:SimplePanel>
         	</g:ScrollPanel>
         </g:center>
