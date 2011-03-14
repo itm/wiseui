@@ -20,7 +20,6 @@
     <inherits name="com.google.gwt.maps.GoogleMaps"/>
     <inherits name="com.google.common.collect.Collect"/>
     <inherits name="com.google.gwt.resources.Resources"/>
-    <inherits name="com.alexgorbatchev.syntaxhighlighter.Highlighter"/>
 
     <!-- Other WiseUi Projects -->
     <inherits name="eu.wisebed.wiseui.WiseUiApi"/>

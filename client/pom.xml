@@ -80,10 +80,6 @@
             <groupId>com.google.code</groupId>
             <artifactId>gwt-guava</artifactId>
         </dependency>
-        <dependency>
-            <groupId>com.alexgorbatchev</groupId>
-            <artifactId>gwt-syntaxhighlighter</artifactId>
-        </dependency>
     </dependencies>
 
     <profiles>
