@@ -1,0 +1,12 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+			xmlns:g="urn:import:com.google.gwt.user.client.ui"
+			xmlns:dp="urn:import:com.google.gwt.user.datepicker.client">
+
+	<ui:with field='common' type='eu.wisebed.wiseui.widgets.resources.CommonResources'/>
+	<g:HTMLPanel>
+		<div class='{common.style.label}'>Date</div>
+		<dp:DatePicker ui:field="datePicker" />
+	</g:HTMLPanel>
+</ui:UiBinder>

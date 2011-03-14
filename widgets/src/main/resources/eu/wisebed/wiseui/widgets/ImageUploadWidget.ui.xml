@@ -1,0 +1,13 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+			 xmlns:g="urn:import:com.google.gwt.user.client.ui"
+			 xmlns:iu="urn:import:gwtupload.client">
+
+	<ui:with field='common' type='eu.wisebed.wiseui.widgets.resources.CommonResources'/>
+	<ui:with field='imgUpload' type='eu.wisebed.wiseui.widgets.resources.ImageUploadResources'/>
+	<g:HTMLPanel>
+		<div class='{common.style.label}'>Image</div>
+		<iu:MultiUploader ui:field="imagePicker"/>
+	</g:HTMLPanel>
+</ui:UiBinder>

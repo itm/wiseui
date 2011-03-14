@@ -105,6 +105,7 @@
                                 <goals>
                                     <goal>generateAsync</goal>
                                     <goal>compile</goal>
+                                    <goal>resources</goal>
                                 </goals>
                             </execution>
                         </executions>
