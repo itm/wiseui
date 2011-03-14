@@ -29,7 +29,7 @@ public class SessionManagementServiceImpl extends RemoteServiceServlet implement
         try {
             final eu.wisebed.ns.wiseml._1.Wiseml wiseml = WiseMLHelper.deserialize(getWisemlAsXml(url));
             return mapper.map(wiseml, Wiseml.class);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             throw new WisemlException("Unable to load Wiseml from " + url, e);
         }
     }
@@ -39,7 +39,7 @@ public class SessionManagementServiceImpl extends RemoteServiceServlet implement
 		try {
 			final SessionManagement sessionManagement = WSNServiceHelper.getSessionManagementService(url);
 			return sessionManagement.getNetwork();
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			throw new WisemlException("Unable to load Wiseml from " + url, e);
 		}
 	}

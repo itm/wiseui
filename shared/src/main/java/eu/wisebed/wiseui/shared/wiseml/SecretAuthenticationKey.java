@@ -4,9 +4,6 @@ import java.io.Serializable;
 
 public class SecretAuthenticationKey implements Serializable {
 
-    /**
-     *
-     */
     private static final long serialVersionUID = 9132290399485303471L;
 
     private String username;

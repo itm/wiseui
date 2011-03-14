@@ -53,7 +53,7 @@ public class DetailViewImpl extends Composite implements DetailView {
         final CellTable<Capability> cellTable = new CellTable<Capability>();
         final Column<Capability, String> nameColumn = new Column<Capability, String>(new TextCell()) {
 			@Override
-			public String getValue(Capability value) {
+			public String getValue(final Capability value) {
 				return value.getName();
 			}
 		};
@@ -61,7 +61,7 @@ public class DetailViewImpl extends Composite implements DetailView {
         
         final Column<Capability, String> datatypeColumn = new Column<Capability, String>(new TextCell()) {
         	@Override
-        	public String getValue(Capability value) {
+        	public String getValue(final Capability value) {
         		return value.getDatatype().toString();
         	}
         };
@@ -69,7 +69,7 @@ public class DetailViewImpl extends Composite implements DetailView {
         
         final Column<Capability, String> unitsColumn = new Column<Capability, String>(new TextCell()) {
         	@Override
-        	public String getValue(Capability value) {
+        	public String getValue(final Capability value) {
         		return value.getUnit().toString();
         	}
         };

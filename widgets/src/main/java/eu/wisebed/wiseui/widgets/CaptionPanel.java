@@ -41,7 +41,7 @@ public class CaptionPanel extends Composite implements HasWidgets {
 	}
 	
 	@Override
-	public void add(Widget widgets) {
+	public void add(final Widget widgets) {
 		content.add(widgets);
 	}
 
@@ -56,7 +56,7 @@ public class CaptionPanel extends Composite implements HasWidgets {
 	}
 
 	@Override
-	public boolean remove(Widget widgets) {
+	public boolean remove(final Widget widgets) {
 		return content.remove(widgets);
 	}
 }
