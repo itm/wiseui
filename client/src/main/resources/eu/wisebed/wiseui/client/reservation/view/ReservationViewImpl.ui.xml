@@ -1,7 +1,35 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
-<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
-             xmlns:g="urn:import:com.google.gwt.user.client.ui">
+<ui:UiBinder 	xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:gwt="urn:import:com.google.gwt.user.client.ui"
+	xmlns:dp="urn:import:com.google.gwt.user.datepicker.client">
+	
+	<ui:style>
+		.outerPanel{
+			border:1px solid black;
+			margin:auto;
+			width: 1024px;
+		}
+		.northPanel{
+			height: 100px;	
+		}
+		.southPanel{}
+		.errorPanel{
+			float:right;	
+			color:red;
+		}
+		.buttonPanel{
+			float:right;
+		}
+	</ui:style>
 
-    <g:Label>ReservationView</g:Label>
+	<gwt:VerticalPanel ui:field="outerPanel" styleName='{style.outerPanel}'>
+		<gwt:HorizontalPanel ui:field="dateTimeImagePanel">
+			<gwt:VerticalPanel ui:field="imagePanel"></gwt:VerticalPanel>
+		</gwt:HorizontalPanel>
+		<gwt:HTMLPanel ui:field="errorPanel" styleName='{style.errorPanel}'>
+			<span>Error.Please check reservation attributes</span>
+		</gwt:HTMLPanel>
+		<gwt:Button ui:field="reserveButton">Reserve</gwt:Button>
+	</gwt:VerticalPanel>
 
 </ui:UiBinder>

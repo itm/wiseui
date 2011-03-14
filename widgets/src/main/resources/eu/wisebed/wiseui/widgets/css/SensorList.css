@@ -1,0 +1,10 @@
+.scrollable {
+
+	width: 250px;
+	border: 1px solid #ccc;
+	text-align: left;
+}
+
+.scrollable ul {
+	height: 30px;
+}

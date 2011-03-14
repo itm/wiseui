@@ -176,6 +176,12 @@
     </modules>
 
     <repositories>
+    	<repository>
+    		<id>gilead</id>
+    		<name>Gilead repository</name>
+			<url>http://gilead.svn.sourceforge.net/svnroot/gilead/gilead/maven-repo/</url>
+		</repository>
+    
         <repository>
             <id>google-maven-repository</id>
             <name>Google Maven Repository</name>
