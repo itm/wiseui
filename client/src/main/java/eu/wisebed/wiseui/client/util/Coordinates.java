@@ -10,9 +10,13 @@ import eu.wisebed.wiseui.shared.wiseml.Coordinate;
  */
 public class Coordinates {
 	
-	public static final double WGS84_A = 6378137.0;
+	private static final double WGS84_ALPHA = 1.0 / 298.257222101;
 	
-	public static final double WGS84_ALPHA = 1.0 / 298.257222101;
+	private static final double WGS84_A = 6378137.0;
+	
+	private static final double WGS84_B = WGS84_A * (1 - WGS84_ALPHA);
+	
+	private static final double WGS84_C = WGS84_A * WGS84_A / WGS84_B;
 	
     public static Coordinate rotate(final Coordinate coordinate, final Double phi) {
     	final Double rad = Math.toRadians(phi);
@@ -50,49 +54,42 @@ public class Coordinates {
         final double z = coordinate.getZ();
         
         final double roh = 180.0 / Math.PI;
-        
-        final double b = WGS84_A * (1 - WGS84_ALPHA);
-        final double c = (WGS84_A * WGS84_A) / b;
      
-        final double e0 = (WGS84_A * WGS84_A) - (b * b);
+        final double e0 = (WGS84_A * WGS84_A) - (WGS84_B * WGS84_B);
         final double e1 = Math.sqrt(e0 / (WGS84_A * WGS84_A));
-        final double e2 = Math.sqrt(e0 / (b * b));
+        final double e2 = Math.sqrt(e0 / (WGS84_B * WGS84_B));
      
         final double p = Math.sqrt((x * x) + (y * y));    
      
-        final double Theta = Math.atan((z * WGS84_A) / (p * b));
+        final double theta = Math.atan((z * WGS84_A) / (p * WGS84_B));
      
-        final double L = Math.atan(y / x) * roh;
-        final double B = Math.atan((z + (e2 * e2 * b * Math.pow(Math.sin(Theta), 3))) / (p - (e1 * e1 * WGS84_A * Math.pow(Math.cos(Theta), 3))));
+        final double l = Math.atan(y / x) * roh;
+        final double b = Math.atan((z + (e2 * e2 * WGS84_B * Math.pow(Math.sin(theta), 3))) / (p - (e1 * e1 * WGS84_A * Math.pow(Math.cos(theta), 3))));
      
-        final double eta2 = e2 * e2 * Math.pow(Math.cos(B), 2);
-        final double V = Math.sqrt(1 + eta2);
-        final double N = c / V;
+        final double eta2 = e2 * e2 * Math.pow(Math.cos(b), 2);
+        final double v = Math.sqrt(1 + eta2);
+        final double n = WGS84_C / v;
      
-        final double h = (p / Math.cos(B)) - N;
-        return new Coordinate(B * roh, L, h, coordinate.getPhi(), coordinate.getTheta());
+        final double h = (p / Math.cos(b)) - n;
+        return new Coordinate(b * roh, l, h, coordinate.getPhi(), coordinate.getTheta());
 	}
 	
 	public static Coordinate blh2xyz(final Coordinate coordinate) {        
-        final double roh = Math.PI / 180.0;
+        final double roh = Math.PI / 180.0;     
         
-        final double b = WGS84_A * (1 - WGS84_ALPHA);
-        final double c = WGS84_A * WGS84_A / b;
+        final double e = Math.sqrt(((WGS84_A * WGS84_A) - (WGS84_B * WGS84_B))/ (WGS84_B * WGS84_B));    
      
-        
-        final double e2 = Math.sqrt(((WGS84_A * WGS84_A) - (b * b))/ (b * b));    
+        final double b = coordinate.getX() * roh;
+        final double l = coordinate.getY() * roh;
      
-        final double B = coordinate.getX() * roh;
-        final double L = coordinate.getY() * roh;
-     
-        final double eta2 = e2 * e2 * Math.pow(Math.cos(B), 2);
-        final double V = Math.sqrt(1 + eta2);
-        final double N = c / V;
+        final double eta2 = e * e * Math.pow(Math.cos(b), 2);
+        final double v = Math.sqrt(1 + eta2);
+        final double n = WGS84_C / v;
      
         final double h = coordinate.getZ();
-        final double x = (N + h) * Math.cos(B) * Math.cos(L);
-        final double y = (N + h) * Math.cos(B) * Math.sin(L);
-        final double z = (Math.pow(b / WGS84_A, 2) * N + h) * Math.sin(B);
+        final double x = (n + h) * Math.cos(b) * Math.cos(l);
+        final double y = (n + h) * Math.cos(b) * Math.sin(l);
+        final double z = (Math.pow(WGS84_B / WGS84_A, 2) * n + h) * Math.sin(b);
         return new Coordinate(x, y, z, coordinate.getPhi(), coordinate.getTheta());
 	}
 }
