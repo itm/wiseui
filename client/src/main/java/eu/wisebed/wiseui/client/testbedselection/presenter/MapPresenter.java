@@ -52,9 +52,7 @@ public class MapPresenter implements MapView.Presenter, WisemlLoadedHandler, Con
         final Setup setup = event.getWiseml().getSetup();
         final Coordinate origin = setup.getOrigin();
         view.setTestbedCoordinate(origin, configuration.getName(), setup.getDescription());
-        origin.setPhi(-145.0);
         final Coordinate cartesian = Coordinates.blh2xyz(origin);
-        System.out.println(cartesian);
         final List<Coordinate> coordinates = Lists.transform(setup.getNode(), new Function<Node, Coordinate>() {
 			@Override
 			public Coordinate apply(final Node node) {
