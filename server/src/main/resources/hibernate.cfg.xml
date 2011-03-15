@@ -25,10 +25,10 @@
         <!-- Update the database schema on startup -->
         <property name="hibernate.hbm2ddl.auto">update</property>
 
-        <mapping resource="/model/AuthenticationDetails.hbm.xml"/>
-        <mapping resource="/model/ReservationDetails.hbm.xml"/>
-        <mapping resource="/model/SensorDetails.hbm.xml"/>
-        <mapping resource="/model/Image.hbm.xml"/>
+        <mapping resource="eu/wisebed/wiseui/server/model/AuthenticationDetails.hbm.xml"/>
+        <mapping resource="eu/wisebed/wiseui/server/model/ReservationDetails.hbm.xml"/>
+        <mapping resource="eu/wisebed/wiseui/server/model/SensorDetails.hbm.xml"/>
+        <mapping resource="eu/wisebed/wiseui/server/model/Image.hbm.xml"/>
 
     </session-factory>
 </hibernate-configuration>
