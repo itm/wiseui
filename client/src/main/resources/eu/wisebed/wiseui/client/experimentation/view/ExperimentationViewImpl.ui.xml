@@ -11,7 +11,7 @@
 			width:auto;
 		}
 	</ui:style>
-	<g:ScrollPanel addStyleNames="{style.experimentMonitoringMainPanel}" ui:field="experimentContainer">
-	</g:Scroll>
+	<g:FlowPanel addStyleNames="{style.experimentMonitoringMainPanel}" ui:field="experimentContainer">
+	</g:FlowPanel>
 
 </ui:UiBinder>

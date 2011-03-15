@@ -20,7 +20,6 @@ public class ExperimentPanel implements Presenter {
 	private ExperimentStatus status;
 	private String imageFileName;
 
-	
 	public enum ExperimentStatus{
 		PENDING			("Pending"),
 		READY			("Ready"),
@@ -68,7 +67,9 @@ public class ExperimentPanel implements Presenter {
     	void onButtonClicked(final Button button);
     }
         
-    private final ExperimentPanelView view;    
+    private final ExperimentPanelView view;
+    private Callback callback;
+
 
     @Inject
     public ExperimentPanel(final ExperimentPanelView view) {
@@ -78,40 +79,114 @@ public class ExperimentPanel implements Presenter {
     
     public void initPanel(final int reservationID,
     		final Date startDate,final Date stopDate,final List<String> urns,
-    		final String imageFileName){
+    		final String imageFileName, final Callback callback){
+    	
+    	this.determineExperimentState(startDate,stopDate);
     	this.setReservationID(reservationID);
     	this.setStartDate(startDate);
     	this.setStopDate(stopDate);
     	this.setUrns(urns);
     	this.setImageFileName(imageFileName);
+    	this.callback = callback;
     }
     
-    public void setAsPendingExperiment(){
+    @SuppressWarnings("deprecation")
+	private void determineExperimentState(final Date startDate, final Date stopDate){
+    	if(startDate.after(stopDate)){
+    		throw new IllegalArgumentException("Invalid start date value ." +
+    				"Start date cannot be " +
+    				"after stop date of an experiment : " +
+    				" startDate:(" + startDate.toLocaleString() +")" +
+    				" stopDate:(" + stopDate.toLocaleString() +")");
+    	}
+    	
+    	Date now = new Date();
+    	
+    	if(now.before(startDate))
+    	{
+    		this.setAsPendingExperiment();
+    		countDownUntilStartDate();
+		}
+    	else if(now.after(startDate) && now.before(stopDate))
+    	{
+    		this.setAsReadyExperiment();
+    		countDownUntilStopDate();
+    	}
+    	else if(now.after(stopDate))
+    	{
+    		this.setAsTimedoutExperiment();
+    		removeCountDown();
+    	}
+    }
+    
+    private void countDownUntilStartDate(){
+    	this.setReservationStartTimer(
+    			new Timer(){
+    				public void run(){
+    					long diffInMillis = 
+    						getStartDate().getTime() - (new Date()).getTime();
+    					if(diffInMillis <= 0){
+    						determineExperimentState(getStartDate(),getStopDate());
+    						this.cancel();
+    					}else{
+    						view.setReservationTime(
+    								"Starting in " +
+    								elapsedTimeToString(diffInMillis));
+    					}
+    				}
+    			});
+    	this.getReservationStartTimer().scheduleRepeating(1000);
+    }
+    
+    private void countDownUntilStopDate(){
+    	this.setReservationStopTimer(
+    			new Timer(){
+    				public void run(){
+    					long diffInMillis = 
+    						getStopDate().getTime() - (new Date()).getTime();
+    					if(diffInMillis <= 0){
+    						determineExperimentState(getStartDate(),getStopDate());
+    						this.cancel();
+    					}else{
+    						view.setReservationTime(
+    								"Finishing in " +
+    								elapsedTimeToString(diffInMillis));
+    					}
+    				}
+    			});
+    	this.getReservationStopTimer().scheduleRepeating(1000);
+    }
+    
+    private void removeCountDown(){
+    	view.setReservationTime("-");
+    }
+    
+    private void setAsPendingExperiment(){
     	this.setStatus(ExperimentStatus.PENDING);
     	this.setButtons(Button.CANCEL);
     }
     
-    public void setAsReadyExperiment(){
+    private void setAsReadyExperiment(){
     	this.setStatus(ExperimentStatus.READY);
     	this.setButtons(Button.START,Button.STOP,Button.CANCEL);
     }
     
-    public void setAsRunningExperiment(){
+    private void setAsRunningExperiment(){
     	this.setStatus(ExperimentStatus.RUNNING);
     	this.setButtons(Button.SHOWHIDE,Button.STOP,Button.CANCEL);
     }
     
-    public void setAsCancelledExperiment(){
+    private void setAsCancelledExperiment(){
     	this.setStatus(ExperimentStatus.CANCELED);
     	this.setButtons();
     }
     
-    public void setAsTimedoutExperiment(){
+    private void setAsTimedoutExperiment(){
     	this.setStatus(ExperimentStatus.TIMEDOUT);
     	this.setButtons();
     }
     
-    public void setAsTerminatedExperiment(){
+    private void setAsTerminatedExperiment(){
     	this.setStatus(ExperimentStatus.TERMINATED);
     	this.setButtons();
     }
@@ -217,6 +292,40 @@ public class ExperimentPanel implements Presenter {
 
 	@Override
 	public void buttonClicked(String button) {
-		// TODO Auto-generated method stub		
+        if (callback != null) {
+            callback.onButtonClicked(Button.fromValue(button));
+        }
+    }
+	
+	/**
+	 * Returns the elapsed time(from now to the experiment initiation) in a string format.
+	 * 
+	 * @param diffInMillis difference between two <code>Date</code> objects in milliseconds
+	 * @return a string containing the remain time in "%D days %H hours %M minutes %S seconds"
+	 */
+	private final String elapsedTimeToString(final long diffInMillis){
+		
+		long diff = diffInMillis;
+		
+		final long secondInMillis = 1000;
+		final long minuteInMillis = secondInMillis * 60;
+		final long hourInMillis = minuteInMillis * 60;
+		final long dayInMillis = hourInMillis * 24;
+		final long yearInMillis = dayInMillis * 365;
+
+		diff = diff % yearInMillis;
+		long elapsedDays = diff / dayInMillis;
+		diff = diff % dayInMillis;
+		long elapsedHours = diff / hourInMillis;
+		diff = diff % hourInMillis;
+		long elapsedMinutes = diff / minuteInMillis;
+		diff = diff % minuteInMillis;
+		long elapsedSeconds = diff / secondInMillis;
+	
+		
+		return	elapsedDays  + " days "  +
+			elapsedHours + " hours " +
+			elapsedMinutes + " minutes " +
+			elapsedSeconds + " seconds ";
 	}
 }
