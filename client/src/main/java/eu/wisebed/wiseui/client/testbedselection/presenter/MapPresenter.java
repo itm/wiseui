@@ -21,7 +21,7 @@ import eu.wisebed.wiseui.shared.wiseml.Node;
 import eu.wisebed.wiseui.shared.wiseml.Setup;
 
 /**
- * The presenter for the MapView.
+ * The presenter for the {@link MapView}.
  * 
  * @author Malte Legenhausen
  */

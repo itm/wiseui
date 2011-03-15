@@ -22,12 +22,12 @@ import eu.wisebed.wiseui.shared.SensorDetails;
 
 public class ReservationActivity extends AbstractActivity implements Presenter {
 
+	private static final Logger LOGGER =
+		Logger.getLogger(ReservationActivity.class.getName());
+
     private ReservationView view;
     private PlaceController placeController;
     private ReservationServiceAsync service;
-	private static final Logger LOGGER = 
-		Logger.getLogger(ReservationActivity.class.getName());
-
     
     @Inject
     public ReservationActivity(final ReservationView view, 
@@ -53,11 +53,11 @@ public class ReservationActivity extends AbstractActivity implements Presenter {
 		service.getNodeList(new AsyncCallback<ArrayList<SensorDetails>>(){
 			public void onFailure(Throwable caught){
 				LOGGER.log(Level.INFO,"Failed rpc");
-				caught.printStackTrace();
 			}
 			public void onSuccess(ArrayList<SensorDetails> nodeList){
 				if(nodeList==null){
 					Window.alert("No nodes returned to client");
+                    // TODO SNO We can use the MessageBox here
 				}else{
 					view.renderNodes(nodeList);
 					LOGGER.log(Level.INFO,"Network nodes:" + nodeList);

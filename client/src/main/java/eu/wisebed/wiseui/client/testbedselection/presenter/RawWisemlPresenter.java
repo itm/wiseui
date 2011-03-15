@@ -12,6 +12,11 @@ import eu.wisebed.wiseui.client.testbedselection.view.RawWisemlView;
 import eu.wisebed.wiseui.client.testbedselection.view.RawWisemlView.Presenter;
 import eu.wisebed.wiseui.shared.TestbedConfiguration;
 
+/**
+ * The presenter for the {@link RawWisemlView}.
+ *
+ * @author Malte Legenhausen
+ */
 public class RawWisemlPresenter implements Presenter, ConfigurationSelectedHandler {
 
 	private final EventBus eventBus;
@@ -24,8 +29,8 @@ public class RawWisemlPresenter implements Presenter, ConfigurationSelectedHandl
 	
 	@Inject
 	public RawWisemlPresenter(final EventBus eventBus, 
-							  final RawWisemlView view,
-							  final SessionManagementServiceAsync sessionManagementService) {
+				  final RawWisemlView view,
+				  final SessionManagementServiceAsync sessionManagementService) {
 		this.eventBus = eventBus;
 		this.view = view;
 		this.sessionManagementService = sessionManagementService;

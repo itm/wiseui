@@ -19,6 +19,11 @@ import eu.wisebed.wiseui.shared.TestbedConfiguration;
 
 import java.util.List;
 
+/**
+ * The presenter for the {@link ConfigurationView}.
+ *
+ * @author Malte Legenhausen
+ */
 public class ConfigurationPresenter implements Presenter {
 
     private final EventBus eventBus;

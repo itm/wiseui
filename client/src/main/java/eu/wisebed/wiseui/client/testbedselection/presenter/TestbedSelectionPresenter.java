@@ -18,6 +18,11 @@ import eu.wisebed.wiseui.widgets.messagebox.MessageBox;
 import eu.wisebed.wiseui.shared.TestbedConfiguration;
 import eu.wisebed.wiseui.shared.exception.WisemlException;
 
+/**
+ * The presenter for the {@link TestbedSelectionView}.
+ *
+ * @author Malte Legenhausen
+ */
 public class TestbedSelectionPresenter implements Presenter, ConfigurationSelectedHandler, WisemlLoadedHandler, ThrowableHandler {
 
     private final EventBus eventBus;
@@ -44,29 +49,35 @@ public class TestbedSelectionPresenter implements Presenter, ConfigurationSelect
         eventBus.addHandler(ThrowableEvent.TYPE, this);
     }
 
+    @Override
     public void reload() {
         view.getReloadEnabled().setEnabled(false);
         eventBus.fireEvent(new ConfigurationSelectedEvent(configuration));
     }
 
+    @Override
     public void showLoginDialog() {
         eventBus.fireEventFromSource(new ShowLoginDialogEvent(), this);
     }
 
+    @Override
     public void setPlace(final TestbedSelectionPlace place) {
     	this.place = place;
     	view.setContentSelection(place.getView());
     }
 
+    @Override
     public void onWisemlLoaded(final WisemlLoadedEvent event) {
         view.getReloadEnabled().setEnabled(true);
     }
 
+    @Override
     public void onTestbedConfigurationSelected(final ConfigurationSelectedEvent event) {
         configuration = event.getConfiguration();
         view.getLoginEnabled().setEnabled(true);
     }
 
+    @Override
     public void onThrowable(final ThrowableEvent event) {
         if (event.getThrowable() instanceof WisemlException) {
             final String title = "Unavailable Testbed " + configuration.getName();
@@ -78,8 +89,8 @@ public class TestbedSelectionPresenter implements Presenter, ConfigurationSelect
         }
     }
 
-	@Override
-	public void setContentSelection(final String view) {
-		placeController.goTo(new TestbedSelectionPlace(place.getSelection(), view));
-	}
+    @Override
+    public void setContentSelection(final String view) {
+	placeController.goTo(new TestbedSelectionPlace(place.getSelection(), view));
+    }
 }

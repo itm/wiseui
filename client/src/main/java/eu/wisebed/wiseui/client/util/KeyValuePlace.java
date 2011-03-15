@@ -53,7 +53,7 @@ public class KeyValuePlace extends Place {
 		variables.put(key, value);
 	}
 	
-    public void parse(final String token) {
+    public final void parse(final String token) {
     	final Iterable<String> vars = Splitter.on(joiner).split(token);
     	for (final String variable : vars) {
     		final String[] tokens = variable.split(separator);

@@ -10,7 +10,7 @@ import eu.wisebed.wiseui.shared.wiseml.Coordinate;
  */
 public class Coordinates {
 	
-	private static final double RAD_TO_METER = 0.00001;
+    private static final double RAD_TO_METER = 0.00001;
 
     public static Coordinate rotate(final Coordinate coordinate, final Double phi) {
     	final Double rad = Math.toRadians(phi);

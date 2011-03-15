@@ -20,6 +20,11 @@ import eu.wisebed.wiseui.client.util.AuthenticationManager;
 import eu.wisebed.wiseui.shared.TestbedConfiguration;
 import eu.wisebed.wiseui.shared.wiseml.SecretAuthenticationKey;
 
+/**
+ * The presenter for the {@link LoginDialogView}.
+ *
+ * @author Malte Legenhausen
+ */
 public class LoginDialogPresenter implements Presenter, ConfigurationSelectedHandler, ShowLoginDialogHandler {
 
     private final EventBus eventBus;
