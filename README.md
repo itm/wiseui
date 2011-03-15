@@ -2,6 +2,8 @@ WiseUI
 ======
 
 The WiseUI is a [GWT][gwt] based web client for the [Testbed Runtime][testbedruntime].
+The project is carried out as a joint venture formed by R.A. Computer Technology Institute (University of Patras)
+and the Insitute for Telemactics (University of Lübeck).
 
 
 What do I need?
@@ -25,11 +27,38 @@ The following commands show how to clone the WiseUI repository and how to make f
     $ git status
     $ git push origin master
 
+Configure Hibernate
+-------------------
+
+In order to have Hibernate properly configured, make sure you declare the following required properties in your local Maven settings file (~/.m2/settings.xml):
+
+	<settings>
+		<profiles>
+			<profile>
+				<id>default</id>
+				<properties>
+					<!--MYSQL-->
+					<hibernate.dialect>org.hibernate.dialect.MySQLDialect</hibernate.dialect>
+					<jdbc.connection.driver_class>com.mysql.jdbc.Driver</jdbc.connection.driver_class>
+					<jdbc.connection.url>jdbc:mysql://localhost/wsnwebui</jdbc.connection.url>
+					<jdbc.connection.username>gakos</jdbc.connection.username>
+					<jdbc.connection.password>gakos</jdbc.connection.password>
+					<jdbc.connection.pool_size>10</jdbc.connection.pool_size> 
+				</properties>
+			</profile>
+		</profiles>
+		<activeProfiles>
+			<activeProfile>default</activeProfile>
+		</activeProfiles>
+	</settings>
+
 
 Build and Start the WiseUI with Maven
 -------------------------------------
 
-On the command-line go to the WiseUI directory. Perform a clean build on the project to make sure, that all Maven artifacts are installed in your local Maven repository (~/.m2/repository). If you are running Maven for the first time, this will take a while as Maven downloads all project dependencies from the internet.
+On the command-line go to the WiseUI directory. Perform a clean build on the project to make sure, that all Maven
+artifacts are installed in your local Maven repository (~/.m2/repository). If you are running Maven for the first time,
+this will take a while as Maven downloads all project dependencies from the internet.
 
     $ cd wiseui
     $ mvn clean install
@@ -45,7 +74,7 @@ Deploy to a Remote Tomcat
 
 To use this profile, make sure you settings.xml (~.m2/settings.xml) looks like the example below. Replace the property values with your specific credentials, hostname, etc.
 
-> Also, it is highly recommended that you SSH client is configured to log in on you remote server (deployment target) without password. This requires a special SSH setup. 
+> Also, it is highly recommended that you SSH client is configured to log in on you remote server (deployment target) without password. This requires a special SSH setup.
 > You have to create a private key with ssh-keygen and copy it into the file ~.ssh/authorized_keys on your remote server.
 
 This is how your settings.xml should look like:

@@ -28,7 +28,7 @@ public class RawWisemlViewImpl extends Composite implements RawWisemlView {
     }
 
     @Override
-    public void setPresenter(Presenter presenter) {
+    public void setPresenter(final Presenter presenter) {
 
     }
 }

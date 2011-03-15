@@ -15,7 +15,6 @@
     <name>WiseUI - Client</name>
 
     <properties>
-        <!-- tell the compiler have to use 1.5 -->
         <maven.compiler.source>1.6</maven.compiler.source>
         <maven.compiler.target>1.6</maven.compiler.target>
         <webappDirectory>${project.build.directory}/${project.build.finalName}</webappDirectory>

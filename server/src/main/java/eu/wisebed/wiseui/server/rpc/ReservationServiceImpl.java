@@ -4,7 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import com.google.gwt.user.server.rpc.RemoteServiceServlet;
+import net.sf.gilead.core.PersistentBeanManager;
+import net.sf.gilead.core.hibernate.HibernateUtil;
+import net.sf.gilead.core.serialization.GwtProxySerialization;
+import net.sf.gilead.core.store.stateless.StatelessProxyStore;
+import net.sf.gilead.gwt.PersistentRemoteService;
+
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -18,19 +23,32 @@ import eu.wisebed.wiseui.shared.SensorDetails;
 import eu.wisebed.wiseui.shared.exception.AuthenticationException;
 import eu.wisebed.wiseui.shared.exception.ReservationConflictException;
 import eu.wisebed.wiseui.shared.exception.ReservationException;
+import eu.wisebed.wiseui.server.util.WiseUiHibernateUtil;
 
 
 @Singleton
-public class ReservationServiceImpl extends RemoteServiceServlet implements ReservationService {	
+public class ReservationServiceImpl extends PersistentRemoteService 
+	implements ReservationService {	
 	
 	
 	private static final long serialVersionUID = -7715272862718944674L;
-
+	
+	private HibernateUtil gileadHibernateUtil = new HibernateUtil();
 	/**
 	 * Constructor
 	 */
 	@Inject
-	public ReservationServiceImpl() {}
+	public ReservationServiceImpl() {
+		gileadHibernateUtil.setSessionFactory(
+				WiseUiHibernateUtil.getSessionFactory());
+		PersistentBeanManager persistentBeanManager = 
+			new PersistentBeanManager();
+		persistentBeanManager.setPersistenceUtil(gileadHibernateUtil);
+		StatelessProxyStore sps = new StatelessProxyStore();
+		sps.setProxySerializer(new GwtProxySerialization());
+		persistentBeanManager.setProxyStore(sps);
+		setBeanManager(persistentBeanManager);
+	}
 
 	/**
 	 * Retrieves network from the WISEBED web services of a testbed.
@@ -55,8 +73,8 @@ public class ReservationServiceImpl extends RemoteServiceServlet implements Rese
 	/**
 	 * Make reservation of some nodes in a specific time span
 	 * @param <code>sessionID</code> , current session ID.  
-	 * @param <code>rsData</code> ,an <code>ReservationDetails</code> object containing 
-	 * the necessary information to make a reservation.
+	 * @param <code>rsData</code> ,an <code>ReservationDetails</code> object 
+	 * containing the necessary information to make a reservation.
 	 */
 	// TODO remove return make this method void
 	public String makeReservation(final String sessionID,
@@ -81,7 +99,8 @@ public class ReservationServiceImpl extends RemoteServiceServlet implements Rese
 	
 	/**
 	 * Get all reservations made by a user.
-	 * @param <code>sessionID</code>, current session ID in order to identify the user.
+	 * @param <code>sessionID</code>, current session ID in order to identify 
+	 * the user.
 	 * @return an <code>ArrayList</code> of <code>ReservationDetails</code>. 
 	 * objects that are the reservations madey by a user.
 	 */
@@ -92,8 +111,8 @@ public class ReservationServiceImpl extends RemoteServiceServlet implements Rese
 	}
 	
 	// TODO methods below that point save/fetch data to/from DB we need to place
-	// some should be public others private . Those public should be placed to another class file
-	// exposed to other servlets
+	// some should be public others private . Those public should be placed to 
+	// another class file exposed to other servlets
 	
 	/**
 	 * Persist reservation details given. Also take care of constructing the
@@ -101,7 +120,8 @@ public class ReservationServiceImpl extends RemoteServiceServlet implements Rese
 	 * reservation could bind multiple sensors. First fetch all sensor details
 	 * and then create the association and store reservation details.
 	 * @param <code>userID</code>, a user ID.
-	 * @param <code>reservation</code>, the reservation to save into the persistent store.
+	 * @param <code>reservation</code>, the reservation to save into the 
+	 * persistent store.
 	 */
 	public final static void saveReservation(final int userID,
 			final ReservationDetails reservation){
@@ -166,8 +186,8 @@ public class ReservationServiceImpl extends RemoteServiceServlet implements Rese
 	}
 	
 	/**
-	 * Given a a reservaition ID fetch the imageFileNameField of the reservation made
-	 * by this user.
+	 * Given a a reservaition ID fetch the imageFileNameField of the reservation
+	 * made by this user.
 	 * @param <code>reservationID</code>, a reservation ID.
 	 * @return experiment image filename
 	 */
