@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+    <class name="eu.wisebed.wiseui.shared.SensorDetails" table="SENSOR">
+        <id name="sensorid" column="sensor_id"></id>
+        <property name="urn"/>
+        <property name="type"/>
+        <property name="description"/>
+        <!-- TODO: Store position (x,y,z)-->
+
+    </class>
+</hibernate-mapping>

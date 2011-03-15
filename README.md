@@ -27,6 +27,32 @@ The following commands show how to clone the WiseUI repository and how to make f
     $ git status
     $ git push origin master
 
+Configure Hibernate
+-------------------
+
+In order to have Hibernate properly configured, make sure you declare the following required properties in your local Maven settings file (~/.m2/settings.xml):
+
+    <settings>
+    	<profiles>
+            <profile>
+            	<id>default</id>
+		    <properties>
+       		    	<!--MYSQL-->
+		    	<hibernate.dialect>org.hibernate.dialect.MySQLDialect</hibernate.dialect>
+		    	<jdbc.connection.driver_class>com.mysql.jdbc.Driver</jdbc.connection.driver_class>
+		    	<jdbc.connection.url>jdbc:mysql://localhost/wsnwebui</jdbc.connection.url>
+		    	<jdbc.connection.username>gakos</jdbc.connection.username>
+		    	<jdbc.connection.password>gakos</jdbc.connection.password>
+		    	<jdbc.connection.pool_size>10</jdbc.connection.pool_size> 
+		    </properties>
+	    </profile>
+    	</profiles>
+    	<activeProfiles>
+            <activeProfile>default</activeProfile>
+    	</activeProfiles>
+    </settings>
+
+
 
 Build and Start the WiseUI with Maven
 -------------------------------------
