@@ -22,6 +22,12 @@ import eu.wisebed.wiseui.shared.wiseml.Capability;
 import eu.wisebed.wiseui.shared.wiseml.Node;
 import eu.wisebed.wiseui.shared.wiseml.Setup;
 
+
+/**
+ * Presenter implementation for the <code>DetailView</code>.
+ * 
+ * @author Malte Legenhausen
+ */
 public class DetailPresenter implements Presenter, ConfigurationSelectedHandler, WisemlLoadedHandler, ThrowableHandler {
 
     private final DetailView view;
@@ -89,6 +95,7 @@ public class DetailPresenter implements Presenter, ConfigurationSelectedHandler,
     public void onTestbedConfigurationSelected(final ConfigurationSelectedEvent event) {
         configuration = event.getConfiguration();
         view.showMessage("Loading Testbed...");
+        view.getDescriptionHasText().setText("");
     }
 
     public void onWisemlLoaded(final WisemlLoadedEvent event) {

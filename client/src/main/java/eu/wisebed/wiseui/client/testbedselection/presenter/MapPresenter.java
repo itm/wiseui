@@ -52,10 +52,13 @@ public class MapPresenter implements MapView.Presenter, WisemlLoadedHandler, Con
         final Setup setup = event.getWiseml().getSetup();
         final Coordinate origin = setup.getOrigin();
         view.setTestbedCoordinate(origin, configuration.getName(), setup.getDescription());
+        final Coordinate cartesian = Coordinates.blh2xyz(origin);
         final List<Coordinate> coordinates = Lists.transform(setup.getNode(), new Function<Node, Coordinate>() {
 			@Override
-			public Coordinate apply(final Node input) {
-				return Coordinates.absolute(origin, Coordinates.rotate(input.getPosition(), origin.getPhi()));
+			public Coordinate apply(final Node node) {
+				final Coordinate rotated = Coordinates.rotate(node.getPosition(), origin.getPhi());
+				final Coordinate absolute = Coordinates.absolute(cartesian, rotated);
+				return Coordinates.xyz2blh(absolute);
 			}
 		});
         view.setTestbedShape(GrahamScan.calculate(coordinates));

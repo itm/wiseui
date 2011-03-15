@@ -18,10 +18,15 @@ import com.google.gwt.view.client.TreeViewModel;
 
 import eu.wisebed.wiseui.shared.wiseml.Capability;
 
+
+/**
+ * View for the testbed details.
+ * 
+ * @author Malte Legenhausen
+ */
 public class DetailViewImpl extends Composite implements DetailView {
 	
-	private static DetailViewImplUiBinder uiBinder = GWT
-			.create(DetailViewImplUiBinder.class);
+	private static DetailViewImplUiBinder uiBinder = GWT.create(DetailViewImplUiBinder.class);
 
 	interface DetailViewImplUiBinder extends UiBinder<Widget, DetailViewImpl> {
 	}

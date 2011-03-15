@@ -71,7 +71,7 @@ public class SensorListWidget extends Composite implements SensorList{
 	
 	/**
 	 * Render sensor's information in cell list. Temporarily rendering only
-	 * sensors' urns.
+	 * sensors' URNs.
 	 */
 	public void renderNodes(final ArrayList<SensorDetails> sensors) {
 		sensorTable.setRowCount(sensors.size(), true);
