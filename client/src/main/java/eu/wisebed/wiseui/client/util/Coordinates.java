@@ -14,7 +14,7 @@ public class Coordinates {
 	
 	private static final double WGS84_A = 6378137.0;
 	
-	private static final double WGS84_B = WGS84_A * (1 - WGS84_ALPHA);
+	private static final double WGS84_B = WGS84_A * (1.0 - WGS84_ALPHA);
 	
 	private static final double WGS84_C = WGS84_A * WGS84_A / WGS84_B;
 	
@@ -67,7 +67,7 @@ public class Coordinates {
         final double b = Math.atan((z + (e2 * e2 * WGS84_B * Math.pow(Math.sin(theta), 3))) / (p - (e1 * e1 * WGS84_A * Math.pow(Math.cos(theta), 3))));
      
         final double eta2 = e2 * e2 * Math.pow(Math.cos(b), 2);
-        final double v = Math.sqrt(1 + eta2);
+        final double v = Math.sqrt(1.0 + eta2);
         final double n = WGS84_C / v;
      
         final double h = (p / Math.cos(b)) - n;
@@ -83,7 +83,7 @@ public class Coordinates {
         final double l = coordinate.getY() * roh;
      
         final double eta2 = e * e * Math.pow(Math.cos(b), 2);
-        final double v = Math.sqrt(1 + eta2);
+        final double v = Math.sqrt(1.0 + eta2);
         final double n = WGS84_C / v;
      
         final double h = coordinate.getZ();
