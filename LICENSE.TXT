@@ -1,4 +1,5 @@
-Copyright 2011 Universität zu Lübeck, Institut für Telematik
+Copyright 2011 Universität zu Lübeck, Institut für Telematik, 
+               Research Academic Computer Technology Institute (RACTI) 
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -28,4 +29,3 @@ Dozer, http://dozer.sourceforge.net/, Apache License 2.0
 XStream, http://xstream.codehaus.org/, BSD license (http://xstream.codehaus.org/license.html)
 
 JUnit, http://www.junit.org/, Common Public License - v 1.0 (http://www.junit.org/license)
-
