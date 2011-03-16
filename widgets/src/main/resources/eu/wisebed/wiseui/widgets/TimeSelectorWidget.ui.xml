@@ -9,11 +9,10 @@
 	<g:HTMLPanel>
 		<div class='{common.style.label}'>Time</div>
 		<g:FlowPanel ui:field="timePanel">
-			<g:TextBox ui:field="startTimePicker"></g:TextBox>
-			<g:TextBox ui:field="stopTimePicker"></g:TextBox>
+			<g:TextBox ui:field="startTimePicker"/>
+			<g:TextBox ui:field="stopTimePicker"/>
 		</g:FlowPanel>
-		<span ui:field="timeSpan"></span>
-		
+		<span ui:field="timeSpan"/>
 	</g:HTMLPanel>
 	
 </ui:UiBinder>

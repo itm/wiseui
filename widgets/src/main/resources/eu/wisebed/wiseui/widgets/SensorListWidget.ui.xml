@@ -7,6 +7,6 @@
 	<ui:with field='sl' type='eu.wisebed.wiseui.widgets.resources.SensorListResources'/>
 	<g:HTMLPanel>
 		<div class='{common.style.label}'>Sensors</div>
-		<g:VerticalPanel ui:field="sensorListPanel"></g:VerticalPanel>
+		<g:VerticalPanel ui:field="sensorListPanel"/>
 	</g:HTMLPanel>
 </ui:UiBinder>
