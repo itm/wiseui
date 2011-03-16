@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mappings xmlns="http://dozer.sourceforge.net" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://dozer.sourceforge.net
+          http://dozer.sourceforge.net/schema/beanmapping.xsd">
+
+	<mapping>
+		<class-a>eu.wisebed.ns.wiseml._1.Setup$Node</class-a>
+		<class-b>eu.wisebed.wiseui.shared.wiseml.Node</class-b>
+		<field>
+			<a get-method="isGateway">gateway</a>
+			<b get-method="isGateway">gateway</b>
+		</field>
+	</mapping>
+
+</mappings>
