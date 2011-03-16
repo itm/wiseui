@@ -37,15 +37,17 @@ public class DetailViewImpl extends Composite implements DetailView {
 	@UiField
 	Label description;
 	@UiField
-	Label idLabel;
+	Label nodeIdLabel;
 	@UiField
-	Label positionLabel;
+	Label nodeTypeLabel;
 	@UiField
-	Label gatewayLabel;
+	Label nodePositionLabel;
 	@UiField
-	Label descriptionLabel;
+	Label nodeGatewayLabel;
 	@UiField
-	Label programDetailsLabel;
+	Label nodeDescriptionLabel;
+	@UiField
+	Label nodeProgramDetailsLabel;
 	@UiField
 	CellTable<Capability> capabilitesTable;
 
@@ -102,27 +104,27 @@ public class DetailViewImpl extends Composite implements DetailView {
 
 	@Override
 	public HasText getNodeIdHasText() {
-		return idLabel;
+		return nodeIdLabel;
 	}
 
 	@Override
 	public HasText getNodePositionHasText() {
-		return positionLabel;
+		return nodePositionLabel;
 	}
 
 	@Override
 	public HasText getNodeGatewayHasText() {
-		return gatewayLabel;
+		return nodeGatewayLabel;
 	}
 
 	@Override
 	public HasText getNodeProgramDetailsHasText() {
-		return programDetailsLabel;
+		return nodeProgramDetailsLabel;
 	}
 
 	@Override
 	public HasText getNodeDescriptionHasText() {
-		return descriptionLabel;
+		return nodeDescriptionLabel;
 	}
 
 	@Override
@@ -139,5 +141,10 @@ public class DetailViewImpl extends Composite implements DetailView {
 	@Override
 	public HasText getDescriptionHasText() {
 		return description;
+	}
+
+	@Override
+	public HasText getNodeTypeHasText() {
+		return nodeTypeLabel;
 	}
 }

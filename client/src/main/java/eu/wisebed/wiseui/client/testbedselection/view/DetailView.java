@@ -24,6 +24,8 @@ public interface DetailView extends IsWidget {
     
     HasText getNodeIdHasText();
     
+    HasText getNodeTypeHasText();
+    
     HasText getNodePositionHasText();
     
     HasText getNodeGatewayHasText();

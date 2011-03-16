@@ -65,6 +65,7 @@ public class DetailPresenter implements Presenter, ConfigurationSelectedHandler,
 
     private void onNodeSelection(final Node node) {
     	view.getNodeIdHasText().setText(node.getId());
+    	view.getNodeTypeHasText().setText(node.getNodeType());
 		view.getNodePositionHasText().setText(node.getPosition().toString());
 		
 		final Boolean isGateway = node.isGateway();

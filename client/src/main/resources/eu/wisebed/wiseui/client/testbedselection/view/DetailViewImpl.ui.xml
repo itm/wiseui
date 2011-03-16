@@ -56,19 +56,25 @@
 								<tr>
 									<td>ID:</td>
 									<td>
-										<g:Label ui:field="idLabel" />
+										<g:Label ui:field="nodeIdLabel" />
+									</td>
+								</tr>
+								<tr>
+									<td>Node-Type:</td>
+									<td>
+										<g:Label ui:field="nodeTypeLabel" />
 									</td>
 								</tr>
 								<tr>
 									<td>Position:</td>
 									<td>
-										<g:Label ui:field="positionLabel" />
+										<g:Label ui:field="nodePositionLabel" />
 									</td>
 								</tr>
 								<tr>
 									<td>Gateway:</td>
 									<td>
-										<g:Label ui:field="gatewayLabel" />
+										<g:Label ui:field="nodeGatewayLabel" />
 									</td>
 								</tr>
 							</table>
@@ -77,14 +83,14 @@
 						<g:Label styleName="{style.caption}">Node Description</g:Label>
 						<g:HTMLPanel>
 							<p style="padding:7px">
-								<g:Label ui:field="descriptionLabel" />
+								<g:Label ui:field="nodeDescriptionLabel" />
 							</p>
 						</g:HTMLPanel>
 
 						<g:Label styleName="{style.caption}">Node Program Details</g:Label>
 						<g:HTMLPanel>
 							<p style="padding:7px">
-								<g:Label ui:field="programDetailsLabel" />
+								<g:Label ui:field="nodeProgramDetailsLabel" />
 							</p>
 						</g:HTMLPanel>
 
