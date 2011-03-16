@@ -21,34 +21,33 @@
 	</ui:style>
 	<g:FlowPanel addStyleNames="{style.experimentPanel}">
 		<g:HorizontalPanel>
-			<g:Label text="Experiment id :"></g:Label>
-			<g:Label addStyleNames="{style.important}" ui:field="reservationID"></g:Label>
+			<g:Label text="Experiment id :"/>
+			<g:Label addStyleNames="{style.important}" ui:field="reservationID"/>
 		</g:HorizontalPanel>
 		<g:HorizontalPanel>
-			<g:Label text="Starts at :"></g:Label>
-			<g:Label addStyleNames="{style.important}" ui:field="startDate"></g:Label>
+			<g:Label text="Starts at :"/>
+			<g:Label addStyleNames="{style.important}" ui:field="startDate"/>
 		</g:HorizontalPanel>
 		<g:HorizontalPanel>
-			<g:Label text="Stops at :"></g:Label>
-			<g:Label addStyleNames="{style.important}" ui:field="stopDate"></g:Label>
+			<g:Label text="Stops at :"/>
+			<g:Label addStyleNames="{style.important}" ui:field="stopDate"/>
 		</g:HorizontalPanel>
 		<g:HorizontalPanel>
-			<g:Label text="Current Status :"></g:Label>
-			<g:Label addStyleNames="{style.important}" ui:field="status"></g:Label>
+			<g:Label text="Current Status :"/>
+			<g:Label addStyleNames="{style.important}" ui:field="status"/>
 		</g:HorizontalPanel>
 		<g:HorizontalPanel>
-			<g:Label text="Experiment Image Filename :"></g:Label>
-			<g:Label addStyleNames="{style.important}" ui:field="imageFilename"></g:Label>
+			<g:Label text="Experiment Image Filename :"/>
+			<g:Label addStyleNames="{style.important}" ui:field="imageFilename"/>
 		</g:HorizontalPanel>
 		<g:HorizontalPanel>
-			<g:Label text="Reservation time :"></g:Label>
-			<g:Label addStyleNames="{style.important}" ui:field="reservationTime"></g:Label>
+			<g:Label text="Reservation time :"/>
+			<g:Label addStyleNames="{style.important}" ui:field="reservationTime"/>
 		</g:HorizontalPanel>
 		<g:HorizontalPanel>
-			<g:FlexTable ui:field="buttonTable"></g:FlexTable>
+			<g:FlexTable ui:field="buttonTable"/>
 		</g:HorizontalPanel>
 		<g:TabLayoutPanel addStyleNames="{style.tabpanel}"
-			barUnit='EM' barHeight='3' ui:field="nodeTabPanel">
-		</g:TabLayoutPanel>
+			barUnit='EM' barHeight='3' ui:field="nodeTabPanel"/>
 	</g:FlowPanel>
 </ui:UiBinder>

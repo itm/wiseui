@@ -24,7 +24,7 @@
 
 	<gwt:VerticalPanel ui:field="outerPanel" styleName='{style.outerPanel}'>
 		<gwt:HorizontalPanel ui:field="dateTimeImagePanel">
-			<gwt:VerticalPanel ui:field="imagePanel"></gwt:VerticalPanel>
+			<gwt:VerticalPanel ui:field="imagePanel"/>
 		</gwt:HorizontalPanel>
 		<gwt:HTMLPanel ui:field="errorPanel" styleName='{style.errorPanel}'>
 			<span>Error.Please check reservation attributes</span>
