@@ -10,6 +10,7 @@ public class Setup implements Serializable {
     private String coordinateType;
     private String description;
     private List<Node> node;
+    private Defaults defaults;
 
     public Setup() {
     }
@@ -45,4 +46,12 @@ public class Setup implements Serializable {
     public void setNode(final List<Node> nodes) {
         this.node = nodes;
     }
+
+	public Defaults getDefaults() {
+		return defaults;
+	}
+
+	public void setDefaults(final Defaults defaults) {
+		this.defaults = defaults;
+	}
 }

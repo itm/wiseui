@@ -28,9 +28,17 @@ import eu.wisebed.wiseui.client.testbedselection.view.LoginDialogView;
 import eu.wisebed.wiseui.client.testbedselection.view.MapView;
 import eu.wisebed.wiseui.client.testbedselection.view.RawWisemlView;
 import eu.wisebed.wiseui.client.testbedselection.view.TestbedSelectionView;
+import eu.wisebed.wiseui.client.util.DefaultsHelper;
 import eu.wisebed.wiseui.shared.TestbedConfiguration;
+import eu.wisebed.wiseui.shared.wiseml.Setup;
 import eu.wisebed.wiseui.shared.wiseml.Wiseml;
 
+
+/**
+ * Activity for the testbed selection part of the wiseui.
+ * 
+ * @author Malte Legenhausen
+ */
 public class TestbedSelectionActivity extends AbstractActivity implements ConfigurationSelectedHandler {
 
     private final SessionManagementServiceAsync sessionManagementService;
@@ -140,6 +148,9 @@ public class TestbedSelectionActivity extends AbstractActivity implements Config
         final AsyncCallback<Wiseml> callback = new AsyncCallback<Wiseml>() {
 
             public void onSuccess(final Wiseml result) {
+            	if (result != null) {
+            		result.setSetup(DefaultsHelper.apply(result.getSetup()));
+            	}
                 eventBus.fireEvent(new WisemlLoadedEvent(result));
             }
 
