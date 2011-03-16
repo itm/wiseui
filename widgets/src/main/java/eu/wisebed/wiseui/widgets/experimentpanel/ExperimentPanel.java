@@ -1,5 +1,7 @@
 package eu.wisebed.wiseui.widgets.experimentpanel;
 
+//TODO move all the related ExperimentPanel code to the client package
+
 import java.util.List;
 import java.util.Date;
 
@@ -20,7 +22,7 @@ public class ExperimentPanel implements Presenter {
 	private ExperimentStatus status;
 	private String imageFileName;
 
-	public enum ExperimentStatus{
+	public enum ExperimentStatus {
 		PENDING			("Pending"),
 		READY			("Ready"),
 		RUNNING			("Running"),
@@ -29,16 +31,16 @@ public class ExperimentPanel implements Presenter {
 		TIMEDOUT    	("Reservation time out");
 		
 		private String text;
-		ExperimentStatus(String text){
+		ExperimentStatus(String text) {
 			this.text = text;
 		}
 		
-		public String getStatusText(){
+		public String getStatusText() {
 			return text;
 		}
 	}
 	
-	public enum Button{
+	public enum Button {
 		START	 ("Start Experiment"),
 		STOP	 ("Stop Experiment"),
 		SHOWHIDE ("Show Output"),
@@ -79,7 +81,7 @@ public class ExperimentPanel implements Presenter {
     
     public void initPanel(final int reservationID,
     		final Date startDate,final Date stopDate,final List<String> urns,
-    		final String imageFileName, final Callback callback){
+    		final String imageFileName, final Callback callback) {
     	
     	this.determineExperimentState(startDate,stopDate);
     	this.setReservationID(reservationID);
@@ -91,8 +93,8 @@ public class ExperimentPanel implements Presenter {
     }
     
     @SuppressWarnings("deprecation")
-	private void determineExperimentState(final Date startDate, final Date stopDate){
-    	if(startDate.after(stopDate)){
+	private void determineExperimentState(final Date startDate, final Date stopDate) {
+    	if(startDate.after(stopDate)) {
     		throw new IllegalArgumentException("Invalid start date value ." +
     				"Start date cannot be " +
     				"after stop date of an experiment : " +
@@ -102,30 +104,27 @@ public class ExperimentPanel implements Presenter {
     	
     	Date now = new Date();
     	
-    	if(now.before(startDate))
-    	{
+    	if(now.before(startDate)) {
     		this.setAsPendingExperiment();
     		countDownUntilStartDate();
 		}
-    	else if(now.after(startDate) && now.before(stopDate))
-    	{
+    	else if(now.after(startDate) && now.before(stopDate)) {
     		this.setAsReadyExperiment();
     		countDownUntilStopDate();
     	}
-    	else if(now.after(stopDate))
-    	{
+    	else if(now.after(stopDate)) {
     		this.setAsTimedoutExperiment();
     		removeCountDown();
     	}
     }
     
-    private void countDownUntilStartDate(){
+    private void countDownUntilStartDate() {
     	this.setReservationStartTimer(
-    			new Timer(){
-    				public void run(){
+    			new Timer() {
+    				public void run() {
     					long diffInMillis = 
     						getStartDate().getTime() - (new Date()).getTime();
-    					if(diffInMillis <= 0){
+    					if(diffInMillis <= 0) {
     						determineExperimentState(getStartDate(),getStopDate());
     						this.cancel();
     					}else{
@@ -138,13 +137,13 @@ public class ExperimentPanel implements Presenter {
     	this.getReservationStartTimer().scheduleRepeating(1000);
     }
     
-    private void countDownUntilStopDate(){
+    private void countDownUntilStopDate() {
     	this.setReservationStopTimer(
-    			new Timer(){
-    				public void run(){
+    			new Timer() {
+    				public void run() {
     					long diffInMillis = 
     						getStopDate().getTime() - (new Date()).getTime();
-    					if(diffInMillis <= 0){
+    					if(diffInMillis <= 0) {
     						determineExperimentState(getStartDate(),getStopDate());
     						this.cancel();
     					}else{
@@ -157,36 +156,36 @@ public class ExperimentPanel implements Presenter {
     	this.getReservationStopTimer().scheduleRepeating(1000);
     }
     
-    private void removeCountDown(){
+    private void removeCountDown() {
     	view.setReservationTime("-");
     }
     
-    private void setAsPendingExperiment(){
+    private void setAsPendingExperiment() {
     	this.setStatus(ExperimentStatus.PENDING);
     	this.setButtons(Button.CANCEL);
     }
     
-    private void setAsReadyExperiment(){
+    private void setAsReadyExperiment() {
     	this.setStatus(ExperimentStatus.READY);
     	this.setButtons(Button.START,Button.STOP,Button.CANCEL);
     }
     
-    private void setAsRunningExperiment(){
+    private void setAsRunningExperiment() {
     	this.setStatus(ExperimentStatus.RUNNING);
     	this.setButtons(Button.SHOWHIDE,Button.STOP,Button.CANCEL);
     }
     
-    private void setAsCancelledExperiment(){
+    private void setAsCancelledExperiment() {
     	this.setStatus(ExperimentStatus.CANCELED);
     	this.setButtons();
     }
     
-    private void setAsTimedoutExperiment(){
+    private void setAsTimedoutExperiment() {
     	this.setStatus(ExperimentStatus.TIMEDOUT);
     	this.setButtons();
     }
     
-    private void setAsTerminatedExperiment(){
+    private void setAsTerminatedExperiment() {
     	this.setStatus(ExperimentStatus.TERMINATED);
     	this.setButtons();
     }
@@ -286,7 +285,7 @@ public class ExperimentPanel implements Presenter {
 		return status;
 	}
 	
-	public ExperimentPanelView getView(){
+	public ExperimentPanelView getView() {
 		return view;
 	}
 
@@ -303,7 +302,7 @@ public class ExperimentPanel implements Presenter {
 	 * @param diffInMillis difference between two <code>Date</code> objects in milliseconds
 	 * @return a string containing the remain time in "%D days %H hours %M minutes %S seconds"
 	 */
-	private final String elapsedTimeToString(final long diffInMillis){
+	private final String elapsedTimeToString(final long diffInMillis) {
 		
 		long diff = diffInMillis;
 		

@@ -62,7 +62,7 @@ public class ExperimentationActivity extends AbstractActivity implements
         urns.add("node3");
         final ExperimentPanel panel1 = widgetsInjector.getExperimentPanel();
         panel1.initPanel(1, startDate, stopDate, urns, 
-        	"uploadedsampleimage1.bin",new Callback(){
+        	"uploadedsampleimage1.bin",new Callback() {
 
 				@Override
 				public void onButtonClicked(Button button) {

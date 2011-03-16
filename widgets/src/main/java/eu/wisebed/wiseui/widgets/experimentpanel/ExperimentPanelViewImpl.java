@@ -43,7 +43,7 @@ public class ExperimentPanelViewImpl extends Composite implements ExperimentPane
 	@UiField 
 	TabLayoutPanel nodeTabPanel;
     
-	public ExperimentPanelViewImpl(){
+	public ExperimentPanelViewImpl() {
 		initWidget(uiBinder.createAndBindUi(this));
 	}
 
@@ -53,12 +53,12 @@ public class ExperimentPanelViewImpl extends Composite implements ExperimentPane
 	}
 	
 	@Override
-	public String getReservationID(){
+	public String getReservationID() {
 		return reservationID.getText();
 	}
 	
 	@Override
-	public void setReservationID(final String ID){
+	public void setReservationID(final String ID) {
 		reservationID.setText(ID);
 	}
 	
@@ -113,8 +113,8 @@ public class ExperimentPanelViewImpl extends Composite implements ExperimentPane
 	}
 	
 	@Override
-	public void fillNodeTabPanel(final List<String> urns){
-		for(String s: urns){
+	public void fillNodeTabPanel(final List<String> urns) {
+		for(String s: urns) {
 			nodeTabPanel.add(new TextArea(),s);
 		}
 	}

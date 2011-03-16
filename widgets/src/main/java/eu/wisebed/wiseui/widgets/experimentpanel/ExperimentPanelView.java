@@ -36,7 +36,7 @@ public interface ExperimentPanelView extends IsWidget {
 	
 	void fillNodeTabPanel(List<String> urns);
 	
-	public interface Presenter{
+	public interface Presenter {
         void buttonClicked(String button);
 	}
 }
