@@ -44,6 +44,7 @@ public class RawWisemlPresenter implements Presenter, ConfigurationSelectedHandl
 	
 	@Override
 	public void onTestbedConfigurationSelected(final ConfigurationSelectedEvent event) {
+		view.getLoadingIndicator().showLoading("Loading Testbed");
 		configuration = event.getConfiguration();
 		view.getXmlHasHTML().setText("Loading WiseML...");
 		sessionManagementService.getWisemlAsXml(configuration.getSessionmanagementEndointUrl(), new AsyncCallback<String>() {
@@ -51,11 +52,13 @@ public class RawWisemlPresenter implements Presenter, ConfigurationSelectedHandl
 			@Override
 			public void onSuccess(final String result) {
 				view.getXmlHasHTML().setHTML("<pre>" + SafeHtmlUtils.htmlEscape(result) + "</pre>");
+				view.getLoadingIndicator().hideLoading();
 			}
 			
 			@Override
 			public void onFailure(final Throwable caught) {
 				view.getXmlHasHTML().setText("Unable to load WiseML.");
+				view.getLoadingIndicator().hideLoading();
 			}
 		});
 	}

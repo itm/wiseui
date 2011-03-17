@@ -22,7 +22,7 @@
         }
     </ui:style>
     
-    <my:CaptionPanel caption='Raw WiseML'>
+    <my:CaptionPanel ui:field="container" caption='Raw WiseML'>
     	<g:ScrollPanel styleName="{style.fullLayout}">
       		<g:HTML ui:field="xml" styleName="{style.xmlPanel}"/>
       	</g:ScrollPanel>

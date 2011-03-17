@@ -5,6 +5,7 @@
 	<inherits name="com.google.gwt.inject.Inject"/>
 	<inherits name="eu.wisebed.wiseui.WiseUiShared"/>
 	<inherits name="gwtupload.GWTUpload"/>
+	    <inherits name="com.google.common.collect.Collect"/>
     <!-- Specify the paths for translatable code                    -->
     <source path="widgets"/>
 </module>

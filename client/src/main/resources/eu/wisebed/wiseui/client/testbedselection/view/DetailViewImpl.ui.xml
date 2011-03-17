@@ -32,7 +32,7 @@
 		<g:center>
 			<g:SplitLayoutPanel>
 				<g:center>
-					<my:CaptionPanel caption='Testbed Details'>
+					<my:CaptionPanel ui:field="container" caption='Testbed Details'>
 						<g:ScrollPanel styleName="{style.fullLayout}">
 							<g:SimplePanel styleName="{style.content}" ui:field="treeContainer" />
 						</g:ScrollPanel>

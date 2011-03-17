@@ -13,7 +13,7 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
-public class CaptionPanel extends Composite implements HasWidgets {
+public class CaptionPanel extends Composite implements HasWidgets, HasLoadingIndicator {
 
 	private static CaptionPanelUiBinder uiBinder = GWT.create(CaptionPanelUiBinder.class);
 
@@ -25,6 +25,8 @@ public class CaptionPanel extends Composite implements HasWidgets {
 	
 	@UiField
 	SimplePanel content;
+	
+	private LoadingIndicator loadingIndicator;
 	
 	public CaptionPanel() {
 		this("");
@@ -58,5 +60,17 @@ public class CaptionPanel extends Composite implements HasWidgets {
 	@Override
 	public boolean remove(final Widget widgets) {
 		return content.remove(widgets);
+	}
+
+	@Override
+	public void showLoading(String text) {
+		loadingIndicator = LoadingIndicator.on(content).show(text);
+	}
+
+	@Override
+	public void hideLoading() {
+		if (loadingIndicator != null) {
+			loadingIndicator.hide();
+		}
 	}
 }

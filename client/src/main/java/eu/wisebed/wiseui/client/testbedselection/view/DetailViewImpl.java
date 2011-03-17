@@ -17,6 +17,8 @@ import com.google.gwt.view.client.HasData;
 import com.google.gwt.view.client.TreeViewModel;
 
 import eu.wisebed.wiseui.shared.wiseml.Capability;
+import eu.wisebed.wiseui.widgets.CaptionPanel;
+import eu.wisebed.wiseui.widgets.HasLoadingIndicator;
 
 
 /**
@@ -50,6 +52,8 @@ public class DetailViewImpl extends Composite implements DetailView {
 	Label nodeProgramDetailsLabel;
 	@UiField
 	CellTable<Capability> capabilitesTable;
+	@UiField
+	CaptionPanel container;
 
 	public DetailViewImpl() {
 		initWidget(uiBinder.createAndBindUi(this));
@@ -146,5 +150,10 @@ public class DetailViewImpl extends Composite implements DetailView {
 	@Override
 	public HasText getNodeTypeHasText() {
 		return nodeTypeLabel;
+	}
+
+	@Override
+	public HasLoadingIndicator getLoadingIndicator() {
+		return container;
 	}
 }

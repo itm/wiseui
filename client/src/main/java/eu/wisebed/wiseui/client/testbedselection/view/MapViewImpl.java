@@ -27,6 +27,9 @@ import com.google.gwt.user.client.ui.Widget;
 import eu.wisebed.wiseui.client.util.AsyncManager;
 import eu.wisebed.wiseui.client.util.MapApiLoader;
 import eu.wisebed.wiseui.shared.wiseml.Coordinate;
+import eu.wisebed.wiseui.widgets.CaptionPanel;
+import eu.wisebed.wiseui.widgets.HasLoadingIndicator;
+import eu.wisebed.wiseui.widgets.LoadingIndicator;
 
 public class MapViewImpl extends Composite implements MapView {
 
@@ -39,8 +42,12 @@ public class MapViewImpl extends Composite implements MapView {
 
 	@UiField
 	SimplePanel mapContainer;
+	@UiField
+	CaptionPanel container;
 
 	private MapWidget mapWidget;
+	
+	private LoadingIndicator loadingIndicator;
 
     private Marker testbedMarker;
     private Polygon testbedShape;
@@ -165,5 +172,10 @@ public class MapViewImpl extends Composite implements MapView {
 				drawTestbedShape(mapWidget, coordinates);
 			}
 		});
+	}
+
+	@Override
+	public HasLoadingIndicator getLoadingIndicator() {
+		return container;
 	}
 }

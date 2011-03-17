@@ -62,10 +62,12 @@ public class MapPresenter implements MapView.Presenter, WisemlLoadedHandler, Con
 			}
 		});
         view.setTestbedShape(GrahamScan.calculate(coordinates));
+        view.getLoadingIndicator().hideLoading();
     }
 
     @Override
     public void onTestbedConfigurationSelected(final ConfigurationSelectedEvent event) {
+    	view.getLoadingIndicator().showLoading("Loading Testbed");
         this.configuration = event.getConfiguration();
         view.setTestbedCoordinate(null, null, null);
         view.setTestbedShape(null);

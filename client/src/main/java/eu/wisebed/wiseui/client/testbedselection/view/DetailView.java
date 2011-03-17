@@ -7,6 +7,7 @@ import com.google.gwt.view.client.TreeViewModel;
 
 import eu.wisebed.wiseui.client.testbedselection.TestbedSelectionPlace;
 import eu.wisebed.wiseui.shared.wiseml.Capability;
+import eu.wisebed.wiseui.widgets.HasLoadingIndicator;
 
 
 /**
@@ -37,6 +38,8 @@ public interface DetailView extends IsWidget {
     void showMessage(String message);
     
     HasData<Capability> getCapababilitesList();
+    
+    HasLoadingIndicator getLoadingIndicator();
 
     /**
      * The presenter for a DetailView.

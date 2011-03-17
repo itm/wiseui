@@ -1,0 +1,61 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+
+	<ui:style>
+		.loading {
+		margin: auto;
+        padding: 2px;
+        z-index: 20001;
+        border: 1px solid #ccc;
+		width:175px;
+		text-align:left;
+        }
+
+        .loading a {
+        color: #225588;
+        }
+
+        .loading .loading-indicator {
+        background: white;
+        color: #444;
+        font: bold 13px tahoma, arial, helvetica;
+        padding: 15px;
+        margin: 0;
+        height: auto;
+        }
+
+        .loading .loading-indicator img {
+        margin-right:15px;
+        float:left;
+        vertical-align:top;
+        }
+
+        .loading-msg {
+        font: normal 10px arial, tahoma, sans-serif;
+        }
+		
+		.overlay {
+		display: table;
+		position: absolute;
+		z-index: 20000;
+		width: 100%;
+		height: 100%;
+		background-image:url(images/loading_overlay.png);
+		}
+	</ui:style>
+
+	<g:HTMLPanel>
+		<div ui:field="indicator" class="{style.overlay}">
+			<div style="display: table-cell; vertical-align: middle">
+				<div class="{style.loading}">
+					<div class="{style.loading-indicator}">
+						<img src="images/loading.gif" width="32" height="32" />Loading...<br />
+						<span class="{style.loading-msg}"><g:Label ui:field="msg"/></span>
+					</div>
+				</div>
+			</div>
+		</div>
+	</g:HTMLPanel>
+</ui:UiBinder>

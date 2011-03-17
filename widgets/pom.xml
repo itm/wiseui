@@ -44,6 +44,14 @@
         	<scope>compile</scope>
         </dependency>
         <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.google.code</groupId>
+            <artifactId>gwt-guava</artifactId>
+        </dependency>
+        <dependency>
         	<groupId>eu.wisebed.wiseui</groupId>
         	<artifactId>shared</artifactId>
         </dependency>

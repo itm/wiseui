@@ -21,7 +21,7 @@
         }
     </ui:style>
 
-	<my:CaptionPanel caption='Testbed Map Overview'>
+	<my:CaptionPanel ui:field="container" caption='Testbed Map Overview'>
 		<g:SimplePanel ui:field="mapContainer"/>
 	</my:CaptionPanel>
 </ui:UiBinder> 

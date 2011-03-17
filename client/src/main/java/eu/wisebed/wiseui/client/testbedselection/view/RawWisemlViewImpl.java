@@ -8,6 +8,9 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasHTML;
 import com.google.gwt.user.client.ui.Widget;
 
+import eu.wisebed.wiseui.widgets.CaptionPanel;
+import eu.wisebed.wiseui.widgets.HasLoadingIndicator;
+
 public class RawWisemlViewImpl extends Composite implements RawWisemlView {
 
     private static RawWisemlViewImplUiBinder uiBinder = GWT.create(RawWisemlViewImplUiBinder.class);
@@ -17,6 +20,9 @@ public class RawWisemlViewImpl extends Composite implements RawWisemlView {
 
     @UiField
     HTML xml;
+    
+    @UiField
+    CaptionPanel container;
 
     public RawWisemlViewImpl() {
         initWidget(uiBinder.createAndBindUi(this));
@@ -31,4 +37,9 @@ public class RawWisemlViewImpl extends Composite implements RawWisemlView {
     public void setPresenter(final Presenter presenter) {
 
     }
+
+	@Override
+	public HasLoadingIndicator getLoadingIndicator() {
+		return container;
+	}
 }
