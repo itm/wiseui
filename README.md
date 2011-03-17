@@ -3,7 +3,7 @@ WiseUI
 
 The WiseUI is a [GWT][gwt] based web client for the [Testbed Runtime][testbedruntime].
 The project is carried out as a joint venture formed by R.A. Computer Technology Institute (University of Patras)
-and the Insitute for Telemactics (University of Lübeck).
+and the Institute of Telemactics (University of Lübeck).
 
 
 What do I need?
