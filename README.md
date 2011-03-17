@@ -35,9 +35,8 @@ In order to have Hibernate properly configured, make sure you declare the follow
 	<settings>
 		<profiles>
 			<profile>
-				<id>default</id>
+				<id>inject-hibernate-details</id>
 				<properties>
-					<!--MYSQL-->
 					<hibernate.dialect>org.hibernate.dialect.MySQLDialect</hibernate.dialect>
 					<jdbc.connection.driver_class>com.mysql.jdbc.Driver</jdbc.connection.driver_class>
 					<jdbc.connection.url>jdbc:mysql://localhost/wsnwebui</jdbc.connection.url>
@@ -48,7 +47,7 @@ In order to have Hibernate properly configured, make sure you declare the follow
 			</profile>
 		</profiles>
 		<activeProfiles>
-			<activeProfile>default</activeProfile>
+			<activeProfile>inject-hibernate-details</activeProfile>
 		</activeProfiles>
 	</settings>
 
