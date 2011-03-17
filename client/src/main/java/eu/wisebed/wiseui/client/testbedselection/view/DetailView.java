@@ -7,7 +7,7 @@ import com.google.gwt.view.client.TreeViewModel;
 
 import eu.wisebed.wiseui.client.testbedselection.TestbedSelectionPlace;
 import eu.wisebed.wiseui.shared.wiseml.Capability;
-import eu.wisebed.wiseui.widgets.HasLoadingIndicator;
+import eu.wisebed.wiseui.widgets.loading.HasLoadingIndicator;
 
 
 /**

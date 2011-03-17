@@ -1,4 +1,4 @@
-package eu.wisebed.wiseui.widgets;
+package eu.wisebed.wiseui.widgets.loading;
 
 import com.google.common.base.Preconditions;
 import com.google.gwt.core.client.GWT;

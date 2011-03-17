@@ -13,6 +13,9 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
+import eu.wisebed.wiseui.widgets.loading.HasLoadingIndicator;
+import eu.wisebed.wiseui.widgets.loading.LoadingIndicator;
+
 public class CaptionPanel extends Composite implements HasWidgets, HasLoadingIndicator {
 
 	private static CaptionPanelUiBinder uiBinder = GWT.create(CaptionPanelUiBinder.class);

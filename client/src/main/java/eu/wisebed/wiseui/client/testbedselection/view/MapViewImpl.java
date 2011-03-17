@@ -28,8 +28,8 @@ import eu.wisebed.wiseui.client.util.AsyncManager;
 import eu.wisebed.wiseui.client.util.MapApiLoader;
 import eu.wisebed.wiseui.shared.wiseml.Coordinate;
 import eu.wisebed.wiseui.widgets.CaptionPanel;
-import eu.wisebed.wiseui.widgets.HasLoadingIndicator;
-import eu.wisebed.wiseui.widgets.LoadingIndicator;
+import eu.wisebed.wiseui.widgets.loading.HasLoadingIndicator;
+import eu.wisebed.wiseui.widgets.loading.LoadingIndicator;
 
 public class MapViewImpl extends Composite implements MapView {
 

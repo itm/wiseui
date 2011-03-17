@@ -1,4 +1,4 @@
-package eu.wisebed.wiseui.widgets;
+package eu.wisebed.wiseui.widgets.loading;
 
 public interface HasLoadingIndicator {
 

@@ -9,7 +9,7 @@ import com.google.gwt.user.client.ui.HasHTML;
 import com.google.gwt.user.client.ui.Widget;
 
 import eu.wisebed.wiseui.widgets.CaptionPanel;
-import eu.wisebed.wiseui.widgets.HasLoadingIndicator;
+import eu.wisebed.wiseui.widgets.loading.HasLoadingIndicator;
 
 public class RawWisemlViewImpl extends Composite implements RawWisemlView {
 

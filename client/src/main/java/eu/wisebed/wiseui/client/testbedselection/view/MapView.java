@@ -6,7 +6,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 
 import eu.wisebed.wiseui.client.testbedselection.TestbedSelectionPlace;
 import eu.wisebed.wiseui.shared.wiseml.Coordinate;
-import eu.wisebed.wiseui.widgets.HasLoadingIndicator;
+import eu.wisebed.wiseui.widgets.loading.HasLoadingIndicator;
 
 public interface MapView extends IsWidget {
 

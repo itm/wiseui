@@ -40,19 +40,19 @@
 		display: table;
 		position: absolute;
 		z-index: 20000;
-		width: 100%;
-		height: 100%;
 		background-image:url(images/loading_overlay.png);
 		}
 	</ui:style>
+
+	<ui:with field='res' type='eu.wisebed.wiseui.widgets.loading.LoadingResources'/>
 
 	<g:HTMLPanel>
 		<div ui:field="indicator" class="{style.overlay}">
 			<div style="display: table-cell; vertical-align: middle">
 				<div class="{style.loading}">
 					<div class="{style.loading-indicator}">
-						<img src="images/loading.gif" width="32" height="32" />Loading...<br />
-						<span class="{style.loading-msg}"><g:Label ui:field="msg"/></span>
+						<g:Image resource='{res.loading}' width="32" height="32"/>Loading...<br />
+						<g:Label ui:field="msg" styleName="{style.loading-msg}"/>
 					</div>
 				</div>
 			</div>
