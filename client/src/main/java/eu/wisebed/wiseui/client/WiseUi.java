@@ -4,9 +4,9 @@ import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
-import com.google.gwt.dom.client.Style.Visibility;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.RootPanel;
+
 import eu.wisebed.wiseui.client.main.view.WiseUiView;
 
 /**
@@ -48,7 +48,7 @@ public class WiseUi implements EntryPoint {
     private void hideLoadingIndicator() {
         final ScheduledCommand command = new ScheduledCommand() {
             public void execute() {
-                DOM.getElementById("loading").getStyle().setVisibility(Visibility.HIDDEN);
+                DOM.getElementById("loading").removeFromParent();
             }
         };
         Scheduler.get().scheduleDeferred(command);
