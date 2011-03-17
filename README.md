@@ -39,9 +39,9 @@ In order to have Hibernate properly configured, make sure you declare the follow
 				<properties>
 					<hibernate.dialect>org.hibernate.dialect.MySQLDialect</hibernate.dialect>
 					<jdbc.connection.driver_class>com.mysql.jdbc.Driver</jdbc.connection.driver_class>
-					<jdbc.connection.url>jdbc:mysql://localhost/wsnwebui</jdbc.connection.url>
-					<jdbc.connection.username>gakos</jdbc.connection.username>
-					<jdbc.connection.password>gakos</jdbc.connection.password>
+					<jdbc.connection.url>jdbc:mysql://localhost/wiseuidb</jdbc.connection.url>
+					<jdbc.connection.username>dbuser</jdbc.connection.username>
+					<jdbc.connection.password>pass</jdbc.connection.password>
 					<jdbc.connection.pool_size>10</jdbc.connection.pool_size> 
 				</properties>
 			</profile>
