@@ -165,8 +165,8 @@
                     </dependency>
                 </dependencies>
                 <configuration>
-                    <configLocation>build-tools/src/main/resources/wiseui/checkstyle.xml</configLocation>
-                    <suppressionsLocation>build-tools/src/main/resources/wiseui/suppressions.xml</suppressionsLocation>
+                    <configLocation>build-tools/src/main/resources/eu/wisebed/wiseui/checkstyle.xml</configLocation>
+                    <suppressionsLocation>build-tools/src/main/resources/eu/wisebed/wiseui/suppressions.xml</suppressionsLocation>
                     <suppressionsFileExpression>checkstyle.suppressions.file</suppressionsFileExpression>
                     <headerLocation>LICENSE.txt</headerLocation>
                 </configuration>
