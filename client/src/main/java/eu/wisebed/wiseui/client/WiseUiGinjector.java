@@ -21,6 +21,12 @@ import eu.wisebed.wiseui.client.testbedselection.gin.TestbedSelectionGinjector;
 import eu.wisebed.wiseui.client.testbedselection.gin.TestbedSelectionModule;
 import eu.wisebed.wiseui.client.util.AuthenticationManager;
 
+
+/**
+ * Global WiseUi Ginjector for the WiseUi.
+ * 
+ * @author Malte Legenhausen
+ */
 @GinModules({
         WiseUiModule.class,
         NavigationModule.class,

@@ -17,6 +17,12 @@ import eu.wisebed.wiseui.client.main.view.WiseUiViewImpl;
 import eu.wisebed.wiseui.client.testbedselection.TestbedSelectionPlace;
 import eu.wisebed.wiseui.client.util.AuthenticationManager;
 
+
+/**
+ * Configuration module for the WiseUiGinjector.
+ * 
+ * @author Malte Legenhausen
+ */
 public class WiseUiModule extends AbstractGinModule {
 
     @Override
@@ -29,7 +35,7 @@ public class WiseUiModule extends AbstractGinModule {
         // View binding
         bind(WiseUiView.class).to(WiseUiViewImpl.class).in(Singleton.class);
 
-        bind(AuthenticationManager.class);
+        bind(AuthenticationManager.class).in(Singleton.class);
     }
 
     @Singleton
