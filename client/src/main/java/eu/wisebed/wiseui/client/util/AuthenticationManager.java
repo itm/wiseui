@@ -18,6 +18,9 @@ import java.util.List;
 @Singleton
 public class AuthenticationManager {
 
+	// Cookie duration in hours
+	private static final int COOKIE_DURATION = 1000 * 60 * 60 * 24;
+	
     private static final String SEPARATOR = "&";
 
     private static final String PREFIX = AuthenticationManager.class.getName() + SEPARATOR;
@@ -64,11 +67,33 @@ public class AuthenticationManager {
         secretAuthenticationKeys.add(key);
         if (Cookies.isCookieEnabled()) {
             final String name = PREFIX + key.getUrnPrefix();
-            Cookies.setCookie(name, serialize(key), new Date());
+            Cookies.setCookie(name, serialize(key), getCookieExpirationDate());
         }
     }
 
     public List<SecretAuthenticationKey> getSecretAuthenticationKeys() {
         return secretAuthenticationKeys;
+    }
+    
+    /**
+     * Get all WiseUi related cookies
+     * @return cookie name
+     */
+    public String getWiseUiCookies(){
+        for (final String name : Cookies.getCookieNames()) {
+            if (name.startsWith(PREFIX)) 
+                return Cookies.getCookie(name);
+        }
+        return null;
+    }
+    
+    /**
+     * Get cookie expiration date object
+     * @return expiration expiration date object
+     */
+    private Date getCookieExpirationDate(){
+    	Date expiration = new Date();
+    	expiration.setTime(expiration.getTime() + COOKIE_DURATION);
+    	return expiration;
     }
 }
