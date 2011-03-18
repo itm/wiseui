@@ -35,6 +35,7 @@ public class ReservationViewImpl extends Composite implements ReservationView {
 	private Presenter presenter;
 
 	@UiField VerticalPanel outerPanel;
+	@UiField HTMLPanel loginRequiredPanel;
 	@UiField HorizontalPanel dateTimeImagePanel;
 	@UiField VerticalPanel imagePanel;
 	@UiField HTMLPanel errorPanel;
@@ -61,17 +62,29 @@ public class ReservationViewImpl extends Composite implements ReservationView {
 		imagePanel.add(this.timeWidget);
 		imagePanel.add(this.imageUploadWidget);
 		outerPanel.add(this.sensorListWidget);
-	    errorPanel(false);
+		loginRequiredPanel(false);
 	}
 	
 	public void renderNodes(ArrayList<SensorDetails> nodes) {
 		this.sensorListWidget.renderNodes(nodes);
 	}
 	
-	public void errorPanel(boolean visible){
+	/**
+	 * Toggle visibility of reservation error panel
+	 * @param visible True if visible
+	 */
+	public void reservationErrorPanel(boolean visible){
 		errorPanel.setVisible(visible);
 	}
 	
+	/**
+	 * Toggle visibility of reservation button
+	 * @param visible True if visible
+	 */
+	public void reserveButton(boolean visible){
+		reserveButton.setVisible(visible);
+	}
+
 	/**
 	 * Tells the listener to continue with a new reservation after checking
 	 * that all reservation details have properly been set
@@ -82,6 +95,13 @@ public class ReservationViewImpl extends Composite implements ReservationView {
 	void onClickReserveButton(ClickEvent e) {
 		if(presenter.checkRsDetails())
 			presenter.makeReservation();
+	}
+	
+	/**
+	 * Renders a login required message at the top of the view.
+	 */
+	public void loginRequiredPanel(boolean visible){
+		loginRequiredPanel.setVisible(visible);
 	}
 
 }

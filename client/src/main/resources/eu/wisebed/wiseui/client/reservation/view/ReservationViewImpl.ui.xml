@@ -5,9 +5,8 @@
 	
 	<ui:style>
 		.outerPanel{
-			border:1px solid black;
 			margin:auto;
-			width: 1024px;
+			width: 100%;
 		}
 		.northPanel{
 			height: 100px;	
@@ -16,13 +15,18 @@
 		.errorPanel{
 			float:right;	
 			color:red;
+			visibility:hidden;
 		}
-		.buttonPanel{
-			float:right;
+		.loginRequiredPanel{
+			background-color: #FFBABA;
+			height: 30px;
 		}
 	</ui:style>
 
 	<gwt:VerticalPanel ui:field="outerPanel" styleName='{style.outerPanel}'>
+		<gwt:HTMLPanel ui:field="loginRequiredPanel" styleName='{style.loginRequiredPanel}'>
+			<span>Please, login to at least one testbed to make reservation</span>
+		</gwt:HTMLPanel>			
 		<gwt:HorizontalPanel ui:field="dateTimeImagePanel">
 			<gwt:VerticalPanel ui:field="imagePanel"/>
 		</gwt:HorizontalPanel>
