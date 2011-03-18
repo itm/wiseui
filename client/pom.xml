@@ -112,6 +112,7 @@
                         <configuration>
                             <runTarget>WiseUi.html</runTarget>
                             <hostedWebapp>${webappDirectory}</hostedWebapp>
+                            <debugSuspend>false</debugSuspend>
                             <compileSourcesArtifacts>
                                 <artifact>com.alexgorbatchev:gwt-syntaxhighlighter</artifact>
                             </compileSourcesArtifacts>

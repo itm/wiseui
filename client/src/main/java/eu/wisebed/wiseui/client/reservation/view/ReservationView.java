@@ -12,6 +12,8 @@ public interface ReservationView extends IsWidget {
     void setPresenter(Presenter presenter);
     void renderNodes(ArrayList<SensorDetails> nodeList);
     void initRsView();
+    void reserveButton(boolean visible);
+    void loginRequiredPanel(boolean visible);
 	
 	public interface Presenter{
 		void goTo(Place place);

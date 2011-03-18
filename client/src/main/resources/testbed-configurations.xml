@@ -24,7 +24,7 @@
     <configuration isFederated="false">
         <name>WISEBED CTI Testbed</name>
         <testbedUrl>http://www.wisebed.eu</testbedUrl>
-        <snaaEndpointUrl>http://hercules.cti.gr:8890/snaa/shib1</snaaEndpointUrl>
+        <snaaEndpointUrl>http://hercules.cti.gr:8890/snaa</snaaEndpointUrl>
         <sessionmanagementEndointUrl>http://hercules.cti.gr:8888/sessions</sessionmanagementEndointUrl>
         <urnPrefix>urn:wisebed:ctitestbed:</urnPrefix>
     </configuration>
