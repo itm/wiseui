@@ -54,7 +54,7 @@ public class TestbedConfigurationServiceImpl extends RemoteServiceServlet implem
                 }
             }
             in.close();
-    		TestbedConfigurationPersist.saveTestbedInfrastructure(result);
+            TestbedConfigurationPersist.saveTestbedInfrastructure(result);
             return result;
         } catch (final FileNotFoundException e) {
             System.err.println(e.getMessage());

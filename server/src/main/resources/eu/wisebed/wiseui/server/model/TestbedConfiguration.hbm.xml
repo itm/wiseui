@@ -5,19 +5,20 @@
         "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 
 <hibernate-mapping>
-    <class name="eu.wisebed.wiseui.shared.TestbedConfiguration" table="TESTBED">
-        <id name="testbedID" column="testbed_id"></id>
-        <property name="name"/>
-        <property name="rsEndpointUrl"/>
-        <property name="sessionmanagementEndpointUrl"/>
-        <property name="snaaEndpointUrl"/>
-        <property name="testbedUrl"/>
-        
-        <list name="urnPrefixList" table="URNPREFIX">
-        	<key column="urnprefix_id" not-null="true"/>
-			<list-index column="listindex"/>
-        	<element type="text"/>
-        </list>
+	<class name="eu.wisebed.wiseui.shared.TestbedConfiguration"
+		table="TESTBED">
+		<id name="testbedID" column="testbed_id"></id>
+		<property name="name" />
+		<property name="rsEndpointUrl" />
+		<property name="sessionmanagementEndpointUrl" />
+		<property name="snaaEndpointUrl" />
+		<property name="testbedUrl" />
 
-    </class>
+		<list name="urnPrefixList" table="URNPREFIX">
+			<key column="urnprefix_id" not-null="true" />
+			<list-index column="listindex" />
+			<element type="text" />
+		</list>
+
+	</class>
 </hibernate-mapping>

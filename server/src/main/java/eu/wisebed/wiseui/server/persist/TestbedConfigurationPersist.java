@@ -15,7 +15,7 @@ public class TestbedConfigurationPersist {
 	 */
 	public static void saveTestbedInfrastructure(List<TestbedConfiguration> testbeds){
 		final Session session = WiseUiHibernateUtil.getSessionFactory().
-			getCurrentSession();	
+		getCurrentSession();	
 		session.beginTransaction();
 		for (int i=0; i<testbeds.size(); i++){
 			TestbedConfiguration testbed = new TestbedConfiguration();
