@@ -4,6 +4,7 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.google.inject.Singleton;
 import com.thoughtworks.xstream.XStream;
 import eu.wisebed.wiseui.api.TestbedConfigurationService;
+import eu.wisebed.wiseui.server.persist.TestbedConfigurationPersist;
 import eu.wisebed.wiseui.shared.TestbedConfiguration;
 import eu.wisebed.wiseui.shared.exception.ConfigurationException;
 
@@ -53,6 +54,7 @@ public class TestbedConfigurationServiceImpl extends RemoteServiceServlet implem
                 }
             }
             in.close();
+    		TestbedConfigurationPersist.saveTestbedInfrastructure(result);
             return result;
         } catch (final FileNotFoundException e) {
             System.err.println(e.getMessage());

@@ -4,63 +4,63 @@
         <name>WISEBED Federator</name>
         <testbedUrl>http://www.wisebed.eu</testbedUrl>
         <snaaEndpointUrl>http://wisebed.itm.uni-luebeck.de:8883/snaa?wsdl</snaaEndpointUrl>
-        <sessionmanagementEndointUrl>http://wisebed.itm.uni-luebeck.de:8881/sessions?wsdl</sessionmanagementEndointUrl>
+        <sessionmanagementEndpointUrl>http://wisebed.itm.uni-luebeck.de:8881/sessions?wsdl</sessionmanagementEndpointUrl>
         <urnPrefix>urn:wisebed:uzl1:</urnPrefix>
     </configuration>
     <configuration isFederated="false">
         <name>WISEBED UZL Testbed</name>
         <testbedUrl>http://www.wisebed.eu</testbedUrl>
         <snaaEndpointUrl>http://wisebed.itm.uni-luebeck.de:8890/snaa?wsdl</snaaEndpointUrl>
-        <sessionmanagementEndointUrl>http://wisebed.itm.uni-luebeck.de:8888/sessions?wsdl</sessionmanagementEndointUrl>
+        <sessionmanagementEndpointUrl>http://wisebed.itm.uni-luebeck.de:8888/sessions?wsdl</sessionmanagementEndpointUrl>
         <urnPrefix>urn:wisebed:uzl1:</urnPrefix>
     </configuration>
     <configuration isFederated="false">
         <name>WISEBED ULANC Testbed</name>
         <testbedUrl>http://www.wisebed.eu</testbedUrl>
         <snaaEndpointUrl>http://wisebed-portal.lancs.ac.uk:3000</snaaEndpointUrl>
-        <sessionmanagementEndointUrl>http://wisebed-portal.lancs.ac.uk:3000</sessionmanagementEndointUrl>
+        <sessionmanagementEndpointUrl>http://wisebed-portal.lancs.ac.uk:3000</sessionmanagementEndpointUrl>
         <urnPrefix>urn:wisebed:node:ulanc:</urnPrefix>
     </configuration>
     <configuration isFederated="false">
         <name>WISEBED CTI Testbed</name>
         <testbedUrl>http://www.wisebed.eu</testbedUrl>
         <snaaEndpointUrl>http://hercules.cti.gr:8890/snaa</snaaEndpointUrl>
-        <sessionmanagementEndointUrl>http://hercules.cti.gr:8888/sessions</sessionmanagementEndointUrl>
+        <sessionmanagementEndpointUrl>http://hercules.cti.gr:8888/sessions</sessionmanagementEndpointUrl>
         <urnPrefix>urn:wisebed:ctitestbed:</urnPrefix>
     </configuration>
     <configuration isFederated="false">
         <name>WISEBED TUBS Testbed</name>
         <testbedUrl>http://www.wisebed.eu</testbedUrl>
         <snaaEndpointUrl>http://wbportal.ibr.cs.tu-bs.de:8080/snaa</snaaEndpointUrl>
-        <sessionmanagementEndointUrl>http://wbportal.ibr.cs.tu-bs.de:8080/sessions</sessionmanagementEndointUrl>
+        <sessionmanagementEndpointUrl>http://wbportal.ibr.cs.tu-bs.de:8080/sessions</sessionmanagementEndpointUrl>
         <urnPrefix>urn:wisebed:tubs:</urnPrefix>
     </configuration>
     <configuration isFederated="false">
         <name>WISEBED UBERN Testbed</name>
         <testbedUrl>http://www.wisebed.eu</testbedUrl>
         <snaaEndpointUrl>http://gridlab23.unibe.ch:3001/</snaaEndpointUrl>
-        <sessionmanagementEndointUrl>http://gridlab23.unibe.ch:3001/</sessionmanagementEndointUrl>
+        <sessionmanagementEndpointUrl>http://gridlab23.unibe.ch:3001/</sessionmanagementEndpointUrl>
         <urnPrefix>urn:wisebed:ubern:</urnPrefix>
     </configuration>
     <configuration isFederated="false">
         <name>WISEBED TUD Testbed</name>
         <testbedUrl>http://www.wisebed.eu</testbedUrl>
         <snaaEndpointUrl>http://dutigw.st.ewi.tudelft.nl:3000</snaaEndpointUrl>
-        <sessionmanagementEndointUrl>http://dutigw.st.ewi.tudelft.nl:3000</sessionmanagementEndointUrl>
+        <sessionmanagementEndpointUrl>http://dutigw.st.ewi.tudelft.nl:3000</sessionmanagementEndpointUrl>
         <urnPrefix>urn:wisebed:tud:</urnPrefix>
     </configuration>
     <configuration isFederated="false">
         <name>WISEBED UPC Testbed</name>
         <testbedUrl>http://www.wisebed.eu</testbedUrl>
         <snaaEndpointUrl>http://wisebed2.lsi.upc.edu:8888/sessions</snaaEndpointUrl>
-        <sessionmanagementEndointUrl>http://wisebed2.lsi.upc.edu:8888/sessions</sessionmanagementEndointUrl>
+        <sessionmanagementEndpointUrl>http://wisebed2.lsi.upc.edu:8888/sessions</sessionmanagementEndpointUrl>
         <urnPrefix>urn:wisebed:tud:</urnPrefix>
     </configuration>
     <configuration isFederated="false">
         <name>WISEBED FUB Testbed</name>
         <testbedUrl>http://www.wisebed.eu</testbedUrl>
         <snaaEndpointUrl>http://wiseportal.mi.fu-berlin.de:3000</snaaEndpointUrl>
-        <sessionmanagementEndointUrl>http://wiseportal.mi.fu-berlin.de:3000</sessionmanagementEndointUrl>
+        <sessionmanagementEndpointUrl>http://wiseportal.mi.fu-berlin.de:3000</sessionmanagementEndpointUrl>
         <urnPrefix>urn:wisebed:fub:</urnPrefix>
     </configuration>
 </configurations>

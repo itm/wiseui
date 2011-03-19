@@ -158,7 +158,7 @@ public class TestbedSelectionActivity extends AbstractActivity implements Config
                 eventBus.fireEvent(new ThrowableEvent(caught));
             }
         };
-        final String url = configuration.getSessionmanagementEndointUrl().trim();
+        final String url = configuration.getSessionmanagementEndpointUrl().trim();
         Scheduler.get().scheduleDeferred(new ScheduledCommand() {
 
             public void execute() {

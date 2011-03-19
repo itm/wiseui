@@ -26,6 +26,7 @@
         <property name="hibernate.hbm2ddl.auto">update</property>
 
         <mapping resource="eu/wisebed/wiseui/server/model/AuthenticationDetails.hbm.xml"/>
+        <mapping resource="eu/wisebed/wiseui/server/model/TestbedConfiguration.hbm.xml"/>
         <mapping resource="eu/wisebed/wiseui/server/model/ReservationDetails.hbm.xml"/>
         <mapping resource="eu/wisebed/wiseui/server/model/SensorDetails.hbm.xml"/>
         <mapping resource="eu/wisebed/wiseui/server/model/Image.hbm.xml"/>

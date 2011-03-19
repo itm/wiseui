@@ -47,7 +47,7 @@ public class RawWisemlPresenter implements Presenter, ConfigurationSelectedHandl
 		configuration = event.getConfiguration();
 		view.getLoadingIndicator().showLoading("Loading Testbed");
 		view.getXmlHasHTML().setText("");
-		sessionManagementService.getWisemlAsXml(configuration.getSessionmanagementEndointUrl(), new AsyncCallback<String>() {
+		sessionManagementService.getWisemlAsXml(configuration.getSessionmanagementEndpointUrl(), new AsyncCallback<String>() {
 			
 			@Override
 			public void onSuccess(final String result) {
