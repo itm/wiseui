@@ -63,4 +63,11 @@
         <sessionmanagementEndpointUrl>http://wiseportal.mi.fu-berlin.de:3000</sessionmanagementEndpointUrl>
         <urnPrefix>urn:wisebed:fub:</urnPrefix>
     </configuration>
+    <configuration isFederated="false">
+        <name>WISEBED UNIGE Testbed</name>
+        <testbedUrl>http://www.wisebed.eu</testbedUrl>
+        <snaaEndpointUrl>http://testbed.tcs.unige.ch:8888/sessions</snaaEndpointUrl>
+        <sessionmanagementEndpointUrl>http://testbed.tcs.unige.ch:8890/snaa</sessionmanagementEndpointUrl>
+        <urnPrefix>urn:wisebed:unige:</urnPrefix>
+    </configuration>
 </configurations>
