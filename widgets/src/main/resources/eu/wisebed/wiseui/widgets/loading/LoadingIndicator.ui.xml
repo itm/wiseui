@@ -7,7 +7,6 @@
 		.loading {
 		margin: auto;
         padding: 2px;
-        z-index: 20001;
         border: 1px solid #ccc;
 		width:175px;
 		text-align:left;
@@ -39,7 +38,6 @@
 		.overlay {
 		display: table;
 		position: absolute;
-		z-index: 20000;
 		background-image:url(images/loading_overlay.png);
 		}
 	</ui:style>

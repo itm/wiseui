@@ -10,6 +10,8 @@ import com.google.inject.Inject;
 import eu.wisebed.wiseui.client.testbedselection.TestbedSelectionPlace;
 import eu.wisebed.wiseui.client.testbedselection.event.ConfigurationSelectedEvent;
 import eu.wisebed.wiseui.client.testbedselection.event.ConfigurationSelectedEvent.ConfigurationSelectedHandler;
+import eu.wisebed.wiseui.client.testbedselection.event.ThrowableEvent;
+import eu.wisebed.wiseui.client.testbedselection.event.ThrowableEvent.ThrowableHandler;
 import eu.wisebed.wiseui.client.testbedselection.event.WisemlLoadedEvent;
 import eu.wisebed.wiseui.client.testbedselection.event.WisemlLoadedEvent.WisemlLoadedHandler;
 import eu.wisebed.wiseui.client.testbedselection.view.MapView;
@@ -25,7 +27,7 @@ import eu.wisebed.wiseui.shared.wiseml.Setup;
  * 
  * @author Malte Legenhausen
  */
-public class MapPresenter implements MapView.Presenter, WisemlLoadedHandler, ConfigurationSelectedHandler {
+public class MapPresenter implements MapView.Presenter, WisemlLoadedHandler, ConfigurationSelectedHandler, ThrowableHandler {
 
     private final EventBus eventBus;
     private final MapView view;
@@ -41,6 +43,7 @@ public class MapPresenter implements MapView.Presenter, WisemlLoadedHandler, Con
     private void bind() {
         eventBus.addHandler(ConfigurationSelectedEvent.TYPE, this);
         eventBus.addHandler(WisemlLoadedEvent.TYPE, this);
+        eventBus.addHandler(ThrowableEvent.TYPE, this);
     }
 
     @Override
@@ -72,4 +75,9 @@ public class MapPresenter implements MapView.Presenter, WisemlLoadedHandler, Con
         view.setTestbedCoordinate(null, null, null);
         view.setTestbedShape(null);
     }
+
+	@Override
+	public void onThrowable(ThrowableEvent event) {
+		view.getLoadingIndicator().hideLoading();
+	}
 }
