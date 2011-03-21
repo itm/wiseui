@@ -7,7 +7,7 @@
 <hibernate-mapping>
 	<class name="eu.wisebed.wiseui.shared.TestbedConfiguration"
 		table="TESTBED">
-		<id name="testbedID" column="testbed_id"></id>
+		<id name="testbedId" column="testbed_id"></id>
 		<property name="name" />
 		<property name="rsEndpointUrl" />
 		<property name="sessionmanagementEndpointUrl" />

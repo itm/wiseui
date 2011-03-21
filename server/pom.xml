@@ -26,10 +26,6 @@
             <artifactId>shared</artifactId>
         </dependency>
         <dependency>
-            <groupId>eu.wisebed.wiseui</groupId>
-            <artifactId>widgets</artifactId>
-        </dependency>
-        <dependency>
             <groupId>com.google.gwt</groupId>
             <artifactId>gwt-user</artifactId>
             <scope>provided</scope>
@@ -72,21 +68,15 @@
             <groupId>de.uniluebeck.itm</groupId>
             <artifactId>tr.wiseml</artifactId>
         </dependency>
-        <!--
         <dependency>
-            <groupId>de.uniluebeck.itm</groupId>
-            <artifactId>tr.util</artifactId>
-        </dependency>
-        -->
-        <dependency>
-        	<groupId>joda-time</groupId>
-        	<artifactId>joda-time</artifactId>
-        	<version>1.6</version>
-        	<type>jar</type>
-        	<scope>compile</scope>
+            <groupId>joda-time</groupId>
+            <artifactId>joda-time</artifactId>
+            <version>1.6</version>
+            <type>jar</type>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
-	<build>
+    <build>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -112,26 +102,8 @@
                     <include>**/*.xml</include>
                     <include>*.properties</include>
                 </includes>
+                <filtering>true</filtering>
             </resource>
         </resources>
     </build>
-	<profiles>
-		<profile>
-			<id>default</id>
-			<activation>
-				<activeByDefault>true</activeByDefault>
-			</activation>
-			<build>
-				<resources>
-					<resource>
-						<directory>src/main/resources</directory>
-						<includes>
-							<include>hibernate.cfg.xml</include>
-						</includes>
-						<filtering>true</filtering>
-					</resource>
-				</resources>
-			</build>
-		</profile>
-	</profiles>        
 </project>

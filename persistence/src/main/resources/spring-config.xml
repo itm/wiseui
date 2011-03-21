@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans-3.0.xsd  
+	http://www.springframework.org/schema/tx 
+	http://www.springframework.org/schema/tx/spring-tx-3.0.xsd">
+
+    <!--
+      Persistence and transaction management
+    -->
+
+    <!-- Looks for annotations like @Repository to configure exception handling via Spring -->
+    <bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor"/>
+
+    <!-- This is where the entityManagerFactory comes from. As we use JPA, the HibernateJpaDialact is activated. -->
+    <bean id="entityManagerFactory"
+          class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+        <property name="jpaDialect">
+            <bean class="org.springframework.orm.jpa.vendor.HibernateJpaDialect"/>
+        </property>
+        <property name="persistenceUnitName" value="pollPersistenceUnit"/>
+    </bean>
+
+    <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+        <property name="entityManagerFactory" ref="entityManagerFactory"/>
+    </bean>
+
+    <!-- Allows the use of @Transactional to configure transactions -->
+    <tx:annotation-driven transaction-manager="transactionManager"/>
+
+    <!--
+      Our beans
+    -->
+
+    <!--
+
+    <bean id="pollDao"
+          class="de.uniluebeck.itm.ep0.poll.dao.PollDaoImpl">
+    </bean>
+
+    <bean id="voteDao"
+          class="de.uniluebeck.itm.ep0.poll.dao.VoteDaoImpl">
+    </bean>
+
+    <!-- This is our service object that we want to make transactional -->
+    <bean id="pollService"
+          class="de.uniluebeck.itm.ep0.poll.service.PollServiceImpl">
+        <property name="pollDao" ref="pollDao"/>
+        <property name="voteDao" ref="voteDao"/>
+    </bean>
+
+    -->
+
+</beans>

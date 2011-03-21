@@ -25,7 +25,7 @@ public class TestbedConfigurationPersist {
 			testbed.setSnaaEndpointUrl(testbeds.get(i).getSnaaEndpointUrl());
 			testbed.setTestbedUrl(testbeds.get(i).getTestbedUrl());
 			testbed.setUrnPrefixList(testbeds.get(i).getUrnPrefixList());
-			testbed.setTestbedID(i+1);
+			testbed.setTestbedId(i + 1);
 			session.saveOrUpdate(testbed);
 		}
 		session.getTransaction().commit();

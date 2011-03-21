@@ -2,6 +2,11 @@ package eu.wisebed.wiseui.shared.wiseml;
 
 import java.io.Serializable;
 
+/**
+ * Holds all information about a coordinate for a {@link Node}. Can also be used for GPS positioning.
+ *
+ * @author Malte Legenhausen
+ */
 public class Coordinate implements Serializable {
 
     private static final long serialVersionUID = 4172459795364749105L;

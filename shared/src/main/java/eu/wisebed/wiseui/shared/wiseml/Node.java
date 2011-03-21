@@ -3,6 +3,11 @@ package eu.wisebed.wiseui.shared.wiseml;
 import java.io.Serializable;
 import java.util.List;
 
+/**
+ * Holds all information about one node in the context of a {@link eu.wisebed.wiseui.shared.TestbedConfiguration}.
+ *
+ * @author Malte Legenhausen
+ */
 public class Node implements Serializable {
 
     private static final long serialVersionUID = -7074948156263912998L;
