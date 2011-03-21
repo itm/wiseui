@@ -1,5 +1,7 @@
 package eu.wisebed.wiseui.shared;
 
+import eu.wisebed.wiseui.shared.dto.Dto;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -9,9 +11,10 @@ import java.util.List;
  *
  * @author Soenke Nommensen
  */
-public class TestbedConfiguration implements Serializable {
+public class TestbedConfiguration implements Dto {
 
     private static final long serialVersionUID = 1721396665761010739L;
+    private Integer id;
     private String name;
     private String testbedUrl;
     private String snaaEndpointUrl;
@@ -34,6 +37,10 @@ public class TestbedConfiguration implements Serializable {
         this.sessionmanagementEndpointUrl = sessionmanagementEndpointUrl;
         this.urnPrefixList = new ArrayList<String>();
         this.isFederated = isFederated;
+    }
+
+    public Integer getId() {
+        return id;
     }
 
     public String getName() {
@@ -66,6 +73,10 @@ public class TestbedConfiguration implements Serializable {
 
     public int getTestbedId() {
         return testbedId;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public void setName(String name) {

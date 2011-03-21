@@ -19,7 +19,7 @@
         <property name="jpaDialect">
             <bean class="org.springframework.orm.jpa.vendor.HibernateJpaDialect"/>
         </property>
-        <property name="persistenceUnitName" value="pollPersistenceUnit"/>
+        <property name="persistenceUnitName" value="wiseuiPersistenceUnit"/>
     </bean>
 
     <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
@@ -33,23 +33,14 @@
       Our beans
     -->
 
-    <!--
-
-    <bean id="pollDao"
-          class="de.uniluebeck.itm.ep0.poll.dao.PollDaoImpl">
-    </bean>
-
-    <bean id="voteDao"
-          class="de.uniluebeck.itm.ep0.poll.dao.VoteDaoImpl">
+    <bean id="testbedConfigurationDao"
+          class="eu.wisebed.wiseui.dao.TestbedConfigurationDaoImpl">
     </bean>
 
     <!-- This is our service object that we want to make transactional -->
-    <bean id="pollService"
-          class="de.uniluebeck.itm.ep0.poll.service.PollServiceImpl">
-        <property name="pollDao" ref="pollDao"/>
-        <property name="voteDao" ref="voteDao"/>
+    <bean id="transactionService"
+          class="eu.wisebed.wiseui.service.TransactionServiceImpl">
+        <property name="testbedConfigurationDao" ref="testbedConfigurationDao"/>
     </bean>
-
-    -->
 
 </beans>
