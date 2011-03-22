@@ -19,7 +19,7 @@
         <testbedUrl>http://www.wisebed.eu</testbedUrl>
         <snaaEndpointUrl>http://wisebed-portal.lancs.ac.uk:3200/snaa</snaaEndpointUrl>
         <sessionmanagementEndpointUrl>http://wisebed-portal.lancs.ac.uk:3000</sessionmanagementEndpointUrl>
-        <urnPrefix>urn:wisebed:node:ulanc:</urnPrefix>
+        <urnPrefix>urn:wisebed:ulanc:</urnPrefix>
     </configuration>
     <configuration isFederated="false">
         <name>WISEBED CTI Testbed</name>
