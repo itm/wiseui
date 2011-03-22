@@ -31,7 +31,7 @@
     <configuration isFederated="false">
         <name>WISEBED TUBS Testbed</name>
         <testbedUrl>http://www.wisebed.eu</testbedUrl>
-        <snaaEndpointUrl>http://wbportal.ibr.cs.tu-bs.de:8080/snaa</snaaEndpointUrl>
+        <snaaEndpointUrl>http://wbportal.ibr.cs.tu-bs.de:8083/snaa</snaaEndpointUrl>
         <sessionmanagementEndpointUrl>http://wbportal.ibr.cs.tu-bs.de:8080/sessions</sessionmanagementEndpointUrl>
         <urnPrefix>urn:wisebed:tubs:</urnPrefix>
     </configuration>
@@ -52,7 +52,7 @@
     <configuration isFederated="false">
         <name>WISEBED UPC Testbed</name>
         <testbedUrl>http://www.wisebed.eu</testbedUrl>
-        <snaaEndpointUrl>http://wisebed2.lsi.upc.edu:8888/sessions</snaaEndpointUrl>
+        <snaaEndpointUrl>http://wisebed2.lsi.upc.edu:8890/snaa</snaaEndpointUrl>
         <sessionmanagementEndpointUrl>http://wisebed2.lsi.upc.edu:8888/sessions</sessionmanagementEndpointUrl>
         <urnPrefix>urn:wisebed:tud:</urnPrefix>
     </configuration>
