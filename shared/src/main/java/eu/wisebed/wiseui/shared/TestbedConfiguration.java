@@ -1,8 +1,5 @@
 package eu.wisebed.wiseui.shared;
 
-import eu.wisebed.wiseui.shared.dto.Dto;
-
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -109,5 +106,20 @@ public class TestbedConfiguration implements Dto {
 
     public void setTestbedId(int testbedId) {
         this.testbedId = testbedId;
+    }
+
+    @Override
+    public String toString() {
+        return "TestbedConfiguration{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", testbedUrl='" + testbedUrl + '\'' +
+                ", snaaEndpointUrl='" + snaaEndpointUrl + '\'' +
+                ", rsEndpointUrl='" + rsEndpointUrl + '\'' +
+                ", sessionmanagementEndpointUrl='" + sessionmanagementEndpointUrl + '\'' +
+                ", urnPrefixList=" + urnPrefixList +
+                ", isFederated=" + isFederated +
+                ", testbedId=" + testbedId +
+                '}';
     }
 }

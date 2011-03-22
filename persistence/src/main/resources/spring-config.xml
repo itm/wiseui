@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:context="http://www.springframework.org/schema/context"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
 	http://www.springframework.org/schema/beans/spring-beans-3.0.xsd  
 	http://www.springframework.org/schema/tx 
-	http://www.springframework.org/schema/tx/spring-tx-3.0.xsd">
+	http://www.springframework.org/schema/tx/spring-tx-3.0.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
     <!--
       Persistence and transaction management
@@ -30,17 +31,21 @@
     <tx:annotation-driven transaction-manager="transactionManager"/>
 
     <!--
-      Our beans
+      Bean to bean mapping with Dozer
     -->
 
-    <bean id="testbedConfigurationDao"
-          class="eu.wisebed.wiseui.dao.TestbedConfigurationDaoImpl">
+    <!-- Dozer bean mapper -->
+    <bean id="dozerBeanMapper" class="org.dozer.DozerBeanMapper">
+        <property name="mappingFiles">
+            <list>
+                <value>dozer-bean-mappings.xml</value>
+            </list>
+        </property>
     </bean>
 
-    <!-- This is our service object that we want to make transactional -->
-    <bean id="transactionService"
-          class="eu.wisebed.wiseui.service.TransactionServiceImpl">
-        <property name="testbedConfigurationDao" ref="testbedConfigurationDao"/>
-    </bean>
+    <!--
+      Component auto-detection. Detects components via annotations, e.g. @Configuration, @Repository, @Service etc.
+    -->
+    <context:component-scan base-package="eu.wisebed.wiseui"/>
 
 </beans>

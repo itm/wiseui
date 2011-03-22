@@ -55,7 +55,6 @@
             <groupId>net.sf.dozer</groupId>
             <artifactId>dozer</artifactId>
         </dependency>
-
         <dependency>
             <groupId>de.uniluebeck.itm</groupId>
             <artifactId>tr.snaa-api</artifactId>

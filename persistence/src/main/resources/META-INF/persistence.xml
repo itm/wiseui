@@ -11,9 +11,9 @@
         <!-- The variables jdbc.connection.username, etc. are configured in the master ~/.m2/settings.xml -->
         <properties>
             <property name="hibernate.cache.provider_class" value="org.hibernate.cache.NoCacheProvider"/>
-            <property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect"/>
+            <property name="hibernate.dialect" value="${hibernate.dialect}"/>
             <property name="hibernate.connection.username" value="${jdbc.connection.username}"/>
-            <property name="hibernate.connection.driver_class" value="com.mysql.jdbc.Driver"/>
+            <property name="hibernate.connection.driver_class" value="${jdbc.connection.driver_class}"/>
             <property name="hibernate.connection.password" value="${jdbc.connection.password}"/>
             <property name="hibernate.connection.url" value="${jdbc.connection.url}"/>
             <property name="hibernate.hbm2ddl.auto" value="create-drop"/>

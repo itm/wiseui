@@ -8,7 +8,7 @@ import java.util.List;
  * Abstract dao that provides implementations for the typical data
  * access operations.
  *
- * @param <T> type of the business objects on which the dao shall
+ * @param <T> type of the business objects on which the DAO shall
  *            operate.
  */
 public abstract class AbstractDaoImpl<T> implements Dao<T> {

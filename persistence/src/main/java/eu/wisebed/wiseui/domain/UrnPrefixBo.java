@@ -1,7 +1,6 @@
 package eu.wisebed.wiseui.domain;
 
 import eu.wisebed.wiseui.shared.UrnPrefix;
-import eu.wisebed.wiseui.shared.dto.Dto;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -10,7 +9,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 /**
- *
+ * Urn prefix business object (BO) for Hibernate persistence. Part of {@link TestbedConfigurationBo}.
  *
  * @author Soenke Nommensen
  */
@@ -21,14 +20,10 @@ public class UrnPrefixBo implements Bo {
     @GeneratedValue
     private Integer id;
     @ManyToOne
-    @JoinColumn(name = "testbed_configuration_fk")
+    @JoinColumn(name = "testbed_conf_fk")
     private TestbedConfigurationBo testbedConfigurationBo;
 
     public UrnPrefixBo() {
-    }
-
-    public UrnPrefixBo(UrnPrefix dto) {
-        // TODO
     }
 
     public Integer getId() {
@@ -39,17 +34,18 @@ public class UrnPrefixBo implements Bo {
         this.id = id;
     }
 
+    public TestbedConfigurationBo getTestbedConfigurationBo() {
+        return testbedConfigurationBo;
+    }
+
+    public void setTestbedConfigurationBo(TestbedConfigurationBo testbedConfigurationBo) {
+        this.testbedConfigurationBo = testbedConfigurationBo;
+    }
+
     @Override
     public String toString() {
         return "UrnPrefixBo{"
                 + "id=" + id
                 + '}';
-    }
-
-    @Override
-    public UrnPrefix toDto() {
-        UrnPrefix dto = new UrnPrefix();
-        dto.setId(this.id);
-        return dto;
     }
 }

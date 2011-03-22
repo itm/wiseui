@@ -1,10 +1,6 @@
 package eu.wisebed.wiseui.shared;
 
-import eu.wisebed.wiseui.shared.dto.Dto;
-
 /**
- *
- *
  * @author Soenke Nommensen
  */
 public class UrnPrefix implements Dto {

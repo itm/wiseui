@@ -1,6 +1,7 @@
 package eu.wisebed.wiseui.dao;
 
 import eu.wisebed.wiseui.domain.TestbedConfigurationBo;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 /**

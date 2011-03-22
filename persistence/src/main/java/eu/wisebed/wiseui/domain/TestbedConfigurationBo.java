@@ -1,6 +1,8 @@
 package eu.wisebed.wiseui.domain;
 
 import eu.wisebed.wiseui.shared.TestbedConfiguration;
+import org.dozer.DozerBeanMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -8,13 +10,18 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.persistence.Transient;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Testbed configuration business object (BO) for Hibernate persistence.
+ *
  * @author Soenke Nommensen
  */
 @Entity
+@Table(name = "testbed_conf")
 public class TestbedConfigurationBo implements Bo {
 
     @Id
@@ -26,7 +33,7 @@ public class TestbedConfigurationBo implements Bo {
     private String rsEndpointUrl;
     private String sessionmanagementEndpointUrl;
     @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "testbed_configuration_fk")
+    @JoinColumn(name = "testbed_conf_fk")
     private List<UrnPrefixBo> urnPrefixList;
     private boolean isFederated;
     private int testbedId;
@@ -44,10 +51,6 @@ public class TestbedConfigurationBo implements Bo {
         this.sessionmanagementEndpointUrl = sessionmanagementEndpointUrl;
         this.urnPrefixList = new ArrayList<UrnPrefixBo>();
         this.isFederated = isFederated;
-    }
-
-    public TestbedConfigurationBo(TestbedConfiguration dto) {
-        // TODO
     }
 
     public Integer getId() {
@@ -120,14 +123,6 @@ public class TestbedConfigurationBo implements Bo {
 
     public void setTestbedId(int testbedId) {
         this.testbedId = testbedId;
-    }
-
-    @Override
-    public TestbedConfiguration toDto() {
-        TestbedConfiguration dto = new TestbedConfiguration();
-        dto.setId(this.id);
-        // TODO
-        return dto;
     }
 
     @Override

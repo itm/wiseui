@@ -17,7 +17,6 @@
         <maven.compiler.target>1.6</maven.compiler.target>
     </properties>
     <dependencies>
-        <!-- GWT dependencies (from central repo) -->
         <dependency>
             <groupId>com.google.gwt</groupId>
             <artifactId>gwt-user</artifactId>
@@ -49,7 +48,6 @@
                         </goals>
                     </execution>
                 </executions>
-            	<version>2.2.0</version>
             </plugin>
         </plugins>
         <!-- Include SOURCE in output artifact for GWT (GWT libraries must include

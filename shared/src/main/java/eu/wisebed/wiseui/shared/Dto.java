@@ -1,4 +1,4 @@
-package eu.wisebed.wiseui.shared.dto;
+package eu.wisebed.wiseui.shared;
 
 import java.io.Serializable;
 

@@ -13,7 +13,6 @@
     <name>WiseUI - API</name>
     <packaging>jar</packaging>
     <properties>
-        <!-- tell the compiler we can use 1.5 -->
         <maven.compiler.source>1.6</maven.compiler.source>
         <maven.compiler.target>1.6</maven.compiler.target>
     </properties>
