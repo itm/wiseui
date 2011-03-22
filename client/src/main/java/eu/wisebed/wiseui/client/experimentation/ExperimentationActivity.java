@@ -46,7 +46,7 @@ public class ExperimentationActivity extends AbstractActivity implements
 	public void getUserReservations() {
 		// TODO After RPC some reservations might have arrived
 		// those reservations fill the experiments list and then added to the view
-        
+        GWT.log("Get Reservations/Experiments");
 		// fake data -->
         Date startDate = new Date();
         Date stopDate = new Date();
@@ -61,7 +61,20 @@ public class ExperimentationActivity extends AbstractActivity implements
 
 				@Override
 				public void onButtonClicked(Button button) {
-					GWT.log(button.getValue() + " pressed! for experiment with ID :" + experiment.getReservationID());
+					switch(button){
+						case START:
+							experiment.setAsRunningExperiment();
+							break;
+						case STOP:
+							experiment.setAsTerminatedExperiment();
+							break;
+						case SHOWHIDE:
+							experiment.getView().showHideNodeOutput();
+							break;
+						case CANCEL:
+							experiment.setAsCancelledExperiment();
+							break;
+					}
 				} 
         });
         experiments.add(experiment.getView());
