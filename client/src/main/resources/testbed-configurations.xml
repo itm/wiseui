@@ -54,7 +54,7 @@
         <testbedUrl>http://www.wisebed.eu</testbedUrl>
         <snaaEndpointUrl>http://wisebed2.lsi.upc.edu:8890/snaa</snaaEndpointUrl>
         <sessionmanagementEndpointUrl>http://wisebed2.lsi.upc.edu:8888/sessions</sessionmanagementEndpointUrl>
-        <urnPrefix>urn:wisebed:tud:</urnPrefix>
+        <urnPrefix>urn:wisebed:upc1:</urnPrefix>
     </configuration>
     <configuration isFederated="false">
         <name>WISEBED FUB Testbed</name>
