@@ -1,6 +1,7 @@
 package eu.wisebed.wiseui.client.reservation.presenter;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.place.shared.Place;
@@ -11,20 +12,44 @@ import com.google.inject.Inject;
 
 import eu.wisebed.wiseui.api.ReservationService;
 import eu.wisebed.wiseui.api.ReservationServiceAsync;
+import eu.wisebed.wiseui.api.TestbedConfigurationService;
+import eu.wisebed.wiseui.api.TestbedConfigurationServiceAsync;
 import eu.wisebed.wiseui.client.reservation.ReservationActivity;
 import eu.wisebed.wiseui.client.reservation.view.ReservationView;
 import eu.wisebed.wiseui.client.reservation.view.ReservationView.Presenter;
 import eu.wisebed.wiseui.shared.SensorDetails;
+import eu.wisebed.wiseui.shared.TestbedConfiguration;
 
 public class ReservationPresenter implements Presenter{
-	
+
 	private final ReservationView view;
-    private ReservationServiceAsync service;
+	private ReservationServiceAsync service;
 	private PlaceController placeController;
-    
+
 	@Inject
 	public ReservationPresenter(final ReservationView view){
 		this.view = view;
+	}
+
+	/**
+	 * Send the urn prefix to the server to identify the testbed the user
+	 * has previously logged in.
+	 */
+	public void getTestbedLoggedIn(final List<String> urnPrefix){
+		final TestbedConfigurationServiceAsync service = 
+			GWT.create(TestbedConfigurationService.class);
+		service.getTestbedLoggedIn(urnPrefix, new AsyncCallback<List<TestbedConfiguration>>(){
+			public void onFailure(Throwable caught){
+				GWT.log("Failed rpc");
+			}
+			public void onSuccess(List<TestbedConfiguration> testbeds){
+				if(testbeds == null){
+					Window.alert("No testbeds identified");
+				}else{
+					GWT.log("Testbeds logged in:" + testbeds);
+				}
+			}
+		});
 	}
 
 	/**
@@ -41,22 +66,28 @@ public class ReservationPresenter implements Presenter{
 			public void onSuccess(ArrayList<SensorDetails> nodeList){
 				if(nodeList==null){
 					Window.alert("No nodes returned to client");
-                    // TODO SNO We can use the MessageBox here
+					// TODO SNO We can use the MessageBox here
 				}else{
 					view.renderNodes(nodeList);
-					GWT.log("Network nodes:" + nodeList);
 				}
 			}
 		});
 	}
-	
+
 	public void initRsView() {
 		view.initRsView();
 	}
+
+	/**
+	 * Render login required information
+	 */
 	public void loginRequired() {
-    	view.loginRequiredPanel(true);
-    	view.reserveButton(false);
+		view.loginRequiredPanel(true);
+		// FIXME: This shouldn't be here, but i will come back for the view
+		//		  later
+		view.reserveButton(false);
 	}
+
 	/**
 	 * Check if user has set all required reservation details
 	 */
@@ -64,7 +95,7 @@ public class ReservationPresenter implements Presenter{
 		// TODO: Add functionality while integrating
 		return false;
 	}
-	
+
 	/**
 	 * Sends reservation details to the server after collecting time, date and
 	 * sensors as information about the experiment to be scheduled.
@@ -72,7 +103,7 @@ public class ReservationPresenter implements Presenter{
 	public void makeReservation() {
 		// TODO: Add functionality while integrating
 	}
-	
+
 	/**
 	 * Navigate to a new Place in the browser
 	 */

@@ -15,9 +15,9 @@
 		<property name="testbedUrl" />
 
 		<list name="urnPrefixList" table="URNPREFIX">
-			<key column="urnprefix_id" not-null="true" />
-			<list-index column="listindex" />
-			<element type="text" />
+			<key column="testbedID" not-null="true" />
+			<list-index column="sort_order" base="0" />
+			<element column="urnprefix" type="string" />
 		</list>
 
 	</class>
