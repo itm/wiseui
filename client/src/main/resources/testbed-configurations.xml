@@ -17,14 +17,14 @@
     <configuration isFederated="false">
         <name>WISEBED ULANC Testbed</name>
         <testbedUrl>http://www.wisebed.eu</testbedUrl>
-        <snaaEndpointUrl>http://wisebed-portal.lancs.ac.uk:3000</snaaEndpointUrl>
+        <snaaEndpointUrl>http://wisebed-portal.lancs.ac.uk:3200/snaa</snaaEndpointUrl>
         <sessionmanagementEndpointUrl>http://wisebed-portal.lancs.ac.uk:3000</sessionmanagementEndpointUrl>
         <urnPrefix>urn:wisebed:node:ulanc:</urnPrefix>
     </configuration>
     <configuration isFederated="false">
         <name>WISEBED CTI Testbed</name>
         <testbedUrl>http://www.wisebed.eu</testbedUrl>
-        <snaaEndpointUrl>http://hercules.cti.gr:8890/snaa</snaaEndpointUrl>
+        <snaaEndpointUrl>http://hercules.cti.gr:8890/snaa/shib1</snaaEndpointUrl>
         <sessionmanagementEndpointUrl>http://hercules.cti.gr:8888/sessions</sessionmanagementEndpointUrl>
         <urnPrefix>urn:wisebed:ctitestbed:</urnPrefix>
     </configuration>
@@ -45,7 +45,7 @@
     <configuration isFederated="false">
         <name>WISEBED TUD Testbed</name>
         <testbedUrl>http://www.wisebed.eu</testbedUrl>
-        <snaaEndpointUrl>http://dutigw.st.ewi.tudelft.nl:3000</snaaEndpointUrl>
+        <snaaEndpointUrl>http://dutigw.st.ewi.tudelft.nl:3200/snaa</snaaEndpointUrl>
         <sessionmanagementEndpointUrl>http://dutigw.st.ewi.tudelft.nl:3000</sessionmanagementEndpointUrl>
         <urnPrefix>urn:wisebed:tud:</urnPrefix>
     </configuration>
