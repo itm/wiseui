@@ -1,6 +1,6 @@
-package eu.wisebed.wiseui.dao;
+package eu.wisebed.wiseui.server.dao;
 
-import eu.wisebed.wiseui.domain.TestbedConfigurationBo;
+import eu.wisebed.wiseui.server.domain.TestbedConfigurationBo;
 
 /**
  * @author Soenke Nommensen

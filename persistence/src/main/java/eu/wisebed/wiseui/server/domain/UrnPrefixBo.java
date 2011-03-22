@@ -1,6 +1,4 @@
-package eu.wisebed.wiseui.domain;
-
-import eu.wisebed.wiseui.shared.UrnPrefix;
+package eu.wisebed.wiseui.server.domain;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -30,7 +28,7 @@ public class UrnPrefixBo implements Bo {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(final Integer id) {
         this.id = id;
     }
 
@@ -38,7 +36,7 @@ public class UrnPrefixBo implements Bo {
         return testbedConfigurationBo;
     }
 
-    public void setTestbedConfigurationBo(TestbedConfigurationBo testbedConfigurationBo) {
+    public void setTestbedConfigurationBo(final TestbedConfigurationBo testbedConfigurationBo) {
         this.testbedConfigurationBo = testbedConfigurationBo;
     }
 

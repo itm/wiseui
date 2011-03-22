@@ -1,8 +1,10 @@
-package eu.wisebed.wiseui.service;
+package eu.wisebed.wiseui.server.rpc;
 
+import com.google.gwt.user.server.rpc.RemoteServiceServlet;
+import com.google.inject.Singleton;
 import eu.wisebed.wiseui.api.PersistenceService;
-import eu.wisebed.wiseui.dao.TestbedConfigurationDao;
-import eu.wisebed.wiseui.domain.TestbedConfigurationBo;
+import eu.wisebed.wiseui.server.dao.TestbedConfigurationDao;
+import eu.wisebed.wiseui.server.domain.TestbedConfigurationBo;
 import eu.wisebed.wiseui.shared.TestbedConfiguration;
 import eu.wisebed.wiseui.shared.common.Preconditions;
 import org.dozer.DozerBeanMapper;
@@ -17,8 +19,9 @@ import org.springframework.transaction.annotation.Transactional;
  *
  * @author Soenke Nommensen
  */
+@Singleton
 @Service
-public class PersistenceServiceImpl implements PersistenceService {
+public class PersistenceServiceImpl extends RemoteServiceServlet implements PersistenceService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PersistenceServiceImpl.class);
 
@@ -33,7 +36,7 @@ public class PersistenceServiceImpl implements PersistenceService {
      */
     @Override
     @Transactional
-    public TestbedConfiguration storeTestbedConfiguration(TestbedConfiguration dto) {
+    public TestbedConfiguration storeTestbedConfiguration(final TestbedConfiguration dto) {
         Preconditions.notNullArgument(dto, "Argument 'dto' is null!");
 
         LOGGER.info("storeTestbedConfiguration( " + dto + " )");
@@ -63,12 +66,12 @@ public class PersistenceServiceImpl implements PersistenceService {
      */
     @Override
     @Transactional
-    public TestbedConfiguration loadTestbedConfiguration(Integer id) {
+    public TestbedConfiguration loadTestbedConfiguration(final Integer id) {
         Preconditions.notNullArgument(id, "Argument 'id' is null!");
 
         LOGGER.info("loadTestbedConfiguration( " + id + " )");
 
-        TestbedConfigurationBo bo = testbedConfigurationDao.findById(id);
+        final TestbedConfigurationBo bo = testbedConfigurationDao.findById(id);
         Preconditions.notNull(bo, "TestbedConfiguration with id #"
                 + id
                 + " does not exist!");

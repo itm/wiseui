@@ -1,11 +1,10 @@
-package eu.wisebed.wiseui.dao;
+package eu.wisebed.wiseui.server.dao;
 
-import eu.wisebed.wiseui.domain.TestbedConfigurationBo;
-import org.springframework.stereotype.Component;
+import eu.wisebed.wiseui.server.domain.TestbedConfigurationBo;
 import org.springframework.stereotype.Repository;
 
 /**
- * Data access object for {@link eu.wisebed.wiseui.domain.TestbedConfigurationBo} objects.
+ * Data access object for {@link eu.wisebed.wiseui.server.domain.TestbedConfigurationBo} objects.
  *
  * @author Soenke Nommensen
  */

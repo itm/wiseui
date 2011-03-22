@@ -1,8 +1,4 @@
-package eu.wisebed.wiseui.domain;
-
-import eu.wisebed.wiseui.shared.TestbedConfiguration;
-import org.dozer.DozerBeanMapper;
-import org.springframework.beans.factory.annotation.Autowired;
+package eu.wisebed.wiseui.server.domain;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -11,7 +7,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -65,7 +60,7 @@ public class TestbedConfigurationBo implements Bo {
         return name;
     }
 
-    public void setName(String name) {
+    public void setName(final String name) {
         this.name = name;
     }
 
@@ -73,7 +68,7 @@ public class TestbedConfigurationBo implements Bo {
         return testbedUrl;
     }
 
-    public void setTestbedUrl(String testbedUrl) {
+    public void setTestbedUrl(final String testbedUrl) {
         this.testbedUrl = testbedUrl;
     }
 
@@ -81,7 +76,7 @@ public class TestbedConfigurationBo implements Bo {
         return snaaEndpointUrl;
     }
 
-    public void setSnaaEndpointUrl(String snaaEndpointUrl) {
+    public void setSnaaEndpointUrl(final String snaaEndpointUrl) {
         this.snaaEndpointUrl = snaaEndpointUrl;
     }
 
@@ -89,7 +84,7 @@ public class TestbedConfigurationBo implements Bo {
         return rsEndpointUrl;
     }
 
-    public void setRsEndpointUrl(String rsEndpointUrl) {
+    public void setRsEndpointUrl(final String rsEndpointUrl) {
         this.rsEndpointUrl = rsEndpointUrl;
     }
 
@@ -97,7 +92,7 @@ public class TestbedConfigurationBo implements Bo {
         return sessionmanagementEndpointUrl;
     }
 
-    public void setSessionmanagementEndpointUrl(String sessionmanagementEndpointUrl) {
+    public void setSessionmanagementEndpointUrl(final String sessionmanagementEndpointUrl) {
         this.sessionmanagementEndpointUrl = sessionmanagementEndpointUrl;
     }
 
@@ -105,7 +100,7 @@ public class TestbedConfigurationBo implements Bo {
         return urnPrefixList;
     }
 
-    public void setUrnPrefixList(List<UrnPrefixBo> urnPrefixList) {
+    public void setUrnPrefixList(final List<UrnPrefixBo> urnPrefixList) {
         this.urnPrefixList = urnPrefixList;
     }
 
@@ -113,7 +108,7 @@ public class TestbedConfigurationBo implements Bo {
         return isFederated;
     }
 
-    public void setFederated(boolean federated) {
+    public void setFederated(final boolean federated) {
         isFederated = federated;
     }
 
@@ -121,22 +116,22 @@ public class TestbedConfigurationBo implements Bo {
         return testbedId;
     }
 
-    public void setTestbedId(int testbedId) {
+    public void setTestbedId(final int testbedId) {
         this.testbedId = testbedId;
     }
 
     @Override
     public String toString() {
-        return "TestbedConfigurationBo{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", testbedUrl='" + testbedUrl + '\'' +
-                ", snaaEndpointUrl='" + snaaEndpointUrl + '\'' +
-                ", rsEndpointUrl='" + rsEndpointUrl + '\'' +
-                ", sessionmanagementEndpointUrl='" + sessionmanagementEndpointUrl + '\'' +
-                ", urnPrefixList=" + urnPrefixList +
-                ", isFederated=" + isFederated +
-                ", testbedId=" + testbedId +
-                '}';
+        return "TestbedConfigurationBo{"
+                + "id=" + id
+                + ", name='" + name + '\''
+                + ", testbedUrl='" + testbedUrl + '\''
+                + ", snaaEndpointUrl='" + snaaEndpointUrl + '\''
+                + ", rsEndpointUrl='" + rsEndpointUrl + '\''
+                + ", sessionmanagementEndpointUrl='" + sessionmanagementEndpointUrl + '\''
+                + ", urnPrefixList=" + urnPrefixList
+                + ", isFederated=" + isFederated
+                + ", testbedId=" + testbedId
+                + '}';
     }
 }

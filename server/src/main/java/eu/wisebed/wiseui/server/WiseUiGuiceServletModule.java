@@ -10,6 +10,7 @@ import eu.wisebed.wiseui.server.rpc.ReservationServiceImpl;
 import eu.wisebed.wiseui.server.rpc.SNAAServiceImpl;
 import eu.wisebed.wiseui.server.rpc.SessionManagementServiceImpl;
 import eu.wisebed.wiseui.server.rpc.TestbedConfigurationServiceImpl;
+import eu.wisebed.wiseui.server.rpc.PersistenceServiceImpl;
 import org.dozer.DozerBeanMapper;
 import org.dozer.Mapper;
 
@@ -21,6 +22,7 @@ public class WiseUiGuiceServletModule extends ServletModule {
         serve("/wiseui/snaa.rpc").with(SNAAServiceImpl.class);
         serve("/wiseui/sessionmanagement.rpc").with(SessionManagementServiceImpl.class);
         serve("/wiseui/reservation.rpc").with(ReservationServiceImpl.class);
+        serve("/wiseui/persistence.rpc").with(PersistenceServiceImpl.class);
     }
     
     @Singleton

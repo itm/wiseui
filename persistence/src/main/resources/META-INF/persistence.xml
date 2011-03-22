@@ -6,8 +6,8 @@
     <persistence-unit name="wiseuiPersistenceUnit" transaction-type="RESOURCE_LOCAL">
         <provider>org.hibernate.ejb.HibernatePersistence</provider>
         <!-- Classes to persist -->
-        <class>eu.wisebed.wiseui.domain.TestbedConfigurationBo</class>
-        <class>eu.wisebed.wiseui.domain.UrnPrefixBo</class>
+        <class>eu.wisebed.wiseui.server.domain.TestbedConfigurationBo</class>
+        <class>eu.wisebed.wiseui.server.domain.UrnPrefixBo</class>
         <!-- The variables jdbc.connection.username, etc. are configured in the master ~/.m2/settings.xml -->
         <properties>
             <property name="hibernate.cache.provider_class" value="org.hibernate.cache.NoCacheProvider"/>

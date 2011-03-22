@@ -40,6 +40,11 @@
                 <artifactId>widgets</artifactId>
                 <version>${project.version}</version>
             </dependency>
+            <dependency>
+                <groupId>eu.wisebed.wiseui</groupId>
+                <artifactId>persistence</artifactId>
+                <version>${project.version}</version>
+            </dependency>
             <!-- testbed-runtime dependencies -->
             <dependency>
                 <groupId>de.uniluebeck.itm</groupId>
@@ -171,6 +176,7 @@
                 <configuration>
                     <configLocation>wiseui_checks.xml</configLocation>
                     <headerLocation>LICENSE.txt</headerLocation>
+                    <enableRulesSummary>false</enableRulesSummary>
                 </configuration>
             </plugin>
         </plugins>
@@ -196,7 +202,7 @@
     </modules>
 
     <repositories>
-       <repository>
+        <repository>
             <id>jboss-public-repository-group</id>
             <name>JBoss Public Maven Repository Group</name>
             <url>
