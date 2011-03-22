@@ -9,7 +9,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-import eu.wisebed.wiseui.widgets.experimentpanel.ExperimentPanelView;
+import eu.wisebed.wiseui.client.experimentation.view.ExperimentView;
 
 public class ExperimentationViewImpl extends Composite implements
         ExperimentationView {
@@ -40,9 +40,9 @@ public class ExperimentationViewImpl extends Composite implements
 	}
 
 	@Override
-	public void initView(List<ExperimentPanelView> panels) {
-		for(ExperimentPanelView panel : panels){
-			experimentContainer.add(panel);
+	public void initView(List<ExperimentView> experimentViews) {
+		for(ExperimentView view : experimentViews){
+			experimentContainer.add(view);
 		}
 	}
 }
