@@ -68,6 +68,6 @@
         <testbedUrl>http://www.wisebed.eu</testbedUrl>
         <snaaEndpointUrl>http://testbed.tcs.unige.ch:8890/snaa</snaaEndpointUrl>
         <sessionmanagementEndpointUrl>http://testbed.tcs.unige.ch:8888/sessions</sessionmanagementEndpointUrl>
-        <urnPrefix>urn:wisebed:unige:</urnPrefix>
+        <urnPrefix>urn:wisebed:unigetestbed:</urnPrefix>
     </configuration>
 </configurations>
