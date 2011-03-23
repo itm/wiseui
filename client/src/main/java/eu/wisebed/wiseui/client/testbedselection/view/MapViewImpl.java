@@ -26,7 +26,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 import eu.wisebed.wiseui.client.util.AsyncManager;
 import eu.wisebed.wiseui.client.util.MapApiLoader;
-import eu.wisebed.wiseui.shared.wiseml.Coordinate;
+import eu.wisebed.wiseui.shared.dto.Coordinate;
 import eu.wisebed.wiseui.widgets.CaptionPanel;
 import eu.wisebed.wiseui.widgets.loading.HasLoadingIndicator;
 import eu.wisebed.wiseui.widgets.loading.LoadingIndicator;

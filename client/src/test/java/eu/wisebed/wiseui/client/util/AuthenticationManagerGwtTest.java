@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.google.gwt.junit.client.GWTTestCase;
 
-import eu.wisebed.wiseui.shared.wiseml.SecretAuthenticationKey;
+import eu.wisebed.wiseui.shared.dto.SecretAuthenticationKey;
 
 public class AuthenticationManagerGwtTest extends GWTTestCase {
 	

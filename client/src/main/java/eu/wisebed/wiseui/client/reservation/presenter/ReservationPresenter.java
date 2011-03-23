@@ -14,7 +14,8 @@ import eu.wisebed.wiseui.api.ReservationServiceAsync;
 import eu.wisebed.wiseui.client.reservation.ReservationActivity;
 import eu.wisebed.wiseui.client.reservation.view.ReservationView;
 import eu.wisebed.wiseui.client.reservation.view.ReservationView.Presenter;
-import eu.wisebed.wiseui.shared.SensorDetails;
+import eu.wisebed.wiseui.shared.dto.SensorDetails;
+import eu.wisebed.wiseui.shared.dto.SensorDetails;
 
 public class ReservationPresenter implements Presenter{
 	

@@ -4,50 +4,27 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import net.sf.gilead.core.PersistentBeanManager;
-import net.sf.gilead.core.hibernate.HibernateUtil;
-import net.sf.gilead.core.serialization.GwtProxySerialization;
-import net.sf.gilead.core.store.stateless.StatelessProxyStore;
-import net.sf.gilead.gwt.PersistentRemoteService;
-
+import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-import eu.wisebed.testbed.api.wsn.WSNServiceHelper;
 import eu.wisebed.testbed.api.wsn.v211.SecretReservationKey;
-import eu.wisebed.testbed.api.wsn.v211.SessionManagement;
 import eu.wisebed.wiseui.api.ReservationService;
-import eu.wisebed.wiseui.server.util.WiseMLInfoExtractor;
-import eu.wisebed.wiseui.shared.ReservationDetails;
-import eu.wisebed.wiseui.shared.SensorDetails;
+//import eu.wisebed.wiseui.server.util.WiseMLInfoExtractor;
+import eu.wisebed.wiseui.shared.dto.ReservationDetails;
+import eu.wisebed.wiseui.shared.dto.SensorDetails;
 import eu.wisebed.wiseui.shared.exception.AuthenticationException;
 import eu.wisebed.wiseui.shared.exception.ReservationConflictException;
 import eu.wisebed.wiseui.shared.exception.ReservationException;
-import eu.wisebed.wiseui.server.util.WiseUiHibernateUtil;
 
 
 @Singleton
-public class ReservationServiceImpl extends PersistentRemoteService 
-	implements ReservationService {	
-	
-	
+public class ReservationServiceImpl extends RemoteServiceServlet implements ReservationService {
+
 	private static final long serialVersionUID = -7715272862718944674L;
-	
-	private HibernateUtil gileadHibernateUtil = new HibernateUtil();
-	/**
-	 * Constructor
-	 */
+
 	@Inject
 	public ReservationServiceImpl() {
-		gileadHibernateUtil.setSessionFactory(
-				WiseUiHibernateUtil.getSessionFactory());
-		PersistentBeanManager persistentBeanManager = 
-			new PersistentBeanManager();
-		persistentBeanManager.setPersistenceUtil(gileadHibernateUtil);
-		StatelessProxyStore sps = new StatelessProxyStore();
-		sps.setProxySerializer(new GwtProxySerialization());
-		persistentBeanManager.setProxyStore(sps);
-		setBeanManager(persistentBeanManager);
 	}
 
 	/**
@@ -56,18 +33,19 @@ public class ReservationServiceImpl extends PersistentRemoteService
 	 */
 	public ArrayList<SensorDetails> getNodeList() {
 
-		// TODO: Fetch from DB
-		final String sessionManagementEndpointURL = 
-			"http://hercules.cti.gr:8888/sessions"; 
-		
-		SessionManagement sessionManagement = WSNServiceHelper.
-			getSessionManagementService(sessionManagementEndpointURL); 
-	    String serializedWiseML = sessionManagement.getNetwork();
-		ArrayList<SensorDetails> nodeList= WiseMLInfoExtractor.
-			getNodeList(serializedWiseML);
-	    saveSensorInfrastructure(nodeList);
-	    
-	    return nodeList;
+//		// TODO: Fetch from DB
+//		final String sessionManagementEndpointURL =
+//			"http://hercules.cti.gr:8888/sessions";
+//
+//		SessionManagement sessionManagement = WSNServiceHelper.
+//			getSessionManagementService(sessionManagementEndpointURL);
+//	    String serializedWiseML = sessionManagement.getNetwork();
+//		ArrayList<SensorDetails> nodeList= WiseMLInfoExtractor.
+//			getNodeList(serializedWiseML);
+//	    saveSensorInfrastructure(nodeList);
+//
+//	    return nodeList;
+        return null;
 	}
 	
 	/**
@@ -78,7 +56,7 @@ public class ReservationServiceImpl extends PersistentRemoteService
 	 */
 	// TODO remove return make this method void
 	public String makeReservation(final String sessionID,
-			final ReservationDetails rsData) 
+			final ReservationDetails rsData)
 		throws AuthenticationException,ReservationException,
 			ReservationConflictException {
 		// TODO: Add functionality while integrating
@@ -104,7 +82,7 @@ public class ReservationServiceImpl extends PersistentRemoteService
 	 * @return an <code>ArrayList</code> of <code>ReservationDetails</code>. 
 	 * objects that are the reservations madey by a user.
 	 */
-	public final ArrayList<ReservationDetails> getUserReservations( 
+	public final ArrayList<ReservationDetails> getUserReservations(
 			final String sessionID) throws ReservationException {
 		// TODO: Add functionality while integrating
 		return null;

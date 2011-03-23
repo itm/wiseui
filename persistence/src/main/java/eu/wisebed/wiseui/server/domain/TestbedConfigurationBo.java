@@ -1,11 +1,10 @@
 package eu.wisebed.wiseui.server.domain;
 
-import javax.persistence.CascadeType;
+import javax.persistence.CollectionTable;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +15,7 @@ import java.util.List;
  * @author Soenke Nommensen
  */
 @Entity
-@Table(name = "testbed_conf")
+@Table(name = "testbed_config")
 public class TestbedConfigurationBo implements Bo {
 
     @Id
@@ -27,9 +26,9 @@ public class TestbedConfigurationBo implements Bo {
     private String snaaEndpointUrl;
     private String rsEndpointUrl;
     private String sessionmanagementEndpointUrl;
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "testbed_conf_fk")
-    private List<UrnPrefixBo> urnPrefixList;
+    @ElementCollection
+    @CollectionTable(name = "urn_prefix")
+    private List<String> urnPrefixes;
     private boolean isFederated;
     private int testbedId;
 
@@ -44,7 +43,7 @@ public class TestbedConfigurationBo implements Bo {
         this.snaaEndpointUrl = snaaEndpointUrl;
         this.rsEndpointUrl = rsEndpointUrl;
         this.sessionmanagementEndpointUrl = sessionmanagementEndpointUrl;
-        this.urnPrefixList = new ArrayList<UrnPrefixBo>();
+        this.urnPrefixes = new ArrayList<String>();
         this.isFederated = isFederated;
     }
 
@@ -96,12 +95,12 @@ public class TestbedConfigurationBo implements Bo {
         this.sessionmanagementEndpointUrl = sessionmanagementEndpointUrl;
     }
 
-    public List<UrnPrefixBo> getUrnPrefixList() {
-        return urnPrefixList;
+    public List<String> getUrnPrefixes() {
+        return urnPrefixes;
     }
 
-    public void setUrnPrefixList(final List<UrnPrefixBo> urnPrefixList) {
-        this.urnPrefixList = urnPrefixList;
+    public void setUrnPrefixes(final List<String> urnPrefixes) {
+        this.urnPrefixes = urnPrefixes;
     }
 
     public boolean isFederated() {
@@ -129,7 +128,7 @@ public class TestbedConfigurationBo implements Bo {
                 + ", snaaEndpointUrl='" + snaaEndpointUrl + '\''
                 + ", rsEndpointUrl='" + rsEndpointUrl + '\''
                 + ", sessionmanagementEndpointUrl='" + sessionmanagementEndpointUrl + '\''
-                + ", urnPrefixList=" + urnPrefixList
+                + ", urnPrefixList=" + urnPrefixes
                 + ", isFederated=" + isFederated
                 + ", testbedId=" + testbedId
                 + '}';

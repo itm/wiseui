@@ -18,7 +18,7 @@
         <maven.compiler.target>1.6</maven.compiler.target>
         <org.springframework.version>3.0.5.RELEASE</org.springframework.version>
         <org.hibernate.version>3.6.0.Final</org.hibernate.version>
-        <org.slf4j.version>1.6.1</org.slf4j.version>
+        <org.slf4j.version>1.5.8</org.slf4j.version>
         <log4j.version>1.2.16</log4j.version>
     </properties>
     <dependencies>
@@ -145,10 +145,6 @@
             <groupId>net.sf.dozer</groupId>
             <artifactId>dozer</artifactId>
         </dependency>
-        <dependency>
-            <groupId>com.google.inject.extensions</groupId>
-            <artifactId>guice-servlet</artifactId>
-        </dependency>
         <!-- Project dependencies -->
         <dependency>
             <groupId>eu.wisebed.wiseui</groupId>
@@ -170,5 +166,11 @@
                 </configuration>
             </plugin>
         </plugins>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
     </build>
 </project>

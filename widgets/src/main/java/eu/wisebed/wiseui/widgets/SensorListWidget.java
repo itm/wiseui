@@ -19,7 +19,8 @@ import com.google.gwt.view.client.Range;
 import com.google.gwt.view.client.RangeChangeEvent;
 import com.google.gwt.view.client.SelectionChangeEvent;
 
-import eu.wisebed.wiseui.shared.SensorDetails;
+import eu.wisebed.wiseui.shared.dto.SensorDetails;
+import eu.wisebed.wiseui.shared.dto.SensorDetails;
 
 
 public class SensorListWidget extends Composite implements SensorList{

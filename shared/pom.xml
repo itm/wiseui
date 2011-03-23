@@ -22,11 +22,13 @@
             <artifactId>gwt-user</artifactId>
             <scope>provided</scope>
         </dependency>
+        <!--
         <dependency>
         	<groupId>net.sf.gilead</groupId>
         	<artifactId>gilead4gwt</artifactId>
         	<version>1.3.0</version>
         </dependency>
+        -->
     </dependencies>
     <build>
         <plugins>

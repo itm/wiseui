@@ -29,9 +29,8 @@ import eu.wisebed.wiseui.client.testbedselection.view.MapView;
 import eu.wisebed.wiseui.client.testbedselection.view.RawWisemlView;
 import eu.wisebed.wiseui.client.testbedselection.view.TestbedSelectionView;
 import eu.wisebed.wiseui.client.util.DefaultsHelper;
-import eu.wisebed.wiseui.shared.TestbedConfiguration;
-import eu.wisebed.wiseui.shared.wiseml.Setup;
-import eu.wisebed.wiseui.shared.wiseml.Wiseml;
+import eu.wisebed.wiseui.shared.dto.TestbedConfiguration;
+import eu.wisebed.wiseui.shared.dto.Wiseml;
 
 
 /**

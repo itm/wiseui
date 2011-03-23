@@ -10,7 +10,8 @@ import eu.wisebed.wiseui.client.testbedselection.event.ConfigurationSelectedEven
 import eu.wisebed.wiseui.client.testbedselection.event.ConfigurationSelectedEvent.ConfigurationSelectedHandler;
 import eu.wisebed.wiseui.client.testbedselection.view.RawWisemlView;
 import eu.wisebed.wiseui.client.testbedselection.view.RawWisemlView.Presenter;
-import eu.wisebed.wiseui.shared.TestbedConfiguration;
+import eu.wisebed.wiseui.shared.dto.TestbedConfiguration;
+import eu.wisebed.wiseui.shared.dto.TestbedConfiguration;
 
 /**
  * The presenter for the {@link RawWisemlView}.

@@ -15,7 +15,8 @@ import eu.wisebed.wiseui.client.testbedselection.TestbedSelectionPlace;
 import eu.wisebed.wiseui.client.testbedselection.event.ConfigurationSelectedEvent;
 import eu.wisebed.wiseui.client.testbedselection.view.ConfigurationView;
 import eu.wisebed.wiseui.client.testbedselection.view.ConfigurationView.Presenter;
-import eu.wisebed.wiseui.shared.TestbedConfiguration;
+import eu.wisebed.wiseui.shared.dto.TestbedConfiguration;
+import eu.wisebed.wiseui.shared.dto.TestbedConfiguration;
 
 import java.util.List;
 

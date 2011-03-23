@@ -3,7 +3,8 @@ package eu.wisebed.wiseui.client.testbedselection.event;
 import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;
 import eu.wisebed.wiseui.client.testbedselection.event.ConfigurationSelectedEvent.ConfigurationSelectedHandler;
-import eu.wisebed.wiseui.shared.TestbedConfiguration;
+import eu.wisebed.wiseui.shared.dto.TestbedConfiguration;
+import eu.wisebed.wiseui.shared.dto.TestbedConfiguration;
 
 public class ConfigurationSelectedEvent extends GwtEvent<ConfigurationSelectedHandler> {
 

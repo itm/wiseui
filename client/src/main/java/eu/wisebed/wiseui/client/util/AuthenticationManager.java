@@ -12,7 +12,7 @@ import com.google.common.collect.Lists;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Cookies;
 
-import eu.wisebed.wiseui.shared.wiseml.SecretAuthenticationKey;
+import eu.wisebed.wiseui.shared.dto.SecretAuthenticationKey;
 
 
 /**

@@ -15,7 +15,8 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-import eu.wisebed.wiseui.shared.SensorDetails;
+import eu.wisebed.wiseui.shared.dto.SensorDetails;
+import eu.wisebed.wiseui.shared.dto.SensorDetails;
 import eu.wisebed.wiseui.widgets.CalendarWidget;
 import eu.wisebed.wiseui.widgets.ImageUploadWidget;
 import eu.wisebed.wiseui.widgets.SensorListWidget;

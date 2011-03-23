@@ -3,7 +3,8 @@ package eu.wisebed.wiseui.client.testbedselection.view;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.view.client.SelectionModel;
 import eu.wisebed.wiseui.client.testbedselection.TestbedSelectionPlace;
-import eu.wisebed.wiseui.shared.TestbedConfiguration;
+import eu.wisebed.wiseui.shared.dto.TestbedConfiguration;
+import eu.wisebed.wiseui.shared.dto.TestbedConfiguration;
 
 import java.util.List;
 

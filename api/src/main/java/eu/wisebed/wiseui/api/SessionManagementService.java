@@ -4,7 +4,7 @@ import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
 import eu.wisebed.wiseui.shared.exception.WisemlException;
-import eu.wisebed.wiseui.shared.wiseml.Wiseml;
+import eu.wisebed.wiseui.shared.dto.Wiseml;
 
 @RemoteServiceRelativePath("sessionmanagement.rpc")
 public interface SessionManagementService extends RemoteService {

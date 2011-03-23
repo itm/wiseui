@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.user.client.ui.IsWidget;
 
-import eu.wisebed.wiseui.shared.SensorDetails;
+import eu.wisebed.wiseui.shared.dto.SensorDetails;
 
 public interface ReservationView extends IsWidget {
 

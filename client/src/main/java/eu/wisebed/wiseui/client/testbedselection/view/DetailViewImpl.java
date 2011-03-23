@@ -16,7 +16,7 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.HasData;
 import com.google.gwt.view.client.TreeViewModel;
 
-import eu.wisebed.wiseui.shared.wiseml.Capability;
+import eu.wisebed.wiseui.shared.dto.Capability;
 import eu.wisebed.wiseui.widgets.CaptionPanel;
 import eu.wisebed.wiseui.widgets.loading.HasLoadingIndicator;
 

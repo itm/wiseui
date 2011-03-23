@@ -13,9 +13,10 @@ import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.SelectionModel;
 import com.google.gwt.view.client.TreeViewModel;
 
-import eu.wisebed.wiseui.shared.TestbedConfiguration;
-import eu.wisebed.wiseui.shared.wiseml.Capability;
-import eu.wisebed.wiseui.shared.wiseml.Node;
+import eu.wisebed.wiseui.shared.dto.TestbedConfiguration;
+import eu.wisebed.wiseui.shared.dto.Capability;
+import eu.wisebed.wiseui.shared.dto.Node;
+import eu.wisebed.wiseui.shared.dto.TestbedConfiguration;
 
 public class TestbedTreeViewModel implements TreeViewModel {
 	

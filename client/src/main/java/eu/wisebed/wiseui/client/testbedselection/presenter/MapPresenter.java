@@ -17,10 +17,10 @@ import eu.wisebed.wiseui.client.testbedselection.event.WisemlLoadedEvent.WisemlL
 import eu.wisebed.wiseui.client.testbedselection.view.MapView;
 import eu.wisebed.wiseui.client.util.Coordinates;
 import eu.wisebed.wiseui.client.util.GrahamScan;
-import eu.wisebed.wiseui.shared.TestbedConfiguration;
-import eu.wisebed.wiseui.shared.wiseml.Coordinate;
-import eu.wisebed.wiseui.shared.wiseml.Node;
-import eu.wisebed.wiseui.shared.wiseml.Setup;
+import eu.wisebed.wiseui.shared.dto.TestbedConfiguration;
+import eu.wisebed.wiseui.shared.dto.Coordinate;
+import eu.wisebed.wiseui.shared.dto.Node;
+import eu.wisebed.wiseui.shared.dto.Setup;
 
 /**
  * The presenter for the {@link MapView}.

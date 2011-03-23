@@ -15,7 +15,7 @@ public interface Dao<T> {
 
     T update(T object);
 
-    void add(T object);
+    void persist(T object);
 
     void remove(T object);
 

@@ -22,7 +22,7 @@ public abstract class AbstractDaoImpl<T> implements Dao<T> {
     }
 
     @Override
-    public void add(final T t) {
+    public void persist(final T t) {
         entityManager.persist(t);
     }
 

@@ -6,7 +6,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Stack;
 
-import eu.wisebed.wiseui.shared.wiseml.Coordinate;
+import eu.wisebed.wiseui.shared.dto.Coordinate;
 
 
 /**

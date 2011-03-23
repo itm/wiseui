@@ -15,7 +15,7 @@ import eu.wisebed.wiseui.client.testbedselection.event.WisemlLoadedEvent.WisemlL
 import eu.wisebed.wiseui.client.testbedselection.view.TestbedSelectionView;
 import eu.wisebed.wiseui.client.testbedselection.view.TestbedSelectionView.Presenter;
 import eu.wisebed.wiseui.widgets.messagebox.MessageBox;
-import eu.wisebed.wiseui.shared.TestbedConfiguration;
+import eu.wisebed.wiseui.shared.dto.TestbedConfiguration;
 import eu.wisebed.wiseui.shared.exception.WisemlException;
 
 /**
