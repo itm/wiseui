@@ -49,22 +49,22 @@
             <dependency>
                 <groupId>de.uniluebeck.itm</groupId>
                 <artifactId>tr.snaa-api</artifactId>
-                <version>0.5.5</version>
+                <version>0.6.1</version>
             </dependency>
             <dependency>
                 <groupId>de.uniluebeck.itm</groupId>
                 <artifactId>tr.wsn-api</artifactId>
-                <version>0.5.5</version>
+                <version>0.6.1</version>
             </dependency>
             <dependency>
                 <groupId>de.uniluebeck.itm</groupId>
                 <artifactId>tr.wiseml</artifactId>
-                <version>0.5.5</version>
+                <version>0.6.1</version>
             </dependency>
             <dependency>
                 <groupId>de.uniluebeck.itm</groupId>
                 <artifactId>tr.util</artifactId>
-                <version>0.5.5</version>
+                <version>0.6.1</version>
             </dependency>
             <!-- GWT dependencies (from central repo) -->
             <dependency>
@@ -118,11 +118,6 @@
                 <groupId>com.google.code</groupId>
                 <artifactId>gwt-guava</artifactId>
                 <version>r08</version>
-            </dependency>
-            <dependency>
-                <groupId>com.alexgorbatchev</groupId>
-                <artifactId>gwt-syntaxhighlighter</artifactId>
-                <version>1.1.1</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

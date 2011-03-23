@@ -8,7 +8,7 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-import eu.wisebed.testbed.api.wsn.v211.SecretReservationKey;
+import eu.wisebed.testbed.api.wsn.v22.SecretReservationKey;
 import eu.wisebed.wiseui.api.ReservationService;
 //import eu.wisebed.wiseui.server.util.WiseMLInfoExtractor;
 import eu.wisebed.wiseui.shared.dto.ReservationDetails;

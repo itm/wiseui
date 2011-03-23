@@ -8,7 +8,7 @@ import com.google.inject.Singleton;
 
 import de.itm.uniluebeck.tr.wiseml.WiseMLHelper;
 import eu.wisebed.testbed.api.wsn.WSNServiceHelper;
-import eu.wisebed.testbed.api.wsn.v211.SessionManagement;
+import eu.wisebed.testbed.api.wsn.v22.SessionManagement;
 import eu.wisebed.wiseui.api.SessionManagementService;
 import eu.wisebed.wiseui.shared.exception.WisemlException;
 import eu.wisebed.wiseui.shared.dto.Wiseml;
@@ -47,5 +47,5 @@ public class SessionManagementServiceImpl extends RemoteServiceServlet implement
             LOGGER.error("Unable to load Wiseml from " + url, e);
 			throw new WisemlException("Unable to load Wiseml from " + url, e);
 		}
-	}
+    }
 }
