@@ -1,5 +1,6 @@
 package eu.wisebed.wiseui.server.manager;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.Query;
@@ -17,7 +18,7 @@ public class TestbedConfigurationManager {
 	public static void saveTestbedInfrastructure(
 			final List<TestbedConfiguration> testbeds){
 		final Session session = WiseUiHibernateUtil.getSessionFactory().
-		getCurrentSession();	
+			getCurrentSession();	
 		session.beginTransaction();
 		for (int i=0; i<testbeds.size(); i++){
 			TestbedConfiguration testbed = new TestbedConfiguration();
@@ -29,7 +30,8 @@ public class TestbedConfigurationManager {
 			testbed.setTestbedUrl(testbeds.get(i).getTestbedUrl());
 			testbed.setUrnPrefixList(testbeds.get(i).getUrnPrefixList());
 			testbed.setTestbedID(i+1);
-			session.saveOrUpdate(testbed);
+			if(session.get(TestbedConfiguration.class, i+1) == null)
+				session.save(testbed);
 		}
 		session.getTransaction().commit();
 	}
@@ -43,14 +45,27 @@ public class TestbedConfigurationManager {
 	@SuppressWarnings("unchecked")
 	public static List<TestbedConfiguration> fetchTestbedByUrn(
 			final List<String> urnPrefix){
-		final String urn = urnPrefix.get(0);
 		final Session session = WiseUiHibernateUtil.getSessionFactory().
-		getCurrentSession();	
+			getCurrentSession();	
 		session.beginTransaction();
-		final String QUERY = "select t from TestbedConfiguration t "
-			+ "join t.urnPrefixList ul where ul= :urnprefix";
-		Query q = session.createQuery(QUERY).setString("urnprefix", urn);
-		List<TestbedConfiguration> beds= (List<TestbedConfiguration>) q.list();
+		List<TestbedConfiguration> beds = new ArrayList<TestbedConfiguration>();
+		for (int i=0; i<urnPrefix.size(); i++){
+			final String QUERY = "select t from TestbedConfiguration t "
+				+ "join t.urnPrefixList ul where ul= :urnprefix";
+			final String urn = urnPrefix.get(i);
+			Query q = session.createQuery(QUERY).setString("urnprefix", urn);
+			List<TestbedConfiguration> tmpBeds = 
+				(List<TestbedConfiguration>) q.list();
+			for (TestbedConfiguration bed: tmpBeds)
+				beds.add(bed);
+		}
+		if (!beds.isEmpty()){
+			for(int i=0, j=0; i<beds.size() && j<urnPrefix.size(); i++){
+				List<String> ul = new ArrayList<String>();
+				ul.add(urnPrefix.get(j));
+				beds.get(i).setUrnPrefixList(ul);
+			}
+		}
 		return beds;
 	}
 

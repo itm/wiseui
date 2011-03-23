@@ -8,6 +8,8 @@ import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.view.client.ListDataProvider;
+import com.google.gwt.view.client.SingleSelectionModel;
 import com.google.inject.Inject;
 
 import eu.wisebed.wiseui.api.ReservationService;
@@ -17,6 +19,7 @@ import eu.wisebed.wiseui.api.TestbedConfigurationServiceAsync;
 import eu.wisebed.wiseui.client.reservation.ReservationActivity;
 import eu.wisebed.wiseui.client.reservation.view.ReservationView;
 import eu.wisebed.wiseui.client.reservation.view.ReservationView.Presenter;
+import eu.wisebed.wiseui.client.testbedselection.common.UrnPrefixInfo;
 import eu.wisebed.wiseui.shared.SensorDetails;
 import eu.wisebed.wiseui.shared.TestbedConfiguration;
 
@@ -25,10 +28,18 @@ public class ReservationPresenter implements Presenter{
 	private final ReservationView view;
 	private ReservationServiceAsync service;
 	private PlaceController placeController;
+	private SingleSelectionModel<TestbedConfiguration> testbedSelectionModel;
+	private final ListDataProvider<TestbedConfiguration> dataProvider = 
+		new ListDataProvider<TestbedConfiguration>();
 
 	@Inject
 	public ReservationPresenter(final ReservationView view){
 		this.view = view;
+		dataProvider.addDataDisplay(view.getTestbedList());
+		
+        // Init selection model
+        testbedSelectionModel = new SingleSelectionModel<TestbedConfiguration>();
+        view.setTestbedSelectionModel(testbedSelectionModel);
 	}
 
 	/**
@@ -38,7 +49,8 @@ public class ReservationPresenter implements Presenter{
 	public void getTestbedLoggedIn(final List<String> urnPrefix){
 		final TestbedConfigurationServiceAsync service = 
 			GWT.create(TestbedConfigurationService.class);
-		service.getTestbedLoggedIn(urnPrefix, new AsyncCallback<List<TestbedConfiguration>>(){
+		service.getTestbedLoggedIn(urnPrefix, 
+				new AsyncCallback<List<TestbedConfiguration>>(){
 			public void onFailure(Throwable caught){
 				GWT.log("Failed rpc");
 			}
@@ -46,7 +58,11 @@ public class ReservationPresenter implements Presenter{
 				if(testbeds == null){
 					Window.alert("No testbeds identified");
 				}else{
-					GWT.log("Testbeds logged in:" + testbeds);
+					GWT.log("Number of testbeds logged in:" + testbeds.size());
+					for(int i=0; i<testbeds.size(); i++){
+						GWT.log("Logged in to: " + testbeds.get(i).getName());
+						dataProvider.getList().add(testbeds.get(i));
+					}
 				}
 			}
 		});
@@ -88,6 +104,10 @@ public class ReservationPresenter implements Presenter{
 		view.reserveButton(false);
 	}
 
+	public void renderTestbeds(List<TestbedConfiguration> testbeds) {
+		view.renderTestbeds(testbeds);
+	}
+	
 	/**
 	 * Check if user has set all required reservation details
 	 */
