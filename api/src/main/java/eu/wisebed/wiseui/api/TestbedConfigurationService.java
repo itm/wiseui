@@ -12,4 +12,5 @@ import java.util.List;
 public interface TestbedConfigurationService extends RemoteService {
 
     List<TestbedConfiguration> getConfigurations() throws ConfigurationException;
+    List<TestbedConfiguration> getTestbedLoggedIn(final List<String> urnPrefix);
 }

@@ -4,10 +4,12 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.sf.gilead.pojo.gwt.LightEntity;
+
 /**
  * @author Soenke Nommensen
  */
-public class TestbedConfiguration implements Serializable {
+public class TestbedConfiguration extends LightEntity implements Serializable {
 
 	private static final long serialVersionUID = 1721396665761010739L;
 	private String name;
@@ -81,7 +83,6 @@ public class TestbedConfiguration implements Serializable {
 		this.rsEndpointUrl = rsEndpointUrl;
 	}
 
-
 	public void setSessionmanagementEndpointUrl(String sessionmanagementEndpointUrl) {
 		this.sessionmanagementEndpointUrl = sessionmanagementEndpointUrl;
 	}
@@ -97,6 +98,4 @@ public class TestbedConfiguration implements Serializable {
 	public void setTestbedID(int testbedID) {
 		this.testbedID = testbedID;
 	}
-
-
 }
