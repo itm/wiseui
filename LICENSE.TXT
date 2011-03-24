@@ -1,4 +1,4 @@
-Copyright 2011 Universität zu Lübeck, Institut für Telematik, 
+Copyright 2011 Universität zu Lübeck, Institut für Telematik (ITM), 
                Research Academic Computer Technology Institute (RACTI) 
 
    Licensed under the Apache License, Version 2.0 (the "License");
@@ -27,5 +27,9 @@ guava-libraries, http://code.google.com/p/guava-libraries/, Apache License 2.0
 Dozer, http://dozer.sourceforge.net/, Apache License 2.0
 
 XStream, http://xstream.codehaus.org/, BSD license (http://xstream.codehaus.org/license.html)
+
+Spring, http://www.springsource.org/, Apache License 2.0
+
+Hibernate, http://www.hibernate.org, LGPL v2.1 (http://www.hibernate.org/license)
 
 JUnit, http://www.junit.org/, Common Public License - v 1.0 (http://www.junit.org/license)
