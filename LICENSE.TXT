@@ -1,4 +1,4 @@
-Copyright 2011 Universität zu Lübeck, Institut für Telematik, 
+Copyright 2011 Universität zu Lübeck, Institut für Telematik (ITM), 
                Research Academic Computer Technology Institute (RACTI) 
 
    Licensed under the Apache License, Version 2.0 (the "License");
