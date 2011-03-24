@@ -10,7 +10,9 @@ import eu.wisebed.wiseui.shared.wiseml.Coordinate;
  */
 public class Coordinates {
 	
-	private static final double WGS84_ALPHA = 1.0 / 298.257222101;
+	private static final double WGS84_CONST = 298.257222101;
+	
+	private static final double WGS84_ALPHA = 1.0 / WGS84_CONST;
 	
 	private static final double WGS84_A = 6378137.0;
 	
@@ -48,6 +50,14 @@ public class Coordinates {
 				* (linePoint2.getY() - linePoint1.getY());
 	}
 	
+	/**
+	 * Transforms a coordinate from a xyz coordinate system in an equivalent geographical coordinate
+	 * with latitude, longitude and height information.
+	 * The units that is used for the xyz system are meters.
+	 * 
+	 * @param coordinate The xyz-coordinate that has to be converted.
+	 * @return The geographic coordinate.
+	 */
 	public static Coordinate xyz2blh(final Coordinate coordinate) {
         final double x = coordinate.getX();
         final double y = coordinate.getY();
@@ -74,6 +84,13 @@ public class Coordinates {
         return new Coordinate(b * roh, l, h, coordinate.getPhi(), coordinate.getTheta());
 	}
 	
+	/**
+	 * Transforms a coordinate from the geographic coordinate system to an equivalent xyz coordinate system.
+	 * The units that is used for the xyz system are meters.
+	 * 
+	 * @param coordinate The geographic coordinate that has to be converted.
+	 * @return The converted xyz coordinate.
+	 */
 	public static Coordinate blh2xyz(final Coordinate coordinate) {        
         final double roh = Math.PI / 180.0;     
         
