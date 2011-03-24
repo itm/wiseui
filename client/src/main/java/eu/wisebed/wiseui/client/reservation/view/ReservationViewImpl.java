@@ -70,15 +70,17 @@ public class ReservationViewImpl extends Composite implements ReservationView {
 	public void initRsView() {
 		dateTimeImagePanel.add(calendarWidget);
 		dateTimeImagePanel.add(imagePanel);
-		imagePanel.add(this.timeWidget);
-		imagePanel.add(this.imageUploadWidget);
-		outerPanel.add(this.sensorListWidget);
+		imagePanel.add(timeWidget);
+		imagePanel.add(imageUploadWidget);
+		outerPanel.add(sensorListWidget);
+		sensorListWidget.init();
 		loginRequiredPanel(false);
 	}
 	
 	@UiFactory
 	public CellList<TestbedConfiguration> testbedsLoggedIn(){
-		final Cell<TestbedConfiguration> testbed = new AbstractCell<TestbedConfiguration>() {
+		final Cell<TestbedConfiguration> testbed = 
+			new AbstractCell<TestbedConfiguration>() {
             public void render(final Context context,
                     final TestbedConfiguration testbed,
                     final SafeHtmlBuilder builder) {
@@ -93,7 +95,7 @@ public class ReservationViewImpl extends Composite implements ReservationView {
 	}
 
 	public void renderNodes(ArrayList<SensorDetails> nodes) {
-		this.sensorListWidget.renderNodes(nodes);
+		sensorListWidget.renderNodes(nodes);
 	}
 	
     @Override

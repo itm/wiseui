@@ -17,7 +17,7 @@ import eu.wisebed.wiseui.shared.exception.ReservationException;
  */
 @RemoteServiceRelativePath("reservation.rpc")
 public interface ReservationService extends RemoteService {
-	ArrayList<SensorDetails> getNodeList()
+	ArrayList<SensorDetails> getNodeList(String sessionManagementEndpointUrl)
 		throws IllegalArgumentException;
 	String makeReservation(String username, ReservationDetails data)
 		throws AuthenticationException, ReservationException,

@@ -54,14 +54,11 @@ public class ReservationServiceImpl extends PersistentRemoteService
 	 * Retrieves network from the WISEBED web services of a testbed.
 	 * @return <code>ArrayList</code> with sensor information.
 	 */
-	public ArrayList<SensorDetails> getNodeList() {
+	public ArrayList<SensorDetails> getNodeList(
+			final String sessionManagementEndpointUrl) {
 
-		// TODO: Fetch from DB
-		final String sessionManagementEndpointURL = 
-			"http://hercules.cti.gr:8888/sessions"; 
-		
 		SessionManagement sessionManagement = WSNServiceHelper.
-			getSessionManagementService(sessionManagementEndpointURL); 
+			getSessionManagementService(sessionManagementEndpointUrl); 
 	    String serializedWiseML = sessionManagement.getNetwork();
 		ArrayList<SensorDetails> nodeList= WiseMLInfoExtractor.
 			getNodeList(serializedWiseML);

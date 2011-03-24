@@ -9,7 +9,9 @@ import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.view.client.ListDataProvider;
+import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
+import com.google.gwt.view.client.SelectionChangeEvent.Handler;
 import com.google.inject.Inject;
 
 import eu.wisebed.wiseui.api.ReservationService;
@@ -42,6 +44,14 @@ public class ReservationPresenter implements Presenter{
         view.setTestbedSelectionModel(testbedSelectionModel);
 	}
 
+	public void bindEvents() {
+		testbedSelectionModel.addSelectionChangeHandler(new Handler() {
+			public void onSelectionChange(final SelectionChangeEvent event) {
+				onTestbedSelectionChange(event);
+			}
+		});
+	}
+	
 	/**
 	 * Send the urn prefix to the server to identify the testbed the user
 	 * has previously logged in.
@@ -59,13 +69,19 @@ public class ReservationPresenter implements Presenter{
 					Window.alert("No testbeds identified");
 				}else{
 					GWT.log("Number of testbeds logged in:" + testbeds.size());
-					for(int i=0; i<testbeds.size(); i++){
-						GWT.log("Logged in to: " + testbeds.get(i).getName());
-						dataProvider.getList().add(testbeds.get(i));
+					for(TestbedConfiguration bed: testbeds){
+						GWT.log("Logged in to: " + bed.getName());
+						dataProvider.getList().add(bed);
 					}
+					testbedSelectionModel.setSelected(testbeds.get(0), true);
 				}
 			}
 		});
+	}
+
+	private void onTestbedSelectionChange(final SelectionChangeEvent event){
+		TestbedConfiguration bed = testbedSelectionModel.getSelectedObject();
+		getNetwork(bed.getSessionmanagementEndpointUrl());
 	}
 
 	/**
@@ -73,9 +89,12 @@ public class ReservationPresenter implements Presenter{
 	 * nodes located in the network. Result consists of an array with all
 	 * sensors' useful information
 	 */
-	public void getNetwork() {
-		final ReservationServiceAsync service = GWT.create(ReservationService.class);
-		service.getNodeList(new AsyncCallback<ArrayList<SensorDetails>>(){
+	public void getNetwork(final String sessionManagementEndpointUrl) {
+		GWT.log("Getting infrastructure for:" + sessionManagementEndpointUrl);
+		final ReservationServiceAsync service = 
+			GWT.create(ReservationService.class);
+		service.getNodeList(sessionManagementEndpointUrl,
+				new AsyncCallback<ArrayList<SensorDetails>>(){
 			public void onFailure(Throwable caught){
 				GWT.log("Failed rpc");
 			}
