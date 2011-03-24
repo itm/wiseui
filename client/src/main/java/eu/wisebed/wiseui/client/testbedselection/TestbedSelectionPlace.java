@@ -40,6 +40,11 @@ public class TestbedSelectionPlace extends KeyValuePlace {
 		return Objects2.nullOrToString(get(TestbedSelectionConstants.TESTBED_VIEW_STRING));
 	}
 
+    /**
+     * Tokenizer instance for serialization and deserialization of the TestbedSelectionPlace.
+     * 
+     * @author Malte Legenhausen
+     */
     public static class Tokenizer implements PlaceTokenizer<TestbedSelectionPlace> {
 
         public String getToken(final TestbedSelectionPlace place) {
