@@ -6,7 +6,7 @@ import com.google.gwt.junit.client.GWTTestCase;
 
 import eu.wisebed.wiseui.shared.wiseml.SecretAuthenticationKey;
 
-public class AuthenticationManagerTest extends GWTTestCase {
+public class AuthenticationManagerGwtTest extends GWTTestCase {
 	
 	@Override
 	public String getModuleName() {
