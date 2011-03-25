@@ -113,3 +113,11 @@ Take a look at our [wiki][].
 [gwt]:http://code.google.com/webtoolkit/doc/2.2/DevGuide.html
 [wiki]:https://github.com/itm/wiseui/wiki
 [testbedruntime]:https://github.com/itm/testbed-runtime
+
+
+Continuous Integration -- Latest Stable build
+==================
+
+The latest stable version is available from [Hudson](http://ru1.cti.gr/hudson/job/wiseui/), the continuous integration tool.
+
+  * [client-0.3.war](http://ru1.cti.gr/hudson/job/wiseui/lastSuccessfulBuild/artifact/client/target/client-0.3.war)
