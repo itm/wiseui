@@ -81,16 +81,16 @@ public class PersistenceServiceImpl implements PersistenceService {
      * Used by Spring inject {@link DozerBeanMapper}.
      * @param dozerBeanMapper The property be injected.
      */
-    public void setDozerBeanMapper(DozerBeanMapper dozerBeanMapper) {
-       dozerBeanMapper = dozerBeanMapper;
+    public void setDozerBeanMapper(final DozerBeanMapper dozerBeanMapper) {
+       this.dozerBeanMapper = dozerBeanMapper;
     }
 
     /**
      * Used by Spring inject {@link TestbedConfigurationDao}.
      * @param testbedConfigurationDao The property be injected.
      */
-    public void setTestbedConfigurationDao(TestbedConfigurationDao testbedConfigurationDao) {
-        testbedConfigurationDao = testbedConfigurationDao;
+    public void setTestbedConfigurationDao(final TestbedConfigurationDao testbedConfigurationDao) {
+        this.testbedConfigurationDao = testbedConfigurationDao;
     }
 }
 
