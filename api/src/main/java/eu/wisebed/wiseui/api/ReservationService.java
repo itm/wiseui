@@ -11,15 +11,17 @@ import eu.wisebed.wiseui.shared.SensorDetails;
 import eu.wisebed.wiseui.shared.exception.AuthenticationException;
 import eu.wisebed.wiseui.shared.exception.ReservationConflictException;
 import eu.wisebed.wiseui.shared.exception.ReservationException;
+import eu.wisebed.wiseui.shared.wiseml.SecretAuthenticationKey;
 
 /**
  * The client side stub for the remote reservation service.
  */
 @RemoteServiceRelativePath("reservation.rpc")
 public interface ReservationService extends RemoteService {
-	ArrayList<SensorDetails> getNodeList()
+	ArrayList<SensorDetails> getNodeList(String sessionManagementEndpointUrl)
 		throws IllegalArgumentException;
-	String makeReservation(String username, ReservationDetails data)
+	String makeReservation(SecretAuthenticationKey secretAuthenticationKey,
+			String rsEndpointUrl, ReservationDetails data)
 		throws AuthenticationException, ReservationException,
 			ReservationConflictException;
 	ArrayList<ReservationDetails> getUserReservations(String username) 

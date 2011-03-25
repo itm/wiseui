@@ -1,6 +1,9 @@
 package eu.wisebed.wiseui.shared;
 
 import java.io.Serializable;
+import java.util.Set;
+
+import eu.wisebed.wiseui.shared.wiseml.SecretAuthenticationKey;
 
 public class AuthenticationDetails implements Serializable{
 	
@@ -8,8 +11,7 @@ public class AuthenticationDetails implements Serializable{
 	private int userid;
 	private String username;
 	private String password;
-	private String secretAuthKey;
-	private String urnPrefix;
+	private Set<SecretAuthenticationKey> secretAuthenticationKeys;
 	
 	public AuthenticationDetails(){}
 	
@@ -44,19 +46,12 @@ public class AuthenticationDetails implements Serializable{
 		return this.password;
 	}
 
-	public void setSecretAuthenticationKey(final String secretAuthKey) {
-		this.secretAuthKey = secretAuthKey;
+	public void setSecretAuthenticationKeys(final Set<SecretAuthenticationKey> 
+			secretAuthenticationKeys) {
+		this.secretAuthenticationKeys = secretAuthenticationKeys;
 	}
 
-	public String getSecretAuthenticationKey() {
-		return secretAuthKey;
-	}
-
-	public void setUrnPrefix(final String urnPrefix) {
-		this.urnPrefix = urnPrefix;
-	}
-
-	public String getUrnPrefix() {
-		return urnPrefix;
+	public Set<SecretAuthenticationKey> getSecretAuthenticationKeys() {
+		return secretAuthenticationKeys;
 	}
 }

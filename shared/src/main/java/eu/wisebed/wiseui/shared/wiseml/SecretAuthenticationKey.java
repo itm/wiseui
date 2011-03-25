@@ -6,7 +6,9 @@ public class SecretAuthenticationKey implements Serializable {
 
     private static final long serialVersionUID = 9132290399485303471L;
 
-    private String username;
+    private int secretAuthenticationKeyID;
+
+	private String username;
 
     private String secretAuthenticationKey;
 
@@ -15,6 +17,14 @@ public class SecretAuthenticationKey implements Serializable {
     public SecretAuthenticationKey() {
 
     }
+
+    public int getSecretAuthenticationKeyID() {
+		return secretAuthenticationKeyID;
+	}
+
+	public void setSecretAuthenticationKeyID(int secretAuthenticationKeyID) {
+		this.secretAuthenticationKeyID = secretAuthenticationKeyID;
+	}
 
     public String getUsername() {
         return username;

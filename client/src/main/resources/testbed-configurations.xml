@@ -25,6 +25,7 @@
         <name>WISEBED CTI Testbed</name>
         <testbedUrl>http://www.wisebed.eu</testbedUrl>
         <snaaEndpointUrl>http://hercules.cti.gr:8890/snaa</snaaEndpointUrl>
+        <rsEndpointUrl>http://hercules.cti.gr:8889/rs</rsEndpointUrl>
         <sessionmanagementEndpointUrl>http://hercules.cti.gr:8888/sessions</sessionmanagementEndpointUrl>
         <urnPrefix>urn:wisebed:ctitestbed:</urnPrefix>
     </configuration>

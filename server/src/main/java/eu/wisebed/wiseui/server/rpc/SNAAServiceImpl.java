@@ -4,6 +4,8 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import eu.wisebed.wiseui.api.SNAAService;
+import eu.wisebed.wiseui.server.manager.SNAAManager;
+import eu.wisebed.wiseui.shared.AuthenticationDetails;
 import eu.wisebed.wiseui.shared.exception.AuthenticationException;
 import eu.wisebed.wiseui.shared.wiseml.SecretAuthenticationKey;
 import eu.wisebed.testbed.api.snaa.helpers.SNAAServiceHelper;
@@ -14,6 +16,8 @@ import eu.wisebed.testbed.api.snaa.v1.SNAAExceptionException;
 import org.dozer.DozerBeanMapper;
 
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 @Singleton
 public class SNAAServiceImpl extends RemoteServiceServlet implements SNAAService {
@@ -49,7 +53,18 @@ public class SNAAServiceImpl extends RemoteServiceServlet implements SNAAService
         } catch (final SNAAExceptionException e) {
             throw new AuthenticationException(AUTHENTICATION_FAILED, e);
         }
-
+        Set<SecretAuthenticationKey> secretAuthenticationKeys = new HashSet<SecretAuthenticationKey>();
+        SecretAuthenticationKey secretAuthenticationKey = new SecretAuthenticationKey();
+        secretAuthenticationKey.setSecretAuthenticationKey(key.getSecretAuthenticationKey());
+        secretAuthenticationKey.setUrnPrefix(urn);
+        secretAuthenticationKey.setUsername(username);
+        secretAuthenticationKeys.add(secretAuthenticationKey);
+        AuthenticationDetails authenticationDetails = new AuthenticationDetails();
+        authenticationDetails.setSecretAuthenticationKeys(secretAuthenticationKeys);
+        authenticationDetails.setUsername(username);
+        authenticationDetails.setPassword(password);
+        SNAAManager.saveOrUpdateAuthenticationDetails(authenticationDetails, urn);
+		
         return mapper.map(key, SecretAuthenticationKey.class);
     }
 }

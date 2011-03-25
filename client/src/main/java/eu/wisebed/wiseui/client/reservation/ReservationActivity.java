@@ -35,8 +35,8 @@ public class ReservationActivity extends AbstractActivity{
 		}else{
 			List<String> urnPrefix = authenticationManager.getUrnPrefixByCookie();
 			presenter.initRsView();
+			presenter.bindEvents();
 			presenter.getTestbedLoggedIn(urnPrefix);
-			presenter.getNetwork();
 		}
 	}
 }

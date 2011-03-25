@@ -30,6 +30,7 @@
         <mapping resource="eu/wisebed/wiseui/server/model/ReservationDetails.hbm.xml"/>
         <mapping resource="eu/wisebed/wiseui/server/model/SensorDetails.hbm.xml"/>
         <mapping resource="eu/wisebed/wiseui/server/model/Image.hbm.xml"/>
+        <mapping resource="eu/wisebed/wiseui/server/model/SecretAuthenticationKey.hbm.xml"/>
 
     </session-factory>
 </hibernate-configuration>

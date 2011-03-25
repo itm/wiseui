@@ -66,6 +66,11 @@
         </dependency>
         <dependency>
             <groupId>de.uniluebeck.itm</groupId>
+            <artifactId>tr.rs-api</artifactId>
+            <version>0.6.1</version>
+        </dependency>
+        <dependency>
+            <groupId>de.uniluebeck.itm</groupId>
             <artifactId>tr.wsn-api</artifactId>
         </dependency>
         <dependency>

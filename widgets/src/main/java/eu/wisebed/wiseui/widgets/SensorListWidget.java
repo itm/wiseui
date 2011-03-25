@@ -46,18 +46,26 @@ public class SensorListWidget extends Composite implements SensorList{
 			return s.getUrn();
 		}
 	};
+
 	private TextColumn<SensorDetails> descr = new TextColumn<SensorDetails>(){
 		@Override
 		public String getValue(SensorDetails s){
 			return s.getDescription();
 		}
 	};
+
 	private TextColumn<SensorDetails> type = new TextColumn<SensorDetails>(){
 		@Override
 		public String getValue(SensorDetails s){
 			return s.getType();
 		}
 	};
+	
+	public void init(){	
+		sensorTable.addColumn(urn,"Urn");
+		sensorTable.addColumn(type,"Type");
+		sensorTable.addColumn(descr,"Description");
+	}
 
 	public SensorListWidget(){
 		initWidget(uiBinder.createAndBindUi(this));
@@ -69,6 +77,7 @@ public class SensorListWidget extends Composite implements SensorList{
 		});
 	}
 	
+
 	/**
 	 * Render sensor's information in cell list. Temporarily rendering only
 	 * sensors' URNs.
@@ -76,9 +85,6 @@ public class SensorListWidget extends Composite implements SensorList{
 	public void renderNodes(final ArrayList<SensorDetails> sensors) {
 		sensorTable.setRowCount(sensors.size(), true);
 		sensorTable.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
-		sensorTable.addColumn(urn,"Urn");
-		sensorTable.addColumn(type,"Type");
-		sensorTable.addColumn(descr,"Description");
 		sensorTable.setRowData(0, sensors);
 		sensorTable.addRangeChangeHandler(new RangeChangeEvent.Handler() {
 			
