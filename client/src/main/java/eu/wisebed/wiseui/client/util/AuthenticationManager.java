@@ -3,6 +3,7 @@ package eu.wisebed.wiseui.client.util;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import com.google.common.base.Function;
@@ -36,6 +37,8 @@ public class AuthenticationManager {
 
 	private final List<SecretAuthenticationKey> secretAuthenticationKeys = Lists.newLinkedList();
 
+	private final HashMap<String, SecretAuthenticationKey> keyHash = new HashMap<String, SecretAuthenticationKey>();
+	
 	/**
 	 * Load all authentication keys from the cookie.
 	 */
@@ -59,6 +62,10 @@ public class AuthenticationManager {
 			}
 		});
 		secretAuthenticationKeys.addAll(keys);
+		
+		for(SecretAuthenticationKey key: keys){
+			keyHash.put(key.getUrnPrefix(), key);
+		}
 	}
 
 	private SecretAuthenticationKey deserialize(final String token) {
@@ -79,6 +86,7 @@ public class AuthenticationManager {
 	}
 
 	public void addSecretAuthenticationKey(final SecretAuthenticationKey key) {
+		keyHash.put(key.getUrnPrefix(), key);
 		secretAuthenticationKeys.add(key);
 		if (Cookies.isCookieEnabled()) {
 			final Date expiration =  new Date(System.currentTimeMillis() + VALIDITY);
@@ -90,7 +98,12 @@ public class AuthenticationManager {
 		return secretAuthenticationKeys;
 	}
 
+	public HashMap<String, SecretAuthenticationKey> getKeyHash(){
+		return keyHash;
+	}
+	
 	public void removeSecretAuthenticationKey(final SecretAuthenticationKey key) {
+		keyHash.remove(key.getUrnPrefix());
 		secretAuthenticationKeys.remove(key);
 		if (Cookies.isCookieEnabled()) {
 			Cookies.removeCookie(toCookieName(key));

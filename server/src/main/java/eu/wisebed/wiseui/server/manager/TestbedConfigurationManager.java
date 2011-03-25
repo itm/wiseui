@@ -52,18 +52,14 @@ public class TestbedConfigurationManager {
 		for (int i=0; i<urnPrefix.size(); i++){
 			final String QUERY = "select t from TestbedConfiguration t "
 				+ "join t.urnPrefixList ul where ul= :urnprefix";
-			final String urn = urnPrefix.get(i);
-			Query q = session.createQuery(QUERY).setString("urnprefix", urn);
+			Query q = session.createQuery(QUERY).setString("urnprefix", urnPrefix.get(i));
 			List<TestbedConfiguration> tmpBeds = 
 				(List<TestbedConfiguration>) q.list();
-			for (TestbedConfiguration bed: tmpBeds)
+			for (TestbedConfiguration bed: tmpBeds){
+				List<String> urns = new ArrayList<String>();
+				urns.add(urnPrefix.get(i));
+				bed.setUrnPrefixList(urns);
 				beds.add(bed);
-		}
-		if (!beds.isEmpty()){
-			for(int i=0, j=0; i<beds.size() && j<urnPrefix.size(); i++){
-				List<String> ul = new ArrayList<String>();
-				ul.add(urnPrefix.get(j));
-				beds.get(i).setUrnPrefixList(ul);
 			}
 		}
 		return beds;

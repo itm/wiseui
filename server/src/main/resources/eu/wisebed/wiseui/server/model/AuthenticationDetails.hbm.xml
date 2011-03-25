@@ -10,7 +10,11 @@
             <generator class="increment"/>
         </id>
         <property name="username"/>
-        <property name="secretAuthenticationKey"/>
-        <property name="urnPrefix"/>
+		
+		<!-- One user can have multiple secret authentication keys -->
+		<set name="secretAuthenticationKeys" table="SECRET_AUTHENTICATION_KEY_TO_USER" cascade="save-update">
+			<key column="user_id"/>
+			<one-to-many class="eu.wisebed.wiseui.shared.wiseml.SecretAuthenticationKey"/>
+		</set>
     </class>
 </hibernate-mapping>

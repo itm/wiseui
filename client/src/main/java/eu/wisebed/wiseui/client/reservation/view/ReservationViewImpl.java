@@ -1,6 +1,7 @@
 package eu.wisebed.wiseui.client.reservation.view;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import com.google.gwt.cell.client.AbstractCell;
@@ -23,6 +24,7 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.HasData;
 import com.google.gwt.view.client.SelectionModel;
 
+import eu.wisebed.wiseui.shared.ReservationDetails;
 import eu.wisebed.wiseui.shared.SensorDetails;
 import eu.wisebed.wiseui.shared.TestbedConfiguration;
 import eu.wisebed.wiseui.widgets.CalendarWidget;
@@ -94,6 +96,28 @@ public class ReservationViewImpl extends Composite implements ReservationView {
 		return  new CellList<TestbedConfiguration>(testbed);		
 	}
 
+	@SuppressWarnings("deprecation")
+	public ReservationDetails getReservationDetails(){
+		Date date = getDateValue();
+		Integer[] startTimeInt = getStartTime();
+		Integer[] stopTimeInt = getStopTime();
+		List<SensorDetails> sensors = getNodesSelected();
+		List<String> sensorUrns = new ArrayList<String>();
+		for(SensorDetails s: sensors ){
+			sensorUrns.add(s.getUrn());
+		}
+		Date startTime = new Date(date.getYear() - 1900, date.getMonth(),
+				date.getDate(), startTimeInt[0], startTimeInt[1]);
+		Date stopTime = new Date(date.getYear()-1900, date.getMonth(),
+				date.getDate(), stopTimeInt[0], stopTimeInt[1]);
+		
+		final ReservationDetails details = new ReservationDetails(startTime,
+				stopTime, stopTime.getTime() - startTime.getTime(), sensorUrns, 
+				getImageFileName(), getImageFileNameField()
+		);
+		return details;
+		
+	}
 	public void renderNodes(ArrayList<SensorDetails> nodes) {
 		sensorListWidget.renderNodes(nodes);
 	}
@@ -115,21 +139,82 @@ public class ReservationViewImpl extends Composite implements ReservationView {
     }
     
 	/**
-	 * Toggle visibility of reservation error panel
-	 * @param visible True if visible
+	 * Toggle visibility of reservation error panel.
+	 * @param visible True if visible.
 	 */
 	public void reservationErrorPanel(boolean visible){
 		errorPanel.setVisible(visible);
 	}
 	
 	/**
-	 * Toggle visibility of reservation button
-	 * @param visible True if visible
+	 * Toggle visibility of reservation button.
+	 * @param visible True if visible.
 	 */
 	public void reserveButton(boolean visible){
 		reserveButton.setVisible(visible);
 	}
 
+	public Date getDateValue(){
+		return calendarWidget.getDateValue();
+	}
+
+	/**
+	 * Get from-time selected in time picker
+	 */
+	public Integer[] getStartTime() {
+		return timeWidget.getStartTime();
+	}
+	
+	/**
+	 * Get to-time selected in time picker
+	 */
+	public Integer[] getStopTime() {
+		return timeWidget.getStopTime();
+	}
+	
+	public String getImageFileName() {
+		return imageUploadWidget.getImageFileName();
+	}
+
+	public String getImageFileNameField() {
+		return imageUploadWidget.getImageFileNameField();
+	}
+
+	/**
+	 * Get nodes selected in cell list
+	 */
+	public ArrayList<SensorDetails> getNodesSelected() {
+		return sensorListWidget.getNodesSelected();
+	}
+
+	/**
+	 * Check if the user has uploaded any image.
+	 * @return boolean, True if selected, false if not. 
+	 * 
+	 */
+	public boolean checkImageSelected() {
+		return (imageUploadWidget.checkImageSelected()) ? true : false;
+	}
+	
+	/**
+	 * Check if user has set all required reservation details
+	 */
+	public boolean checkReservationDetails() {
+		
+		// Temporarily checking only for the image
+		if (!checkImageSelected()){
+			return false;
+		}
+		return true;
+	}
+
+	/**
+	 * Renders a login required message at the top of the view.
+	 */
+	public void loginRequiredPanel(boolean visible){
+		loginRequiredPanel.setVisible(visible);
+	}
+	
 	/**
 	 * Tells the listener to continue with a new reservation after checking
 	 * that all reservation details have properly been set
@@ -137,16 +222,11 @@ public class ReservationViewImpl extends Composite implements ReservationView {
 	 * @param e ClickEvent
 	 */
 	@UiHandler("reserveButton")
-	void onClickReserveButton(ClickEvent e) {
-		if(presenter.checkRsDetails())
-			presenter.makeReservation();
+	public void onClickReserveButton(ClickEvent e) {
+		if(checkReservationDetails()){
+			TestbedConfiguration bed = 	
+				presenter.getTestbedSelectionModel().getSelectedObject();
+			presenter.makeReservation(bed.getRsEndpointUrl(), bed.getUrnPrefixList().get(0));
+		}
 	}
-	
-	/**
-	 * Renders a login required message at the top of the view.
-	 */
-	public void loginRequiredPanel(boolean visible){
-		loginRequiredPanel.setVisible(visible);
-	}
-
 }
