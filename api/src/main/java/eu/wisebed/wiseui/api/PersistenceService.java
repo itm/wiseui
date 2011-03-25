@@ -1,7 +1,6 @@
 package eu.wisebed.wiseui.api;
 
 import eu.wisebed.wiseui.shared.dto.TestbedConfiguration;
-import eu.wisebed.wiseui.shared.dto.TestbedConfiguration;
 
 /**
  * @author Soenke Nommensen
