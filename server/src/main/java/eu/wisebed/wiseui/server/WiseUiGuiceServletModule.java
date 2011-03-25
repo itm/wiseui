@@ -6,6 +6,7 @@ import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import com.google.inject.servlet.ServletModule;
 
+import eu.wisebed.wiseui.server.rpc.ExperimentationServiceImpl;
 import eu.wisebed.wiseui.server.rpc.ReservationServiceImpl;
 import eu.wisebed.wiseui.server.rpc.SNAAServiceImpl;
 import eu.wisebed.wiseui.server.rpc.SessionManagementServiceImpl;
@@ -21,6 +22,7 @@ public class WiseUiGuiceServletModule extends ServletModule {
         serve("/wiseui/snaa.rpc").with(SNAAServiceImpl.class);
         serve("/wiseui/sessionmanagement.rpc").with(SessionManagementServiceImpl.class);
         serve("/wiseui/reservation.rpc").with(ReservationServiceImpl.class);
+        serve("/wiseui/experimentation.rpc").with(ExperimentationServiceImpl.class);
     }
     
     @Singleton
