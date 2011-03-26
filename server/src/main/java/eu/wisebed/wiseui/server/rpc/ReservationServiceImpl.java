@@ -35,15 +35,15 @@ import eu.wisebed.testbed.api.wsn.v211.SessionManagement;
 import eu.wisebed.wiseui.api.ReservationService;
 import eu.wisebed.wiseui.server.manager.ReservationServiceManager;
 import eu.wisebed.wiseui.server.manager.SNAAManager;
-import eu.wisebed.wiseui.server.util.SecretKeyUtils;
+import eu.wisebed.wiseui.server.util.APIKeysUtil;
 import eu.wisebed.wiseui.server.util.WiseMLInfoExtractor;
+import eu.wisebed.wiseui.server.util.WiseUiHibernateUtil;
 import eu.wisebed.wiseui.shared.AuthenticationDetails;
 import eu.wisebed.wiseui.shared.ReservationDetails;
 import eu.wisebed.wiseui.shared.SensorDetails;
 import eu.wisebed.wiseui.shared.exception.AuthenticationException;
 import eu.wisebed.wiseui.shared.exception.ReservationConflictException;
 import eu.wisebed.wiseui.shared.exception.ReservationException;
-import eu.wisebed.wiseui.server.util.WiseUiHibernateUtil;
 
 
 @Singleton
@@ -153,7 +153,7 @@ public class ReservationServiceImpl extends PersistentRemoteService
 		List<SecretReservationKey> secretReservationKeys = null;
 		try {
 			secretReservationKeys = rs.makeReservation(
-					SecretKeyUtils.APIKeysUtils.copySnaaToRs(secretAuthKeys),
+					APIKeysUtil.copySnaaToRs(secretAuthKeys),
 					reservationData
 			);
 		} catch (AuthorizationExceptionException e) {
