@@ -1,6 +1,7 @@
 package eu.wisebed.wiseui.server.controller;
 
 import java.net.MalformedURLException;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.Executors;
@@ -36,24 +37,16 @@ public class ExperimentController implements Controller {
 	
 	private final Logger LOGGER 
 		= Logger.getLogger(ExperimentController.class.getName());
-	private Queue<ExperimentMessage> undeliveredMessagesQueue;
+	private Queue<ExperimentMessage> undeliveredMessagesQueue 
+		= new LinkedList<ExperimentMessage>();
 	private String endPointURL;
 	private int reservationID;
 	private WSN wsn;
-	//private AsyncJobObserver jobs;	 TODO a dependency to be added
+	//private AsyncJobObserver jobs; // TODO resolve : is this a singleton for all jobs running ?
 	private List<SecretReservationKey> keys;
 	private SessionManagement sessionManagement;
 	
-	public ExperimentController(final String endPointURL,
-			final int reservationID,final SessionManagement sessionManagement,
-			final Queue<ExperimentMessage> undeliveredMessagesQueue,
-			final List<SecretReservationKey> keys){
-		this.undeliveredMessagesQueue = undeliveredMessagesQueue;
-		this.endPointURL = endPointURL;
-		this.reservationID = reservationID;
-		this.sessionManagement = sessionManagement;
-		this.keys = keys;
-	}
+	public ExperimentController(){}
 	
 	/**
 	 * Setups and initiates session management for this controller.
@@ -122,12 +115,16 @@ public class ExperimentController implements Controller {
 	 * @param endpointUrl, the URL for the controller to be published.
 	 * @throws MalformedURLException
 	 */
-	public void publish(final String endpointUrl) throws MalformedURLException {
+	public void publish() throws MalformedURLException {
+		
+		if(endPointURL.isEmpty() || endPointURL == null)
+			throw new MalformedURLException("Empty or null URL string");
+		
 		String bindAllInterfacesUrl = 
-			URLUtil.convertHostToZeros(endpointUrl);
+			URLUtil.convertHostToZeros(endPointURL);
 
 		LOGGER.log(Level.INFO,"Experiment controller (#" + reservationID +")");
-		LOGGER.log(Level.INFO,"Endpoint URL: " + endpointUrl);
+		LOGGER.log(Level.INFO,"Endpoint URL: " + endPointURL);
 		LOGGER.log(Level.INFO,"Binding  URL: " + bindAllInterfacesUrl);
 
 		Endpoint endpoint = Endpoint.publish(bindAllInterfacesUrl, this);
@@ -137,16 +134,71 @@ public class ExperimentController implements Controller {
 				reservationID +")" + " at " + bindAllInterfacesUrl);
 	}
 	
+	/**
+	 * Implementation of receive
+	 */
 	@Override
 	public void receive(Message msg) {
 		// TODO implement after resolving asyncontrollerobserver issure
 		
 	}
 
+	/**
+	 * Implementation of receiveStatus
+	 */
 	@Override
 	public void receiveStatus(RequestStatus status) {
 		// TODO implement after resolving asyncontrollerobserver issure
 		
+	}
+	
+	public Queue<ExperimentMessage> getUndeliveredMessagesQueue() {
+		return undeliveredMessagesQueue;
+	}
+
+	public void setUndeliveredMessagesQueue(
+			Queue<ExperimentMessage> undeliveredMessagesQueue) {
+		this.undeliveredMessagesQueue = undeliveredMessagesQueue;
+	}
+
+	public String getEndPointURL() {
+		return endPointURL;
+	}
+
+	public void setEndPointURL(String endPointURL) {
+		this.endPointURL = endPointURL;
+	}
+
+	public int getReservationID() {
+		return reservationID;
+	}
+
+	public void setReservationID(int reservationID) {
+		this.reservationID = reservationID;
+	}
+
+	public WSN getWsn() {
+		return wsn;
+	}
+
+	public void setWsn(WSN wsn) {
+		this.wsn = wsn;
+	}
+
+	public List<SecretReservationKey> getKeys() {
+		return keys;
+	}
+
+	public void setKeys(List<SecretReservationKey> keys) {
+		this.keys = keys;
+	}
+
+	public SessionManagement getSessionManagement() {
+		return sessionManagement;
+	}
+
+	public void setSessionManagement(SessionManagement sessionManagement) {
+		this.sessionManagement = sessionManagement;
 	}
 }
 

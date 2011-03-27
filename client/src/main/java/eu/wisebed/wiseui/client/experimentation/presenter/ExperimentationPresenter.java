@@ -8,6 +8,8 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
 import com.google.inject.Inject;
 
+import eu.wisebed.wiseui.api.ReservationServiceAsync;
+import eu.wisebed.wiseui.api.ReservationService;
 import eu.wisebed.wiseui.client.WiseUiGinjector;
 import eu.wisebed.wiseui.client.experimentation.view.ExperimentView;
 import eu.wisebed.wiseui.client.experimentation.view.ExperimentationView;
@@ -15,11 +17,14 @@ import eu.wisebed.wiseui.client.experimentation.view.ExperimentationView.Present
 import eu.wisebed.wiseui.client.experimentation.presenter.ExperimentPresenter.Button;
 import eu.wisebed.wiseui.client.experimentation.presenter.ExperimentPresenter.Callback;
 
+
 public class ExperimentationPresenter implements Presenter{
 	
     private final WiseUiGinjector injector;
     private ExperimentationView view;
 	private EventBus eventBus;
+	private ReservationServiceAsync reservationService;
+
 
 
 
@@ -30,6 +35,8 @@ public class ExperimentationPresenter implements Presenter{
     	this.view = view;
     	this.eventBus = eventBus;
         view.setPresenter(this);
+        
+        reservationService = GWT.create(ReservationService.class);
     }
     
 	public void setView(ExperimentationView view) {
