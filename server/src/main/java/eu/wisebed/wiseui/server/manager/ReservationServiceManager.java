@@ -105,4 +105,12 @@ public class ReservationServiceManager {
 	    	(ArrayList<ReservationDetails>) criteria.list();
 	    return reservations;
 	}
+	
+	public final static ReservationDetails fetchReservation(final int reservationID){
+	    final Session session = WiseUiHibernateUtil.getSessionFactory().
+			getCurrentSession();
+	    session.beginTransaction();
+		return (ReservationDetails) session.get(
+				ReservationDetails.class, reservationID);
+	}
 }
