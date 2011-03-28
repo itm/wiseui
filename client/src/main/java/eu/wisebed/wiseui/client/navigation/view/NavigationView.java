@@ -1,7 +1,9 @@
 package eu.wisebed.wiseui.client.navigation.view;
 
 import com.google.gwt.user.client.ui.IsWidget;
+import com.google.inject.ImplementedBy;
 
+@ImplementedBy(NavigationViewImpl.class)
 public interface NavigationView extends IsWidget {
 
     void select(Integer index);
