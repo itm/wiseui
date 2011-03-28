@@ -4,6 +4,7 @@ import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.view.client.HasData;
 import com.google.gwt.view.client.TreeViewModel;
+import com.google.inject.ImplementedBy;
 
 import eu.wisebed.wiseui.client.testbedselection.TestbedSelectionPlace;
 import eu.wisebed.wiseui.shared.wiseml.Capability;
@@ -15,6 +16,7 @@ import eu.wisebed.wiseui.widgets.loading.HasLoadingIndicator;
  * 
  * @author Malte Legenhausen
  */
+@ImplementedBy(DetailViewImpl.class)
 public interface DetailView extends IsWidget {
 
     void setPresenter(Presenter presenter);

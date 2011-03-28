@@ -3,9 +3,12 @@ package eu.wisebed.wiseui.client.testbedselection.view;
 import com.google.gwt.user.client.ui.HasEnabled;
 import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.view.client.HasData;
+import com.google.inject.ImplementedBy;
+
 import eu.wisebed.wiseui.client.testbedselection.TestbedSelectionPlace;
 import eu.wisebed.wiseui.client.testbedselection.common.UrnPrefixInfo;
 
+@ImplementedBy(LoginDialogViewImpl.class)
 public interface LoginDialogView {
 
     HasText getUsernameText();

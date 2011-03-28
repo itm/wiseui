@@ -23,6 +23,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.inject.Singleton;
 
 import eu.wisebed.wiseui.client.util.AsyncManager;
 import eu.wisebed.wiseui.client.util.MapApiLoader;
@@ -31,6 +32,7 @@ import eu.wisebed.wiseui.widgets.CaptionPanel;
 import eu.wisebed.wiseui.widgets.loading.HasLoadingIndicator;
 import eu.wisebed.wiseui.widgets.loading.LoadingIndicator;
 
+@Singleton
 public class MapViewImpl extends Composite implements MapView {
 
     private static MapViewImplUiBinder uiBinder = GWT.create(MapViewImplUiBinder.class);

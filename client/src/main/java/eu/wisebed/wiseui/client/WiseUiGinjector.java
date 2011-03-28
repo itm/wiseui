@@ -15,9 +15,7 @@ import eu.wisebed.wiseui.client.main.view.WiseUiView;
 import eu.wisebed.wiseui.client.navigation.gin.NavigationGinjector;
 import eu.wisebed.wiseui.client.navigation.gin.NavigationModule;
 import eu.wisebed.wiseui.client.reservation.gin.ReservationGinjector;
-import eu.wisebed.wiseui.client.reservation.gin.ReservationModule;
 import eu.wisebed.wiseui.client.testbedselection.gin.TestbedSelectionGinjector;
-import eu.wisebed.wiseui.client.testbedselection.gin.TestbedSelectionModule;
 import eu.wisebed.wiseui.client.util.AuthenticationManager;
 
 
@@ -29,8 +27,6 @@ import eu.wisebed.wiseui.client.util.AuthenticationManager;
 @GinModules({
         WiseUiModule.class,
         NavigationModule.class,
-        TestbedSelectionModule.class,
-        ReservationModule.class,
         ExperimentationModule.class
 })
 public interface WiseUiGinjector extends Ginjector, NavigationGinjector, TestbedSelectionGinjector, ReservationGinjector, ExperimentationGinjector, AdministrationGinjector {

@@ -9,11 +9,13 @@ import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.view.client.HasData;
 import com.google.gwt.view.client.SelectionModel;
 import com.google.gwt.view.client.SingleSelectionModel;
+import com.google.inject.ImplementedBy;
 
 import eu.wisebed.wiseui.shared.ReservationDetails;
 import eu.wisebed.wiseui.shared.SensorDetails;
 import eu.wisebed.wiseui.shared.TestbedConfiguration;
 
+@ImplementedBy(ReservationViewImpl.class)
 public interface ReservationView extends IsWidget {
 
     void setPresenter(Presenter presenter);
