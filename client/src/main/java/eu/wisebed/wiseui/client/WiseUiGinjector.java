@@ -9,7 +9,6 @@ import com.google.gwt.place.shared.PlaceHistoryHandler;
 import eu.wisebed.wiseui.client.activity.ContentActivityManager;
 import eu.wisebed.wiseui.client.activity.NavigationActivityManager;
 import eu.wisebed.wiseui.client.administration.gin.AdministrationGinjector;
-import eu.wisebed.wiseui.client.administration.gin.AdministrationModule;
 import eu.wisebed.wiseui.client.experimentation.gin.ExperimentationGinjector;
 import eu.wisebed.wiseui.client.experimentation.gin.ExperimentationModule;
 import eu.wisebed.wiseui.client.main.view.WiseUiView;
@@ -32,8 +31,7 @@ import eu.wisebed.wiseui.client.util.AuthenticationManager;
         NavigationModule.class,
         TestbedSelectionModule.class,
         ReservationModule.class,
-        ExperimentationModule.class,
-        AdministrationModule.class
+        ExperimentationModule.class
 })
 public interface WiseUiGinjector extends Ginjector, NavigationGinjector, TestbedSelectionGinjector, ReservationGinjector, ExperimentationGinjector, AdministrationGinjector {
 
