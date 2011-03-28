@@ -25,14 +25,14 @@ public abstract class APIKeysUtil {
 		return newKeys;
 	}
 
-	public static List<eu.wisebed.testbed.api.wsn.v211.SecretReservationKey> 
+	public static List<eu.wisebed.testbed.api.wsn.v22.SecretReservationKey> 
 	copyRsToWsn(final List<SecretReservationKey> rsKeys) {
-		List<eu.wisebed.testbed.api.wsn.v211.SecretReservationKey> newKeys =
+		List<eu.wisebed.testbed.api.wsn.v22.SecretReservationKey> newKeys =
 			new ArrayList<
-			eu.wisebed.testbed.api.wsn.v211.SecretReservationKey>();
+			eu.wisebed.testbed.api.wsn.v22.SecretReservationKey>();
 		for (SecretReservationKey rsKey : rsKeys) {
-			eu.wisebed.testbed.api.wsn.v211.SecretReservationKey newKey =
-				new eu.wisebed.testbed.api.wsn.v211.SecretReservationKey();
+			eu.wisebed.testbed.api.wsn.v22.SecretReservationKey newKey =
+				new eu.wisebed.testbed.api.wsn.v22.SecretReservationKey();
 			newKey.setSecretReservationKey(rsKey.getSecretReservationKey());
 			newKey.setUrnPrefix(rsKey.getUrnPrefix());
 			newKeys.add(newKey);

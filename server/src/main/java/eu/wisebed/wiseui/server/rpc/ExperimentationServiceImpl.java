@@ -5,6 +5,7 @@ import java.net.MalformedURLException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -18,13 +19,26 @@ import net.sf.gilead.gwt.PersistentRemoteService;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
+import de.uniluebeck.itm.wisebed.cmdlineclient.jobs.AsyncJobObserver;
+import de.uniluebeck.itm.wisebed.cmdlineclient.jobs.Job;
+
 import eu.wisebed.testbed.api.rs.v1.SecretReservationKey;
+import eu.wisebed.testbed.api.wsn.WSNServiceHelper;
+import eu.wisebed.testbed.api.wsn.v22.Program;
+import eu.wisebed.testbed.api.wsn.v22.SessionManagement;
 import eu.wisebed.wiseui.api.ExperimentationService;
+import eu.wisebed.wiseui.server.util.ImageUtil;
 import eu.wisebed.wiseui.server.util.WiseUiHibernateUtil;
 import eu.wisebed.wiseui.server.util.URLUtil;
 import eu.wisebed.wiseui.server.controller.ExperimentController;
+import eu.wisebed.wiseui.server.manager.ImageServiceManager;
 import eu.wisebed.wiseui.server.manager.ReservationServiceManager;
+import eu.wisebed.wiseui.server.manager.TestbedConfigurationManager;
+import eu.wisebed.wiseui.server.model.Image;
 import eu.wisebed.wiseui.shared.ExperimentMessage;
+import eu.wisebed.wiseui.shared.ReservationDetails;
+import eu.wisebed.wiseui.shared.SensorDetails;
+import eu.wisebed.wiseui.shared.TestbedConfiguration;
 import eu.wisebed.wiseui.shared.exception.ExperimentationException;
 import eu.wisebed.wiseui.shared.exception.ReservationException;
 
@@ -38,8 +52,8 @@ public class ExperimentationServiceImpl extends PersistentRemoteService
 	private List<ExperimentController> experimentControllers = 
 		new ArrayList<ExperimentController>();
 	private HibernateUtil gileadHibernateUtil = new HibernateUtil();
-	
-	private static int testing = 0; // TODO TO BE REMOVED ! ! ! 
+	private AsyncJobObserver jobs = new AsyncJobObserver(1, TimeUnit.MINUTES);
+	private SessionManagement sessionManagement;
 
 
 	@Inject
@@ -69,127 +83,139 @@ public class ExperimentationServiceImpl extends PersistentRemoteService
 		
 		LOGGER.log(Level.INFO,"Binding controller with id = " + reservationID);
 
-		// fetch reservation from key
-//		SecretReservationKey key = ReservationServiceManager.
-//			fetchReservationByReservationID(reservationID);
-//		if(key == null){
-//			throw new ReservationException("Reservation not found");
-//		}
+		// fetch reservation from ID
+		ReservationDetails reservation =
+			ReservationServiceManager.fetchReservation(reservationID);
+		if(reservation == null){
+			throw new ReservationException("Reservation not found");
+		}
+		SecretReservationKey key = new SecretReservationKey();
+		key.setSecretReservationKey(reservation.getSecretReservationKey());
+		key.setUrnPrefix(reservation.getUrnPrefix());
 		
 		// format local endpoint url (for testing behind NAT must go !)
 //		String endPointURL = "http://" + 
 //		"94.64.211.89" + 
 //		":" + 
-//		URLUtil.getNextAvailablePort() + "/controller";
+//		URLUtil.getPort() + "/controller"
+//		+ URLUtil.getRandomURLSuffix(key.getSecretReservationKey());
 
 		// format local endpoint url (standard way)
-//		String endPointURL=null;
-//		try {
-//			endPointURL = "http://" + 
-//				InetAddress.getLocalHost().getCanonicalHostName() + 
-//				":" + URLUtil.getNextAvailablePort() + "/controller";
-//		} catch (UnknownHostException e) {
-//			LOGGER.log(Level.FATAL, e);
-//			throw new ExperimentationException("Could not publish local " +
-//					"controller on" + endPointURL);
-//		}
+		String endPointURL=null;
+		try {
+			endPointURL = "http://" + 
+				InetAddress.getLocalHost().getCanonicalHostName() + 
+				":" + URLUtil.getPort() + "/controller"
+				+ URLUtil.getRandomURLSuffix(key.getSecretReservationKey());
+		} catch (UnknownHostException e) {
+			LOGGER.log(Level.FATAL, e);
+			throw new ExperimentationException("Could not publish local " +
+					"controller on" + endPointURL);
+		}
 		
 		// setup experiment controller
-//		ExperimentController controller = new ExperimentController();
-//		controller.setEndPointURL(endPointURL);
-//		controller.setReservationID(reservationID);
-//		List<SecretReservationKey> keys = new ArrayList<SecretReservationKey>();
-//		keys.add(key);
-//		controller.setKeys(keys);
+		ExperimentController controller = new ExperimentController();
+		controller.setEndPointURL(endPointURL);
+		controller.setReservationID(reservationID);
+		List<SecretReservationKey> keys = new ArrayList<SecretReservationKey>();
+		keys.add(key);
+		controller.setKeys(keys);
+		controller.setJobs(jobs);
+		List<String> urnPrefixList = new ArrayList<String>();
+		urnPrefixList.add(reservation.getUrnPrefix());
+		List<TestbedConfiguration> testbed = 
+			TestbedConfigurationManager.fetchTestbedByUrn(urnPrefixList);
+		String sessionManagmentURL = 
+			testbed.get(0).getSessionmanagementEndpointUrl();
+		sessionManagement = 
+			WSNServiceHelper.getSessionManagementService(sessionManagmentURL);
+		controller.setSessionManagement(sessionManagement);
 		
 		// publish controller
-//		try{
-//			controller.publish();
-//		} catch (MalformedURLException e) {
-//			LOGGER.log(Level.FATAL, e);
-//			throw new ExperimentationException(
-//					"Could not public local controller on " 
-//					+ controller.getEndPointURL() + " (" + e.getMessage() + ")");
-//					
-//		}
-//		LOGGER.log(Level.INFO,"Local controller published on url: " + 
-//				controller.getEndPointURL());
+		try{
+			controller.publish();
+		} catch (MalformedURLException e) {
+			LOGGER.log(Level.FATAL, e);
+			throw new ExperimentationException(
+					"Could not public local controller on " 
+					+ controller.getEndPointURL() + " (" + e.getMessage() + ")");
+					
+		}
+		LOGGER.log(Level.INFO,"Local controller published on url: " + 
+				controller.getEndPointURL());
 		
 		// start session management
 
 		// controller found
-//		controller.startSessionManagement();
+		controller.startSessionManagement();
 		
 		// add controller to the controllers list
-//		experimentControllers.add(controller);		
+		experimentControllers.add(controller);		
 	}
 	
 	/**
 	 *  This method loads an experiment image on the web services.
 	 *  @param <code>reservationID</code>, a reservation ID.
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	public void flashExperimentImage(final int reservationID)
 			throws ReservationException, ExperimentationException {
 		
 		LOGGER.log(Level.INFO,"Flashing image for controller with id = " + reservationID);
 
-		
+		// get reservation
+		ReservationDetails reservation =
+			ReservationServiceManager.fetchReservation(reservationID);
+
 		//	get image related file name from reservation
-//		final String imageName = ReservationServiceManager
-//			.fetchImageFileName(reservationID);
-//		final String imageNameField = ReservationServiceManager
-//			.fetchImageFileNameField(reservationID);
-//
-//		LOGGER.log(Level.INFO, "Image filename \"" + imageName +
-//				"\" for reservation (" + reservationID +")");
-//		LOGGER.log(Level.INFO, "Image nameField \"" + imageNameField +
-//				"\" for reservation (" + reservationID +")");
+		final String filename = reservation.getImageFileName();
+		final Image image = 
+			ImageServiceManager.fetchImageByFilename(filename);
+	
+		LOGGER.log(Level.INFO, "Image filename \"" + filename +
+				"\" for reservation (" + reservationID +")");
 
 		// Setup for flashing an image
 		// form a node list
-//		List<String> nodeURNs = ReservationServiceManager
-//			.fetchNodeURNs(reservationID);
-//		
-//		LOGGER.log(Level.INFO, "Fetched " + nodeURNs.size() + " node URNs");
-//		@SuppressWarnings("rawtypes")
-//		List programIndices = new ArrayList();		
-//		for(int i= 0;i < nodeURNs.size();i++){
-//			LOGGER.log(Level.INFO,"Node URN fetched :" + nodeURNs.get(i));
-//			programIndices.add(0);
-//		}
+		List<String> nodeURNs = new ArrayList<String>();		
+		for(SensorDetails sensor : reservation.getSensors()){
+			nodeURNs.add(sensor.getUrn());
+		}
+		
+		LOGGER.log(Level.INFO, "Fetched " + nodeURNs.size() + " node URNs");
+		@SuppressWarnings("rawtypes")
+		List programIndices = new ArrayList();		
+		for(int i= 0;i < nodeURNs.size();i++){
+			LOGGER.log(Level.INFO,"Node URN fetched :" + nodeURNs.get(i));
+			programIndices.add(0);
+		}
 
-		// TODO read from image BLOBs
-//		File f = new File(imageName);
-//		//String c = uploadedFilesContentType.get(imageNameField);
-//
-//		// setup image to flash
-//		@SuppressWarnings("rawtypes")
-//		List programs = new ArrayList();
-//               try {
-//			programs.add(Utils.readProgram(
-//					f.getCanonicalPath(),
-//			        "iSerial",
-//			        "",
-//			        "iSense",
-//			        "1.0"
-//			));
-//		} catch (Exception e) {
-//			LOGGER.log(Level.FATAL, e);
-//			return null;
-//		}
-//		
-//		ExperimentController controller = 
-//			findOutputcontrollerByID(reservationID);
-//		
-//        jobs.submit(new Job(
-//        		"flash nodes",
-//                controller.getWSN().flashPrograms(
-//                		nodeURNs, programIndices, programs),
-//                nodeURNs,
-//                Job.JobType.flashPrograms
-//            ));
-//        jobs.join();		
+		// setup image to flash
+		List<Program> programs = new ArrayList<Program>();
+               try {
+			programs.add(ImageUtil.readImage(image,
+			        "iSerial",
+			        "",
+			        "iSense",
+			        "1.0"
+			));
+		} catch (Exception e) {
+			LOGGER.log(Level.FATAL, e);
+			throw new ExperimentationException();
+		}
+		// TODO CHECK JOBS FOR NULL !! 
+		ExperimentController controller = 
+			findExperimentControllerByID(reservationID);
+		
+        jobs.submit(new Job(
+        		"flash nodes",
+                controller.getWsn().flashPrograms(
+                		nodeURNs, programIndices, programs),
+                nodeURNs,
+                Job.JobType.flashPrograms
+            ));
+        jobs.join();		
 	}
 
 	@Override
@@ -220,14 +246,8 @@ public class ExperimentationServiceImpl extends PersistentRemoteService
 	 */
 	@Override
 	public ExperimentMessage getNextUndeliveredMessage(final int reservationID) 
-		throws ExperimentationException {
-		
-		LOGGER.log(Level.INFO,"Sending ExperimentMessage \"Testing [" + testing + "] from controller with id = " + reservationID);
-		ExperimentMessage dummy = new ExperimentMessage();
-		dummy.setTextMessage("Testing [" + testing + "]");
-		testing++;
-			
-		return dummy;
+		throws ExperimentationException {			
+		return null;
 	}
 	
 	/**
@@ -237,11 +257,8 @@ public class ExperimentationServiceImpl extends PersistentRemoteService
 	 * or <code>null</code> if controller not found. 
 	 */
 	private ExperimentController findExperimentControllerByID(final int reservationID){
-		LOGGER.log(Level.INFO, "Looking for controller with ID:" + reservationID );
 		for(ExperimentController controller : experimentControllers){
 			if(reservationID == controller.getReservationID()){
-				LOGGER.log(Level.INFO, "Found controller with ID:" + reservationID + 
-						" (" +controller.getEndPointURL() +")");
 				return controller;
 			}
 		}

@@ -31,7 +31,7 @@ import eu.wisebed.testbed.api.rs.v1.ReservervationConflictExceptionException;
 import eu.wisebed.testbed.api.rs.v1.SecretReservationKey;
 import eu.wisebed.testbed.api.snaa.v1.SecretAuthenticationKey;
 import eu.wisebed.testbed.api.wsn.WSNServiceHelper;
-import eu.wisebed.testbed.api.wsn.v211.SessionManagement;
+import eu.wisebed.testbed.api.wsn.v22.SessionManagement;
 import eu.wisebed.wiseui.api.ReservationService;
 import eu.wisebed.wiseui.server.manager.ReservationServiceManager;
 import eu.wisebed.wiseui.server.manager.SNAAManager;
@@ -215,13 +215,6 @@ public class ReservationServiceImpl extends PersistentRemoteService
 		// if empty return null
 		if(result.isEmpty() || result == null)
 			return null;
-		
-		LOGGER.log(Level.DEBUG, result.get(0).getSecretReservationKey());
-		for(ReservationDetails r : result){
-			if(r.getSensors() == null)
-				LOGGER.log(Level.DEBUG, "Sensors are null");
-		}
-		LOGGER.log(Level.DEBUG, result.get(0).getUrnPrefix());
 		
 		return result;
 	}

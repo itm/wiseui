@@ -127,7 +127,6 @@ public class ExperimentViewImpl extends Composite implements ExperimentView, Cli
 	@Override
 	public void fillNodeTabPanel(final List<String> urns) {
 		for(String s: urns) {
-			GWT.log(s);
 			nodeTabPanel.add(new TextArea(),s);
 		}
 	}

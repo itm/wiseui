@@ -25,25 +25,25 @@ import eu.wisebed.wiseui.widgets.messagebox.MessageBox;
 
 
 public class ExperimentationPresenter implements Presenter{
-	
-    private final WiseUiGinjector injector;
-    private ExperimentationView view;
+
+	private final WiseUiGinjector injector;
+	private ExperimentationView view;
 	private EventBus eventBus;
 	private ReservationServiceAsync service;
 
-	
-    @Inject
-    public ExperimentationPresenter(final WiseUiGinjector injector,	// TODO should we really inject the inject0r in order to get other stuff like the authentication manager
-    		final ExperimentationView view,final EventBus eventBus){
-    	this.injector = injector;
-    	this.view = view;
-    	this.eventBus = eventBus;
-        view.setPresenter(this);
-        
-        // init service
-        service = GWT.create(ReservationService.class); // TODO GINject service instead of GWT.create
-    }
-    
+
+	@Inject
+	public ExperimentationPresenter(final WiseUiGinjector injector,	// TODO should we really inject the inject0r in order to get other stuff like the authentication manager
+			final ExperimentationView view,final EventBus eventBus){
+		this.injector = injector;
+		this.view = view;
+		this.eventBus = eventBus;
+		view.setPresenter(this);
+
+		// init service
+		service = GWT.create(ReservationService.class); // TODO GINject service instead of GWT.create
+	}
+
 	public void setView(ExperimentationView view) {
 		this.view = view;
 	}
@@ -51,12 +51,12 @@ public class ExperimentationPresenter implements Presenter{
 	public ExperimentationView getView() {
 		return view;
 	}
-	
+
 	@SuppressWarnings("deprecation")
 	@Override
 	public void getUserReservations() {
-        
-		
+
+
 		// TODO this multikey multilogin issue should be rediscussed in my opinion as far as experimentation is concerned
 		@SuppressWarnings("unchecked")
 		Collection<SecretAuthenticationKey> keys =  injector.getAuthenticationManager().getKeyHash().values();
@@ -69,7 +69,7 @@ public class ExperimentationPresenter implements Presenter{
 
 		final List<ExperimentView> experimentViews = 
 			new ArrayList<ExperimentView>();
-		
+
 		// setup rpc callback
 		AsyncCallback<List<ReservationDetails>> callback = 
 			new AsyncCallback<List<ReservationDetails>>(){
@@ -83,29 +83,15 @@ public class ExperimentationPresenter implements Presenter{
 
 			@Override
 			public void onSuccess(List<ReservationDetails> result) {
-				
+
 				if(result == null) {
 					MessageBox.info("No reservations found", "No reservations found", null);
 					return;
 				}
-				
-				GWT.log("result.size() :" + result.size());
-				
+
 				for(ReservationDetails reservation : result) {
 					final ExperimentPresenter experiment = injector.getExperimentPresenter();
-					
-					if(reservation == null)
-						GWT.log("reservation is null");
-					if(reservation.getStartTime() == null)
-						GWT.log("reservation.getstartime is null");
-					if(reservation.getSensors() == null)
-						GWT.log("reservation get sensors is null");
-					if(reservation.getImageFileName() == null)
-						GWT.log("reservation get image filename is null");
-					if(reservation.getUrnPrefix() == null)
-						GWT.log("reservation get urn prefix");
-						
-					
+
 					experiment.initialize(reservation.getReservationid(),
 							reservation.getStartTime(), reservation.getStopTime(),
 							reservation.getSensors(),
@@ -115,27 +101,27 @@ public class ExperimentationPresenter implements Presenter{
 						@Override
 						public void onButtonClicked(Button button) {
 							switch(button){
-								case START:
-									experiment.setAsRunningExperiment();
-									break;
-								case STOP:
-									experiment.setAsTerminatedExperiment();
-									break;
-								case SHOWHIDE:
-									experiment.getView().showHideNodeOutput();
-									break;
-								case CANCEL:
-									experiment.setAsCancelledExperiment();
-									break;
+							case START:
+								experiment.setAsRunningExperiment();
+								break;
+							case STOP:
+								experiment.setAsTerminatedExperiment();
+								break;
+							case SHOWHIDE:
+								experiment.getView().showHideNodeOutput();
+								break;
+							case CANCEL:
+								experiment.setAsCancelledExperiment();
+								break;
 							}
 						} 
 					});
-			        experimentViews.add(experiment.getView());
-			        view.initView(experimentViews);
+					experimentViews.add(experiment.getView());
+					view.initView(experimentViews);
 				}
 			}
 		};
-		
+
 		// make the rpc
 		service.getUserReservations(key,callback);
 	}

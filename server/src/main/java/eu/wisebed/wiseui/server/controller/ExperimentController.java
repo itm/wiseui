@@ -1,9 +1,7 @@
 package eu.wisebed.wiseui.server.controller;
 
 import java.net.MalformedURLException;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Queue;
 import java.util.concurrent.Executors;
 
 import javax.jws.WebService;
@@ -12,18 +10,20 @@ import javax.xml.ws.Endpoint;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
+import de.uniluebeck.itm.wisebed.cmdlineclient.jobs.AsyncJobObserver;
+
 //import de.uniluebeck.itm.wisebed.cmdlineclient.jobs.AsyncJobObserver;
 
 import eu.wisebed.testbed.api.rs.v1.SecretReservationKey;
 import eu.wisebed.testbed.api.wsn.Constants;
 import eu.wisebed.testbed.api.wsn.WSNServiceHelper;
-import eu.wisebed.testbed.api.wsn.v211.Controller;
-import eu.wisebed.testbed.api.wsn.v211.ExperimentNotRunningException_Exception;
-import eu.wisebed.testbed.api.wsn.v211.Message;
-import eu.wisebed.testbed.api.wsn.v211.RequestStatus;
-import eu.wisebed.testbed.api.wsn.v211.UnknownReservationIdException_Exception;
-import eu.wisebed.testbed.api.wsn.v211.WSN;
-import eu.wisebed.testbed.api.wsn.v211.SessionManagement;
+import eu.wisebed.testbed.api.wsn.v22.Controller;
+import eu.wisebed.testbed.api.wsn.v22.ExperimentNotRunningException_Exception;
+import eu.wisebed.testbed.api.wsn.v22.Message;
+import eu.wisebed.testbed.api.wsn.v22.RequestStatus;
+import eu.wisebed.testbed.api.wsn.v22.UnknownReservationIdException_Exception;
+import eu.wisebed.testbed.api.wsn.v22.WSN;
+import eu.wisebed.testbed.api.wsn.v22.SessionManagement;
 import eu.wisebed.wiseui.server.util.APIKeysUtil;
 import eu.wisebed.wiseui.server.util.URLUtil;
 import eu.wisebed.wiseui.shared.ExperimentMessage;
@@ -37,14 +37,12 @@ public class ExperimentController implements Controller {
 	
 	private final Logger LOGGER 
 		= Logger.getLogger(ExperimentController.class.getName());
-	private Queue<ExperimentMessage> undeliveredMessagesQueue 
-		= new LinkedList<ExperimentMessage>();
 	private String endPointURL;
 	private int reservationID;
 	private WSN wsn;
-	//private AsyncJobObserver jobs; // TODO resolve : is this a singleton for all jobs running ?
+	private AsyncJobObserver jobs; 
 	private List<SecretReservationKey> keys;
-	private SessionManagement sessionManagement;
+	private SessionManagement sessionManagement = null;
 	
 	public ExperimentController(){}
 	
@@ -134,31 +132,28 @@ public class ExperimentController implements Controller {
 				reservationID +")" + " at " + bindAllInterfacesUrl);
 	}
 	
-	/**
-	 * Implementation of receive
-	 */
 	@Override
-	public void receive(Message msg) {
-		// TODO implement after resolving asyncontrollerobserver issure
+	public void experimentEnded() {
+		// TODO Auto-generated method stub
 		
 	}
 
-	/**
-	 * Implementation of receiveStatus
-	 */
 	@Override
-	public void receiveStatus(RequestStatus status) {
-		// TODO implement after resolving asyncontrollerobserver issure
+	public void receive(List<Message> msg) {
+		// TODO Auto-generated method stub
 		
 	}
-	
-	public Queue<ExperimentMessage> getUndeliveredMessagesQueue() {
-		return undeliveredMessagesQueue;
+
+	@Override
+	public void receiveNotification(List<String> notifications) {
+		// TODO Auto-generated method stub
+		
 	}
 
-	public void setUndeliveredMessagesQueue(
-			Queue<ExperimentMessage> undeliveredMessagesQueue) {
-		this.undeliveredMessagesQueue = undeliveredMessagesQueue;
+	@Override
+	public void receiveStatus(List<RequestStatus> requestStatus) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	public String getEndPointURL() {
@@ -197,8 +192,16 @@ public class ExperimentController implements Controller {
 		return sessionManagement;
 	}
 
-	public void setSessionManagement(SessionManagement sessionManagement) {
+	public void setSessionManagement(final SessionManagement sessionManagement) {
 		this.sessionManagement = sessionManagement;
+	}
+
+	public void setJobs(AsyncJobObserver jobs) {
+		this.jobs = jobs;
+	}
+
+	public AsyncJobObserver getJobs() {
+		return jobs;
 	}
 }
 

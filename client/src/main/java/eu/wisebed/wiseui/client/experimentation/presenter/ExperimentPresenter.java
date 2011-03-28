@@ -100,7 +100,7 @@ public class ExperimentPresenter implements Presenter {
     	setReservationID(reservationID);
     	setStartDate(startDate);
     	setStopDate(stopDate);
-    	//setSensors(sensors);
+    	setSensors(sensors);
     	setImageFileName(imageFileName);
     	setUrnPrefix(urnPrefix);
     	this.callback = callback;
@@ -317,9 +317,9 @@ public class ExperimentPresenter implements Presenter {
 			}
 
 			@Override
-			public void onSuccess(Object result) {
+			public void onSuccess(final Object result) {
 				GWT.log("Experiment controller is now running");
-				collectExperimentMessages();
+				//collectExperimentMessages();
 			}
 		};
 		
