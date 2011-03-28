@@ -2,6 +2,7 @@ package eu.wisebed.wiseui.api;
 
 
 import java.util.ArrayList;
+import java.util.List;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
@@ -24,7 +25,7 @@ public interface ReservationService extends RemoteService {
 			String rsEndpointUrl, ReservationDetails data)
 		throws AuthenticationException, ReservationException,
 			ReservationConflictException;
-	ArrayList<ReservationDetails> getUserReservations(String username) 
+	List<ReservationDetails> getUserReservations(SecretAuthenticationKey secretAuthenticationKey) 
 		throws ReservationException;
 	String cancelReservation(String username,int reservationID) 
 		throws ReservationException;

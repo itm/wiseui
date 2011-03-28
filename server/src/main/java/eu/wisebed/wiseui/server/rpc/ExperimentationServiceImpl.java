@@ -38,6 +38,9 @@ public class ExperimentationServiceImpl extends PersistentRemoteService
 	private List<ExperimentController> experimentControllers = 
 		new ArrayList<ExperimentController>();
 	private HibernateUtil gileadHibernateUtil = new HibernateUtil();
+	
+	private static int testing = 0; // TODO TO BE REMOVED ! ! ! 
+
 
 	@Inject
 	ExperimentationServiceImpl(){
@@ -63,6 +66,8 @@ public class ExperimentationServiceImpl extends PersistentRemoteService
 	@Override
 	public void bindAndStartExperimentController(final int reservationID) 
 		throws ReservationException,ExperimentationException {
+		
+		LOGGER.log(Level.INFO,"Binding controller with id = " + reservationID);
 
 		// fetch reservation from key
 //		SecretReservationKey key = ReservationServiceManager.
@@ -127,6 +132,9 @@ public class ExperimentationServiceImpl extends PersistentRemoteService
 	public void flashExperimentImage(final int reservationID)
 			throws ReservationException, ExperimentationException {
 		
+		LOGGER.log(Level.INFO,"Flashing image for controller with id = " + reservationID);
+
+		
 		//	get image related file name from reservation
 //		final String imageName = ReservationServiceManager
 //			.fetchImageFileName(reservationID);
@@ -188,6 +196,8 @@ public class ExperimentationServiceImpl extends PersistentRemoteService
 	public void terminateExperiment(final int reservationID)
 			throws ExperimentationException {
 		
+		LOGGER.log(Level.INFO,"Terminating controller with id = " + reservationID);
+
 //		// find output controller
 //		ExperimentController controller 
 //			= findExperimentControllerByID(reservationID);
@@ -211,8 +221,13 @@ public class ExperimentationServiceImpl extends PersistentRemoteService
 	@Override
 	public ExperimentMessage getNextUndeliveredMessage(final int reservationID) 
 		throws ExperimentationException {
-		// TODO Auto-generated method stub
-		return null;
+		
+		LOGGER.log(Level.INFO,"Sending ExperimentMessage \"Testing [" + testing + "] from controller with id = " + reservationID);
+		ExperimentMessage dummy = new ExperimentMessage();
+		dummy.setTextMessage("Testing [" + testing + "]");
+		testing++;
+			
+		return dummy;
 	}
 	
 	/**

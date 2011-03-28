@@ -198,10 +198,32 @@ public class ReservationServiceImpl extends PersistentRemoteService
 	 * @return an <code>ArrayList</code> of <code>ReservationDetails</code>. 
 	 * objects that are the reservations madey by a user.
 	 */
-	public final ArrayList<ReservationDetails> getUserReservations( 
-			final String sessionID) throws ReservationException {
-		// TODO: Add functionality while integrating
-		return null;
+	public final List<ReservationDetails> getUserReservations( 
+			final eu.wisebed.wiseui.shared.wiseml.SecretAuthenticationKey secretAuthenticationKey
+			) throws ReservationException {
+
+		// identify user from secretAuthenticationKey
+		AuthenticationDetails authenticationDetails = 
+			SNAAManager.fetchUserBySecretAuthenticationKey(
+				secretAuthenticationKey.getSecretAuthenticationKey());
+
+		// get reservations of the user
+		List<ReservationDetails> result = 
+			ReservationServiceManager.fetchAllReservationsByUser(
+					authenticationDetails.getUserid());
+		
+		// if empty return null
+		if(result.isEmpty() || result == null)
+			return null;
+		
+		LOGGER.log(Level.DEBUG, result.get(0).getSecretReservationKey());
+		for(ReservationDetails r : result){
+			if(r.getSensors() == null)
+				LOGGER.log(Level.DEBUG, "Sensors are null");
+		}
+		LOGGER.log(Level.DEBUG, result.get(0).getUrnPrefix());
+		
+		return result;
 	}
 	
 	// TODO methods below that point save/fetch data to/from DB we need to place

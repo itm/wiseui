@@ -3,6 +3,7 @@ package eu.wisebed.wiseui.client.experimentation.view;
 import java.util.List;
 
 import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.Label;
 
 public interface ExperimentView extends IsWidget {
 	
@@ -31,6 +32,10 @@ public interface ExperimentView extends IsWidget {
 	void setReservationTime(String time);
 	
 	String getImageFilename();
+	
+	String getUrnPrefix();
+	
+	void setUrnPrefix(String urnPrefix);
 	
 	void setImageFilename(String filename);
 	

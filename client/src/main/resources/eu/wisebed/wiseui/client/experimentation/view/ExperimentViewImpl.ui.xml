@@ -41,6 +41,10 @@
 			<g:Label addStyleNames="{style.important}" ui:field="imageFilename"/>
 		</g:HorizontalPanel>
 		<g:HorizontalPanel>
+			<g:Label text="urnPrefix of testbed :"/>
+			<g:Label addStyleNames="{style.important}" ui:field="urnPrefix"/>
+		</g:HorizontalPanel>
+		<g:HorizontalPanel>
 			<g:Label text="Reservation time :"/>
 			<g:Label addStyleNames="{style.important}" ui:field="reservationTime"/>
 		</g:HorizontalPanel>
