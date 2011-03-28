@@ -7,7 +7,9 @@ import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.inject.Singleton;
 
+@Singleton
 public class WiseUiViewImpl extends Composite implements WiseUiView {
 
     interface WiseUiViewImplUiBinder extends UiBinder<Widget, WiseUiViewImpl> {

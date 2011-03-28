@@ -36,6 +36,7 @@ public class ExperimentationActivity extends AbstractActivity implements
 
 		final AuthenticationManager authenticationManager = 
 			injector.getAuthenticationManager();
+		
         if (authenticationManager.getSecretAuthenticationKeys().isEmpty()) {
         	// an ugly way to show that authentication is required
         	MessageBox.error("Authentication Required", "Authentication is required in order to proceed.", null, null);
