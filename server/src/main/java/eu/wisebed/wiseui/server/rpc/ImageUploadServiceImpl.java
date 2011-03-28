@@ -9,12 +9,11 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
-import org.hibernate.Session;
 
 import com.google.inject.Singleton;
 
+import eu.wisebed.wiseui.server.manager.ImageServiceManager;
 import eu.wisebed.wiseui.server.model.Image;
-import eu.wisebed.wiseui.server.util.WiseUiHibernateUtil;
 
 import gwtupload.server.UploadAction;
 import gwtupload.server.exceptions.UploadActionException;
@@ -53,8 +52,8 @@ public class ImageUploadServiceImpl extends UploadAction{
 					image.setContentType(item.getContentType());
 					LOGGER.log(Level.INFO, "Storing image: [Filename-> " 
 							+ item.getName() + " ]");
-					saveImage(image);
-					
+					ImageServiceManager.saveImage(image);
+
 					// Compose an xml message with the full file information
 					// which can be parsed in client side
 					response += "<file-" + cont + "-field>" + 
@@ -83,13 +82,5 @@ public class ImageUploadServiceImpl extends UploadAction{
 	public void removeItem(HttpServletRequest request, String fieldName) 
 		throws UploadActionException{
 		// TODO implement this when required
-	}
-	
-	private static final void saveImage(Image image){
-		final Session session = WiseUiHibernateUtil.getSessionFactory()
-			.getCurrentSession();
-		session.beginTransaction();
-		session.save(image);
-		session.getTransaction().commit();
 	}
 }
