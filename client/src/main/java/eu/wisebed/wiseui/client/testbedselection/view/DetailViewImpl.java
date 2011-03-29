@@ -15,6 +15,7 @@ import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.HasData;
 import com.google.gwt.view.client.TreeViewModel;
+import com.google.inject.Singleton;
 
 import eu.wisebed.wiseui.shared.wiseml.Capability;
 import eu.wisebed.wiseui.widgets.CaptionPanel;
@@ -26,6 +27,7 @@ import eu.wisebed.wiseui.widgets.loading.HasLoadingIndicator;
  * 
  * @author Malte Legenhausen
  */
+@Singleton
 public class DetailViewImpl extends Composite implements DetailView {
 	
 	private static DetailViewImplUiBinder uiBinder = GWT.create(DetailViewImplUiBinder.class);

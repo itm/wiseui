@@ -21,7 +21,6 @@ public class ExperimentationActivity extends AbstractActivity {
     }
 
     public void start(final AcceptsOneWidget panel, final EventBus eventBus) {
-    	
     	// check if user authenticated
     	final AuthenticationManager authenticationManager = 
 			injector.getAuthenticationManager();

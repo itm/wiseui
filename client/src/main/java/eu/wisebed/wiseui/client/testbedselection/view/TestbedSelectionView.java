@@ -3,8 +3,11 @@ package eu.wisebed.wiseui.client.testbedselection.view;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.gwt.user.client.ui.HasEnabled;
 import com.google.gwt.user.client.ui.IsWidget;
+import com.google.inject.ImplementedBy;
+
 import eu.wisebed.wiseui.client.testbedselection.TestbedSelectionPlace;
 
+@ImplementedBy(TestbedSelectionViewImpl.class)
 public interface TestbedSelectionView extends IsWidget {
 
     void setPresenter(Presenter presenter);

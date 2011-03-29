@@ -1,5 +1,7 @@
 package eu.wisebed.wiseui.client.testbedselection.view;
 
+import java.util.List;
+
 import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.core.client.GWT;
@@ -11,10 +13,12 @@ import com.google.gwt.user.cellview.client.CellList;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.SelectionModel;
+import com.google.inject.Singleton;
+
 import eu.wisebed.wiseui.shared.TestbedConfiguration;
 
-import java.util.List;
 
+@Singleton
 public class ConfigurationViewImpl extends Composite implements ConfigurationView {
 
     private static ConfigurationViewImplUiBinder uiBinder = GWT.create(ConfigurationViewImplUiBinder.class);

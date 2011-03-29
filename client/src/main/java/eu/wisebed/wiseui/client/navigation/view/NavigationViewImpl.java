@@ -8,7 +8,9 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.TabBar;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.inject.Singleton;
 
+@Singleton
 public class NavigationViewImpl extends Composite implements NavigationView {
 
     interface NavigationViewImplUiBinder extends

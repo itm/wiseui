@@ -23,6 +23,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.HasData;
 import com.google.gwt.view.client.SelectionModel;
+import com.google.inject.Singleton;
 
 import eu.wisebed.wiseui.shared.ReservationDetails;
 import eu.wisebed.wiseui.shared.SensorDetails;
@@ -32,6 +33,7 @@ import eu.wisebed.wiseui.widgets.ImageUploadWidget;
 import eu.wisebed.wiseui.widgets.SensorListWidget;
 import eu.wisebed.wiseui.widgets.TimeSelectorWidget;
 
+@Singleton
 public class ReservationViewImpl extends Composite implements ReservationView {
 
 	@UiTemplate("ReservationViewImpl.ui.xml")

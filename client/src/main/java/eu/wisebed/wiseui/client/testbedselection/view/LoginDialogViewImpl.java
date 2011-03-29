@@ -21,10 +21,13 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.HasData;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
+
 import eu.wisebed.wiseui.client.testbedselection.common.UrnPrefixInfo;
 import eu.wisebed.wiseui.client.testbedselection.common.UrnPrefixInfo.State;
 import eu.wisebed.wiseui.widgets.HasWidgetsDialogBox;
 
+@Singleton
 public class LoginDialogViewImpl extends HasWidgetsDialogBox implements LoginDialogView {
 
     private static LoginDialogViewImplUiBinder uiBinder = GWT.create(LoginDialogViewImplUiBinder.class);

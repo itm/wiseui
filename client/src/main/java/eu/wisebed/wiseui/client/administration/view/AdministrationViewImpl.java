@@ -4,15 +4,20 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.inject.Singleton;
 
-public class AdministrationViewImpl extends Composite implements
-        AdministrationView {
 
-    private static AdministrationViewImplUiBinder uiBinder = GWT
-            .create(AdministrationViewImplUiBinder.class);
+/**
+ * View implementation for the Administration area.
+ * 
+ * @author Malte Legenhausen
+ */
+@Singleton
+public class AdministrationViewImpl extends Composite implements AdministrationView {
 
-    interface AdministrationViewImplUiBinder extends
-            UiBinder<Widget, AdministrationViewImpl> {
+    private static AdministrationViewImplUiBinder uiBinder = GWT.create(AdministrationViewImplUiBinder.class);
+
+    interface AdministrationViewImplUiBinder extends UiBinder<Widget, AdministrationViewImpl> {
     }
 
     public AdministrationViewImpl() {

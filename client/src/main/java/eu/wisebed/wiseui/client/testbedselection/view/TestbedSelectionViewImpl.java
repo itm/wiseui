@@ -13,9 +13,11 @@ import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.ToggleButton;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
 import eu.wisebed.wiseui.client.testbedselection.common.TestbedSelectionConstants;
 
+@Singleton
 public class TestbedSelectionViewImpl extends Composite implements TestbedSelectionView {
 
     private static TestbedSelectionViewImplUiBinder uiBinder = GWT.create(TestbedSelectionViewImplUiBinder.class);
