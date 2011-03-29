@@ -93,13 +93,6 @@ public class ExperimentationServiceImpl extends PersistentRemoteService
 		key.setSecretReservationKey(reservation.getSecretReservationKey());
 		key.setUrnPrefix(reservation.getUrnPrefix());
 		
-		// format local endpoint url (for testing behind NAT must go !)
-//		String endPointURL = "http://" + 
-//		"94.64.211.89" + 
-//		":" + 
-//		URLUtil.getPort() + "/controller"
-//		+ URLUtil.getRandomURLSuffix(key.getSecretReservationKey());
-
 		// format local endpoint url (standard way)
 		String endPointURL=null;
 		try {
@@ -225,19 +218,19 @@ public class ExperimentationServiceImpl extends PersistentRemoteService
 		LOGGER.log(Level.INFO,"Terminating controller with id = " + reservationID);
 
 //		// find output controller
-//		ExperimentController controller 
-//			= findExperimentControllerByID(reservationID);
-//
-//		if(controller == null){
-//			throw new ExperimentationException("Unexpected. Controller not " +
-//					"properly set on the server");
-//		}
-//
-//		// try to free session management
-//		controller.freeSessionManagement();
-//
-//		// remove the selected controller 
-//		experimentControllers.remove(controller);		
+		ExperimentController controller 
+			= findExperimentControllerByID(reservationID);
+
+		if(controller == null){
+			throw new ExperimentationException("Unexpected. Controller not " +
+					"properly set on the server");
+		}
+
+		// try to free session management
+		controller.freeSessionManagement();
+
+		// remove the selected controller 
+		experimentControllers.remove(controller);		
 	}
 	
 	/**
@@ -246,8 +239,24 @@ public class ExperimentationServiceImpl extends PersistentRemoteService
 	 */
 	@Override
 	public ExperimentMessage getNextUndeliveredMessage(final int reservationID) 
-		throws ExperimentationException {			
-		return null;
+		throws ExperimentationException {
+		
+		ExperimentController controller = findExperimentControllerByID(reservationID);
+		
+		if(controller == null){
+			throw new ExperimentationException("Unexpected. Controller not " +
+					"properly set on the server");
+		}
+		
+		if(controller.getUndelivered() == null){
+			throw new ExperimentationException("Unexpected. Message queue not " +
+						"properly set on the controller with id #" + reservationID);
+		}	
+		
+		ExperimentMessage message = controller.getUndelivered().poll();
+		message.setReservationID(reservationID);
+		
+		return message;
 	}
 	
 	/**

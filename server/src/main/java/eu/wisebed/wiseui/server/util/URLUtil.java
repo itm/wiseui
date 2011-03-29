@@ -1,9 +1,6 @@
 package eu.wisebed.wiseui.server.util;
 
-import java.io.IOException;
-import java.net.DatagramSocket;
 import java.net.MalformedURLException;
-import java.net.ServerSocket;
 import java.net.URL;
 import java.util.Random;
 
