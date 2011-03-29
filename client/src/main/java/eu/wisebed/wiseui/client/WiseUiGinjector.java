@@ -23,7 +23,7 @@ import eu.wisebed.wiseui.client.util.AuthenticationManager;
  * @author Malte Legenhausen
  */
 @GinModules({
-        WiseUiModule.class,
+        WiseUiModule.class
 })
 public interface WiseUiGinjector extends Ginjector, NavigationGinjector, TestbedSelectionGinjector, ReservationGinjector, ExperimentationGinjector, AdministrationGinjector {
 
