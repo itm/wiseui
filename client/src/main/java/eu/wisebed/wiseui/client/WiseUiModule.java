@@ -20,9 +20,7 @@ import eu.wisebed.wiseui.client.testbedselection.TestbedSelectionPlace;
 public class WiseUiModule extends AbstractGinModule {
 
     @Override
-    protected void configure() {
-    	
-    }
+    protected void configure() {}
 
     @Singleton
     @Provides

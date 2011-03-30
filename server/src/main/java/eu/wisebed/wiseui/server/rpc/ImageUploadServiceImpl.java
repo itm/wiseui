@@ -22,7 +22,7 @@ import gwtupload.server.exceptions.UploadActionException;
 @Singleton
 public class ImageUploadServiceImpl extends UploadAction{
 
-	private static final Logger LOGGER = 
+	private final Logger LOGGER = 
 		Logger.getLogger(ImageUploadServiceImpl.class.getName());
 	
 	/**

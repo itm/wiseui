@@ -1,4 +1,4 @@
-package eu.wisebed.wiseui.client.util;
+package eu.wisebed.wiseui.client.experimentation.util;
 
 public abstract class StringTimer {
 

@@ -44,22 +44,22 @@
             <dependency>
                 <groupId>de.uniluebeck.itm</groupId>
                 <artifactId>tr.snaa-api</artifactId>
-                <version>0.5.5</version>
+                <version>0.6.1</version>
             </dependency>
             <dependency>
                 <groupId>de.uniluebeck.itm</groupId>
                 <artifactId>tr.wsn-api</artifactId>
-                <version>0.5.5</version>
+                <version>0.6.1</version>
             </dependency>
             <dependency>
                 <groupId>de.uniluebeck.itm</groupId>
                 <artifactId>tr.wiseml</artifactId>
-                <version>0.5.5</version>
+                <version>0.6.1</version>
             </dependency>
             <dependency>
                 <groupId>de.uniluebeck.itm</groupId>
                 <artifactId>tr.util</artifactId>
-                <version>0.5.5</version>
+                <version>0.6.1</version>
             </dependency>
             <!-- GWT dependencies (from central repo) -->
             <dependency>

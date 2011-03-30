@@ -3,9 +3,11 @@ package eu.wisebed.wiseui.shared;
 import java.io.Serializable;
 import java.util.Set;
 
+import net.sf.gilead.pojo.gwt.LightEntity;
+
 import eu.wisebed.wiseui.shared.wiseml.SecretAuthenticationKey;
 
-public class AuthenticationDetails implements Serializable{
+public class AuthenticationDetails extends LightEntity implements Serializable{
 	
 	private static final long serialVersionUID = -2901127313017385214L;
 	private int userid;

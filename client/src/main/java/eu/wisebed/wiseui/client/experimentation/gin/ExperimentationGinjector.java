@@ -2,8 +2,9 @@ package eu.wisebed.wiseui.client.experimentation.gin;
 
 import com.google.gwt.inject.client.Ginjector;
 
-import eu.wisebed.wiseui.client.experimentation.Experiment;
 import eu.wisebed.wiseui.client.experimentation.ExperimentationActivity;
+import eu.wisebed.wiseui.client.experimentation.presenter.ExperimentPresenter;
+import eu.wisebed.wiseui.client.experimentation.presenter.ExperimentationPresenter;
 import eu.wisebed.wiseui.client.experimentation.view.ExperimentationView;
 
 public interface ExperimentationGinjector extends Ginjector {
@@ -12,5 +13,7 @@ public interface ExperimentationGinjector extends Ginjector {
 
     ExperimentationActivity getExperimentationActivity();
     
-    Experiment getExperiment();
-}
+    ExperimentationPresenter getExperimentationPresenter();
+    
+    ExperimentPresenter getExperimentPresenter();
+ }

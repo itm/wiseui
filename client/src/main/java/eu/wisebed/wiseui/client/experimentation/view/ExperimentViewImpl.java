@@ -40,6 +40,9 @@ public class ExperimentViewImpl extends Composite implements ExperimentView, Cli
 	Label reservationTime;
 	@UiField 
 	Label imageFilename;
+	@UiField
+	Label urnPrefix;
+
 	@UiField 
 	TabLayoutPanel nodeTabPanel;
     
@@ -58,8 +61,8 @@ public class ExperimentViewImpl extends Composite implements ExperimentView, Cli
 	}
 	
 	@Override
-	public void setReservationID(final String ID) {
-		reservationID.setText(ID);
+	public void setReservationID(final String text) {
+		reservationID.setText(text);
 	}
 	
 	@Override
@@ -68,8 +71,8 @@ public class ExperimentViewImpl extends Composite implements ExperimentView, Cli
 	}
 
 	@Override
-	public void setStartDate(final String date) {
-		startDate.setText(date);
+	public void setStartDate(final String text) {
+		startDate.setText(text);
 	}
 
 	@Override
@@ -78,8 +81,8 @@ public class ExperimentViewImpl extends Composite implements ExperimentView, Cli
 	}
 
 	@Override
-	public void setStopDate(String date) {
-		stopDate.setText(date);
+	public void setStopDate(final String text) {
+		stopDate.setText(text);
 	}
 
 	@Override
@@ -88,8 +91,8 @@ public class ExperimentViewImpl extends Composite implements ExperimentView, Cli
 	}
 
 	@Override
-	public void setStatus(String status) {
-		this.status.setText(status);
+	public void setStatus(final String text) {
+		this.status.setText(text);
 	}
 
 	@Override
@@ -98,8 +101,8 @@ public class ExperimentViewImpl extends Composite implements ExperimentView, Cli
 	}
 
 	@Override
-	public void setReservationTime(String time) {
-		reservationTime.setText(time);
+	public void setReservationTime(final String text) {
+		reservationTime.setText(text);
 	}
 	
 	@Override
@@ -108,8 +111,17 @@ public class ExperimentViewImpl extends Composite implements ExperimentView, Cli
 	}
 
 	@Override
-	public void setImageFilename(String filename) {
-		imageFilename.setText(filename);
+	public void setImageFilename(final String text) {
+		imageFilename.setText(text);
+	}
+	
+	@Override
+	public String getUrnPrefix() {
+		return urnPrefix.getText();
+	}
+	@Override
+	public void setUrnPrefix(final String text) {
+		urnPrefix.setText(text);
 	}
 	
 	@Override
@@ -118,7 +130,7 @@ public class ExperimentViewImpl extends Composite implements ExperimentView, Cli
 			nodeTabPanel.add(new TextArea(),s);
 		}
 	}
-	
+		
     @Override
     public void onClick(final ClickEvent event) {
         final Button button = (Button) event.getSource();

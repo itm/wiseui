@@ -15,7 +15,7 @@ public class TestbedConfigurationManager {
 	 * Persist all existing testbed infrastructure
 	 * @param testbeds
 	 */
-	public static void saveTestbedInfrastructure(
+	public final static void saveTestbedInfrastructure(
 			final List<TestbedConfiguration> testbeds){
 		final Session session = WiseUiHibernateUtil.getSessionFactory().
 			getCurrentSession();	
@@ -43,7 +43,7 @@ public class TestbedConfigurationManager {
 	 * @return beds, the testbeds identified from urnPrefix
 	 */
 	@SuppressWarnings("unchecked")
-	public static List<TestbedConfiguration> fetchTestbedByUrn(
+	public final static List<TestbedConfiguration> fetchTestbedByUrn(
 			final List<String> urnPrefix){
 		final Session session = WiseUiHibernateUtil.getSessionFactory().
 			getCurrentSession();	

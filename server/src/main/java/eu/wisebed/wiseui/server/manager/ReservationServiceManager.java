@@ -93,7 +93,7 @@ public class ReservationServiceManager {
 	 * @return a <code>List</code> containing <code>ReservationDetails</code>
 	 */
 	@SuppressWarnings("unchecked")
-	public final static ArrayList<ReservationDetails> 
+	public final static List<ReservationDetails> 
 		fetchAllReservationsByUser(final int userID){
 	    final Session session = WiseUiHibernateUtil.getSessionFactory().
 			getCurrentSession();

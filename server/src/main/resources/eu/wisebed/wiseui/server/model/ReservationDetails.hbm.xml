@@ -4,7 +4,7 @@
         "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
         "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 
-<hibernate-mapping>
+<hibernate-mapping default-lazy="false">
     <class name="eu.wisebed.wiseui.shared.ReservationDetails" table="RESERVATION">
         <id name="reservationid" column="reservation_id">
             <generator class="increment"/>

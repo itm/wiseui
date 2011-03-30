@@ -31,19 +31,19 @@ import eu.wisebed.testbed.api.rs.v1.ReservervationConflictExceptionException;
 import eu.wisebed.testbed.api.rs.v1.SecretReservationKey;
 import eu.wisebed.testbed.api.snaa.v1.SecretAuthenticationKey;
 import eu.wisebed.testbed.api.wsn.WSNServiceHelper;
-import eu.wisebed.testbed.api.wsn.v211.SessionManagement;
+import eu.wisebed.testbed.api.wsn.v22.SessionManagement;
 import eu.wisebed.wiseui.api.ReservationService;
 import eu.wisebed.wiseui.server.manager.ReservationServiceManager;
 import eu.wisebed.wiseui.server.manager.SNAAManager;
-import eu.wisebed.wiseui.server.util.SecretKeyUtils;
+import eu.wisebed.wiseui.server.util.APIKeysUtil;
 import eu.wisebed.wiseui.server.util.WiseMLInfoExtractor;
+import eu.wisebed.wiseui.server.util.WiseUiHibernateUtil;
 import eu.wisebed.wiseui.shared.AuthenticationDetails;
 import eu.wisebed.wiseui.shared.ReservationDetails;
 import eu.wisebed.wiseui.shared.SensorDetails;
 import eu.wisebed.wiseui.shared.exception.AuthenticationException;
 import eu.wisebed.wiseui.shared.exception.ReservationConflictException;
 import eu.wisebed.wiseui.shared.exception.ReservationException;
-import eu.wisebed.wiseui.server.util.WiseUiHibernateUtil;
 
 
 @Singleton
@@ -153,7 +153,7 @@ public class ReservationServiceImpl extends PersistentRemoteService
 		List<SecretReservationKey> secretReservationKeys = null;
 		try {
 			secretReservationKeys = rs.makeReservation(
-					SecretKeyUtils.APIKeysUtils.copySnaaToRs(secretAuthKeys),
+					APIKeysUtil.copySnaaToRs(secretAuthKeys),
 					reservationData
 			);
 		} catch (AuthorizationExceptionException e) {
@@ -198,10 +198,25 @@ public class ReservationServiceImpl extends PersistentRemoteService
 	 * @return an <code>ArrayList</code> of <code>ReservationDetails</code>. 
 	 * objects that are the reservations madey by a user.
 	 */
-	public final ArrayList<ReservationDetails> getUserReservations( 
-			final String sessionID) throws ReservationException {
-		// TODO: Add functionality while integrating
-		return null;
+	public final List<ReservationDetails> getUserReservations( 
+			final eu.wisebed.wiseui.shared.wiseml.SecretAuthenticationKey secretAuthenticationKey
+			) throws ReservationException {
+
+		// identify user from secretAuthenticationKey
+		AuthenticationDetails authenticationDetails = 
+			SNAAManager.fetchUserBySecretAuthenticationKey(
+				secretAuthenticationKey.getSecretAuthenticationKey());
+
+		// get reservations of the user
+		List<ReservationDetails> result = 
+			ReservationServiceManager.fetchAllReservationsByUser(
+					authenticationDetails.getUserid());
+		
+		// if empty return null
+		if(result.isEmpty() || result == null)
+			return null;
+		
+		return result;
 	}
 	
 	// TODO methods below that point save/fetch data to/from DB we need to place
