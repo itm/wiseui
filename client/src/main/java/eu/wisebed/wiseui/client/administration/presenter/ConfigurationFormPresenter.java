@@ -35,6 +35,12 @@ public class ConfigurationFormPresenter implements Presenter, ConfigurationSelec
 		urnPrefixProvider.addDataDisplay(view.getUrnPrefixHasData());
 		view.setFederatedItems(Arrays.asList("Yes", "No"));
 		view.setUrnPrefixSelectionModel(selectionModel);
+		view.getNameHasText().setText("");
+		view.getTestbedUrlHasText().setText("");
+		view.getSnaaEndpointUrlHasText().setText("");
+		view.getRsEndpointUrlHasText().setText("");
+		view.getSessionManagementEndpointUrlHasText().setText("");
+		view.setFederatedSelectedIndex(0);
 		view.getUrnPrefixRemoveHasEnabled().setEnabled(false);
 		bind();
 	}
