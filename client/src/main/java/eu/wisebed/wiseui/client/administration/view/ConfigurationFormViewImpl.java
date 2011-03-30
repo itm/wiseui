@@ -1,17 +1,22 @@
 package eu.wisebed.wiseui.client.administration.view;
 
+import com.google.gwt.cell.client.TextCell;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiFactory;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.cellview.client.CellList;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.view.client.HasData;
+import com.google.gwt.view.client.SelectionModel;
 import com.google.inject.Singleton;
 
 @Singleton
@@ -39,7 +44,7 @@ public class ConfigurationFormViewImpl extends Composite implements Configuratio
     @UiField
     Button addButton;
     @UiField
-    ListBox urnPrefixListBox;
+    CellList<String> urnPrefixList;
     @UiField
     Button removeButton;
     
@@ -48,6 +53,11 @@ public class ConfigurationFormViewImpl extends Composite implements Configuratio
     public ConfigurationFormViewImpl() {
 		initWidget(uiBinder.createAndBindUi(this));
 	}
+    
+    @UiFactory
+    protected CellList<String> createCellList() {
+    	return new CellList<String>(new TextCell());
+    }
     
     @UiHandler("addButton")
     public void handleAddButtonClicked(final ClickEvent event) {
@@ -97,5 +107,15 @@ public class ConfigurationFormViewImpl extends Composite implements Configuratio
 	@Override
 	public HasText getUrnPrefixHasText() {
 		return urnPrefixTextBox;
+	}
+
+	@Override
+	public HasData<String> getUrnPrefixHasData() {
+		return urnPrefixList;
+	}
+
+	@Override
+	public void setUrnPrefixSelectionModel(final SelectionModel<String> selectionModel) {
+		urnPrefixList.setSelectionModel(selectionModel);
 	}
 }

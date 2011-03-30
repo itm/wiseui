@@ -1,6 +1,7 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
              xmlns:g="urn:import:com.google.gwt.user.client.ui"
+             xmlns:c="urn:import:com.google.gwt.user.cellview.client"
              xmlns:my="urn:import:eu.wisebed.wiseui.widgets">
     
     <ui:style>
@@ -19,6 +20,11 @@
     	.button {
     		width: 75px;
     		margin-top: 2px;
+    	}
+    	.prefixlist {
+    		width: 318px;
+    		height: 200px;
+    		border: 1px solid darkGray;
     	}
     </ui:style>
     
@@ -54,7 +60,11 @@
 						<td valign="top"><g:Button addStyleNames="{style.button}" ui:field="addButton">Add</g:Button></td>
 					</tr>
 					<tr>
-						<td><g:ListBox addStyleNames="{style.input} {style.prefix}" visibleItemCount="7" ui:field="urnPrefixListBox"/></td>
+						<td>
+							<g:ScrollPanel addStyleNames="{style.prefixlist}">
+								<c:CellList ui:field="urnPrefixList" />
+							</g:ScrollPanel>
+						</td>
 						<td valign="top"><g:Button addStyleNames="{style.button}" ui:field="removeButton">Remove</g:Button></td>
 					</tr>
 				</table>
