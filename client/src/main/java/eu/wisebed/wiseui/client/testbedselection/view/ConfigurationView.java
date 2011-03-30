@@ -1,13 +1,12 @@
 package eu.wisebed.wiseui.client.testbedselection.view;
 
+import java.util.List;
+
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.view.client.SelectionModel;
 import com.google.inject.ImplementedBy;
 
-import eu.wisebed.wiseui.client.testbedselection.TestbedSelectionPlace;
 import eu.wisebed.wiseui.shared.TestbedConfiguration;
-
-import java.util.List;
 
 @ImplementedBy(ConfigurationViewImpl.class)
 public interface ConfigurationView extends IsWidget {
@@ -20,6 +19,6 @@ public interface ConfigurationView extends IsWidget {
 
     public interface Presenter {
 
-        void setPlace(TestbedSelectionPlace place);
+    	
     }
 }

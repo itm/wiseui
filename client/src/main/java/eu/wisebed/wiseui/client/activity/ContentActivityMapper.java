@@ -4,7 +4,9 @@ import com.google.gwt.activity.shared.Activity;
 import com.google.gwt.activity.shared.ActivityMapper;
 import com.google.gwt.place.shared.Place;
 import com.google.inject.Inject;
+
 import eu.wisebed.wiseui.client.WiseUiGinjector;
+import eu.wisebed.wiseui.client.administration.AdministrationActivity;
 import eu.wisebed.wiseui.client.administration.AdministrationPlace;
 import eu.wisebed.wiseui.client.experimentation.ExperimentationPlace;
 import eu.wisebed.wiseui.client.reservation.ReservationPlace;
@@ -44,7 +46,9 @@ public class ContentActivityMapper implements ActivityMapper {
             mappedActivity = injector.getExperimentationActivity();
         }
         if (place instanceof AdministrationPlace) {
-            mappedActivity = injector.getAdministrationActivity();
+             final AdministrationActivity activitiy = injector.getAdministrationActivity();
+             activitiy.setPlace((AdministrationPlace) place); 
+             mappedActivity = activitiy;
         }
         return mappedActivity;
     }

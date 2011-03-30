@@ -2,5 +2,80 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
              xmlns:g="urn:import:com.google.gwt.user.client.ui">
     
-    <g:Label>Administration</g:Label>
+	<ui:style>
+        .listBox {
+            float: left;
+            margin-top: 7px;
+            width: 175px;
+        }
+
+        .buttonPanel {
+            width: 100%;
+            background-color: #d0e4f6;
+        }
+
+        .buttonTable {
+            margin-left: auto;
+            margin-right: 0px;
+            padding: 2px;
+        }
+
+        .content {
+            padding: 17px;
+        }
+
+        .button {
+            width: 100px;
+        }
+
+        .fullLayout {
+            width: 100%;
+            height: 100%;
+        }
+
+        .contentTabBarContainer {
+            border-top: 7px solid #d0e4f6;
+        }
+
+        .viewButton {
+            float: left;
+            margin-top: 5px;
+            padding: 2px;
+            width: 55px;
+            text-align: center;
+        }
+    </ui:style>
+
+    <g:DockLayoutPanel styleName="{style.fullLayout}">
+        <g:center>
+            <g:SplitLayoutPanel>
+                <g:center>
+                    <g:SimplePanel styleName="{style.fullLayout}" ui:field="contentContainer"/>
+                </g:center>
+                <g:west size="250">
+                    <g:SimplePanel ui:field="configurationContainer"/>
+                </g:west>
+            </g:SplitLayoutPanel>
+        </g:center>
+        <g:south size="35">
+            <g:HTMLPanel styleName="{style.buttonPanel}">
+                <table class="{style.buttonTable}">
+                    <tr>
+                    	<td>
+                    		<g:Button ui:field="newButton" addStyleNames="{style.button}">New</g:Button>
+                    	</td>
+                        <td>
+                            <g:Button ui:field="saveButton" addStyleNames="{style.button}">Save</g:Button>
+                        </td>
+                        <td>
+                        	<g:Button ui:field="removeButton" addStyleNames="{style.button}">Remove</g:Button>
+                        </td>
+                        <td>
+                            <g:Button ui:field="cancelButton" addStyleNames="{style.button}">Cancel</g:Button>
+                        </td>
+                    </tr>
+                </table>
+            </g:HTMLPanel>
+        </g:south>
+    </g:DockLayoutPanel>
 </ui:UiBinder> 
