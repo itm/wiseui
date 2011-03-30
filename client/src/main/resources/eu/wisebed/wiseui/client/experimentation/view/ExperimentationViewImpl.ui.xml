@@ -9,6 +9,13 @@
 			height:auto;
 			width:auto;
 		}
+		
+		.fullLayout {
+        	width: 100%;
+            height: 100%;
+        }
 	</ui:style>
-	<g:FlowPanel addStyleNames="{style.experimentMonitoringMainPanel}" ui:field="experimentContainer"/>
+	<g:ScrollPanel styleName="{style.fullLayout}">
+		<g:FlowPanel styleName="{style.experimentMonitoringMainPanel}" ui:field="experimentContainer"/>
+	</g:ScrollPanel>
 </ui:UiBinder>

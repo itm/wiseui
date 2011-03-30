@@ -93,7 +93,14 @@ public class ExperimentationServiceImpl extends PersistentRemoteService
 		key.setSecretReservationKey(reservation.getSecretReservationKey());
 		key.setUrnPrefix(reservation.getUrnPrefix());
 		
-		// format local endpoint url (standard way)
+		// format local endpoint url (behind NAT mpousis machine)
+//		String endPointURL = "http://" + 
+//				"94.64.253.30" +
+//				":" + URLUtil.getPort() + "/controller"
+//				+ URLUtil.getRandomURLSuffix(key.getSecretReservationKey());
+		
+		
+		// format local endpoint url (standard way)		
 		String endPointURL=null;
 		try {
 			endPointURL = "http://" + 
