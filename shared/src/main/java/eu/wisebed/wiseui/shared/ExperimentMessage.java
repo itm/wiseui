@@ -7,167 +7,62 @@ public class ExperimentMessage implements Serializable {
 	private static final long serialVersionUID = -1716821485528278298L;
 
 	private int reservationID;
-	private String message;
+	private ExperimentMessageType experimentMessageType;
 	
-//	public enum ExperimentMessageType{
-//		MESSAGE ("Message"),
-//		STATUS ("RequestStatus"),
-//		NOTIFICATION ("Notification");
-//		
-//		private String type;
-//		
-//		ExperimentMessageType(final String type){
-//			this.type = type;
-//		}
-//		
-//		public String getType() {
-//			return type;
-//		}
-//	}
-//	
-//	 public class Message{
-//		private String source;
-//		private String level;
-//		private String data;
-//		private String timeStamp;
-//		
-//
-//		public void setSource(final String source) {
-//			this.source = source;
-//		}
-//
-//		public String getSource() {
-//			return source;
-//		}
-//
-//		public void setLevel(final String level) {
-//			this.level = level;
-//		}
-//
-//		public String getLevel() {
-//			return level;
-//		}
-//
-//		public void setData(final String data) {
-//			this.data = data;
-//		}
-//
-//		public String getData() {
-//			return data;
-//		}
-//
-//		public void setTimeStamp(String timeStamp) {
-//			this.timeStamp = timeStamp;
-//		}
-//
-//		public String getTimeStamp() {
-//			return timeStamp;
-//		}
-//	};
-//	
-//	public class RequestStatus{
-//		private String requestStatusID;
-//		private String nodeID;
-//		private String msg;
-//		private String value;
-//		public void setNodeID(String nodeID) {
-//			this.nodeID = nodeID;
-//		}
-//		public String getNodeID() {
-//			return nodeID;
-//		}
-//		public void setMsg(String msg) {
-//			this.msg = msg;
-//		}
-//		public String getMsg() {
-//			return msg;
-//		}
-//		public void setValue(String value) {
-//			this.value = value;
-//		}
-//		public String getValue() {
-//			return value;
-//		}
-//		public void setRequestStatusID(String requestStatusID) {
-//			this.requestStatusID = requestStatusID;
-//		}
-//		public String getRequestStatusID() {
-//			return requestStatusID;
-//		}
-//
-//		
-//	};
-//	
-//	public class Notification{
-//		private String text;
-//				
-//		public void setText(final String text){
-//			this.text = text;
-//		}
-//		
-//		public String getText(){
-//			return text;
-//		}
-//	};
-//	
-//	private Message message;
-//	private RequestStatus requestStatus;
-//	private Notification notification;
-//	private ExperimentMessageType experimentMessageType;
-//	private int reservationID;
-//	
-//	
-//	public void setMessage(Message message) {
-//		this.message = message;
-//	}
-//
-//	public Message getMessage() {
-//		return message;
-//	}
-//
-//	public void setRequestStatus(RequestStatus requestStatus) {
-//		this.requestStatus = requestStatus;
-//	}
-//
-//	public RequestStatus getRequestStatus() {
-//		return requestStatus;
-//	}
-//
-//	public void setNotification(Notification notification) {
-//		this.notification = notification;
-//	}
-//
-//	public Notification getNotification() {
-//		return notification;
-//	}
-//
-//	public void setExperimentMessageType(final ExperimentMessageType
-//			experimentMessageType) {
-//		this.experimentMessageType = experimentMessageType;
-//		
-//		switch(this.experimentMessageType){
-//		case MESSAGE:
-//			message = new Message(); // TODO ugly don't like it change it later
-//			requestStatus = null;
-//			notification = null;
-//			break;
-//		case STATUS:
-//			message = null;
-//			requestStatus = new RequestStatus();
-//			notification = null;
-//			break;
-//		case NOTIFICATION:
-//			message = null;
-//			requestStatus = null;
-//			notification = new Notification();
-//			break;
-//	}
-//	}
-//
-//	public ExperimentMessageType getExperimentMessageType() {
-//		return experimentMessageType;
-//	}
-//
+	// required by MESSAGE type
+	private String sourceNodeID;
+	private String level;
+	private String data;
+	private String timeStamp;
+	
+	// required by NOTIFICATION type
+	private String notificationText;
+	
+	// required by STATUS type
+	private String requestStatusID;
+	private String nodeID;
+	private String requestStatusMsg;
+	private String value;	
+	
+	public enum ExperimentMessageType{
+		MESSAGE ("Message"),
+		STATUS ("RequestStatus"),
+		NOTIFICATION ("Notification");
+		
+		private String type;
+		
+		ExperimentMessageType(final String type){
+			this.type = type;
+		}
+		
+		public String getType() {
+			return type;
+		}
+	}
+	
+	public void setupAsMessage(final String sourceNodeID,final String level,
+			final String data,final String timeStamp) {
+		experimentMessageType = ExperimentMessageType.MESSAGE;
+		this.sourceNodeID = sourceNodeID;
+		this.level = level;
+		this.data = data;
+		this.timeStamp = timeStamp;		
+	}
+	
+	public void setupAsNotification(final String notificationText) {
+		experimentMessageType = ExperimentMessageType.NOTIFICATION;
+		this.notificationText = notificationText;
+	}
+	
+	public void setupAsNotification(final String requestStatusID,
+			final String nodeID,final String requestStatusMsg,final String value) {
+		experimentMessageType = ExperimentMessageType.STATUS;
+		this.requestStatusID = requestStatusID;
+		this.nodeID = nodeID;
+		this.requestStatusMsg = requestStatusMsg;
+		this.value = value;
+	}
+
 	public void setReservationID(final int reservationID) {
 		this.reservationID = reservationID;
 	}
@@ -176,11 +71,84 @@ public class ExperimentMessage implements Serializable {
 		return reservationID;
 	}
 
-	public void setMessage(String message) {
-		this.message = message;
+	public ExperimentMessageType getExperimentMessageType() {
+		return experimentMessageType;
 	}
 
-	public String getMessage() {
-		return message;
+	public void setExperimentMessageType(final ExperimentMessageType experimentMessageType) {
+		this.experimentMessageType = experimentMessageType;
 	}
+
+	public String getSourceNodeID() {
+		return sourceNodeID;
+	}
+
+	public void setSourceNodeID(final String sourceNodeID) {
+		this.sourceNodeID = sourceNodeID;
+	}
+
+	public String getLevel() {
+		return level;
+	}
+
+	public void setLevel(final String level) {
+		this.level = level;
+	}
+
+	public String getData() {
+		return data;
+	}
+
+	public void setData(final String data) {
+		this.data = data;
+	}
+
+	public String getTimeStamp() {
+		return timeStamp;
+	}
+
+	public void setTimeStamp(final String timeStamp) {
+		this.timeStamp = timeStamp;
+	}
+
+	public String getNotificationText() {
+		return notificationText;
+	}
+
+	public void setNotificationText(String notificationText) {
+		this.notificationText = notificationText;
+	}
+
+	public String getRequestStatusID() {
+		return requestStatusID;
+	}
+
+	public void setRequestStatusID(final String requestStatusID) {
+		this.requestStatusID = requestStatusID;
+	}
+
+	public String getNodeID() {
+		return nodeID;
+	}
+
+	public void setNodeID(final String nodeID) {
+		this.nodeID = nodeID;
+	}
+
+	public String getRequestStatusMsg() {
+		return requestStatusMsg;
+	}
+
+	public void setRequestStatusMsg(final String requestStatusMsg) {
+		this.requestStatusMsg = requestStatusMsg;
+	}
+
+	public String getValue() {
+		return value;
+	}
+
+	public void setValue(final String value) {
+		this.value = value;
+	}
+	
 }

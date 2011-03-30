@@ -16,6 +16,7 @@ import eu.wisebed.wiseui.client.experimentation.util.StringTimer;
 import eu.wisebed.wiseui.client.experimentation.view.ExperimentView;
 import eu.wisebed.wiseui.client.experimentation.view.ExperimentView.Presenter;
 import eu.wisebed.wiseui.shared.ExperimentMessage;
+import eu.wisebed.wiseui.shared.ExperimentMessage.ExperimentMessageType;
 import eu.wisebed.wiseui.shared.SensorDetails;
 import eu.wisebed.wiseui.shared.exception.ExperimentationException;
 
@@ -374,29 +375,37 @@ public class ExperimentPresenter implements Presenter {
 				}
 
 				@Override
-				public void onSuccess(ExperimentMessage result) {
-					GWT.log("ExperimentMessage arrived!");
-					GWT.log(result.getReservationID() + " " + result.getMessage());
-//					ExperimentMessageType type = 
-//						result.getExperimentMessageType();
-//					GWT.log("ExperimentMessageType : " + type.getType());
-//					switch(type){
-//					case MESSAGE:
-//						GWT.log("Source :" + result.getMessage().getSource());
-//						GWT.log("Level : " + result.getMessage().getLevel());
-//						GWT.log("Data : " + result.getMessage().getData());
-//						GWT.log("TimeStamp :" + result.getMessage().getTimeStamp());
-//						break;
-//					case NOTIFICATION:
-//						GWT.log("Notification :" + result.getNotification().getText());
-//						break;
-//					case STATUS:
-//						GWT.log("Request status ID :" + result.getRequestStatus().getRequestStatusID());
-//						GWT.log("Request status node :" + result.getRequestStatus().getNodeID());
-//						GWT.log("Request status msg :" + result.getRequestStatus().getMsg());
-//						GWT.log("Request status value:" + result.getRequestStatus().getValue());
-//						break;
-//					}
+				public void onSuccess(final ExperimentMessage result) {
+					if(result == null) // case there is no message to deliver 
+						return;
+					
+					GWT.log("ExperimentMessage arrived! reservation ID : " 
+							+ result.getReservationID());
+					ExperimentMessageType type = 
+						result.getExperimentMessageType();
+					GWT.log("ExperimentMessageType : " + type.getType());
+					switch(type){
+					case MESSAGE:
+						GWT.log("Source :" + result.getSourceNodeID());
+						GWT.log("Level : " + result.getLevel());
+						GWT.log("Data : " + result.getData());
+						GWT.log("TimeStamp :" + result.getTimeStamp());
+						view.printExperimentMessageInNodeTabPanel(
+								result.getSourceNodeID(),
+								result.getLevel(),
+								result.getData(),
+								result.getTimeStamp());
+						break;
+					case NOTIFICATION:
+						GWT.log("Notification :" + result.getNotificationText());
+						break;
+					case STATUS:
+						GWT.log("Request status ID :" + result.getRequestStatusID());
+						GWT.log("Request status node :" + result.getNodeID());
+						GWT.log("Request status msg :" + result.getRequestStatusMsg());
+						GWT.log("Request status value:" + result.getValue());
+						break;
+					}
 				}
 			
 		};

@@ -42,6 +42,8 @@ public interface ExperimentView extends IsWidget {
 	
 	void fillNodeTabPanel(List<String> urns);
 	
+	void printExperimentMessageInNodeTabPanel(String sourceNodeUrn,String level, String data, String timeStamp);
+	
 	void showHideNodeOutput();
 	
 	public interface Presenter {

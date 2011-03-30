@@ -259,9 +259,9 @@ public class ExperimentationServiceImpl extends PersistentRemoteService
 			throw new ExperimentationException("Unexpected. Message queue not " +
 						"properly set on the controller with id #" + reservationID);
 		}	
-		
 		ExperimentMessage message = controller.getUndelivered().poll();
-		message.setReservationID(reservationID);
+		if(message != null)
+			message.setReservationID(reservationID);
 		
 		return message;
 	}
