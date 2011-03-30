@@ -1,5 +1,8 @@
 package eu.wisebed.wiseui.client.administration.view;
 
+import java.util.List;
+
+import com.google.gwt.user.client.ui.HasEnabled;
 import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.view.client.HasData;
@@ -23,12 +26,19 @@ public interface ConfigurationFormView extends IsWidget {
 	
 	HasData<String> getUrnPrefixHasData();
 	
+	HasEnabled getUrnPrefixRemoveHasEnabled();
+	
 	void setPresenter(Presenter presenter);
 	
 	void setUrnPrefixSelectionModel(SelectionModel<String> selectionModel);
 	
+	void setFederatedItems(List<String> items);
+	
+	void setFederatedSelectedIndex(int index);
+	
+	int getFederatedSelectedIndex();
+	
 	public interface Presenter {
-		void setIsFederated(String federated);
 		
 		void add();
 		

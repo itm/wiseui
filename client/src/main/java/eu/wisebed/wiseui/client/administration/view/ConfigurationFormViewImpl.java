@@ -1,8 +1,9 @@
 package eu.wisebed.wiseui.client.administration.view;
 
+import java.util.List;
+
 import com.google.gwt.cell.client.TextCell;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiFactory;
@@ -11,6 +12,7 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.cellview.client.CellList;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HasEnabled;
 import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
@@ -68,11 +70,6 @@ public class ConfigurationFormViewImpl extends Composite implements Configuratio
     public void handleRemoveButtonClicked(final ClickEvent event) {
     	presenter.remove();
     }
-    
-    @UiHandler("isFederatedListBox")
-    public void handleFederatedChange(final ChangeEvent event) {
-    	presenter.setIsFederated(isFederatedListBox.getValue(isFederatedListBox.getSelectedIndex()));
-    }
 
 	@Override
 	public HasText getNameHasText() {
@@ -117,5 +114,28 @@ public class ConfigurationFormViewImpl extends Composite implements Configuratio
 	@Override
 	public void setUrnPrefixSelectionModel(final SelectionModel<String> selectionModel) {
 		urnPrefixList.setSelectionModel(selectionModel);
+	}
+
+	@Override
+	public void setFederatedItems(final List<String> items) {
+		isFederatedListBox.clear();
+		for (final String item : items) {
+			isFederatedListBox.addItem(item);
+		}
+	}
+
+	@Override
+	public void setFederatedSelectedIndex(int index) {
+		isFederatedListBox.setSelectedIndex(index);
+	}
+
+	@Override
+	public int getFederatedSelectedIndex() {
+		return isFederatedListBox.getSelectedIndex();
+	}
+
+	@Override
+	public HasEnabled getUrnPrefixRemoveHasEnabled() {
+		return removeButton;
 	}
 }

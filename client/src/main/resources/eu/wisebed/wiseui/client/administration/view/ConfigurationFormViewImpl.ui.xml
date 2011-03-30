@@ -47,11 +47,7 @@
 				<g:TextBox addStyleNames="{style.input}" ui:field="sessionManagementEndpointUrlTextBox"/><br/>
 				
 				<label>Is Federated:</label><br/>
-				<g:ListBox addStyleNames="{style.input}" ui:field="isFederatedListBox">
-					<g:item value="unknown">Unknown</g:item>
-					<g:item value="yes">Yes</g:item>
-					<g:item value="no">No</g:item>
-				</g:ListBox><br/>
+				<g:ListBox addStyleNames="{style.input}" ui:field="isFederatedListBox"/><br/>
 				
 				<label>URN Prefixes:</label><br/>
 				<table cellpadding="0" cellspacing="0">
