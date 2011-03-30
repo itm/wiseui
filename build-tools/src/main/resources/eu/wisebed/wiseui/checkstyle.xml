@@ -24,6 +24,7 @@
         </module>
         <module name="HiddenField">
             <property name="tokens" value="VARIABLE_DEF"/>
+            <property name="ignoreConstructorParameter" value="true"/>
         </module>
         <module name="IllegalToken">
             <property name="tokens" value="LITERAL_NATIVE"/>
