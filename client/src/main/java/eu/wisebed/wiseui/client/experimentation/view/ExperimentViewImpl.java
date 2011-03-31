@@ -134,7 +134,7 @@ public class ExperimentViewImpl extends Composite implements ExperimentView, Cli
 			nodeTextAreaMap = new HashMap<String,HTMLPanel>();
 		
 		for(String s: urns) {
-			final HTMLPanel message = new HTMLPanel("<b>" + s + " output </b>");
+			final HTMLPanel message = new HTMLPanel("");
 			nodeTextAreaMap.put(s,message);
 			nodeTabPanel.add(message,s);
 		}

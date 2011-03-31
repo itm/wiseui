@@ -54,7 +54,7 @@ public class ExperimentMessage implements Serializable {
 		this.notificationText = notificationText;
 	}
 	
-	public void setupAsNotification(final String requestStatusID,
+	public void setupAsRequestStatus(final String requestStatusID,
 			final String nodeID,final String requestStatusMsg,final String value) {
 		experimentMessageType = ExperimentMessageType.STATUS;
 		this.requestStatusID = requestStatusID;

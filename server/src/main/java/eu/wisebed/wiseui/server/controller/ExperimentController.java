@@ -148,24 +148,9 @@ public class ExperimentController implements Controller {
 			final String timeStamp = msg.getTimestamp().toXMLFormat();
 			final String data = StringUtils.toHexString(msg.getBinaryData());
 			final String level = msg.getBinaryData()[1] == 0x00 ? "DEBUG" : "FATAL";
-			
-//			ExperimentMessage experimentMessage = new ExperimentMessage();
-//			experimentMessage.setExperimentMessageType(
-//					ExperimentMessageType.MESSAGE);
-//			experimentMessage.getMessage().setSource(source);
-//			experimentMessage.getMessage().setLevel(level);
-//			experimentMessage.getMessage().setData(data);
-//			experimentMessage.getMessage().setTimeStamp(timeStamp);
-			
+						
 			ExperimentMessage experimentMessage = new ExperimentMessage();
-			experimentMessage.setMessage("[Source]:" + source + " [Data]:" + data);
-			
-			LOGGER.log(Level.INFO,"Received message source node ID : " + 
-					source);
-			LOGGER.log(Level.INFO,"Received message timestamp : " + 
-					timeStamp);
-			LOGGER.log(Level.INFO,"Received message data (hex) : ["
-					+ level +"] " + data);
+			experimentMessage.setupAsMessage(source, level, data, timeStamp);
 			
 			undelivered.add(experimentMessage);
 		}
@@ -175,13 +160,8 @@ public class ExperimentController implements Controller {
 	public void receiveNotification(List<String> notifications) {
 		for(String notification : notifications) {
 			
-//			ExperimentMessage experimentMessage = new ExperimentMessage();
-//			experimentMessage.setExperimentMessageType(
-//					ExperimentMessageType.NOTIFICATION);
-//			experimentMessage.getNotification().setText(notification);
-
 			ExperimentMessage experimentMessage = new ExperimentMessage();
-			experimentMessage.setMessage("[Notification]:" + notification);
+			experimentMessage.setupAsNotification(notification);
 			
 			LOGGER.log(Level.INFO,"Received notification : " + notification);
 			
@@ -198,18 +178,9 @@ public class ExperimentController implements Controller {
 				final String msg = requestStatus.getStatus().get(i).getMsg();
 				final String nodeID = requestStatus.getStatus().get(i).getNodeId();
 				final String value = requestStatus.getStatus().get(i).getValue().toString();
-				
-//				ExperimentMessage experimentMessage = new ExperimentMessage();
-//				experimentMessage.setExperimentMessageType(
-//						ExperimentMessageType.STATUS);
-//				experimentMessage.getRequestStatus().setRequestStatusID(requestID);
-//				experimentMessage.getRequestStatus().setMsg(msg);
-//				experimentMessage.getRequestStatus().setNodeID(nodeID);
-//				experimentMessage.getRequestStatus().setValue(value);
-				
+					
 				ExperimentMessage experimentMessage = new ExperimentMessage();
-				experimentMessage.setMessage("[ReqID]:" + requestID + " [Msg]:" + msg + " [NodeId]:" + nodeID + " [Value]:" + value);
-
+				experimentMessage.setupAsRequestStatus(requestID, nodeID, msg, value);
 				
 				LOGGER.log(Level.INFO,"Received requestStatus id " 
 						+ requestID);

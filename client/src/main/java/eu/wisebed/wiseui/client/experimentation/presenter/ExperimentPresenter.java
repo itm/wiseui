@@ -291,6 +291,9 @@ public class ExperimentPresenter implements Presenter {
     		setButtons();
     	setStatus(ExperimentStatus.TIMEDOUT);
     	
+    	//logging this action
+    	GWT.log("Stoping all timers at experiment presenter : " + reservationID);
+    	
     	// stop all timers
     	stopAllTimers();
     }
