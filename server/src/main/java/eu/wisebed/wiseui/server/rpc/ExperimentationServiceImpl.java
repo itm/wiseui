@@ -120,7 +120,6 @@ public class ExperimentationServiceImpl extends PersistentRemoteService
 		List<SecretReservationKey> keys = new ArrayList<SecretReservationKey>();
 		keys.add(key);
 		controller.setKeys(keys);
-		controller.setJobs(jobs);
 		List<String> urnPrefixList = new ArrayList<String>();
 		urnPrefixList.add(reservation.getUrnPrefix());
 		List<TestbedConfiguration> testbed = 
@@ -204,7 +203,7 @@ public class ExperimentationServiceImpl extends PersistentRemoteService
 			LOGGER.log(Level.FATAL, e);
 			throw new ExperimentationException();
 		}
-		// TODO CHECK JOBS FOR NULL !! 
+
 		ExperimentController controller = 
 			findExperimentControllerByID(reservationID);
 		
@@ -224,10 +223,10 @@ public class ExperimentationServiceImpl extends PersistentRemoteService
 		
 		LOGGER.log(Level.INFO,"Terminating controller with id = " + reservationID);
 
-//		// find output controller
+		// find output controller
 		ExperimentController controller 
 			= findExperimentControllerByID(reservationID);
-
+		
 		if(controller == null){
 			throw new ExperimentationException("Unexpected. Controller not " +
 					"properly set on the server");

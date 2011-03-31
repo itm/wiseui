@@ -117,6 +117,9 @@ public class ExperimentationPresenter implements Presenter{
 						} 
 					});
 					experimentViews.add(experiment.getView());
+					
+					// fist clear the experiment container and then add the new panels
+					view.resetExperimentContainer();
 					view.initView(experimentViews);
 				}
 			}

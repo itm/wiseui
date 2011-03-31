@@ -23,7 +23,7 @@ import eu.wisebed.wiseui.shared.exception.ExperimentationException;
 
 public class ExperimentPresenter implements Presenter {
 
-	// ENUMS ( want to GINject them)
+	// TODO those enums GINject them
 	public enum ExperimentStatus {
 		PENDING			("Pending"),
 		READY			("Ready"),
@@ -393,7 +393,7 @@ public class ExperimentPresenter implements Presenter {
 						GWT.log("Level : " + result.getLevel());
 						GWT.log("Data : " + result.getData());
 						GWT.log("TimeStamp :" + result.getTimeStamp());
-						view.printExperimentMessageInNodeTabPanel(
+						view.printExperimentMessage(
 								result.getSourceNodeID(),
 								result.getLevel(),
 								result.getData(),
@@ -407,6 +407,10 @@ public class ExperimentPresenter implements Presenter {
 						GWT.log("Request status node :" + result.getNodeID());
 						GWT.log("Request status msg :" + result.getRequestStatusMsg());
 						GWT.log("Request status value:" + result.getValue());
+						view.printRequestStatus(
+								result.getNodeID(),
+								result.getRequestStatusMsg(),
+								result.getValue());
 						break;
 					}
 				}

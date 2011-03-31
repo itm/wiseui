@@ -40,13 +40,16 @@ public interface ExperimentView extends IsWidget {
 	
 	void setImageFilename(String filename);
 	
+	void showHideNodeOutput();
+
 	void fillNodeTabPanel(List<String> urns);
 	
-	void printExperimentMessageInNodeTabPanel(String sourceNodeUrn,String level, String data, String timeStamp);
+	void printExperimentMessage(String sourceNodeUrn,String level, String data, String timeStamp);
 	
-	void showHideNodeOutput();
+	void printRequestStatus(String nodeUrn, String msg, String value);
 	
 	public interface Presenter {
         void buttonClicked(String button);
 	}
+
 }

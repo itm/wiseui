@@ -47,4 +47,9 @@ public class ExperimentationViewImpl extends Composite implements
 			experimentContainer.add(view);
 		}
 	}
+	
+	@Override
+	public void resetExperimentContainer(){ // TODO temporary fix
+		experimentContainer.clear();
+	}
 }

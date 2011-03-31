@@ -15,6 +15,7 @@ import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.TabLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -134,9 +135,12 @@ public class ExperimentViewImpl extends Composite implements ExperimentView, Cli
 			nodeTextAreaMap = new HashMap<String,HTMLPanel>();
 		
 		for(String s: urns) {
-			final HTMLPanel message = new HTMLPanel("");
-			nodeTextAreaMap.put(s,message);
-			nodeTabPanel.add(message,s);
+			final HTMLPanel panel = new HTMLPanel("");
+			final ScrollPanel scroll = new ScrollPanel();
+			scroll.addStyleName("height : 100%;width : 100%");
+			scroll.add(panel);
+			nodeTextAreaMap.put(s,panel);
+			nodeTabPanel.add(scroll,s);
 		}
 	}
 		
@@ -164,7 +168,7 @@ public class ExperimentViewImpl extends Composite implements ExperimentView, Cli
 	}
 
 	@Override
-	public void printExperimentMessageInNodeTabPanel(final String sourceNodeUrn,
+	public void printExperimentMessage(final String sourceNodeUrn,
 			final String level, final String data, final String timeStamp) {
 		
 		if(nodeTextAreaMap == null)
@@ -174,10 +178,13 @@ public class ExperimentViewImpl extends Composite implements ExperimentView, Cli
 		
 	}
 	
-//	public void printExperimentMessageInNodeTabPanel(final String notificationText){
-//		if(nodeTextAreaMap == null)
-//			return;
-//		HTML html = new HTML("[Notification][" + notificationText+ "]");
-//		nodeTextAreaMap.get(sourceNodeUrn).add(html);
-//	}
+	@Override
+	public void printRequestStatus(final String nodeUrn,final String msg,
+			final String value){
+			
+			if(nodeTextAreaMap == null)
+				return;
+			HTML html = new HTML("[" + msg + "][" + value +"/100]");
+			nodeTextAreaMap.get(nodeUrn).add(html);
+	}
 }
