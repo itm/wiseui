@@ -26,45 +26,56 @@
     		height: 150px;
     		border: 1px solid darkGray;
     	}
+    	.info {
+    		widht: 100%;
+    		background-color: #FFBABA;
+    		padding: 5px 10px;
+    		border-bottom: 1px solid #e3e8f3;
+    	}
     </ui:style>
     
-    <my:CaptionPanel caption='Testbed Configuration Form'>    
-    	<g:ScrollPanel>
-			<g:HTMLPanel styleName="{style.fullLayout}">
-				<label>Name:</label><br/>
-				<g:TextBox addStyleNames="{style.input}" ui:field="nameTextBox"/><br/>
-				
-				<label>Testbed URL:</label><br/>
-				<g:TextBox addStyleNames="{style.input}" ui:field="testbedUrlTextBox"/><br/>
-				
-				<label>SNAA Endpoint URL:</label><br/>
-				<g:TextBox addStyleNames="{style.input}" ui:field="snaaEndpointUrlTextBox"/><br/>
-				
-				<label>RS Endpoint URL:</label><br/>
-				<g:TextBox addStyleNames="{style.input}" ui:field="rsEndpointUrlTextBox"/><br/>
-				
-				<label>Session Management Endpoint URL:</label><br/>
-				<g:TextBox addStyleNames="{style.input}" ui:field="sessionManagementEndpointUrlTextBox"/><br/>
-				
-				<label>Is Federated:</label><br/>
-				<g:ListBox addStyleNames="{style.input}" ui:field="isFederatedListBox"/><br/>
-				
-				<label>URN Prefixes:</label><br/>
-				<table cellpadding="0" cellspacing="0">
-					<tr>
-						<td><g:TextBox addStyleNames="{style.input} {style.prefix}" ui:field="urnPrefixTextBox"/></td>
-						<td valign="top"><g:Button addStyleNames="{style.button}" ui:field="addButton">Add</g:Button></td>
-					</tr>
-					<tr>
-						<td>
-							<g:ScrollPanel addStyleNames="{style.prefixlist}">
-								<c:CellList ui:field="urnPrefixList" />
-							</g:ScrollPanel>
-						</td>
-						<td valign="top"><g:Button addStyleNames="{style.button}" ui:field="removeButton">Remove</g:Button></td>
-					</tr>
-				</table>
-			</g:HTMLPanel>
-		</g:ScrollPanel>
+    <my:CaptionPanel caption='Testbed Configuration Form'>
+    	<g:HTMLPanel ui:field="contentPanel">
+    		<div class="{style.info}" ui:field="infoElement">
+    			<g:Label ui:field="infoLabel">New Configuration selected. Fill the form and press save.</g:Label>
+    		</div>
+   	    	<g:ScrollPanel>
+				<g:HTMLPanel styleName="{style.fullLayout}">
+					<label>Name:</label><br/>
+					<g:TextBox addStyleNames="{style.input}" ui:field="nameTextBox"/><br/>
+					
+					<label>Testbed URL:</label><br/>
+					<g:TextBox addStyleNames="{style.input}" ui:field="testbedUrlTextBox"/><br/>
+					
+					<label>SNAA Endpoint URL:</label><br/>
+					<g:TextBox addStyleNames="{style.input}" ui:field="snaaEndpointUrlTextBox"/><br/>
+					
+					<label>RS Endpoint URL:</label><br/>
+					<g:TextBox addStyleNames="{style.input}" ui:field="rsEndpointUrlTextBox"/><br/>
+					
+					<label>Session Management Endpoint URL:</label><br/>
+					<g:TextBox addStyleNames="{style.input}" ui:field="sessionManagementEndpointUrlTextBox"/><br/>
+					
+					<label>Is Federated:</label><br/>
+					<g:ListBox addStyleNames="{style.input}" ui:field="isFederatedListBox"/><br/>
+					
+					<label>URN Prefixes:</label><br/>
+					<table cellpadding="0" cellspacing="0">
+						<tr>
+							<td><g:TextBox addStyleNames="{style.input} {style.prefix}" ui:field="urnPrefixTextBox"/></td>
+							<td valign="top"><g:Button addStyleNames="{style.button}" ui:field="addButton">Add</g:Button></td>
+						</tr>
+						<tr>
+							<td>
+								<g:ScrollPanel addStyleNames="{style.prefixlist}">
+									<c:CellList ui:field="urnPrefixList" />
+								</g:ScrollPanel>
+							</td>
+							<td valign="top"><g:Button addStyleNames="{style.button}" ui:field="removeButton">Remove</g:Button></td>
+						</tr>
+					</table>
+				</g:HTMLPanel>
+			</g:ScrollPanel>
+		</g:HTMLPanel>  
 	</my:CaptionPanel>
 </ui:UiBinder> 

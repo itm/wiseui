@@ -15,12 +15,19 @@ import com.google.inject.Inject;
 
 import eu.wisebed.wiseui.api.TestbedConfigurationServiceAsync;
 import eu.wisebed.wiseui.client.administration.AdministrationPlace;
+import eu.wisebed.wiseui.client.administration.event.CreateConfigurationEvent;
+import eu.wisebed.wiseui.client.administration.event.CreateConfigurationEvent.CreateConfigurationHandler;
 import eu.wisebed.wiseui.client.testbedselection.event.ConfigurationSelectedEvent;
 import eu.wisebed.wiseui.client.testbedselection.view.ConfigurationView;
 import eu.wisebed.wiseui.client.testbedselection.view.ConfigurationView.Presenter;
 import eu.wisebed.wiseui.shared.TestbedConfiguration;
 
-public class ConfigurationPresenter implements Presenter {
+/**
+ * Presenter for the testbed configuration view of the administration part.
+ * 
+ * @author Malte Legenhausen
+ */
+public class ConfigurationPresenter implements Presenter, CreateConfigurationHandler {
 
 	private final ConfigurationView view;
 	private final TestbedConfigurationServiceAsync configurationService;
@@ -49,6 +56,7 @@ public class ConfigurationPresenter implements Presenter {
 	}
 
     private void bind() {
+    	eventBus.addHandler(CreateConfigurationEvent.TYPE, this);
         configurationSelectionModel.addSelectionChangeHandler(new Handler() {
 
             @Override
@@ -107,4 +115,9 @@ public class ConfigurationPresenter implements Presenter {
             }
         }
     }
+
+	@Override
+	public void onCreateConfiguration(final CreateConfigurationEvent event) {
+		placeController.goTo(new AdministrationPlace());
+	}
 }

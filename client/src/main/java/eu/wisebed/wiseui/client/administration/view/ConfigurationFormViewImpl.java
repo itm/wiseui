@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.google.gwt.cell.client.TextCell;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiFactory;
@@ -12,8 +13,10 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.cellview.client.CellList;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.HasEnabled;
 import com.google.gwt.user.client.ui.HasText;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
@@ -21,6 +24,11 @@ import com.google.gwt.view.client.HasData;
 import com.google.gwt.view.client.SelectionModel;
 import com.google.inject.Singleton;
 
+/**
+ * ConfigurationFormView implementation.
+ * 
+ * @author Malte Legenhausen
+ */
 @Singleton
 public class ConfigurationFormViewImpl extends Composite implements ConfigurationFormView {
 
@@ -29,6 +37,12 @@ public class ConfigurationFormViewImpl extends Composite implements Configuratio
     interface ConfigurationFormViewImplUiBinder extends UiBinder<Widget, ConfigurationFormViewImpl> {
     }
 
+    @UiField
+    HTMLPanel contentPanel;
+    @UiField
+    Element infoElement;
+    @UiField
+    Label infoLabel;
     @UiField
     TextBox nameTextBox;
     @UiField
@@ -125,7 +139,7 @@ public class ConfigurationFormViewImpl extends Composite implements Configuratio
 	}
 
 	@Override
-	public void setFederatedSelectedIndex(int index) {
+	public void setFederatedSelectedIndex(final int index) {
 		isFederatedListBox.setSelectedIndex(index);
 	}
 
@@ -137,5 +151,21 @@ public class ConfigurationFormViewImpl extends Composite implements Configuratio
 	@Override
 	public HasEnabled getUrnPrefixRemoveHasEnabled() {
 		return removeButton;
+	}
+
+	@Override
+	public HasText getInfoHasText() {
+		return infoLabel;
+	}
+
+	@Override
+	public void setInfoVisibility(final boolean visibility) {
+		if (visibility) {
+			if (!infoElement.hasParentElement()) {
+				contentPanel.getElement().insertFirst(infoElement);
+			}
+		} else {
+			infoElement.removeFromParent();
+		}
 	}
 }

@@ -1,7 +1,6 @@
 package eu.wisebed.wiseui.client.administration.presenter;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
@@ -10,8 +9,11 @@ import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
 import com.google.inject.Inject;
 
+import eu.wisebed.wiseui.client.administration.AdministrationPlace;
 import eu.wisebed.wiseui.client.administration.event.CancelConfigurationEvent;
 import eu.wisebed.wiseui.client.administration.event.CancelConfigurationEvent.CancelConfigurationHandler;
+import eu.wisebed.wiseui.client.administration.event.CreateConfigurationEvent;
+import eu.wisebed.wiseui.client.administration.event.CreateConfigurationEvent.CreateConfigurationHandler;
 import eu.wisebed.wiseui.client.administration.event.SaveConfigurationEvent;
 import eu.wisebed.wiseui.client.administration.event.SaveConfigurationEvent.SaveConfigurationHandler;
 import eu.wisebed.wiseui.client.administration.view.ConfigurationFormView;
@@ -20,28 +22,22 @@ import eu.wisebed.wiseui.client.testbedselection.event.ConfigurationSelectedEven
 import eu.wisebed.wiseui.client.testbedselection.event.ConfigurationSelectedEvent.ConfigurationSelectedHandler;
 import eu.wisebed.wiseui.shared.TestbedConfiguration;
 
-public class ConfigurationFormPresenter implements Presenter, ConfigurationSelectedHandler, SaveConfigurationHandler, CancelConfigurationHandler {
+public class ConfigurationFormPresenter implements Presenter, ConfigurationSelectedHandler, SaveConfigurationHandler, CancelConfigurationHandler, CreateConfigurationHandler {
 
 	private final EventBus eventBus;
 	private final ConfigurationFormView view;
 	private final ListDataProvider<String> urnPrefixProvider = new ListDataProvider<String>();
 	private final SingleSelectionModel<String> selectionModel = new SingleSelectionModel<String>();
-	private TestbedConfiguration configuration;
+	private TestbedConfiguration configuration = new TestbedConfiguration();
 	
 	@Inject
 	public ConfigurationFormPresenter(final EventBus eventBus, final ConfigurationFormView view) {
 		this.eventBus = eventBus;
 		this.view = view;
 		urnPrefixProvider.addDataDisplay(view.getUrnPrefixHasData());
-		view.setFederatedItems(Arrays.asList("Yes", "No"));
 		view.setUrnPrefixSelectionModel(selectionModel);
-		view.getNameHasText().setText("");
-		view.getTestbedUrlHasText().setText("");
-		view.getSnaaEndpointUrlHasText().setText("");
-		view.getRsEndpointUrlHasText().setText("");
-		view.getSessionManagementEndpointUrlHasText().setText("");
-		view.setFederatedSelectedIndex(0);
 		view.getUrnPrefixRemoveHasEnabled().setEnabled(false);
+		loadConfigurationToView();
 		bind();
 	}
 	
@@ -49,6 +45,7 @@ public class ConfigurationFormPresenter implements Presenter, ConfigurationSelec
 		eventBus.addHandler(ConfigurationSelectedEvent.TYPE, this);
 		eventBus.addHandler(SaveConfigurationEvent.TYPE, this);
 		eventBus.addHandler(CancelConfigurationEvent.TYPE, this);
+		eventBus.addHandler(CreateConfigurationEvent.TYPE, this);
 		
 		selectionModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
 			@Override
@@ -56,6 +53,11 @@ public class ConfigurationFormPresenter implements Presenter, ConfigurationSelec
 				view.getUrnPrefixRemoveHasEnabled().setEnabled(null != selectionModel.getSelectedObject());
 			}
 		});
+	}
+	
+	private void showNewConfigurationInfo() {
+		view.getInfoHasText().setText("You are about to create a new Testbed configuration. Fill out the form and press the save button.");
+		view.setInfoVisibility(true);
 	}
 	
 	private void loadConfigurationToView() {
@@ -67,11 +69,11 @@ public class ConfigurationFormPresenter implements Presenter, ConfigurationSelec
 		view.setFederatedSelectedIndex(configuration.isFederated() ? 0 : 1);
 		urnPrefixProvider.setList(new ArrayList<String>(configuration.getUrnPrefixList()));
 	}
-
-	@Override
-	public void onTestbedConfigurationSelected(final ConfigurationSelectedEvent event) {
-		configuration = event.getConfiguration();
-		loadConfigurationToView();
+	
+	public void setPlace(final AdministrationPlace place) {
+		if (place.getSelection() == null) {
+			showNewConfigurationInfo();
+		}
 	}
 
 	@Override
@@ -87,6 +89,13 @@ public class ConfigurationFormPresenter implements Presenter, ConfigurationSelec
 		urnPrefixProvider.getList().remove(urnPrefix);
 		urnPrefixProvider.refresh();
 		view.getUrnPrefixRemoveHasEnabled().setEnabled(false);
+	}
+	
+	@Override
+	public void onTestbedConfigurationSelected(final ConfigurationSelectedEvent event) {
+		configuration = event.getConfiguration();
+		loadConfigurationToView();
+		view.setInfoVisibility(false);
 	}
 
 	@Override
@@ -106,5 +115,12 @@ public class ConfigurationFormPresenter implements Presenter, ConfigurationSelec
 	@Override
 	public void onCancelConfiguration(final CancelConfigurationEvent event) {
 		loadConfigurationToView();
+	}
+
+	@Override
+	public void onCreateConfiguration(CreateConfigurationEvent event) {
+		configuration = new TestbedConfiguration();
+		loadConfigurationToView();
+		showNewConfigurationInfo();
 	}
 }

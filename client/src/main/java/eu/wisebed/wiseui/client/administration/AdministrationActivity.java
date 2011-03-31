@@ -23,8 +23,6 @@ public class AdministrationActivity extends AbstractActivity {
 
 	private final WiseUiGinjector injector;
 	
-	private EventBus eventBus;
-	
 	private AdministrationPlace place;
 	
     @Inject
@@ -33,14 +31,8 @@ public class AdministrationActivity extends AbstractActivity {
     }
 
     public void start(final AcceptsOneWidget panel, final EventBus eventBus) {
-    	this.eventBus = eventBus;
     	initTestbedSelectionPart(panel);
-    	bind();
     }
-    
-    private void bind() {
-		
-	}
 
 	private void initTestbedSelectionPart(final AcceptsOneWidget container) {
         GWT.log("Init Administration Part");
@@ -53,9 +45,10 @@ public class AdministrationActivity extends AbstractActivity {
         container.setWidget(testbedSelectionView.asWidget());
     }
     
-    private void initContentPart(AdministrationView testbedSelectionView) {
+    private void initContentPart(final AdministrationView testbedSelectionView) {
 		GWT.log("Init Administration Content Part");
 		final ConfigurationFormPresenter configurationFormPresenter = injector.getConfigurationFormPresenter();
+		configurationFormPresenter.setPlace(place);
 		final ConfigurationFormView configurationFormView = injector.getConfigurationFormView();
 		configurationFormView.setPresenter(configurationFormPresenter);
 		testbedSelectionView.getContentContainer().setWidget(configurationFormView);

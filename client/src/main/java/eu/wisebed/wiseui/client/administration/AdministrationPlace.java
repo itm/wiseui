@@ -6,6 +6,11 @@ import eu.wisebed.wiseui.client.util.Ints2;
 import eu.wisebed.wiseui.client.util.KeyValuePlace;
 import eu.wisebed.wiseui.client.util.Objects2;
 
+/**
+ * Place for the administration view.
+ * 
+ * @author Malte Legenhausen
+ */
 public class AdministrationPlace extends KeyValuePlace {
 	
 	public AdministrationPlace() {
@@ -17,7 +22,7 @@ public class AdministrationPlace extends KeyValuePlace {
 	}
 	
 	public AdministrationPlace(final String token) {
-		set("selection", null);
+		this();
 		parse(token);
 	}
 	
@@ -25,6 +30,11 @@ public class AdministrationPlace extends KeyValuePlace {
 		return Ints2.nullOrValueOf(get("selection"));
 	}
 
+	/**
+	 * Tokenizer for the AdministrationPlace.
+	 * 
+	 * @author Malte Legenhausen
+	 */
 	public static class Tokenizer implements
 			PlaceTokenizer<AdministrationPlace> {
 

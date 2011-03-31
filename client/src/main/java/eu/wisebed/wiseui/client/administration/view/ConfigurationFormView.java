@@ -9,6 +9,11 @@ import com.google.gwt.view.client.HasData;
 import com.google.gwt.view.client.SelectionModel;
 import com.google.inject.ImplementedBy;
 
+/**
+ * View interface for the testbed configuration form.
+ * 
+ * @author Malte Legenhausen
+ */
 @ImplementedBy(ConfigurationFormViewImpl.class)
 public interface ConfigurationFormView extends IsWidget {
 
@@ -38,6 +43,15 @@ public interface ConfigurationFormView extends IsWidget {
 	
 	int getFederatedSelectedIndex();
 	
+	HasText getInfoHasText();
+	
+	void setInfoVisibility(boolean visibility);
+	
+	/**
+	 * Presenter for the testbed configuration form view.
+	 * 
+	 * @author Malte Legenhausen
+	 */
 	public interface Presenter {
 		
 		void add();

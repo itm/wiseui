@@ -17,9 +17,9 @@ public class TestbedConfiguration extends LightEntity implements Serializable {
 	private String snaaEndpointUrl;
 	private String rsEndpointUrl;
 	private String sessionmanagementEndpointUrl;
-	private List<String> urnPrefixList;
+	private List<String> urnPrefixList = new ArrayList<String>();
 	private boolean isFederated;
-	private int testbedID;
+	private Integer testbedID;
 
 	public TestbedConfiguration() {
 	}
@@ -32,7 +32,6 @@ public class TestbedConfiguration extends LightEntity implements Serializable {
 		this.snaaEndpointUrl = snaaEndpointUrl;
 		this.rsEndpointUrl = rsEndpointUrl;
 		this.sessionmanagementEndpointUrl = sessionmanagementEndpointUrl;
-		this.urnPrefixList = new ArrayList<String>();
 		this.isFederated = isFederated;
 	}
 
@@ -64,38 +63,38 @@ public class TestbedConfiguration extends LightEntity implements Serializable {
 		return isFederated;
 	}
 
-	public int getTestbedID() {
+	public Integer getTestbedID() {
 		return testbedID;
 	}
 
-	public void setName(String name) {
+	public void setName(final String name) {
 		this.name = name;
 	}
 
-	public void setTestbedUrl(String testbedUrl) {
+	public void setTestbedUrl(final String testbedUrl) {
 		this.testbedUrl = testbedUrl;
 	}
-	public void setSnaaEndpointUrl(String snaaEndpointUrl) {
+	public void setSnaaEndpointUrl(final String snaaEndpointUrl) {
 		this.snaaEndpointUrl = snaaEndpointUrl;
 	}
 
-	public void setRsEndpointUrl(String rsEndpointUrl) {
+	public void setRsEndpointUrl(final String rsEndpointUrl) {
 		this.rsEndpointUrl = rsEndpointUrl;
 	}
 
-	public void setSessionmanagementEndpointUrl(String sessionmanagementEndpointUrl) {
+	public void setSessionmanagementEndpointUrl(final String sessionmanagementEndpointUrl) {
 		this.sessionmanagementEndpointUrl = sessionmanagementEndpointUrl;
 	}
 
-	public void setUrnPrefixList(List<String> urnPrefixList) {
+	public void setUrnPrefixList(final List<String> urnPrefixList) {
 		this.urnPrefixList = urnPrefixList;
 	}
 
-	public void setFederated(boolean isFederated) {
+	public void setFederated(final boolean isFederated) {
 		this.isFederated = isFederated;
 	}
 
-	public void setTestbedID(int testbedID) {
+	public void setTestbedID(final Integer testbedID) {
 		this.testbedID = testbedID;
 	}
 }
