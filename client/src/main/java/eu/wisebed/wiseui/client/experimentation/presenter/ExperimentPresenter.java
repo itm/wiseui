@@ -16,12 +16,14 @@ import eu.wisebed.wiseui.client.experimentation.util.StringTimer;
 import eu.wisebed.wiseui.client.experimentation.view.ExperimentView;
 import eu.wisebed.wiseui.client.experimentation.view.ExperimentView.Presenter;
 import eu.wisebed.wiseui.shared.ExperimentMessage;
+import eu.wisebed.wiseui.shared.ExperimentMessage.ExperimentMessageType;
 import eu.wisebed.wiseui.shared.SensorDetails;
 import eu.wisebed.wiseui.shared.exception.ExperimentationException;
 
 
 public class ExperimentPresenter implements Presenter {
 
+	// ENUMS ( want to GINject them)
 	public enum ExperimentStatus {
 		PENDING			("Pending"),
 		READY			("Ready"),
@@ -65,29 +67,33 @@ public class ExperimentPresenter implements Presenter {
         }
 	}
 	
+	// button Callback interface want to GINject it to!
     public interface Callback { // TODO GINject this callback
     	void onButtonClicked(final Button button);
     }
         
-    private ExperimentView view;
+    private final ExperimentView view;
     private Callback callback;
 	private int reservationID;
 	private Date startDate;
 	private Date stopDate;
 	private Set<SensorDetails> sensors;
-	private Timer reservationStartTimer;	// TODO GINject those two timers
-	private Timer reservationStopTimer;
-	private Timer messageTimer;
+	private List<String> urns;
+	private Timer reservationStartTimer = null;	// TODO GINject those two timers
+	private Timer reservationStopTimer = null;		// TODO GINject all those fuc..
+	private Timer messageCollectionTimer = null;
 	private ExperimentStatus status;
 	private String imageFileName;
 	private String urnPrefix;
-	private ExperimentationServiceAsync service; // TODO GINject service instead of GWT.create
+	private final ExperimentationServiceAsync service; // TODO GINject service instead of GWT.create
 
     @Inject
     public ExperimentPresenter(final ExperimentView view) {
+    	
+    	// init view
         this.view = view;
-        view.setPresenter(this);
-        
+		this.view.setPresenter(this);
+    	
         // init service
         service = GWT.create(ExperimentationService.class);
     }
@@ -96,14 +102,31 @@ public class ExperimentPresenter implements Presenter {
     		final Date startDate,final Date stopDate,final Set<SensorDetails> sensors,
     		final String imageFileName,final String urnPrefix,
     		final Callback callback) {
-    	determineExperimentState(startDate,stopDate);
-    	setReservationID(reservationID);
-    	setStartDate(startDate);
-    	setStopDate(stopDate);
-    	setSensors(sensors);
-    	setImageFileName(imageFileName);
-    	setUrnPrefix(urnPrefix);
+    	
+    	// init attributes
+    	this.reservationID = reservationID;
+    	this.startDate = startDate;
+    	this.stopDate = stopDate;
+    	this.sensors = sensors;
+		this.urns = new ArrayList<String>();
+		for(SensorDetails s : sensors) {
+			urns.add(s.getUrn());
+		}
+    	this.imageFileName = imageFileName;
+    	this.urnPrefix = urnPrefix;
     	this.callback = callback;
+    	
+        // determine experiment state at construction
+        determineExperimentState(this.startDate,this.stopDate);
+
+        // setup view
+		this.view.setReservationID(new Integer(this.reservationID).toString());
+		this.view.setStartDate(this.startDate.toLocaleString());
+		this.view.setStopDate(this.stopDate.toLocaleString());
+		this.view.setImageFilename(this.imageFileName);
+		this.view.fillNodeTabPanel(urns);
+		this.view.setStatus(this.status.getStatusText());
+		this.view.setUrnPrefix(this.urnPrefix);
     }
     
     @SuppressWarnings("deprecation")
@@ -142,7 +165,7 @@ public class ExperimentPresenter implements Presenter {
     	else if(now.after(stopDate)) {
     		// timed out experiment
     		setAsTimedOutExperiment();
-    		removeCountDown();
+        	view.setReservationTime("-");
     	}
     }
     
@@ -165,55 +188,51 @@ public class ExperimentPresenter implements Presenter {
 		};
     	
 		// set as reservation start timer
-    	setReservationStartTimer(timer);
+    	this.reservationStartTimer = timer;
     	
     	// start reservation start timer
     	getReservationStartTimer().scheduleRepeating(1000);
     }
-    
+
     private void countDownUntilStopDate() {
     	// setup timer
     	Timer timer = new Timer() {
-			@Override
-			public void run() {
-				long diffInMillis = 
-					getStopDate().getTime() - (new Date()).getTime();
-				if(diffInMillis <= 0) {
-					determineExperimentState(getStartDate(),getStopDate());
-					this.cancel();
-				}else{
-					view.setReservationTime(
-							"Finishing in " +
-							StringTimer.elapsedTimeToString(diffInMillis));
-				}
-			}
-		};
-		// set as reservation stop timer
-    	setReservationStopTimer(timer);
+    		@Override
+    		public void run() {
+    			long diffInMillis = 
+    				getStopDate().getTime() - (new Date()).getTime();
+    			if(diffInMillis <= 0) {
+    				determineExperimentState(getStartDate(),getStopDate());
+    				this.cancel();
+    			}else{
+    				view.setReservationTime(
+    						"Finishing in " +
+    						StringTimer.elapsedTimeToString(diffInMillis));
+    			}
+    		}
+    	};
+    	// set as reservation stop timer
+    	reservationStopTimer = timer;
 
     	// start reservation stop timer
     	getReservationStopTimer().scheduleRepeating(1000);
     }
-    
+
     private void collectExperimentMessages(){
     	// setup timer
     	Timer timer = new Timer() {
 
-			@Override
-			public void run() {
-				getExperimentMessage();	
-			}
+    		@Override
+    		public void run() {
+    			getExperimentMessage();	
+    		}
     	};
-    
+
     	// set as message timer
-    	setMessageTimer(timer);
+    	messageCollectionTimer = timer;
+
     	// start message timer
-    	getMessageTimer().scheduleRepeating(500);
-    	
-    }
-    
-    private void removeCountDown() {
-    	view.setReservationTime("-");
+    	getMessageCollectionTimer().scheduleRepeating(500);
     }
     
     public void setAsPendingExperiment(){
@@ -243,6 +262,10 @@ public class ExperimentPresenter implements Presenter {
     	else
     		setButtons();
     	setStatus(ExperimentStatus.CANCELED);
+    	view.setReservationTime("-");
+    	
+    	// stop all timers
+    	stopAllTimers();
     	
     	// cancel experiment and reservation on server via RPC
     	cancelExperiment();
@@ -250,20 +273,29 @@ public class ExperimentPresenter implements Presenter {
     
     public void setAsTerminatedExperiment() {
     	// arrange status and view
-
     	setStatus(ExperimentStatus.TERMINATED);
     	setButtons(Button.SHOWHIDE);
+    	
+    	// stop all timers
+    	stopAllTimers();
     	
     	// stop experiment on server via RPC
     	stopExperimentController();
     }
     
     public void setAsTimedOutExperiment() {
+    	// arrange status and view
     	if(status == ExperimentStatus.RUNNING) // in case the experiment was running before canceling
     		setButtons(Button.SHOWHIDE);
     	else
     		setButtons();
     	setStatus(ExperimentStatus.TIMEDOUT);
+    	
+    	//logging this action
+    	GWT.log("Stoping all timers at experiment presenter : " + reservationID);
+    	
+    	// stop all timers
+    	stopAllTimers();
     }
     
     private void setButtons(final Button ... buttons) {
@@ -281,6 +313,12 @@ public class ExperimentPresenter implements Presenter {
             callback.onButtonClicked(Button.fromValue(button));
         }
     }
+	
+	private void stopAllTimers(){
+		if(reservationStartTimer != null) reservationStartTimer.cancel();
+		if(reservationStopTimer != null) reservationStopTimer.cancel();
+		if(messageCollectionTimer != null) messageCollectionTimer.cancel();
+	}
 	
 	private final void setupExperimentController() {
 		// setup callback
@@ -319,10 +357,10 @@ public class ExperimentPresenter implements Presenter {
 			@Override
 			public void onSuccess(final Object result) {
 				GWT.log("Experiment controller is now running");
-				//collectExperimentMessages();
+				collectExperimentMessages();
 			}
 		};
-		
+
 		// make the rpc
 		service.flashExperimentImage(reservationID,callback);
 	}
@@ -340,8 +378,37 @@ public class ExperimentPresenter implements Presenter {
 				}
 
 				@Override
-				public void onSuccess(ExperimentMessage result) {
-					GWT.log(result.getTextMessage());
+				public void onSuccess(final ExperimentMessage result) {
+					if(result == null) // case there is no message to deliver 
+						return;
+					
+					GWT.log("ExperimentMessage arrived! reservation ID : " 
+							+ result.getReservationID());
+					ExperimentMessageType type = 
+						result.getExperimentMessageType();
+					GWT.log("ExperimentMessageType : " + type.getType());
+					switch(type){
+					case MESSAGE:
+						GWT.log("Source :" + result.getSourceNodeID());
+						GWT.log("Level : " + result.getLevel());
+						GWT.log("Data : " + result.getData());
+						GWT.log("TimeStamp :" + result.getTimeStamp());
+						view.printExperimentMessageInNodeTabPanel(
+								result.getSourceNodeID(),
+								result.getLevel(),
+								result.getData(),
+								result.getTimeStamp());
+						break;
+					case NOTIFICATION:
+						GWT.log("Notification :" + result.getNotificationText());
+						break;
+					case STATUS:
+						GWT.log("Request status ID :" + result.getRequestStatusID());
+						GWT.log("Request status node :" + result.getNodeID());
+						GWT.log("Request status msg :" + result.getRequestStatusMsg());
+						GWT.log("Request status value:" + result.getValue());
+						break;
+					}
 				}
 			
 		};
@@ -351,97 +418,65 @@ public class ExperimentPresenter implements Presenter {
 	}
 	
 	private final void stopExperimentController() {
-		//
+		// setup callback
+		final AsyncCallback callback
+			= new AsyncCallback(){
+
+				@Override
+				public void onFailure(Throwable caught) {
+					if(caught instanceof ExperimentationException) {
+						GWT.log(caught.getMessage());
+					}								
+				}
+
+				@Override
+				public void onSuccess(Object result) {
+					GWT.log("Experiment stopped on the server");
+				}
+			
+		};
+		
+		// make the rpc
+		service.terminateExperiment(reservationID,callback);
+		//service.cancelReservation();
 	}
 	
 	private final void cancelExperiment() {
-		//
+		stopExperimentController();
+		//service.cancelReservation() THIS IS AN RPC ;
 	}
-
-	public void setReservationID(int reservationID) {
-		this.reservationID = reservationID;
-		view.setReservationID(new Integer(reservationID).toString());
-	}
-
 
 	public int getReservationID() {
 		return reservationID;
 	}
 
-
-	@SuppressWarnings("deprecation")
-	public void setStartDate(final Date startDate) {
-		this.startDate = startDate;
-		view.setStartDate(startDate.toLocaleString());
-	}
-
-
 	public Date getStartDate() {
 		return startDate;
 	}
-
-
-	@SuppressWarnings("deprecation")
-	public void setStopDate(final Date stopDate) {
-		this.stopDate = stopDate;
-		view.setStopDate(stopDate.toLocaleString());
-	}
-
 
 	public Date getStopDate() {
 		return stopDate;
 	}
 
-
-	public void setSensors(final Set<SensorDetails> sensors) {
-		// set sensors
-		this.sensors = sensors;
-		
-		// make a list of their urns
-		List<String> urns = new ArrayList<String>();
-		for(SensorDetails sensor : sensors) {
-			urns.add(sensor.getUrn());
-		}
-		
-		// set the list above in the node tab panel
-		view.fillNodeTabPanel(urns);
-	}
-
-
 	public Set<SensorDetails> getSensors() {
 		return sensors;
 	}
-
-	public void setReservationStartTimer(final Timer reservationStartTimer) {
-		this.reservationStartTimer = reservationStartTimer;
+	
+	public List<String> getUrns(){
+		return urns;
 	}
-
 
 	public Timer getReservationStartTimer() {
 		return reservationStartTimer;
 	}
 
-
-	public void setReservationStopTimer(final Timer reservationStopTimer) {
-		this.reservationStopTimer = reservationStopTimer;
-	}
-
-
 	public Timer getReservationStopTimer() {
 		return reservationStopTimer;
 	}
 
-
-	public void setImageFileName(final String imageFileName) {
-		this.imageFileName = imageFileName;
-		view.setImageFilename(imageFileName);
-	}
-
-
 	public String getImageFileName() {
 		return imageFileName;
 	}
-
 
 	public void setStatus(final ExperimentStatus status) {
 		this.status = status;
@@ -457,19 +492,10 @@ public class ExperimentPresenter implements Presenter {
 		return view;
 	}
 	
-	public Timer getMessageTimer() {
-		return messageTimer;
+	public Timer getMessageCollectionTimer() {
+		return messageCollectionTimer;
 	}
-
-	public void setMessageTimer(final Timer messageTimer) {
-		this.messageTimer = messageTimer;
-	}
-
-	public void setUrnPrefix(String urnPrefix) {
-		this.urnPrefix = urnPrefix;
-		view.setUrnPrefix(urnPrefix);
-	}
-
+	
 	public String getUrnPrefix() {
 		return urnPrefix;
 	}

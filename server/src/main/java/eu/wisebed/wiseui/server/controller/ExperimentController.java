@@ -1,7 +1,9 @@
 package eu.wisebed.wiseui.server.controller;
 
 import java.net.MalformedURLException;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 import java.util.concurrent.Executors;
 
 import javax.jws.WebService;
@@ -10,6 +12,7 @@ import javax.xml.ws.Endpoint;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
+import de.uniluebeck.itm.tr.util.StringUtils;
 import de.uniluebeck.itm.wisebed.cmdlineclient.jobs.AsyncJobObserver;
 
 //import de.uniluebeck.itm.wisebed.cmdlineclient.jobs.AsyncJobObserver;
@@ -43,6 +46,7 @@ public class ExperimentController implements Controller {
 	private AsyncJobObserver jobs; 
 	private List<SecretReservationKey> keys;
 	private SessionManagement sessionManagement = null;
+	private final Queue<ExperimentMessage> undelivered = new LinkedList<ExperimentMessage>();
 	
 	public ExperimentController(){}
 	
@@ -134,26 +138,59 @@ public class ExperimentController implements Controller {
 	
 	@Override
 	public void experimentEnded() {
-		// TODO Auto-generated method stub
-		
+		LOGGER.log(Level.INFO, "Experiment ended");
 	}
 
 	@Override
-	public void receive(List<Message> msg) {
-		// TODO Auto-generated method stub
-		
+	public void receive(List<Message> msgs) {
+		for(Message msg : msgs) {
+			final String source = msg.getSourceNodeId();
+			final String timeStamp = msg.getTimestamp().toXMLFormat();
+			final String data = StringUtils.toHexString(msg.getBinaryData());
+			final String level = msg.getBinaryData()[1] == 0x00 ? "DEBUG" : "FATAL";
+						
+			ExperimentMessage experimentMessage = new ExperimentMessage();
+			experimentMessage.setupAsMessage(source, level, data, timeStamp);
+			
+			undelivered.add(experimentMessage);
+		}
 	}
 
 	@Override
 	public void receiveNotification(List<String> notifications) {
-		// TODO Auto-generated method stub
-		
+		for(String notification : notifications) {
+			
+			ExperimentMessage experimentMessage = new ExperimentMessage();
+			experimentMessage.setupAsNotification(notification);
+			
+			LOGGER.log(Level.INFO,"Received notification : " + notification);
+			
+			undelivered.add(experimentMessage);
+		}
 	}
 
 	@Override
-	public void receiveStatus(List<RequestStatus> requestStatus) {
-		// TODO Auto-generated method stub
-		
+	public void receiveStatus(List<RequestStatus> requestStati) {
+		for(RequestStatus requestStatus : requestStati) {
+			final String requestID = requestStatus.getRequestId();
+			
+			for(int i=0;i<requestStatus.getStatus().size();i++){
+				final String msg = requestStatus.getStatus().get(i).getMsg();
+				final String nodeID = requestStatus.getStatus().get(i).getNodeId();
+				final String value = requestStatus.getStatus().get(i).getValue().toString();
+					
+				ExperimentMessage experimentMessage = new ExperimentMessage();
+				experimentMessage.setupAsRequestStatus(requestID, nodeID, msg, value);
+				
+				LOGGER.log(Level.INFO,"Received requestStatus id " 
+						+ requestID);
+				LOGGER.log(Level.INFO,"status msg : " + msg);
+				LOGGER.log(Level.INFO,"node ID : " + nodeID);
+				LOGGER.log(Level.INFO,"value : " + value);
+				
+				undelivered.add(experimentMessage);
+			}
+		}
 	}
 
 	public String getEndPointURL() {
@@ -202,6 +239,10 @@ public class ExperimentController implements Controller {
 
 	public AsyncJobObserver getJobs() {
 		return jobs;
+	}
+
+	public Queue<ExperimentMessage> getUndelivered() {
+		return undelivered;
 	}
 }
 

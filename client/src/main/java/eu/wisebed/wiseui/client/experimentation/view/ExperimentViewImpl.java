@@ -1,5 +1,6 @@
 package eu.wisebed.wiseui.client.experimentation.view;
 
+import java.util.HashMap;
 import java.util.List;
 
 import com.google.gwt.core.client.GWT;
@@ -11,9 +12,10 @@ import com.google.gwt.uibinder.client.UiTemplate;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TabLayoutPanel;
-import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.Widget;
 
 
@@ -25,6 +27,7 @@ public class ExperimentViewImpl extends Composite implements ExperimentView, Cli
     }
     
     private Presenter presenter;
+    private HashMap<String,HTMLPanel> nodeTextAreaMap;
     
     @UiField
     FlexTable buttonTable;
@@ -42,9 +45,9 @@ public class ExperimentViewImpl extends Composite implements ExperimentView, Cli
 	Label imageFilename;
 	@UiField
 	Label urnPrefix;
-
 	@UiField 
 	TabLayoutPanel nodeTabPanel;
+	
     
 	public ExperimentViewImpl() {
 		initWidget(uiBinder.createAndBindUi(this));
@@ -126,8 +129,14 @@ public class ExperimentViewImpl extends Composite implements ExperimentView, Cli
 	
 	@Override
 	public void fillNodeTabPanel(final List<String> urns) {
+		
+		if(nodeTextAreaMap == null)
+			nodeTextAreaMap = new HashMap<String,HTMLPanel>();
+		
 		for(String s: urns) {
-			nodeTabPanel.add(new TextArea(),s);
+			final HTMLPanel message = new HTMLPanel("");
+			nodeTextAreaMap.put(s,message);
+			nodeTabPanel.add(message,s);
 		}
 	}
 		
@@ -153,4 +162,22 @@ public class ExperimentViewImpl extends Composite implements ExperimentView, Cli
 		boolean isVisible = this.nodeTabPanel.isVisible();
 		this.nodeTabPanel.setVisible(!isVisible);
 	}
+
+	@Override
+	public void printExperimentMessageInNodeTabPanel(final String sourceNodeUrn,
+			final String level, final String data, final String timeStamp) {
+		
+		if(nodeTextAreaMap == null)
+			return;
+		HTML html = new HTML("[" + timeStamp + "]["+ level + "][" + data +"]");
+		nodeTextAreaMap.get(sourceNodeUrn).add(html);
+		
+	}
+	
+//	public void printExperimentMessageInNodeTabPanel(final String notificationText){
+//		if(nodeTextAreaMap == null)
+//			return;
+//		HTML html = new HTML("[Notification][" + notificationText+ "]");
+//		nodeTextAreaMap.get(sourceNodeUrn).add(html);
+//	}
 }
