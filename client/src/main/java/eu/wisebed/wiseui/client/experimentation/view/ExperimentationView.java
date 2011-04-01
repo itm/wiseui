@@ -13,6 +13,8 @@ public interface ExperimentationView extends IsWidget {
 	void setPresenter(Presenter presenter);
 	Presenter getPresenter();
 	void initView(List<ExperimentView> panels);
+	void resetExperimentContainer();
+
 
 	public interface Presenter {
 		void getUserReservations();

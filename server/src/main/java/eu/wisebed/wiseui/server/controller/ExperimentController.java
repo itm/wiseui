@@ -13,9 +13,6 @@ import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
 import de.uniluebeck.itm.tr.util.StringUtils;
-import de.uniluebeck.itm.wisebed.cmdlineclient.jobs.AsyncJobObserver;
-
-//import de.uniluebeck.itm.wisebed.cmdlineclient.jobs.AsyncJobObserver;
 
 import eu.wisebed.testbed.api.rs.v1.SecretReservationKey;
 import eu.wisebed.testbed.api.wsn.Constants;
@@ -43,7 +40,6 @@ public class ExperimentController implements Controller {
 	private String endPointURL;
 	private int reservationID;
 	private WSN wsn;
-	private AsyncJobObserver jobs; 
 	private List<SecretReservationKey> keys;
 	private SessionManagement sessionManagement = null;
 	private final Queue<ExperimentMessage> undelivered = new LinkedList<ExperimentMessage>();
@@ -231,14 +227,6 @@ public class ExperimentController implements Controller {
 
 	public void setSessionManagement(final SessionManagement sessionManagement) {
 		this.sessionManagement = sessionManagement;
-	}
-
-	public void setJobs(AsyncJobObserver jobs) {
-		this.jobs = jobs;
-	}
-
-	public AsyncJobObserver getJobs() {
-		return jobs;
 	}
 
 	public Queue<ExperimentMessage> getUndelivered() {
