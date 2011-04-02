@@ -6,3 +6,7 @@
 .gwt-DialogBox .dialogMiddleCenter {
 	padding: 0px !important; 
 }
+
+.validationFailedBorder {
+	border: 2px solid #ff0000;
+}

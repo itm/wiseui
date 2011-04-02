@@ -1,6 +1,7 @@
 package eu.wisebed.wiseui.client.administration.presenter;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
@@ -22,6 +23,11 @@ import eu.wisebed.wiseui.client.testbedselection.event.ConfigurationSelectedEven
 import eu.wisebed.wiseui.client.testbedselection.event.ConfigurationSelectedEvent.ConfigurationSelectedHandler;
 import eu.wisebed.wiseui.shared.TestbedConfiguration;
 
+/**
+ * Presenter implementation for the configuration form.
+ * 
+ * @author Malte Legenhausen
+ */
 public class ConfigurationFormPresenter implements Presenter, ConfigurationSelectedHandler, SaveConfigurationHandler, CancelConfigurationHandler, CreateConfigurationHandler {
 
 	private final EventBus eventBus;
@@ -35,6 +41,7 @@ public class ConfigurationFormPresenter implements Presenter, ConfigurationSelec
 		this.eventBus = eventBus;
 		this.view = view;
 		urnPrefixProvider.addDataDisplay(view.getUrnPrefixHasData());
+		view.setFederatedItems(Arrays.asList("Yes", "No"));
 		view.setUrnPrefixSelectionModel(selectionModel);
 		view.getUrnPrefixRemoveHasEnabled().setEnabled(false);
 		loadConfigurationToView();
@@ -49,7 +56,7 @@ public class ConfigurationFormPresenter implements Presenter, ConfigurationSelec
 		
 		selectionModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
 			@Override
-			public void onSelectionChange(SelectionChangeEvent event) {
+			public void onSelectionChange(final SelectionChangeEvent event) {
 				view.getUrnPrefixRemoveHasEnabled().setEnabled(null != selectionModel.getSelectedObject());
 			}
 		});
@@ -100,6 +107,8 @@ public class ConfigurationFormPresenter implements Presenter, ConfigurationSelec
 
 	@Override
 	public void onSaveConfiguration(final SaveConfigurationEvent event) {
+		if (!view.validate()) return;
+		
 		configuration.setName(view.getNameHasText().getText());
 		configuration.setTestbedUrl(view.getTestbedUrlHasText().getText());
 		configuration.setSnaaEndpointUrl(view.getSnaaEndpointUrlHasText().getText());
@@ -118,7 +127,7 @@ public class ConfigurationFormPresenter implements Presenter, ConfigurationSelec
 	}
 
 	@Override
-	public void onCreateConfiguration(CreateConfigurationEvent event) {
+	public void onCreateConfiguration(final CreateConfigurationEvent event) {
 		configuration = new TestbedConfiguration();
 		loadConfigurationToView();
 		showNewConfigurationInfo();

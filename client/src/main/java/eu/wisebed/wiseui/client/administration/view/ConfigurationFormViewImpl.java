@@ -24,6 +24,15 @@ import com.google.gwt.view.client.HasData;
 import com.google.gwt.view.client.SelectionModel;
 import com.google.inject.Singleton;
 
+import eu.maydu.gwt.validation.client.DefaultValidationProcessor;
+import eu.maydu.gwt.validation.client.ValidationProcessor;
+import eu.maydu.gwt.validation.client.actions.FocusAction;
+import eu.maydu.gwt.validation.client.actions.StyleAction;
+import eu.maydu.gwt.validation.client.description.PopupDescription;
+import eu.maydu.gwt.validation.client.description.PopupDescription.Location;
+import eu.maydu.gwt.validation.client.i18n.ValidationMessages;
+import eu.maydu.gwt.validation.client.validators.strings.StringLengthValidator;
+
 /**
  * ConfigurationFormView implementation.
  * 
@@ -64,10 +73,33 @@ public class ConfigurationFormViewImpl extends Composite implements Configuratio
     @UiField
     Button removeButton;
     
+    private final ValidationMessages messages = new ConfigurationFormValidationMessages();
+    private final PopupDescription popupDescription = new PopupDescription(messages, Location.RIGHT);
+    private final ValidationProcessor validator = new DefaultValidationProcessor(messages);
+    
     private Presenter presenter;
     
     public ConfigurationFormViewImpl() {
 		initWidget(uiBinder.createAndBindUi(this));
+		
+		final FocusAction focusAction = new FocusAction();		
+		validator.addValidators("name", new StringLengthValidator(nameTextBox, 3, Integer.MAX_VALUE)
+			.addActionForFailure(focusAction)
+			.addActionForFailure(new StyleAction("validationFailedBorder"))
+		);
+		popupDescription.addDescription("nameDescription", nameTextBox);
+		
+		validator.addValidators("testbedUrl", new StringLengthValidator(testbedUrlTextBox, 3, Integer.MAX_VALUE)
+			.addActionForFailure(focusAction)
+			.addActionForFailure(new StyleAction("validationFailedBorder"))
+		);
+		popupDescription.addDescription("testbedUrlDescription", testbedUrlTextBox);
+		
+		validator.addValidators("snaaEndpointUrl", new StringLengthValidator(snaaEndpointUrlTextBox, 3, Integer.MAX_VALUE)
+			.addActionForFailure(focusAction)
+			.addActionForFailure(new StyleAction("validationFailedBorder"))
+		);
+		popupDescription.addDescription("snaaEndpointUrlDescription", snaaEndpointUrlTextBox);
 	}
     
     @UiFactory
@@ -167,5 +199,10 @@ public class ConfigurationFormViewImpl extends Composite implements Configuratio
 		} else {
 			infoElement.removeFromParent();
 		}
+	}
+
+	@Override
+	public boolean validate() {
+		return validator.validate();
 	}
 }

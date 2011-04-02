@@ -47,6 +47,8 @@ public interface ConfigurationFormView extends IsWidget {
 	
 	void setInfoVisibility(boolean visibility);
 	
+	boolean validate();
+	
 	/**
 	 * Presenter for the testbed configuration form view.
 	 * 

@@ -28,7 +28,7 @@
     	}
     	.info {
     		widht: 100%;
-    		background-color: #FFBABA;
+    		background-color: #ffbaba;
     		padding: 5px 10px;
     		border-bottom: 1px solid #e3e8f3;
     	}
