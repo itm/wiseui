@@ -5,7 +5,6 @@ import eu.wisebed.wiseui.server.dao.TestbedConfigurationDao;
 import eu.wisebed.wiseui.server.domain.TestbedConfigurationBo;
 import eu.wisebed.wiseui.shared.dto.TestbedConfiguration;
 import eu.wisebed.wiseui.shared.common.Preconditions;
-import eu.wisebed.wiseui.shared.dto.TestbedConfiguration;
 import org.dozer.DozerBeanMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
