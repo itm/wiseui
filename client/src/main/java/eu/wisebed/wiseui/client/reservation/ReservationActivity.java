@@ -1,42 +1,99 @@
 package eu.wisebed.wiseui.client.reservation;
 
-import java.util.List;
-
 import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
 
 import eu.wisebed.wiseui.client.WiseUiGinjector;
+import eu.wisebed.wiseui.client.reservation.common.Parameters;
+import eu.wisebed.wiseui.client.reservation.presenter.AllReservationsPresenter;
+import eu.wisebed.wiseui.client.reservation.presenter.NewReservationPresenter;
 import eu.wisebed.wiseui.client.reservation.presenter.ReservationPresenter;
+import eu.wisebed.wiseui.client.reservation.presenter.TestbedsLoggedInPresenter;
+import eu.wisebed.wiseui.client.reservation.view.AllReservationsView;
+import eu.wisebed.wiseui.client.reservation.view.NewReservationView;
 import eu.wisebed.wiseui.client.reservation.view.ReservationView;
+import eu.wisebed.wiseui.client.reservation.view.TestbedsLoggedInView;
 import eu.wisebed.wiseui.client.util.AuthenticationManager;
 
 public class ReservationActivity extends AbstractActivity{
 
 	private WiseUiGinjector injector;
+	private ReservationPlace place;
 
 	@Inject
-	public ReservationActivity(final WiseUiGinjector injector, 
-			final EventBus eventBus) {
+	public ReservationActivity(final WiseUiGinjector injector) {
 		this.injector = injector;
 	}
 
 	public void start(final AcceptsOneWidget panel, final EventBus eventBus) {
-		final ReservationPresenter presenter = injector.getReservationPresenter();
-		final ReservationView view = injector.getReservationView();
+		initReservationPanel(panel);
+	}
+	
+	private void initReservationPanel(final AcceptsOneWidget panel){
+		final ReservationPresenter reservationPresenter = 
+			injector.getReservationPresenter();
+		final ReservationView reservationView = injector.getReservationView();
 		final AuthenticationManager authenticationManager = 
 			injector.getAuthenticationManager();
-		view.setPresenter(presenter);
-		panel.setWidget(view);
+		reservationPresenter.setPlace(place);
+		reservationView.setPresenter(reservationPresenter);
+		panel.setWidget(reservationView.asWidget());
+		reservationPresenter.bindDefaultViewEvents();
 		if (authenticationManager.getSecretAuthenticationKeys().isEmpty()) { 
 			// User has not logged in to a testbed
-			presenter.loginRequired();
-		}else{
-			List<String> urnPrefix = authenticationManager.getUrnPrefixByCookie();
-			presenter.initRsView();
-			presenter.bindEvents();
-			presenter.getTestbedLoggedIn(urnPrefix);
+			
+			// FIXME: The issue is that the first time calling start() the event
+			// bus does not listen to events. Strange, i will come back later on 
+			// this.
+			reservationPresenter.pleaseLogin();
+			reservationPresenter.disableReservation();
+			return;
 		}
+		reservationPresenter.bindEnabledViewEvents();
+		initTestbedsLoggedInPanel(reservationView, authenticationManager);
+		initRestPanels(reservationView);
+	}
+
+	private void initTestbedsLoggedInPanel(final ReservationView reservationView,
+			final AuthenticationManager authenticationManager){
+		
+		final TestbedsLoggedInPresenter testbedsLoggedInPresenter = 
+			injector.getTestbedsLoggedInPresenter();
+		testbedsLoggedInPresenter.getTestbedsLoggedIn(
+				authenticationManager.getUrnPrefixByCookie());
+		testbedsLoggedInPresenter.setPlace(place);
+		final TestbedsLoggedInView testbedsLoggedInView = 
+			injector.getTestbedsLoggedInView();
+		reservationView.getTestbedsPanel().setWidget(testbedsLoggedInView);
+	}
+	
+	private void initRestPanels(final ReservationView reservationView){
+		if (place.getView()==Parameters.NEW_VIEW)
+			initNewReservationPanel(reservationView);
+		else if (place.getView()==Parameters.ALL_VIEW)
+			initAllReservationsPanel(reservationView);
+	}
+
+	private void initNewReservationPanel(final ReservationView reservationView){
+		final NewReservationPresenter newReservationViewPresenter =
+			injector.getNewReservationPresenter();
+		final NewReservationView newReservationView = injector.getNewReservationView();
+		newReservationView.setPresenter(newReservationViewPresenter);
+		reservationView.getParametersPanel().setWidget(newReservationView);
+	}
+	
+	private void initAllReservationsPanel(final ReservationView reservationView){
+		final AllReservationsPresenter allReservationsPresenter = 
+			injector.getAllReservationsPresenter();
+		final AllReservationsView allReservationsView = 
+			injector.getAllReservationsView();
+		allReservationsView.setPresenter(allReservationsPresenter);
+		reservationView.getParametersPanel().setWidget(allReservationsView);
+	}
+	
+	public void setPlace(final ReservationPlace place){
+		this.place = place;
 	}
 }

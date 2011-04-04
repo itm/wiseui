@@ -1,28 +1,28 @@
 package eu.wisebed.wiseui.client.reservation.presenter;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.view.client.ListDataProvider;
-import com.google.gwt.view.client.SelectionChangeEvent;
-import com.google.gwt.view.client.SingleSelectionModel;
-import com.google.gwt.view.client.SelectionChangeEvent.Handler;
 import com.google.inject.Inject;
 
-import eu.wisebed.wiseui.api.ReservationService;
 import eu.wisebed.wiseui.api.ReservationServiceAsync;
-import eu.wisebed.wiseui.api.TestbedConfigurationService;
-import eu.wisebed.wiseui.api.TestbedConfigurationServiceAsync;
 import eu.wisebed.wiseui.client.WiseUiGinjector;
-import eu.wisebed.wiseui.client.reservation.event.NewReservationEvent;
+import eu.wisebed.wiseui.client.reservation.ReservationPlace;
+import eu.wisebed.wiseui.client.reservation.common.Messages;
+import eu.wisebed.wiseui.client.reservation.event.LoginRequiredEvent;
+import eu.wisebed.wiseui.client.reservation.event.LoginRequiredEventHandler;
+import eu.wisebed.wiseui.client.reservation.event.MissingReservationParametersEvent;
+import eu.wisebed.wiseui.client.reservation.event.MissingReservationParametersEventHandler;
+
 import eu.wisebed.wiseui.client.reservation.event.ReservationFailedEvent;
+import eu.wisebed.wiseui.client.reservation.event.ReservationFailedEventHandler;
 import eu.wisebed.wiseui.client.reservation.event.ReservationSuccessEvent;
+import eu.wisebed.wiseui.client.reservation.event.ReservationSuccessEventHandler;
+import eu.wisebed.wiseui.client.reservation.event.TestbedSelectedChangedEvent;
+import eu.wisebed.wiseui.client.reservation.event.TestbedSelectedChangedEventHandler;
 import eu.wisebed.wiseui.client.reservation.view.ReservationView;
 import eu.wisebed.wiseui.client.reservation.view.ReservationView.Presenter;
 import eu.wisebed.wiseui.client.util.AuthenticationManager;
@@ -33,137 +33,100 @@ import eu.wisebed.wiseui.shared.exception.AuthenticationException;
 import eu.wisebed.wiseui.shared.exception.ReservationConflictException;
 import eu.wisebed.wiseui.shared.exception.ReservationException;
 import eu.wisebed.wiseui.shared.wiseml.SecretAuthenticationKey;
+import eu.wisebed.wiseui.widgets.messagebox.MessageBox;
 
-public class ReservationPresenter implements Presenter{
+public class ReservationPresenter implements Presenter, LoginRequiredEventHandler,
+	MissingReservationParametersEventHandler, ReservationSuccessEventHandler,
+	ReservationFailedEventHandler, TestbedSelectedChangedEventHandler{
 
 	private final ReservationView view;
-	private ReservationServiceAsync service;
+	private ReservationPlace place;
+	private ReservationServiceAsync reservationService;
 	private PlaceController placeController;
+	private TestbedConfiguration testbedSelected;
 	private EventBus eventBus;
-	private SingleSelectionModel<TestbedConfiguration> testbedSelectionModel;
 	private WiseUiGinjector injector;
-	private final ListDataProvider<TestbedConfiguration> dataProvider = 
-		new ListDataProvider<TestbedConfiguration>();
 
 	@Inject
-	public ReservationPresenter(final WiseUiGinjector injector, final ReservationView view, 
+	public ReservationPresenter(final WiseUiGinjector injector, 
+			final ReservationServiceAsync reservationService,
+			final ReservationView view,
+			final PlaceController placeController,
 			final EventBus eventBus){
-		this.view = view;
-		this.eventBus = eventBus;
 		this.injector = injector;
-		dataProvider.addDataDisplay(view.getTestbedList());
-		
-        // Init selection model
-        testbedSelectionModel = new SingleSelectionModel<TestbedConfiguration>();
-        view.setTestbedSelectionModel(testbedSelectionModel);
+		this.reservationService = reservationService;
+		this.view = view;
+		this.placeController = placeController;
+		this.eventBus = eventBus;
+	}
+	
+    @Override
+    public void setPlace(final ReservationPlace place) {
+    	this.place = place;
+    	view.setSubview(place.getView());
+    }
+    
+    public ReservationPlace getPlace(){
+    	return place;
+    }
+
+	public void bindDefaultViewEvents() {
+		eventBus.addHandler(LoginRequiredEvent.TYPE, this);
 	}
 
-	public void bindEvents() {
-		testbedSelectionModel.addSelectionChangeHandler(new Handler() {
-			public void onSelectionChange(final SelectionChangeEvent event) {
-				onTestbedSelectionChange(event);
-			}
-		});
+	public void bindEnabledViewEvents() {
+		eventBus.addHandler(MissingReservationParametersEvent.TYPE, this);
+		eventBus.addHandler(ReservationSuccessEvent.TYPE, this);
+		eventBus.addHandler(ReservationFailedEvent.TYPE, this);
+		eventBus.addHandler(TestbedSelectedChangedEvent.TYPE, this);
+	}
+	
+	public void disableReservation(){
+		view.reserveButton(false);
+	}
+	
+	public void enableReservation(){
+		view.reserveButton(true);
 	}
 	
 	/**
-	 * Send the urn prefix to the server to identify the testbed the user
-	 * has previously logged in.
-	 */
-	public void getTestbedLoggedIn(final List<String> urnPrefix){
-		// TODO: DI
-		final TestbedConfigurationServiceAsync service = 
-			GWT.create(TestbedConfigurationService.class);
-		service.getTestbedLoggedIn(urnPrefix, 
-				new AsyncCallback<List<TestbedConfiguration>>(){
-			public void onFailure(Throwable caught){
-				GWT.log("Failed rpc");
-			}
-			public void onSuccess(List<TestbedConfiguration> testbeds){
-				if(testbeds == null){
-					Window.alert("No testbeds identified");
-				}else{
-					GWT.log("Number of testbeds logged in:" + testbeds.size());
-					for(TestbedConfiguration bed: testbeds){
-						dataProvider.getList().add(bed);
-					}
-					testbedSelectionModel.setSelected(testbeds.get(0), true);
-				}
-			}
-		});
-	}
-
-	/**
-	 * Makes an Asynchronous callback to the server 'asking' for the 
-	 * nodes located in the network. Result consists of an array with all
-	 * sensors' useful information
+	 * Makes an Asynchronous callback to server asking for the nodes located in 
+	 * the network. Result consists of an array with all sensors' useful 
+	 * information.
 	 */
 	public void getNetwork(final String sessionManagementEndpointUrl) {
-		GWT.log("Getting infrastructure for:" + sessionManagementEndpointUrl);
-		final ReservationServiceAsync service = 
-			GWT.create(ReservationService.class);
-		service.getNodeList(sessionManagementEndpointUrl,
+		reservationService.getNodeList(sessionManagementEndpointUrl,
 				new AsyncCallback<ArrayList<SensorDetails>>(){
 			public void onFailure(Throwable caught){
 				GWT.log("Failed rpc");
 			}
 			public void onSuccess(ArrayList<SensorDetails> nodeList){
 				if(nodeList==null){
-					Window.alert("No nodes returned to client");
-					// TODO SNO We can use the MessageBox here
+					MessageBox.error(Messages.NO_NODES_RETURNED_TITLE,
+							Messages.NO_NODES_RETURNED, null, null);
 				}else{
-					view.renderNodes(nodeList);
+					injector.getNewReservationView().renderNodes(nodeList);
 				}
 			}
 		});
 	}
-
-	public void initRsView() {
-		view.initRsView();
-	}
-
-	/**
-	 * Render login required information
-	 */
-	public void loginRequired() {
-		view.loginRequiredPanel(true);
-		// FIXME: This shouldn't be here, but i will come back for the view
-		//		  later
-		view.reserveButton(false);
-	}
-
-	public void renderTestbeds(List<TestbedConfiguration> testbeds) {
-		view.renderTestbeds(testbeds);
-	}
 	
 	/**
-	 * Check if user has set all required reservation details
+	 * Sends reservation details to server and books a new reservation.
 	 */
-	public boolean checkReservationDetails() {
-		
-		// Temporarily checking only for the image
-		if (!view.checkReservationDetails()){
-			eventBus.fireEvent(new ReservationFailedEvent());
-			return false;
+	public void makeReservation(){
+		TestbedConfiguration bed = testbedSelected;
+		if (bed == null){
+			GWT.log("Testbed selected is null!!");
 		}
-		return true;
-	}
-
-	/**
-	 * Sends reservation details to the server after collecting time, date and
-	 * sensors as information about the experiment to be scheduled.
-	 */
-	public void makeReservation(final String rsEndpointUrl, final String urn){
-		final ReservationServiceAsync service = 
-			GWT.create(ReservationService.class);
-		final ReservationDetails data = view.getReservationDetails();	
-		AuthenticationManager authenticationManager = injector.getAuthenticationManager();
-		SecretAuthenticationKey secretAuthenticationKey = 
-			authenticationManager.getKeyHash().get(urn);
-		GWT.log("Key:" + secretAuthenticationKey.getSecretAuthenticationKey());
-		eventBus.fireEvent(new NewReservationEvent()); // New reservation occurred
-		service.makeReservation(secretAuthenticationKey, rsEndpointUrl, data, 
-				new AsyncCallback<String>(){
+		final String rsEndpointUrl = bed.getRsEndpointUrl();
+		final String urnPrefix = bed.getUrnPrefixList().get(0); 	
+		final AuthenticationManager auth = injector.getAuthenticationManager();
+		SecretAuthenticationKey secretAuthKey = auth.getKeyHash().get(urnPrefix);
+		final ReservationDetails data = 
+			injector.getNewReservationView().getReservationDetails();
+		reservationService.makeReservation(secretAuthKey, rsEndpointUrl, data, 
+				new AsyncCallback<String>(){ // New reservation
 				public void onFailure(Throwable caught){
 					if(caught instanceof AuthenticationException){
 						GWT.log("User not authorized to make reservations");
@@ -182,20 +145,49 @@ public class ReservationPresenter implements Presenter{
 				}
 			});
 	}
+	
+	public void pleaseLogin(){
+		eventBus.fireEvent(new LoginRequiredEvent());
+	}
 
-	public SingleSelectionModel<TestbedConfiguration> getTestbedSelectionModel(){
-		return testbedSelectionModel;
+	public void onTestbedSelectedChanged(final TestbedSelectedChangedEvent event){
+		testbedSelected = event.getTestbedSelected();
+	}
+
+	public void onLoginRequired(final LoginRequiredEvent event){
+		MessageBox.error(Messages.LOGIN_REQUIRED_TITLE, Messages.LOGIN_REQUIRED,
+				null, null);
 	}
 	
-	private void onTestbedSelectionChange(final SelectionChangeEvent event){
-		TestbedConfiguration bed = testbedSelectionModel.getSelectedObject();
-		getNetwork(bed.getSessionmanagementEndpointUrl());
+	public void onMissingReservationParameters(
+			final MissingReservationParametersEvent event){
+		MessageBox.error(Messages.MISSING_RESERVATION_PARAMETERS_TITLE, 
+				Messages.MISSING_RESERVATION_PARAMETERS, null, null);		
+	}
+
+	public void onReservationSuccess(final ReservationSuccessEvent event){
+		MessageBox.success(Messages.RESERVATION_SUCCESS_TITLE, 
+				Messages.RESERVATION_SUCCESS, null);			
+	}
+	
+	public void onReservationFailed(final ReservationFailedEvent event){
+		MessageBox.error(Messages.RESERVATION_FAILED_TITLE, 
+				Messages.RESERVATION_FAILED, null, null);
 	}
 
 	/**
-	 * Navigate to a new Place in the browser
+	 * Check if user has set all required reservation details
 	 */
-	public void goTo(Place place) {
-		placeController.goTo(place);
+	public boolean checkReservationDetails() {
+		if (!injector.getNewReservationPresenter().checkReservationDetails()){
+			eventBus.fireEvent(new MissingReservationParametersEvent());
+			return false;
+		}
+		return true;
 	}
+
+    @Override
+    public void gotoSubview(final String view) {
+    	placeController.goTo(new ReservationPlace(place.getSelection(), view));
+    }
 }

@@ -9,6 +9,7 @@ import eu.wisebed.wiseui.client.WiseUiGinjector;
 import eu.wisebed.wiseui.client.administration.AdministrationActivity;
 import eu.wisebed.wiseui.client.administration.AdministrationPlace;
 import eu.wisebed.wiseui.client.experimentation.ExperimentationPlace;
+import eu.wisebed.wiseui.client.reservation.ReservationActivity;
 import eu.wisebed.wiseui.client.reservation.ReservationPlace;
 import eu.wisebed.wiseui.client.testbedselection.TestbedSelectionActivity;
 import eu.wisebed.wiseui.client.testbedselection.TestbedSelectionPlace;
@@ -40,7 +41,9 @@ public class ContentActivityMapper implements ActivityMapper {
             mappedActivity = activity;
         }
         if (place instanceof ReservationPlace) {
-            mappedActivity = injector.getReservationActivity();
+        	final ReservationActivity activity = injector.getReservationActivity();
+        	activity.setPlace((ReservationPlace) place);
+            mappedActivity = activity;
         }
         if (place instanceof ExperimentationPlace) {
             mappedActivity = injector.getExperimentationActivity();

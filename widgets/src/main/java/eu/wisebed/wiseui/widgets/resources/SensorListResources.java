@@ -16,6 +16,7 @@ public interface SensorListResources extends ClientBundle {
 	public Style style();
 	
 	public interface Style extends CssResource {
+		String sensorPanel();
 		String scrollable();
 	}
 }

@@ -13,6 +13,6 @@ public class ReservationFailedEvent extends GwtEvent<ReservationFailedEventHandl
 	
 	@Override
 	protected void dispatch(ReservationFailedEventHandler handler){
-		handler.onRsFailed(this);
+		handler.onReservationFailed(this);
 	}
 }

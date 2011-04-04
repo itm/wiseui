@@ -1,0 +1,9 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:gwt="urn:import:com.google.gwt.user.client.ui">
+
+	<ui:with field='allReservationsResources' type='eu.wisebed.wiseui.client.reservation.view.resources.AllReservationsResources'/>
+	<gwt:SimplePanel styleName='{allReservationsResources.style.center}'>
+		<gwt:Image resource='{allReservationsResources.underConstruction}'/>
+	</gwt:SimplePanel>
+</ui:UiBinder>

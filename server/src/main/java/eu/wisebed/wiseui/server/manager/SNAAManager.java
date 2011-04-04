@@ -72,9 +72,4 @@ public class SNAAManager {
 		Query q = session.createQuery(QUERY);
 		return (AuthenticationDetails) q.uniqueResult();
 	}
-	
-	private final static boolean userExists(
-			AuthenticationDetails authenticationDetails){
-		return false;
-	}
 }

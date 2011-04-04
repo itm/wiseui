@@ -26,8 +26,8 @@ import eu.wisebed.wiseui.shared.exception.WisemlException;
 public class TestbedSelectionPresenter implements Presenter, ConfigurationSelectedHandler, WisemlLoadedHandler, ThrowableHandler {
 
     private final EventBus eventBus;
-    private final PlaceController placeController;
     private final TestbedSelectionView view;
+    private PlaceController placeController;
     private TestbedSelectionPlace place;
     private TestbedConfiguration configuration;
 

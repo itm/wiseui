@@ -62,6 +62,9 @@ public class SensorListWidget extends Composite implements SensorList{
 	};
 	
 	public void init(){	
+		if (sensorTable.getColumnIndex(urn)>=0) return;
+		if (sensorTable.getColumnIndex(type)>=0) return;
+		if (sensorTable.getColumnIndex(descr)>=0) return;
 		sensorTable.addColumn(urn,"Urn");
 		sensorTable.addColumn(type,"Type");
 		sensorTable.addColumn(descr,"Description");
