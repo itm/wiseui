@@ -12,6 +12,7 @@
         <testbedUrl>http://www.wisebed.eu</testbedUrl>
         <snaaEndpointUrl>http://wisebed.itm.uni-luebeck.de:8890/snaa?wsdl</snaaEndpointUrl>
         <sessionmanagementEndpointUrl>http://wisebed.itm.uni-luebeck.de:8888/sessions?wsdl</sessionmanagementEndpointUrl>
+       	<rsEndpointUrl>http://wisebed.itm.uni-luebeck.de:8889/rs</rsEndpointUrl> 
         <urnPrefix>urn:wisebed:uzl1:</urnPrefix>
     </configuration>
     <configuration isFederated="false">
