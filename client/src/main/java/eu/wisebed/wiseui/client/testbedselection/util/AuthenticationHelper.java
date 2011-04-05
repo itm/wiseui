@@ -6,7 +6,7 @@ import com.google.inject.Inject;
 import eu.wisebed.wiseui.api.SNAAServiceAsync;
 import eu.wisebed.wiseui.client.testbedselection.common.UrnPrefixInfo;
 import eu.wisebed.wiseui.client.testbedselection.common.UrnPrefixInfo.State;
-import eu.wisebed.wiseui.shared.wiseml.SecretAuthenticationKey;
+import eu.wisebed.wiseui.shared.dto.SecretAuthenticationKey;
 
 import java.util.Iterator;
 import java.util.List;

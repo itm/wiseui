@@ -17,8 +17,9 @@ import eu.wisebed.wiseui.client.testbedselection.util.AuthenticationHelper.Callb
 import eu.wisebed.wiseui.client.testbedselection.view.LoginDialogView;
 import eu.wisebed.wiseui.client.testbedselection.view.LoginDialogView.Presenter;
 import eu.wisebed.wiseui.client.util.AuthenticationManager;
-import eu.wisebed.wiseui.shared.TestbedConfiguration;
-import eu.wisebed.wiseui.shared.wiseml.SecretAuthenticationKey;
+import eu.wisebed.wiseui.shared.dto.TestbedConfiguration;
+import eu.wisebed.wiseui.shared.dto.SecretAuthenticationKey;
+import eu.wisebed.wiseui.shared.dto.TestbedConfiguration;
 
 /**
  * The presenter for the {@link LoginDialogView}.

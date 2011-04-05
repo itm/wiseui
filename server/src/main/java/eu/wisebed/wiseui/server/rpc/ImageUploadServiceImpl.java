@@ -6,14 +6,13 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import eu.wisebed.wiseui.server.dao.BinaryImageDao;
+import eu.wisebed.wiseui.shared.dto.BinaryImage;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
 import com.google.inject.Singleton;
-
-import eu.wisebed.wiseui.server.manager.ImageServiceManager;
-import eu.wisebed.wiseui.server.model.Image;
 
 import gwtupload.server.UploadAction;
 import gwtupload.server.exceptions.UploadActionException;
@@ -35,42 +34,42 @@ public class ImageUploadServiceImpl extends UploadAction{
 		String response = "";
 		int cont = 0;
 		
-		for (FileItem item: sessionFiles){
-			if (false == item.isFormField()){
-				cont++;
-				try {				
-					// Save a temporary file in the default system temp directory
-					File uploadedFile = File.createTempFile("upload-", ".bin");
-
-					item.write(uploadedFile);
-
-					FileInputStream content = new FileInputStream(uploadedFile);
-					Image image = new Image();
-					image.setImageFileName(item.getName());
-					image.setImageFileSize(item.getSize());
-					image.setContentStream(content);
-					image.setContentType(item.getContentType());
-					LOGGER.log(Level.INFO, "Storing image: [Filename-> " 
-							+ item.getName() + " ]");
-					ImageServiceManager.saveImage(image);
-
-					// Compose an xml message with the full file information
-					// which can be parsed in client side
-					response += "<file-" + cont + "-field>" + 
-						item.getFieldName() + "</file-" + cont + "-field>\n";
-					response += "<file-" + cont + "-name>" + 
-						item.getName() + "</file-" + cont + "-name>\n";
-					response += "<file-" + cont + "-size>" + 
-						item.getSize() + "</file-" + cont + "-size>\n";
-					response += "<file-" + cont + "-type>" + 
-						item.getContentType() + "</file-" + cont + "-type>\n";
-
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					throw new UploadActionException(e);
-				}
-			}
-		}
+//		for (FileItem item: sessionFiles){
+//			if (false == item.isFormField()){
+//				cont++;
+//				try {
+//					// Save a temporary file in the default system temp directory
+//					File uploadedFile = File.createTempFile("upload-", ".bin");
+//
+//					item.write(uploadedFile);
+//
+//					FileInputStream content = new FileInputStream(uploadedFile);
+//					BinaryImage image = new BinaryImage();
+//					image.setImageFileName(item.getName());
+//					image.setImageFileSize(item.getSize());
+//					image.setContentStream(content.);
+//					image.setContentType(item.getContentType());
+//					LOGGER.log(Level.INFO, "Storing image: [Filename-> "
+//							+ item.getName() + " ]");
+//					ImageServiceManager.saveImage(image);
+//
+//					// Compose an xml message with the full file information
+//					// which can be parsed in client side
+//					response += "<file-" + cont + "-field>" +
+//						item.getFieldName() + "</file-" + cont + "-field>\n";
+//					response += "<file-" + cont + "-name>" +
+//						item.getName() + "</file-" + cont + "-name>\n";
+//					response += "<file-" + cont + "-size>" +
+//						item.getSize() + "</file-" + cont + "-size>\n";
+//					response += "<file-" + cont + "-type>" +
+//						item.getContentType() + "</file-" + cont + "-type>\n";
+//
+//				} catch (Exception e) {
+//					// TODO Auto-generated catch block
+//					throw new UploadActionException(e);
+//				}
+//			}
+//		}
 		// Remove files from session because we have a copy of them
 		removeSessionFileItems(request);
 		

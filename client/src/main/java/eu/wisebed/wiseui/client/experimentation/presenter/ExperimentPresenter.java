@@ -15,9 +15,9 @@ import eu.wisebed.wiseui.api.ExperimentationServiceAsync;
 import eu.wisebed.wiseui.client.experimentation.util.StringTimer;
 import eu.wisebed.wiseui.client.experimentation.view.ExperimentView;
 import eu.wisebed.wiseui.client.experimentation.view.ExperimentView.Presenter;
-import eu.wisebed.wiseui.shared.ExperimentMessage;
-import eu.wisebed.wiseui.shared.ExperimentMessage.ExperimentMessageType;
-import eu.wisebed.wiseui.shared.SensorDetails;
+import eu.wisebed.wiseui.shared.dto.ExperimentMessage;
+import eu.wisebed.wiseui.shared.dto.ExperimentMessage.ExperimentMessageType;
+import eu.wisebed.wiseui.shared.dto.Node;
 import eu.wisebed.wiseui.shared.exception.ExperimentationException;
 
 
@@ -77,7 +77,7 @@ public class ExperimentPresenter implements Presenter {
 	private int reservationID;
 	private Date startDate;
 	private Date stopDate;
-	private Set<SensorDetails> sensors;
+	private Set<Node> sensors;
 	private List<String> urns;
 	private Timer reservationStartTimer = null;	// TODO GINject those two timers
 	private Timer reservationStopTimer = null;		// TODO GINject all those fuc..
@@ -99,7 +99,7 @@ public class ExperimentPresenter implements Presenter {
     }
     
     public void initialize(final int reservationID,
-    		final Date startDate,final Date stopDate,final Set<SensorDetails> sensors,
+    		final Date startDate,final Date stopDate,final Set<Node> sensors,
     		final String imageFileName,final String urnPrefix,
     		final Callback callback) {
     	
@@ -109,8 +109,8 @@ public class ExperimentPresenter implements Presenter {
     	this.stopDate = stopDate;
     	this.sensors = sensors;
 		this.urns = new ArrayList<String>();
-		for(SensorDetails s : sensors) {
-			urns.add(s.getUrn());
+		for(Node s : sensors) {
+			urns.add(s.getId());
 		}
     	this.imageFileName = imageFileName;
     	this.urnPrefix = urnPrefix;
@@ -367,7 +367,7 @@ public class ExperimentPresenter implements Presenter {
 	
 	private final void getExperimentMessage() {
 		// setup callback
-		final AsyncCallback<ExperimentMessage> callback 
+		final AsyncCallback<ExperimentMessage> callback
 			= new AsyncCallback<ExperimentMessage>(){
 
 				@Override
@@ -462,7 +462,7 @@ public class ExperimentPresenter implements Presenter {
 		return stopDate;
 	}
 
-	public Set<SensorDetails> getSensors() {
+	public Set<Node> getSensors() {
 		return sensors;
 	}
 	

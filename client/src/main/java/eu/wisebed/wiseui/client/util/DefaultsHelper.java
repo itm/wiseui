@@ -8,10 +8,10 @@ import com.google.common.base.Function;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 
-import eu.wisebed.wiseui.shared.wiseml.Defaults;
-import eu.wisebed.wiseui.shared.wiseml.Node;
-import eu.wisebed.wiseui.shared.wiseml.NodeProperties;
-import eu.wisebed.wiseui.shared.wiseml.Setup;
+import eu.wisebed.wiseui.shared.dto.Defaults;
+import eu.wisebed.wiseui.shared.dto.Node;
+import eu.wisebed.wiseui.shared.dto.NodeProperties;
+import eu.wisebed.wiseui.shared.dto.Setup;
 
 
 /**

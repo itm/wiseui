@@ -2,9 +2,8 @@ package eu.wisebed.wiseui.server.util;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Date;
 import java.util.Random;
-
-import org.apache.tools.ant.types.resources.selectors.Date;
 
 public abstract class URLUtil {
 	
@@ -36,7 +35,7 @@ public abstract class URLUtil {
 
     public static String getRandomURLSuffix(final String key){
     	Date now = new Date();
-    	Integer millis = new Integer((int)now.getMillis());
+    	Integer millis = (int) now.getTime();
     	return (millis.toString() + key);
     }
 

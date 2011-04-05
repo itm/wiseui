@@ -11,12 +11,15 @@ import eu.wisebed.testbed.api.wsn.WSNServiceHelper;
 import eu.wisebed.testbed.api.wsn.v22.SessionManagement;
 import eu.wisebed.wiseui.api.SessionManagementService;
 import eu.wisebed.wiseui.shared.exception.WisemlException;
-import eu.wisebed.wiseui.shared.wiseml.Wiseml;
+import eu.wisebed.wiseui.shared.dto.Wiseml;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Singleton
 public class SessionManagementServiceImpl extends RemoteServiceServlet implements SessionManagementService {
 
     private static final long serialVersionUID = 784455164992864141L;
+    private static final Logger LOGGER = LoggerFactory.getLogger(SessionManagementServiceImpl.class);
     private final Mapper mapper;
 
     @Inject
@@ -30,6 +33,7 @@ public class SessionManagementServiceImpl extends RemoteServiceServlet implement
             final eu.wisebed.ns.wiseml._1.Wiseml wiseml = WiseMLHelper.deserialize(getWisemlAsXml(url));
             return mapper.map(wiseml, Wiseml.class);
         } catch (final Exception e) {
+            LOGGER.error("Unable to load Wiseml from " + url, e);
             throw new WisemlException("Unable to load Wiseml from " + url, e);
         }
     }
@@ -40,7 +44,8 @@ public class SessionManagementServiceImpl extends RemoteServiceServlet implement
 			final SessionManagement sessionManagement = WSNServiceHelper.getSessionManagementService(url);
 			return sessionManagement.getNetwork();
 		} catch (final Exception e) {
+            LOGGER.error("Unable to load Wiseml from " + url, e);
 			throw new WisemlException("Unable to load Wiseml from " + url, e);
 		}
-	}
+    }
 }

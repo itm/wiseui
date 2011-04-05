@@ -5,7 +5,7 @@ import java.util.Arrays;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import com.google.inject.servlet.ServletModule;
-
+import eu.wisebed.wiseui.api.PersistenceService;
 import eu.wisebed.wiseui.server.rpc.ExperimentationServiceImpl;
 import eu.wisebed.wiseui.server.rpc.ImageUploadServiceImpl;
 import eu.wisebed.wiseui.server.rpc.ReservationServiceImpl;
@@ -14,6 +14,8 @@ import eu.wisebed.wiseui.server.rpc.SessionManagementServiceImpl;
 import eu.wisebed.wiseui.server.rpc.TestbedConfigurationServiceImpl;
 import org.dozer.DozerBeanMapper;
 import org.dozer.Mapper;
+
+import java.util.Arrays;
 
 public class WiseUiGuiceServletModule extends ServletModule {
 
@@ -29,7 +31,19 @@ public class WiseUiGuiceServletModule extends ServletModule {
     
     @Singleton
     @Provides
+    /**
+     * Provides an configured instance of the {@link DozerBeanMapper}.
+     */
     public Mapper provideMapper() {
     	return new DozerBeanMapper(Arrays.asList("dozer-bean-mappings.xml"));
+    }
+
+    @Singleton
+    @Provides
+    /**
+     *  Provides an configured instance of the {@link PersistenceService}.
+     */
+    public PersistenceService providePersistenceService() {
+        return PersistenceServiceProvider.providePersistenceService();
     }
 }

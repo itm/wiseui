@@ -1,6 +1,6 @@
 package eu.wisebed.wiseui.client.util;
 
-import eu.wisebed.wiseui.shared.wiseml.Coordinate;
+import eu.wisebed.wiseui.shared.dto.Coordinate;
 
 
 /**

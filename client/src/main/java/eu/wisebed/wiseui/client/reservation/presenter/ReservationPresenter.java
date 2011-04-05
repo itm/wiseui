@@ -1,6 +1,7 @@
 package eu.wisebed.wiseui.client.reservation.presenter;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
@@ -26,13 +27,13 @@ import eu.wisebed.wiseui.client.reservation.event.TestbedSelectedChangedEventHan
 import eu.wisebed.wiseui.client.reservation.view.ReservationView;
 import eu.wisebed.wiseui.client.reservation.view.ReservationView.Presenter;
 import eu.wisebed.wiseui.client.util.AuthenticationManager;
-import eu.wisebed.wiseui.shared.ReservationDetails;
-import eu.wisebed.wiseui.shared.SensorDetails;
-import eu.wisebed.wiseui.shared.TestbedConfiguration;
+import eu.wisebed.wiseui.shared.dto.Node;
+import eu.wisebed.wiseui.shared.dto.ReservationDetails;
+import eu.wisebed.wiseui.shared.dto.TestbedConfiguration;
 import eu.wisebed.wiseui.shared.exception.AuthenticationException;
 import eu.wisebed.wiseui.shared.exception.ReservationConflictException;
 import eu.wisebed.wiseui.shared.exception.ReservationException;
-import eu.wisebed.wiseui.shared.wiseml.SecretAuthenticationKey;
+import eu.wisebed.wiseui.shared.dto.SecretAuthenticationKey;
 import eu.wisebed.wiseui.widgets.messagebox.MessageBox;
 
 public class ReservationPresenter implements Presenter, LoginRequiredEventHandler,
@@ -96,16 +97,17 @@ public class ReservationPresenter implements Presenter, LoginRequiredEventHandle
 	 */
 	public void getNetwork(final String sessionManagementEndpointUrl) {
 		reservationService.getNodeList(sessionManagementEndpointUrl,
-				new AsyncCallback<ArrayList<SensorDetails>>(){
+				new AsyncCallback<List<Node>>(){
 			public void onFailure(Throwable caught){
 				GWT.log("Failed rpc");
 			}
-			public void onSuccess(ArrayList<SensorDetails> nodeList){
+			public void onSuccess(List<Node> nodeList){
 				if(nodeList==null){
 					MessageBox.error(Messages.NO_NODES_RETURNED_TITLE,
 							Messages.NO_NODES_RETURNED, null, null);
 				}else{
-					injector.getNewReservationView().renderNodes(nodeList);
+                    // TODO FIXME!
+					//injector.getNewReservationView().renderNodes(nodeList);
 				}
 			}
 		});

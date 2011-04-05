@@ -9,6 +9,7 @@ import java.util.concurrent.Executors;
 import javax.jws.WebService;
 import javax.xml.ws.Endpoint;
 
+import eu.wisebed.wiseui.shared.dto.ExperimentMessage;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
@@ -26,7 +27,6 @@ import eu.wisebed.testbed.api.wsn.v22.WSN;
 import eu.wisebed.testbed.api.wsn.v22.SessionManagement;
 import eu.wisebed.wiseui.server.util.APIKeysUtil;
 import eu.wisebed.wiseui.server.util.URLUtil;
-import eu.wisebed.wiseui.shared.ExperimentMessage;
 import eu.wisebed.wiseui.shared.exception.ExperimentationException;
 
 @WebService(serviceName = "ControllerService", 

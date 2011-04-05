@@ -21,7 +21,7 @@ import eu.wisebed.wiseui.client.administration.view.ConfigurationFormView;
 import eu.wisebed.wiseui.client.administration.view.ConfigurationFormView.Presenter;
 import eu.wisebed.wiseui.client.testbedselection.event.ConfigurationSelectedEvent;
 import eu.wisebed.wiseui.client.testbedselection.event.ConfigurationSelectedEvent.ConfigurationSelectedHandler;
-import eu.wisebed.wiseui.shared.TestbedConfiguration;
+import eu.wisebed.wiseui.shared.dto.TestbedConfiguration;
 
 /**
  * Presenter implementation for the configuration form.

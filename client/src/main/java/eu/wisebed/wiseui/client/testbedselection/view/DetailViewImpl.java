@@ -17,7 +17,7 @@ import com.google.gwt.view.client.HasData;
 import com.google.gwt.view.client.TreeViewModel;
 import com.google.inject.Singleton;
 
-import eu.wisebed.wiseui.shared.wiseml.Capability;
+import eu.wisebed.wiseui.shared.dto.Capability;
 import eu.wisebed.wiseui.widgets.CaptionPanel;
 import eu.wisebed.wiseui.widgets.loading.HasLoadingIndicator;
 

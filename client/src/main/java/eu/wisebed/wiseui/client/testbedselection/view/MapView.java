@@ -6,7 +6,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 import com.google.inject.ImplementedBy;
 
 import eu.wisebed.wiseui.client.testbedselection.TestbedSelectionPlace;
-import eu.wisebed.wiseui.shared.wiseml.Coordinate;
+import eu.wisebed.wiseui.shared.dto.Coordinate;
 import eu.wisebed.wiseui.widgets.loading.HasLoadingIndicator;
 
 @ImplementedBy(MapViewImpl.class)

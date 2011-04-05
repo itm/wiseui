@@ -96,7 +96,7 @@ public class LoginDialogViewImpl extends HasWidgetsDialogBox implements LoginDia
     @UiField
     CellList<UrnPrefixInfo> urnPrefixList;
     @UiField
-    TextBox username;
+    TextBox userName;
     @UiField
     PasswordTextBox password;
     @UiField
@@ -141,7 +141,7 @@ public class LoginDialogViewImpl extends HasWidgetsDialogBox implements LoginDia
 
     @Override
     public HasText getUsernameText() {
-        return username;
+        return userName;
     }
 
     @Override
@@ -151,7 +151,7 @@ public class LoginDialogViewImpl extends HasWidgetsDialogBox implements LoginDia
 
     @Override
     public HasEnabled getUsernameEnabled() {
-        return username;
+        return userName;
     }
 
     @Override

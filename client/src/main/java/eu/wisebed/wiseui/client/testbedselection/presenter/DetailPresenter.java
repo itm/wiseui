@@ -16,11 +16,11 @@ import eu.wisebed.wiseui.client.testbedselection.event.WisemlLoadedEvent;
 import eu.wisebed.wiseui.client.testbedselection.event.WisemlLoadedEvent.WisemlLoadedHandler;
 import eu.wisebed.wiseui.client.testbedselection.view.DetailView;
 import eu.wisebed.wiseui.client.testbedselection.view.DetailView.Presenter;
-import eu.wisebed.wiseui.shared.TestbedConfiguration;
+import eu.wisebed.wiseui.shared.dto.TestbedConfiguration;
 import eu.wisebed.wiseui.shared.exception.WisemlException;
-import eu.wisebed.wiseui.shared.wiseml.Capability;
-import eu.wisebed.wiseui.shared.wiseml.Node;
-import eu.wisebed.wiseui.shared.wiseml.Setup;
+import eu.wisebed.wiseui.shared.dto.Capability;
+import eu.wisebed.wiseui.shared.dto.Node;
+import eu.wisebed.wiseui.shared.dto.Setup;
 
 
 /**

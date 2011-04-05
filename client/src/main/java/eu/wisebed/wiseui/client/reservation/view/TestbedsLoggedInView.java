@@ -9,7 +9,7 @@ import com.google.gwt.view.client.SingleSelectionModel;
 import com.google.inject.ImplementedBy;
 
 import eu.wisebed.wiseui.client.reservation.ReservationPlace;
-import eu.wisebed.wiseui.shared.TestbedConfiguration;
+import eu.wisebed.wiseui.shared.dto.TestbedConfiguration;
 
 @ImplementedBy(TestbedsLoggedInViewImpl.class)
 public interface TestbedsLoggedInView extends IsWidget{

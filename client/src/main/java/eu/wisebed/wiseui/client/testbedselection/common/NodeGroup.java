@@ -3,7 +3,7 @@ package eu.wisebed.wiseui.client.testbedselection.common;
 import java.util.ArrayList;
 import java.util.List;
 
-import eu.wisebed.wiseui.shared.wiseml.Node;
+import eu.wisebed.wiseui.shared.dto.Node;
 
 public class NodeGroup {
 

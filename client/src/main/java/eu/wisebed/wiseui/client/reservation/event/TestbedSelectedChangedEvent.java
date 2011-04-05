@@ -1,8 +1,7 @@
 package eu.wisebed.wiseui.client.reservation.event;
 
 import com.google.gwt.event.shared.GwtEvent;
-
-import eu.wisebed.wiseui.shared.TestbedConfiguration;
+import eu.wisebed.wiseui.shared.dto.TestbedConfiguration;
 
 public class TestbedSelectedChangedEvent extends GwtEvent<TestbedSelectedChangedEventHandler>{
 	public static Type<TestbedSelectedChangedEventHandler> TYPE = 

@@ -44,7 +44,7 @@
                             <tr>
                                 <td>Username:</td>
                                 <td>
-                                    <g:TextBox ui:field="username" styleName="{style.textBox}"/>
+                                    <g:TextBox ui:field="userName" styleName="{style.textBox}"/>
                                 </td>
                             </tr>
                             <tr>

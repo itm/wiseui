@@ -4,7 +4,7 @@ import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;
 
 import eu.wisebed.wiseui.client.administration.event.RemoveConfigurationEvent.RemoveConfigurationHandler;
-import eu.wisebed.wiseui.shared.TestbedConfiguration;
+import eu.wisebed.wiseui.shared.dto.TestbedConfiguration;
 
 public class RemoveConfigurationEvent extends GwtEvent<RemoveConfigurationHandler> {
 

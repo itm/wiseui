@@ -7,14 +7,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import com.google.gwt.user.server.rpc.RemoteServiceServlet;
+import eu.wisebed.wiseui.shared.dto.ExperimentMessage;
+import eu.wisebed.wiseui.shared.dto.ReservationDetails;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
-
-import net.sf.gilead.core.PersistentBeanManager;
-import net.sf.gilead.core.hibernate.HibernateUtil;
-import net.sf.gilead.core.serialization.GwtProxySerialization;
-import net.sf.gilead.core.store.stateless.StatelessProxyStore;
-import net.sf.gilead.gwt.PersistentRemoteService;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -28,22 +25,13 @@ import eu.wisebed.testbed.api.wsn.v22.Program;
 import eu.wisebed.testbed.api.wsn.v22.SessionManagement;
 import eu.wisebed.wiseui.api.ExperimentationService;
 import eu.wisebed.wiseui.server.util.ImageUtil;
-import eu.wisebed.wiseui.server.util.WiseUiHibernateUtil;
 import eu.wisebed.wiseui.server.util.URLUtil;
 import eu.wisebed.wiseui.server.controller.ExperimentController;
-import eu.wisebed.wiseui.server.manager.ImageServiceManager;
-import eu.wisebed.wiseui.server.manager.ReservationServiceManager;
-import eu.wisebed.wiseui.server.manager.TestbedConfigurationManager;
-import eu.wisebed.wiseui.server.model.Image;
-import eu.wisebed.wiseui.shared.ExperimentMessage;
-import eu.wisebed.wiseui.shared.ReservationDetails;
-import eu.wisebed.wiseui.shared.SensorDetails;
-import eu.wisebed.wiseui.shared.TestbedConfiguration;
 import eu.wisebed.wiseui.shared.exception.ExperimentationException;
 import eu.wisebed.wiseui.shared.exception.ReservationException;
 
 @Singleton
-public class ExperimentationServiceImpl extends PersistentRemoteService 
+public class ExperimentationServiceImpl extends RemoteServiceServlet
 	implements ExperimentationService {
 
 	private static final long serialVersionUID = -6301493806193636782L;
@@ -51,23 +39,12 @@ public class ExperimentationServiceImpl extends PersistentRemoteService
 		Logger.getLogger(ExperimentationServiceImpl.class.getName());
 	private List<ExperimentController> experimentControllers = 
 		new ArrayList<ExperimentController>();
-	private HibernateUtil gileadHibernateUtil = new HibernateUtil();
 	private AsyncJobObserver jobs = new AsyncJobObserver(1, TimeUnit.MINUTES);
 	private SessionManagement sessionManagement;
 
 
 	@Inject
 	ExperimentationServiceImpl(){
-		gileadHibernateUtil.setSessionFactory(
-				WiseUiHibernateUtil.getSessionFactory());
-		PersistentBeanManager persistentBeanManager = 
-			new PersistentBeanManager();
-		persistentBeanManager.setPersistenceUtil(gileadHibernateUtil);
-		StatelessProxyStore sps = new StatelessProxyStore();
-		sps.setProxySerializer(new GwtProxySerialization());
-		persistentBeanManager.setProxyStore(sps);
-		setBeanManager(persistentBeanManager);
-		
 		// set controllers
 		setExperimentControllers(new ArrayList<ExperimentController>());
 	}
@@ -82,74 +59,58 @@ public class ExperimentationServiceImpl extends PersistentRemoteService
 		throws ReservationException,ExperimentationException {
 		
 		LOGGER.log(Level.INFO,"Binding controller with id = " + reservationID);
-
-		// fetch reservation from ID
-		ReservationDetails reservation =
-			ReservationServiceManager.fetchReservation(reservationID);
-		if(reservation == null){
-			throw new ReservationException("Reservation not found");
-		}
-		SecretReservationKey key = new SecretReservationKey();
-		key.setSecretReservationKey(reservation.getSecretReservationKey());
-		key.setUrnPrefix(reservation.getUrnPrefix());
 		
-		// format local endpoint url (behind NAT mpousis machine)
-//		String endPointURL = "http://" + 
-//				"94.64.253.30" +
+
+//		// format local endpoint url (standard way)
+//		String endPointURL=null;
+//		try {
+//			endPointURL = "http://" +
+//				InetAddress.getLocalHost().getCanonicalHostName() +
 //				":" + URLUtil.getPort() + "/controller"
 //				+ URLUtil.getRandomURLSuffix(key.getSecretReservationKey());
-		
-		
-		// format local endpoint url (standard way)		
-		String endPointURL=null;
-		try {
-			endPointURL = "http://" + 
-				InetAddress.getLocalHost().getCanonicalHostName() + 
-				":" + URLUtil.getPort() + "/controller"
-				+ URLUtil.getRandomURLSuffix(key.getSecretReservationKey());
-		} catch (UnknownHostException e) {
-			LOGGER.log(Level.FATAL, e);
-			throw new ExperimentationException("Could not publish local " +
-					"controller on" + endPointURL);
-		}
-		
-		// setup experiment controller
-		ExperimentController controller = new ExperimentController();
-		controller.setEndPointURL(endPointURL);
-		controller.setReservationID(reservationID);
-		List<SecretReservationKey> keys = new ArrayList<SecretReservationKey>();
-		keys.add(key);
-		controller.setKeys(keys);
-		List<String> urnPrefixList = new ArrayList<String>();
-		urnPrefixList.add(reservation.getUrnPrefix());
-		List<TestbedConfiguration> testbed = 
-			TestbedConfigurationManager.fetchTestbedByUrn(urnPrefixList);
-		String sessionManagmentURL = 
-			testbed.get(0).getSessionmanagementEndpointUrl();
-		sessionManagement = 
-			WSNServiceHelper.getSessionManagementService(sessionManagmentURL);
-		controller.setSessionManagement(sessionManagement);
-		
-		// publish controller
-		try{
-			controller.publish();
-		} catch (MalformedURLException e) {
-			LOGGER.log(Level.FATAL, e);
-			throw new ExperimentationException(
-					"Could not public local controller on " 
-					+ controller.getEndPointURL() + " (" + e.getMessage() + ")");
-					
-		}
-		LOGGER.log(Level.INFO,"Local controller published on url: " + 
-				controller.getEndPointURL());
-		
-		// start session management
-
-		// controller found
-		controller.startSessionManagement();
-		
-		// add controller to the controllers list
-		experimentControllers.add(controller);		
+//		} catch (UnknownHostException e) {
+//			LOGGER.log(Level.FATAL, e);
+//			throw new ExperimentationException("Could not publish local " +
+//					"controller on" + endPointURL);
+//		}
+//
+//		// setup experiment controller
+//		ExperimentController controller = new ExperimentController();
+//		controller.setEndPointURL(endPointURL);
+//		controller.setReservationID(reservationID);
+//		List<SecretReservationKey> keys = new ArrayList<SecretReservationKey>();
+//		keys.add(key);
+//		controller.setKeys(keys);
+//		List<String> urnPrefixList = new ArrayList<String>();
+//		urnPrefixList.add(reservation.getUrnPrefix());
+//		List<TestbedConfiguration> testbed =
+//			TestbedConfigurationManager.fetchTestbedByUrn(urnPrefixList);
+//		String sessionManagmentURL =
+//			testbed.get(0).getSessionmanagementEndpointUrl();
+//		sessionManagement =
+//			WSNServiceHelper.getSessionManagementService(sessionManagmentURL);
+//		controller.setSessionManagement(sessionManagement);
+//
+//		// publish controller
+//		try{
+//			controller.publish();
+//		} catch (MalformedURLException e) {
+//			LOGGER.log(Level.FATAL, e);
+//			throw new ExperimentationException(
+//					"Could not public local controller on "
+//					+ controller.getEndPointURL() + " (" + e.getMessage() + ")");
+//
+//		}
+//		LOGGER.log(Level.INFO,"Local controller published on url: " +
+//				controller.getEndPointURL());
+//
+//		// start session management
+//
+//		// controller found
+//		controller.startSessionManagement();
+//
+//		// add controller to the controllers list
+//		experimentControllers.add(controller);
 	}
 	
 	/**
@@ -163,58 +124,58 @@ public class ExperimentationServiceImpl extends PersistentRemoteService
 		
 		LOGGER.log(Level.INFO,"Flashing image for controller with id = " + reservationID);
 
-		// get reservation
-		ReservationDetails reservation =
-			ReservationServiceManager.fetchReservation(reservationID);
-
-		//	get image related file name from reservation
-		final String filename = reservation.getImageFileName();
-		final Image image = 
-			ImageServiceManager.fetchImageByFilename(filename);
-	
-		LOGGER.log(Level.INFO, "Image filename \"" + filename +
-				"\" for reservation (" + reservationID +")");
-
-		// Setup for flashing an image
-		// form a node list
-		List<String> nodeURNs = new ArrayList<String>();		
-		for(SensorDetails sensor : reservation.getSensors()){
-			nodeURNs.add(sensor.getUrn());
-		}
-		
-		LOGGER.log(Level.INFO, "Fetched " + nodeURNs.size() + " node URNs");
-		@SuppressWarnings("rawtypes")
-		List programIndices = new ArrayList();		
-		for(int i= 0;i < nodeURNs.size();i++){
-			LOGGER.log(Level.INFO,"Node URN fetched :" + nodeURNs.get(i));
-			programIndices.add(0);
-		}
-
-		// setup image to flash
-		List<Program> programs = new ArrayList<Program>();
-               try {
-			programs.add(ImageUtil.readImage(image,
-			        "iSerial",
-			        "",
-			        "iSense",
-			        "1.0"
-			));
-		} catch (Exception e) {
-			LOGGER.log(Level.FATAL, e);
-			throw new ExperimentationException();
-		}
-
-		ExperimentController controller = 
-			findExperimentControllerByID(reservationID);
-		
-        jobs.submit(new Job(
-        		"flash nodes",
-                controller.getWsn().flashPrograms(
-                		nodeURNs, programIndices, programs),
-                nodeURNs,
-                Job.JobType.flashPrograms
-            ));
-        jobs.join();		
+//		// get reservation
+//		ReservationDetails reservation =
+//			ReservationServiceManager.fetchReservation(reservationID);
+//
+//		//	get image related file name from reservation
+//		final String filename = reservation.getImageFileName();
+//		final Image image =
+//			ImageServiceManager.fetchImageByFilename(filename);
+//
+//		LOGGER.log(Level.INFO, "Image filename \"" + filename +
+//				"\" for reservation (" + reservationID +")");
+//
+//		// Setup for flashing an image
+//		// form a node list
+//		List<String> nodeURNs = new ArrayList<String>();
+//		for(SensorDetails sensor : reservation.getSensors()){
+//			nodeURNs.add(sensor.getUrn());
+//		}
+//
+//		LOGGER.log(Level.INFO, "Fetched " + nodeURNs.size() + " node URNs");
+//		@SuppressWarnings("rawtypes")
+//		List programIndices = new ArrayList();
+//		for(int i= 0;i < nodeURNs.size();i++){
+//			LOGGER.log(Level.INFO,"Node URN fetched :" + nodeURNs.get(i));
+//			programIndices.add(0);
+//		}
+//
+//		// setup image to flash
+//		List<Program> programs = new ArrayList<Program>();
+//               try {
+//			programs.add(ImageUtil.readImage(image,
+//			        "iSerial",
+//			        "",
+//			        "iSense",
+//			        "1.0"
+//			));
+//		} catch (Exception e) {
+//			LOGGER.log(Level.FATAL, e);
+//			throw new ExperimentationException();
+//		}
+//
+//		ExperimentController controller =
+//			findExperimentControllerByID(reservationID);
+//
+//        jobs.submit(new Job(
+//        		"flash nodes",
+//                controller.getWsn().flashPrograms(
+//                		nodeURNs, programIndices, programs),
+//                nodeURNs,
+//                Job.JobType.flashPrograms
+//            ));
+//        jobs.join();
 	}
 
 	@Override
@@ -244,7 +205,7 @@ public class ExperimentationServiceImpl extends PersistentRemoteService
 	 * @param <code>reservationID</code>, a reservation ID for an experiment
 	 */
 	@Override
-	public ExperimentMessage getNextUndeliveredMessage(final int reservationID) 
+	public ExperimentMessage getNextUndeliveredMessage(final int reservationID)
 		throws ExperimentationException {
 		
 		ExperimentController controller = findExperimentControllerByID(reservationID);

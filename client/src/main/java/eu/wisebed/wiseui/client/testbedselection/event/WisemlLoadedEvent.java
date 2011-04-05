@@ -3,7 +3,7 @@ package eu.wisebed.wiseui.client.testbedselection.event;
 import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;
 import eu.wisebed.wiseui.client.testbedselection.event.WisemlLoadedEvent.WisemlLoadedHandler;
-import eu.wisebed.wiseui.shared.wiseml.Wiseml;
+import eu.wisebed.wiseui.shared.dto.Wiseml;
 
 public class WisemlLoadedEvent extends GwtEvent<WisemlLoadedHandler> {
 

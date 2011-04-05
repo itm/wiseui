@@ -14,8 +14,8 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Singleton;
 
-import eu.wisebed.wiseui.shared.ReservationDetails;
-import eu.wisebed.wiseui.shared.SensorDetails;
+import eu.wisebed.wiseui.shared.dto.ReservationDetails;
+import eu.wisebed.wiseui.shared.dto.Node;
 import eu.wisebed.wiseui.widgets.CalendarWidget;
 import eu.wisebed.wiseui.widgets.ImageUploadWidget;
 import eu.wisebed.wiseui.widgets.SensorListWidget;
@@ -76,10 +76,10 @@ public class NewReservationViewImpl extends Composite implements NewReservationV
 		Date date = getDateValue();
 		Integer[] startTimeInt = getStartTime();
 		Integer[] stopTimeInt = getStopTime();
-		List<SensorDetails> sensors = getNodesSelected();
+		List<Node> sensors = getNodesSelected();
 		List<String> sensorUrns = new ArrayList<String>();
-		for(SensorDetails s: sensors ){
-			sensorUrns.add(s.getUrn());
+		for(Node s: sensors ){
+			sensorUrns.add(s.getId());
 		}
 		Date startTime = new Date(date.getYear() - 1900, date.getMonth(),
 				date.getDate(), startTimeInt[0], startTimeInt[1]);
@@ -94,8 +94,9 @@ public class NewReservationViewImpl extends Composite implements NewReservationV
 		
 	}
 
-	public void renderNodes(ArrayList<SensorDetails> nodes) {
-		sensorListWidget.renderNodes(nodes);
+	public void renderNodes(List<Node> nodes) {
+		// TODO FIXME
+		//sensorListWidget.renderNodes(nodes);
 	}
 
 	public Date getDateValue(){
@@ -127,7 +128,7 @@ public class NewReservationViewImpl extends Composite implements NewReservationV
 	/**
 	 * Get nodes selected in cell list
 	 */
-	public ArrayList<SensorDetails> getNodesSelected() {
+	public ArrayList<Node> getNodesSelected() {
 		return sensorListWidget.getNodesSelected();
 	}
 

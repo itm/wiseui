@@ -16,11 +16,9 @@ import eu.wisebed.wiseui.client.WiseUiGinjector;
 import eu.wisebed.wiseui.client.experimentation.view.ExperimentView;
 import eu.wisebed.wiseui.client.experimentation.view.ExperimentationView;
 import eu.wisebed.wiseui.client.experimentation.view.ExperimentationView.Presenter;
-import eu.wisebed.wiseui.client.experimentation.presenter.ExperimentPresenter.Button;
-import eu.wisebed.wiseui.client.experimentation.presenter.ExperimentPresenter.Callback;
-import eu.wisebed.wiseui.shared.ReservationDetails;
+import eu.wisebed.wiseui.shared.dto.ReservationDetails;
 import eu.wisebed.wiseui.shared.exception.ExperimentationException;
-import eu.wisebed.wiseui.shared.wiseml.SecretAuthenticationKey;
+import eu.wisebed.wiseui.shared.dto.SecretAuthenticationKey;
 import eu.wisebed.wiseui.widgets.messagebox.MessageBox;
 
 
@@ -92,30 +90,31 @@ public class ExperimentationPresenter implements Presenter{
 				for(ReservationDetails reservation : result) {
 					final ExperimentPresenter experiment = injector.getExperimentPresenter();
 
-					experiment.initialize(reservation.getReservationid(),
-							reservation.getStartTime(), reservation.getStopTime(),
-							reservation.getSensors(),
-							reservation.getImageFileName(), 
-							reservation.getUrnPrefix(),new Callback() { // TODO GINject callback to experiment presenter
-
-						@Override
-						public void onButtonClicked(Button button) {
-							switch(button){
-							case START:
-								experiment.setAsRunningExperiment();
-								break;
-							case STOP:
-								experiment.setAsTerminatedExperiment();
-								break;
-							case SHOWHIDE:
-								experiment.getView().showHideNodeOutput();
-								break;
-							case CANCEL:
-								experiment.setAsCancelledExperiment();
-								break;
-							}
-						} 
-					});
+                    // TODO FIXME
+//					experiment.initialize(reservation.getReservationid(),
+//							reservation.getStartTime(), reservation.getStopTime(),
+//							reservation.getSensors(),
+//							reservation.getImageFileName(),
+//							reservation.getUrnPrefix(),new Callback() { // TODO GINject callback to experiment presenter
+//
+//						@Override
+//						public void onButtonClicked(Button button) {
+//							switch(button){
+//							case START:
+//								experiment.setAsRunningExperiment();
+//								break;
+//							case STOP:
+//								experiment.setAsTerminatedExperiment();
+//								break;
+//							case SHOWHIDE:
+//								experiment.getView().showHideNodeOutput();
+//								break;
+//							case CANCEL:
+//								experiment.setAsCancelledExperiment();
+//								break;
+//							}
+//						}
+//					});
 					experimentViews.add(experiment.getView());
 					
 					// fist clear the experiment container and then add the new panels
@@ -126,6 +125,6 @@ public class ExperimentationPresenter implements Presenter{
 		};
 
 		// make the rpc
-		service.getUserReservations(key,callback);
+		service.getUserReservations(key, callback);
 	}
 }

@@ -19,7 +19,9 @@ import com.google.gwt.view.client.Range;
 import com.google.gwt.view.client.RangeChangeEvent;
 import com.google.gwt.view.client.SelectionChangeEvent;
 
-import eu.wisebed.wiseui.shared.SensorDetails;
+import eu.wisebed.wiseui.shared.dto.Node;
+import eu.wisebed.wiseui.shared.dto.SensorDetails;
+import eu.wisebed.wiseui.shared.dto.SensorDetails;
 
 
 public class SensorListWidget extends Composite implements SensorList{
@@ -111,8 +113,10 @@ public class SensorListWidget extends Composite implements SensorList{
 	/**
 	 * Get nodes selected in cell list
 	 */
-	public ArrayList<SensorDetails> getNodesSelected() {
-		return new ArrayList<SensorDetails>(selectionModel.getSelectedSet());
+	public ArrayList<Node> getNodesSelected() {
+		// TODO FIXME
+		//return new ArrayList<Node>(selectionModel.getSelectedSet());
+        return new ArrayList<Node>();
 	}
 
 	public void setListener(Presenter listener) {

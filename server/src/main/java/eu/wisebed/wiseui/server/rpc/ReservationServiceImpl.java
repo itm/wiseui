@@ -3,88 +3,49 @@ package eu.wisebed.wiseui.server.rpc;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
 
-import javax.xml.datatype.DatatypeConfigurationException;
-import javax.xml.datatype.DatatypeFactory;
-
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
-import org.joda.time.DateTime;
-
-import net.sf.gilead.core.PersistentBeanManager;
-import net.sf.gilead.core.hibernate.HibernateUtil;
-import net.sf.gilead.core.serialization.GwtProxySerialization;
-import net.sf.gilead.core.store.stateless.StatelessProxyStore;
-import net.sf.gilead.gwt.PersistentRemoteService;
-
+import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-import eu.wisebed.testbed.api.rs.RSServiceHelper;
-import eu.wisebed.testbed.api.rs.v1.AuthorizationExceptionException;
-import eu.wisebed.testbed.api.rs.v1.ConfidentialReservationData;
-import eu.wisebed.testbed.api.rs.v1.Data;
-import eu.wisebed.testbed.api.rs.v1.RS;
-import eu.wisebed.testbed.api.rs.v1.RSExceptionException;
-import eu.wisebed.testbed.api.rs.v1.ReservervationConflictExceptionException;
-import eu.wisebed.testbed.api.rs.v1.SecretReservationKey;
-import eu.wisebed.testbed.api.snaa.v1.SecretAuthenticationKey;
 import eu.wisebed.testbed.api.wsn.WSNServiceHelper;
+import eu.wisebed.testbed.api.wsn.v22.SecretReservationKey;
 import eu.wisebed.testbed.api.wsn.v22.SessionManagement;
 import eu.wisebed.wiseui.api.ReservationService;
-import eu.wisebed.wiseui.server.manager.ReservationServiceManager;
-import eu.wisebed.wiseui.server.manager.SNAAManager;
-import eu.wisebed.wiseui.server.util.APIKeysUtil;
-import eu.wisebed.wiseui.server.util.WiseMLInfoExtractor;
-import eu.wisebed.wiseui.server.util.WiseUiHibernateUtil;
-import eu.wisebed.wiseui.shared.AuthenticationDetails;
-import eu.wisebed.wiseui.shared.ReservationDetails;
-import eu.wisebed.wiseui.shared.SensorDetails;
+//import eu.wisebed.wiseui.server.util.WiseMLInfoExtractor;
+import eu.wisebed.wiseui.shared.dto.Node;
+import eu.wisebed.wiseui.shared.dto.ReservationDetails;
+import eu.wisebed.wiseui.shared.dto.SecretAuthenticationKey;
+import eu.wisebed.wiseui.shared.dto.SensorDetails;
 import eu.wisebed.wiseui.shared.exception.AuthenticationException;
 import eu.wisebed.wiseui.shared.exception.ReservationConflictException;
 import eu.wisebed.wiseui.shared.exception.ReservationException;
 
 
 @Singleton
-public class ReservationServiceImpl extends PersistentRemoteService 
-	implements ReservationService {	
-	
-	
-	private static final long serialVersionUID = -7715272862718944674L;
-	private static final Logger LOGGER = Logger.getLogger(
-			ReservationServiceImpl.class.getName());
+public class ReservationServiceImpl extends RemoteServiceServlet implements ReservationService {
 
-	private HibernateUtil gileadHibernateUtil = new HibernateUtil();
-	/**
-	 * Constructor
-	 */
+	private static final long serialVersionUID = -7715272862718944674L;
+
 	@Inject
 	public ReservationServiceImpl() {
-		gileadHibernateUtil.setSessionFactory(
-				WiseUiHibernateUtil.getSessionFactory());
-		PersistentBeanManager persistentBeanManager = 
-			new PersistentBeanManager();
-		persistentBeanManager.setPersistenceUtil(gileadHibernateUtil);
-		StatelessProxyStore sps = new StatelessProxyStore();
-		sps.setProxySerializer(new GwtProxySerialization());
-		persistentBeanManager.setProxyStore(sps);
-		setBeanManager(persistentBeanManager);
 	}
 
 	/**
 	 * Retrieves network from the WISEBED web services of a testbed.
 	 * @return <code>ArrayList</code> with sensor information.
 	 */
-	public ArrayList<SensorDetails> getNodeList(
+	public List<Node> getNodeList(
 			final String sessionManagementEndpointUrl) {
 
 		SessionManagement sessionManagement = WSNServiceHelper.
 			getSessionManagementService(sessionManagementEndpointUrl); 
 	    String serializedWiseML = sessionManagement.getNetwork();
-		ArrayList<SensorDetails> nodeList= WiseMLInfoExtractor.
-			getNodeList(serializedWiseML);
-	    ReservationServiceManager.saveSensorInfrastructure(nodeList);
+
+        // TODO FIXME!!!
+        ArrayList<Node> nodeList= null;
+        //WiseMLInfoExtractor.
+		//	getNodeList(serializedWiseML);
 	    
 	    return nodeList;
 	}
@@ -96,87 +57,12 @@ public class ReservationServiceImpl extends PersistentRemoteService
 	 * containing the necessary information to make a reservation.
 	 */
 	// TODO remove return make this method void
-	public String makeReservation(
-			final eu.wisebed.wiseui.shared.wiseml.SecretAuthenticationKey secretAuthenticationKey,
-			final String rsEndpointUrl,
-			final ReservationDetails rsData)
-		throws AuthenticationException,ReservationException,
-			ReservationConflictException {
-		
-		// TODO after the joda implementation do we really need the duration 
-		//to be sent from client or calculated right here?
-		final long durationInSeconds =
-			TimeUnit.SECONDS.toSeconds(rsData.getDuration());
-		final DateTime startTime = new DateTime(rsData.getStartTime());
-		final DateTime stopTime =  new DateTime(rsData.getStopTime());
-		
-		final List<SecretAuthenticationKey> secretAuthKeys = 
-			new ArrayList<SecretAuthenticationKey>();
-		SecretAuthenticationKey snaaKey = new SecretAuthenticationKey();
-		snaaKey.setSecretAuthenticationKey(secretAuthenticationKey.
-				getSecretAuthenticationKey());
-		AuthenticationDetails authenticationDetails = 
-			SNAAManager.fetchUserBySecretAuthenticationKey(
-				secretAuthenticationKey.getSecretAuthenticationKey());
-		snaaKey.setUrnPrefix(secretAuthenticationKey.getUrnPrefix());
-		snaaKey.setUsername(secretAuthenticationKey.getUsername());
-		secretAuthKeys.add(snaaKey);
-
-		// reservation system proxy
-		RS rs = RSServiceHelper.getRSService(rsEndpointUrl);
-
-		// generate confidential reservation data
-		ConfidentialReservationData reservationData = 
-			new ConfidentialReservationData();
-		Data data = new Data();
-		data.setUrnPrefix(snaaKey.getUrnPrefix());
-		data.setUsername(authenticationDetails.getUsername());
-		reservationData.getData().add(data);
-		reservationData.setUserData("WiseUi");
-		reservationData.getNodeURNs().addAll(rsData.getNodes());
-		
-		DatatypeFactory datatypeFactory;
-		try {
-			datatypeFactory = DatatypeFactory.newInstance();
-		} catch (DatatypeConfigurationException e) {
-			throw new ReservationException("An error occured while extracting" +
-					" reservation from the database");
-		}
-		reservationData.setFrom(datatypeFactory.newXMLGregorianCalendar(
-			startTime.toGregorianCalendar())
-		);
-		reservationData.setTo(datatypeFactory.newXMLGregorianCalendar(
-			stopTime.toGregorianCalendar())
-		);
-		
-		// retrieve secret reservation keys
-		List<SecretReservationKey> secretReservationKeys = null;
-		try {
-			secretReservationKeys = rs.makeReservation(
-					APIKeysUtil.copySnaaToRs(secretAuthKeys),
-					reservationData
-			);
-		} catch (AuthorizationExceptionException e) {
-			throw new AuthenticationException("Not authorized for reservation");
-		} catch (RSExceptionException e) {
-			throw new ReservationException("RS exception");
-		} catch (ReservervationConflictExceptionException e) {
-			throw new ReservationConflictException("Reservation conflict");
-		}
-		rsData.setSecretReservationKey(
-				secretReservationKeys.get(0).getSecretReservationKey());
-		rsData.setUrnPrefix(
-				secretReservationKeys.get(0).getUrnPrefix());
-
-		// save reservation
-		ReservationServiceManager.saveReservation(
-				authenticationDetails.getUserid(), rsData);
-		
-	    LOGGER.log(Level.INFO, "Successfully reserved the following nodes: {" + 
-	    		rsData.getNodes() + "}" + "for " + durationInSeconds +
-	    		" seconds");
-	    
-	    return "OK";	
+	public String makeReservation(SecretAuthenticationKey secretAuthenticationKey,
+                           String rsEndpointUrl, ReservationDetails data)
+            throws AuthenticationException, ReservationException,
+            ReservationConflictException {
+		// TODO: Add functionality while integrating
+		return "OK";
 	}
 	
 	/**
@@ -198,30 +84,30 @@ public class ReservationServiceImpl extends PersistentRemoteService
 	 * @return an <code>ArrayList</code> of <code>ReservationDetails</code>. 
 	 * objects that are the reservations madey by a user.
 	 */
-	public final List<ReservationDetails> getUserReservations( 
-			final eu.wisebed.wiseui.shared.wiseml.SecretAuthenticationKey secretAuthenticationKey
-			) throws ReservationException {
-
-		// identify user from secretAuthenticationKey
-		AuthenticationDetails authenticationDetails = 
-			SNAAManager.fetchUserBySecretAuthenticationKey(
-				secretAuthenticationKey.getSecretAuthenticationKey());
-
-		// get reservations of the user
-		List<ReservationDetails> result = 
-			ReservationServiceManager.fetchAllReservationsByUser(
-					authenticationDetails.getUserid());
-		
-		// if empty return null
-		if(result.isEmpty() || result == null)
-			return null;
-		
-		return result;
+	public final List<ReservationDetails> getUserReservations(
+			final SecretAuthenticationKey key) throws ReservationException {
+		// TODO: Add functionality while integrating
+		return null;
 	}
 	
 	// TODO methods below that point save/fetch data to/from DB we need to place
 	// some should be public others private . Those public should be placed to 
 	// another class file exposed to other servlets
+	
+	/**
+	 * Persist reservation details given. Also take care of constructing the
+	 * corresponding associations between sensors and reservations. Each 
+	 * reservation could bind multiple sensors. First fetch all sensor details
+	 * and then create the association and store reservation details.
+	 * @param <code>userID</code>, a user ID.
+	 * @param <code>reservation</code>, the reservation to save into the 
+	 * persistent store.
+	 */
+	public final static void saveReservation(final int userID,
+			final ReservationDetails reservation){
+
+		// TODO: Add functionality while integrating
+	}
 		
 	/**
 	 * Given a list of the sensor IDs fetch all sensor details with the
@@ -255,6 +141,27 @@ public class ReservationServiceImpl extends PersistentRemoteService
 	 * @param <code>reservationID</code>, ID of a reservationID.
 	 */
 	private static final void deleteReservation(final int reservationID){
+		// TODO: Add functionality while integrating
+	}
+	
+	/**
+	 * Given a user ID fetch all reservations have been made for client with
+	 * this ID
+	 * @param <code>userID</code>, a user ID.
+	 * @return a <code>List</code> containing <code>ReservationDetails</code>
+	 */
+	public final static ArrayList<ReservationDetails> 
+		fetchAllReservationsForUser(final int userID){
+		// TODO: Add functionality while integrating
+		return null;
+	}
+
+	/**
+	 * Temporarily populating sensors' table. Just keep a record of the 
+	 * existing sensor infrastructure for development needs.
+	 */
+	private final static void saveSensorInfrastructure(
+			final ArrayList<SensorDetails> sensors){
 		// TODO: Add functionality while integrating
 	}
 	

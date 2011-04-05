@@ -20,7 +20,7 @@ import eu.wisebed.wiseui.client.administration.event.CreateConfigurationEvent.Cr
 import eu.wisebed.wiseui.client.testbedselection.event.ConfigurationSelectedEvent;
 import eu.wisebed.wiseui.client.testbedselection.view.ConfigurationView;
 import eu.wisebed.wiseui.client.testbedselection.view.ConfigurationView.Presenter;
-import eu.wisebed.wiseui.shared.TestbedConfiguration;
+import eu.wisebed.wiseui.shared.dto.TestbedConfiguration;
 
 /**
  * Presenter for the testbed configuration view of the administration part.

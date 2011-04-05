@@ -112,6 +112,7 @@
                                 <goals>
                                     <goal>generateAsync</goal>
                                     <goal>compile</goal>
+                                    <!--goal>test</goal-->
                                     <goal>resources</goal>
                                 </goals>
                             </execution>
@@ -120,9 +121,6 @@
                             <runTarget>WiseUi.html</runTarget>
                             <hostedWebapp>${webappDirectory}</hostedWebapp>
                             <debugSuspend>false</debugSuspend>
-                            <compileSourcesArtifacts>
-                                <artifact>com.alexgorbatchev:gwt-syntaxhighlighter</artifact>
-                            </compileSourcesArtifacts>
                         </configuration>
                     </plugin>
                     <!-- Copy static web files before executing gwt:run -->

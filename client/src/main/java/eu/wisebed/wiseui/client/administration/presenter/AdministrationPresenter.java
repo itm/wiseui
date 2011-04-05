@@ -12,7 +12,7 @@ import eu.wisebed.wiseui.client.administration.view.AdministrationView;
 import eu.wisebed.wiseui.client.administration.view.AdministrationView.Presenter;
 import eu.wisebed.wiseui.client.testbedselection.event.ConfigurationSelectedEvent;
 import eu.wisebed.wiseui.client.testbedselection.event.ConfigurationSelectedEvent.ConfigurationSelectedHandler;
-import eu.wisebed.wiseui.shared.TestbedConfiguration;
+import eu.wisebed.wiseui.shared.dto.TestbedConfiguration;
 
 public class AdministrationPresenter implements Presenter, ConfigurationSelectedHandler {
 
