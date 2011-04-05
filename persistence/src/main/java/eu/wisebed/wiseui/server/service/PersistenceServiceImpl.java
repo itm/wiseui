@@ -1,8 +1,11 @@
 package eu.wisebed.wiseui.server.service;
 
 import eu.wisebed.wiseui.api.PersistenceService;
+import eu.wisebed.wiseui.server.dao.BinaryImageDao;
 import eu.wisebed.wiseui.server.dao.TestbedConfigurationDao;
+import eu.wisebed.wiseui.server.domain.BinaryImageBo;
 import eu.wisebed.wiseui.server.domain.TestbedConfigurationBo;
+import eu.wisebed.wiseui.shared.dto.BinaryImage;
 import eu.wisebed.wiseui.shared.dto.TestbedConfiguration;
 import eu.wisebed.wiseui.shared.common.Preconditions;
 import org.dozer.DozerBeanMapper;
@@ -27,6 +30,9 @@ public class PersistenceServiceImpl implements PersistenceService {
 
     @Autowired
     private TestbedConfigurationDao testbedConfigurationDao;
+
+    @Autowired
+    private BinaryImageDao binaryImageDao;
 
     /**
      * {@inheritDoc}
@@ -75,6 +81,53 @@ public class PersistenceServiceImpl implements PersistenceService {
         return dozerBeanMapper.map(bo, TestbedConfiguration.class);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Transactional
+    public BinaryImage storeBinaryImage(final BinaryImage dto) {
+        Preconditions.notNullArgument(dto, "Argument 'dto' is null!");
+
+        LOGGER.info("storeBinaryImage( " + dto + " )");
+
+        BinaryImageBo bo;
+        if (dto.getId() == null) {
+            // Create and persist new persistent object
+            bo = dozerBeanMapper.map(dto, BinaryImageBo.class);
+            binaryImageDao.persist(bo);
+        } else {
+            // Update existing persistent object
+            bo = binaryImageDao.findById(dto.getId());
+            if (bo != null) {
+                binaryImageDao.update(bo);
+            } else {
+                LOGGER.error("BinaryImage with id #" + dto.getId()
+                        + " does not exist!");
+            }
+        }
+
+        Preconditions.notNull(bo, "Error creating BinaryImageBo! (bo is null)");
+        return dozerBeanMapper.map(bo, BinaryImage.class);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public BinaryImage loadBinaryImage(Integer id) {
+        Preconditions.notNullArgument(id, "Argument 'id' is null!");
+
+        LOGGER.info("loadBinaryImage( " + id + " )");
+
+        final BinaryImageBo bo = binaryImageDao.findById(id);
+        Preconditions.notNull(bo, "BinaryImage with id '"
+                + id
+                + "' does not exist!");
+        return dozerBeanMapper.map(bo, BinaryImage.class);
+    }
+
 
     /**
      * Used by Spring inject {@link DozerBeanMapper}.
@@ -90,6 +143,14 @@ public class PersistenceServiceImpl implements PersistenceService {
      */
     public void setTestbedConfigurationDao(final TestbedConfigurationDao testbedConfigurationDao) {
         this.testbedConfigurationDao = testbedConfigurationDao;
+    }
+
+    /**
+     * Used by Spring inject {@link BinaryImageDao}.
+     * @param binaryImageDao The property be injected.
+     */
+    public void setBinaryImageDao(BinaryImageDao binaryImageDao) {
+        this.binaryImageDao = binaryImageDao;
     }
 }
 
