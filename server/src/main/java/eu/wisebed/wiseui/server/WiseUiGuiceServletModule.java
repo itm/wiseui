@@ -35,7 +35,7 @@ public class WiseUiGuiceServletModule extends ServletModule {
      * Provides an configured instance of the {@link DozerBeanMapper}.
      */
     public Mapper provideMapper() {
-    	return new DozerBeanMapper(Arrays.asList("dozer-bean-mappings.xml"));
+    	return new DozerBeanMapper(Arrays.asList("server-bean-mappings.xml"));
     }
 
     @Singleton
