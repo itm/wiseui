@@ -1,6 +1,7 @@
 package eu.wisebed.wiseui.server.rpc;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -14,6 +15,7 @@ import eu.wisebed.testbed.api.wsn.v22.SessionManagement;
 import eu.wisebed.wiseui.api.ReservationService;
 //import eu.wisebed.wiseui.server.util.WiseMLInfoExtractor;
 import eu.wisebed.wiseui.shared.dto.Node;
+import eu.wisebed.wiseui.shared.dto.PublicReservationData;
 import eu.wisebed.wiseui.shared.dto.ReservationDetails;
 import eu.wisebed.wiseui.shared.dto.SecretAuthenticationKey;
 import eu.wisebed.wiseui.shared.dto.SensorDetails;
@@ -208,4 +210,8 @@ public class ReservationServiceImpl extends RemoteServiceServlet implements Rese
 		// TODO: Add functionality while integrating
 		return null;
 	}
+
+    public List<PublicReservationData> getPublicReservations(Date from, Date to) {
+        return new ArrayList<PublicReservationData>();
+    }
 }
