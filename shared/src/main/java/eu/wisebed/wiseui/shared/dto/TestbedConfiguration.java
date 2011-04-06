@@ -17,7 +17,7 @@ public class TestbedConfiguration implements Dto {
     private String snaaEndpointUrl;
     private String rsEndpointUrl;
     private String sessionmanagementEndpointUrl;
-    private List<String> urnPrefixList;
+    private List<String> urnPrefixList = new ArrayList<String>();
     private boolean isFederated;
     private int testbedId;
 

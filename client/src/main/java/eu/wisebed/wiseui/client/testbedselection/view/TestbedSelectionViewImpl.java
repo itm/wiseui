@@ -26,8 +26,6 @@ public class TestbedSelectionViewImpl extends Composite implements TestbedSelect
     }
 
     @UiField
-    SimplePanel configurationContainer;
-    @UiField
     SimplePanel contentPanel;
     @UiField
     Button reloadButton;
@@ -91,11 +89,6 @@ public class TestbedSelectionViewImpl extends Composite implements TestbedSelect
     public HasEnabled getReloadEnabled() {
         return reloadButton;
     }
-
-	@Override
-	public AcceptsOneWidget getConfigurationContainer() {
-		return configurationContainer;
-	}
 
 	@Override
 	public void setContentSelection(final String view) {

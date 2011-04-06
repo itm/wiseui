@@ -8,7 +8,9 @@ import java.util.List;
  */
 public class PublicReservationData implements Dto {
 
-    private Date from;
+	private static final long serialVersionUID = -3054098645192693672L;
+	
+	private Date from;
     private List<String> nodeURNs;
     private Date to;
     private String userData;

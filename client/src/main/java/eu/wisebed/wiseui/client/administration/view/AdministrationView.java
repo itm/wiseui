@@ -18,8 +18,6 @@ public interface AdministrationView extends IsWidget {
 
     void setPresenter(Presenter presenter);
     
-    AcceptsOneWidget getConfigurationContainer();
-    
     AcceptsOneWidget getContentContainer();
     
     HasEnabled getCreateHasEnabled();

@@ -6,9 +6,9 @@ import com.google.gwt.resources.client.CssResource;
 /**
  * Resources used by calendar widget.
  */
-public interface AllReservationsResources extends ClientBundle {
+public interface PublicReservationsResources extends ClientBundle {
 
-	@Source("eu/wisebed/wiseui/client/reservation/css/allReservations.css")
+	@Source("eu/wisebed/wiseui/client/reservation/css/publicReservations.css")
 	public Style style();
 
 	public interface Style extends CssResource {

@@ -48,14 +48,7 @@
 
     <g:DockLayoutPanel styleName="{style.fullLayout}">
         <g:center>
-            <g:SplitLayoutPanel>
-                <g:center>
-                    <g:SimplePanel styleName="{style.fullLayout}" ui:field="contentContainer"/>
-                </g:center>
-                <g:west size="250">
-                    <g:SimplePanel ui:field="configurationContainer"/>
-                </g:west>
-            </g:SplitLayoutPanel>
+        	<g:SimplePanel styleName="{style.fullLayout}" ui:field="contentContainer"/>
         </g:center>
         <g:south size="35">
             <g:HTMLPanel styleName="{style.buttonPanel}">

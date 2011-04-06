@@ -69,7 +69,7 @@ public class ConfigurationPresenter implements TestbedListView.Presenter, Create
         final TestbedConfiguration configuration = configurationSelectionModel.getSelectedObject();
         if (null == configuration) return;
         final Integer index = configurations.indexOf(configuration);
-        if (!index.equals(place.getSelection())) {
+        if (!index.equals(place.getTestbedId())) {
             placeController.goTo(new AdministrationPlace(index));
         }
     }
@@ -99,12 +99,12 @@ public class ConfigurationPresenter implements TestbedListView.Presenter, Create
     }
 
     public TestbedConfiguration getSelectedConfiguration() {
-        final Integer selection = place.getSelection();
+        final Integer selection = place.getTestbedId();
         return selection != null ? configurations.get(selection) : null;
     }
 
     private void loadConfigurationSelectionFromPlace() {
-        final Integer selection = place.getSelection();
+        final Integer selection = place.getTestbedId();
         GWT.log("Selection: " + selection);
         if (selection != null) {
             final TestbedConfiguration configuration = getSelectedConfiguration();

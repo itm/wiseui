@@ -11,8 +11,6 @@ import eu.wisebed.wiseui.client.testbedselection.TestbedSelectionPlace;
 public interface TestbedSelectionView extends IsWidget {
 
     void setPresenter(Presenter presenter);
-
-    AcceptsOneWidget getConfigurationContainer();
     
     AcceptsOneWidget getContentContainer();
 

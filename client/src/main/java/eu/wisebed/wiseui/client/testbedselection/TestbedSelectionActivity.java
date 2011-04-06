@@ -11,11 +11,9 @@ import com.google.inject.Inject;
 
 import eu.wisebed.wiseui.api.SessionManagementServiceAsync;
 import eu.wisebed.wiseui.client.WiseUiGinjector;
-import eu.wisebed.wiseui.client.testbedlist.TestbedListActivity;
-import eu.wisebed.wiseui.client.testbedlist.view.TestbedListView;
 import eu.wisebed.wiseui.client.testbedlist.event.TestbedSelectedEvent;
-import eu.wisebed.wiseui.client.testbedselection.common.TestbedSelectionConstants;
 import eu.wisebed.wiseui.client.testbedlist.event.TestbedSelectedEvent.ConfigurationSelectedHandler;
+import eu.wisebed.wiseui.client.testbedselection.common.TestbedSelectionConstants;
 import eu.wisebed.wiseui.client.testbedselection.event.ThrowableEvent;
 import eu.wisebed.wiseui.client.testbedselection.event.WisemlLoadedEvent;
 import eu.wisebed.wiseui.client.testbedselection.presenter.DetailPresenter;
@@ -79,7 +77,6 @@ public class TestbedSelectionActivity extends AbstractActivity implements Config
         testbedSelectionPresenter.setPlace(place);
         final TestbedSelectionView testbedSelectionView = injector.getTestbedSelectionView();
         testbedSelectionView.setPresenter(testbedSelectionPresenter);
-        initConfigurationPart(testbedSelectionView);
         initContentPart(testbedSelectionView, place.getView());
         container.setWidget(testbedSelectionView.asWidget());
     }
@@ -97,15 +94,6 @@ public class TestbedSelectionActivity extends AbstractActivity implements Config
         else {
             initMapPart(testbedSelectionView);
         }
-    }
-
-    private void initConfigurationPart(final TestbedSelectionView testbedSelectionView) {
-        GWT.log("Init Testbed Configuration Part");
-        final TestbedListActivity testbedListActivity = injector.getConfigurationPresenter();
-        testbedListActivity.setPlace(place);
-        final TestbedListView testbedListView = injector.getTestbedListView();
-        testbedListView.setPresenter(testbedListActivity);
-        testbedSelectionView.getConfigurationContainer().setWidget(testbedListView);
     }
 
     private void initDetailPart(final TestbedSelectionView testbedSelectionView) {

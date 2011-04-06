@@ -20,6 +20,8 @@ public class WiseUiViewImpl extends Composite implements WiseUiView {
     @UiField
     SimplePanel navigationPanel;
     @UiField
+    SimplePanel testbedListPanel;
+    @UiField
     SimplePanel contentPanel;
 
     public WiseUiViewImpl() {
@@ -36,6 +38,11 @@ public class WiseUiViewImpl extends Composite implements WiseUiView {
     public AcceptsOneWidget getContentPanel() {
         return contentPanel;
     }
+    
+	@Override
+	public AcceptsOneWidget getTestbedListPanel() {
+		return testbedListPanel;
+	}
 
     @Override
     public Widget asWidget() {

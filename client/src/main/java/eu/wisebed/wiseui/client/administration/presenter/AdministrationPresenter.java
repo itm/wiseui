@@ -33,7 +33,7 @@ public class AdministrationPresenter implements Presenter, ConfigurationSelected
 	
 	@Override
 	public void setPlace(final AdministrationPlace place) {
-		view.getRemoveHasEnabled().setEnabled(null != place.getSelection());
+		view.getRemoveHasEnabled().setEnabled(null != place.getTestbedId());
 	}
 
 	@Override
