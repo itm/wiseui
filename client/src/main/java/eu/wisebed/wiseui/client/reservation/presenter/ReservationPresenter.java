@@ -1,6 +1,5 @@
 package eu.wisebed.wiseui.client.reservation.presenter;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gwt.core.client.GWT;
@@ -11,13 +10,13 @@ import com.google.inject.Inject;
 
 import eu.wisebed.wiseui.api.ReservationServiceAsync;
 import eu.wisebed.wiseui.client.WiseUiGinjector;
+import eu.wisebed.wiseui.client.main.WiseUiPlace;
 import eu.wisebed.wiseui.client.reservation.ReservationPlace;
 import eu.wisebed.wiseui.client.reservation.common.Messages;
 import eu.wisebed.wiseui.client.reservation.event.LoginRequiredEvent;
 import eu.wisebed.wiseui.client.reservation.event.LoginRequiredEventHandler;
 import eu.wisebed.wiseui.client.reservation.event.MissingReservationParametersEvent;
 import eu.wisebed.wiseui.client.reservation.event.MissingReservationParametersEventHandler;
-
 import eu.wisebed.wiseui.client.reservation.event.ReservationFailedEvent;
 import eu.wisebed.wiseui.client.reservation.event.ReservationFailedEventHandler;
 import eu.wisebed.wiseui.client.reservation.event.ReservationSuccessEvent;
@@ -29,11 +28,11 @@ import eu.wisebed.wiseui.client.reservation.view.ReservationView.Presenter;
 import eu.wisebed.wiseui.client.util.AuthenticationManager;
 import eu.wisebed.wiseui.shared.dto.Node;
 import eu.wisebed.wiseui.shared.dto.ReservationDetails;
+import eu.wisebed.wiseui.shared.dto.SecretAuthenticationKey;
 import eu.wisebed.wiseui.shared.dto.TestbedConfiguration;
 import eu.wisebed.wiseui.shared.exception.AuthenticationException;
 import eu.wisebed.wiseui.shared.exception.ReservationConflictException;
 import eu.wisebed.wiseui.shared.exception.ReservationException;
-import eu.wisebed.wiseui.shared.dto.SecretAuthenticationKey;
 import eu.wisebed.wiseui.widgets.messagebox.MessageBox;
 
 public class ReservationPresenter implements Presenter, LoginRequiredEventHandler,
@@ -41,7 +40,7 @@ public class ReservationPresenter implements Presenter, LoginRequiredEventHandle
 	ReservationFailedEventHandler, TestbedSelectedChangedEventHandler{
 
 	private final ReservationView view;
-	private ReservationPlace place;
+	private WiseUiPlace place;
 	private ReservationServiceAsync reservationService;
 	private PlaceController placeController;
 	private TestbedConfiguration testbedSelected;
@@ -61,14 +60,11 @@ public class ReservationPresenter implements Presenter, LoginRequiredEventHandle
 		this.eventBus = eventBus;
 	}
 	
-    @Override
-    public void setPlace(final ReservationPlace place) {
+    public void setPlace(final WiseUiPlace place) {
     	this.place = place;
-    	view.setSubview(place.getView());
-    }
-    
-    public ReservationPlace getPlace(){
-    	return place;
+    	
+    	final ReservationPlace reservationPlace = (ReservationPlace) place.get(ReservationPlace.class);
+    	view.setSubview(reservationPlace.getView());
     }
 
 	public void bindDefaultViewEvents() {
@@ -190,6 +186,6 @@ public class ReservationPresenter implements Presenter, LoginRequiredEventHandle
 
     @Override
     public void gotoSubview(final String view) {
-    	placeController.goTo(new ReservationPlace(place.getTestbedId(), view));
+    	placeController.goTo(new ReservationPlace(view));
     }
 }

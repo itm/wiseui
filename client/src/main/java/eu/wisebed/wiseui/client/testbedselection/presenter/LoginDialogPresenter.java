@@ -62,11 +62,6 @@ public class LoginDialogPresenter implements Presenter, ConfigurationSelectedHan
     }
 
     @Override
-    public void setPlace(final TestbedSelectionPlace place) {
-
-    }
-
-    @Override
     public void submit() {
         view.getUsernameEnabled().setEnabled(false);
         view.getPasswordEnabled().setEnabled(false);

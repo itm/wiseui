@@ -54,12 +54,14 @@ public class KeyValuePlace extends Place {
 	}
 	
     public final void parse(final String token) {
-    	final Iterable<String> vars = Splitter.on(joiner).split(token);
-    	for (final String variable : vars) {
-    		final String[] tokens = variable.split(separator);
-    		if (tokens.length == 2) {
-    			set(tokens[0], tokens[1]);
-    		}
+    	if (token != null) {
+    		final Iterable<String> vars = Splitter.on(joiner).split(token);
+        	for (final String variable : vars) {
+        		final String[] tokens = variable.split(separator);
+        		if (tokens.length == 2) {
+        			set(tokens[0], tokens[1]);
+        		}
+        	}
     	}
     }
     

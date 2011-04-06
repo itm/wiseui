@@ -34,7 +34,6 @@ public interface AdministrationView extends IsWidget {
      * @author Malte Legenhausen
      */
     public interface Presenter {
-    	void setPlace(AdministrationPlace place);
     	
     	void create();
     	

@@ -5,8 +5,6 @@ import com.google.gwt.user.client.ui.HasEnabled;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.inject.ImplementedBy;
 
-import eu.wisebed.wiseui.client.testbedselection.TestbedSelectionPlace;
-
 @ImplementedBy(TestbedSelectionViewImpl.class)
 public interface TestbedSelectionView extends IsWidget {
 
@@ -27,7 +25,5 @@ public interface TestbedSelectionView extends IsWidget {
         void reload();
 
         void showLoginDialog();
-
-        void setPlace(TestbedSelectionPlace place);
     }
 }

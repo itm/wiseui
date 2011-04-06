@@ -47,10 +47,6 @@ public class MapPresenter implements MapView.Presenter, WisemlLoadedHandler, Con
     }
 
     @Override
-    public void setPlace(final TestbedSelectionPlace place) {
-    }
-
-    @Override
     public void onWisemlLoaded(final WisemlLoadedEvent event) {
         final Setup setup = event.getWiseml().getSetup();
         final Coordinate origin = setup.getOrigin();

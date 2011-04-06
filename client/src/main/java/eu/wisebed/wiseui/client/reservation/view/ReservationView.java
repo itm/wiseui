@@ -4,8 +4,6 @@ import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.inject.ImplementedBy;
 
-import eu.wisebed.wiseui.client.reservation.ReservationPlace;
-
 @ImplementedBy(ReservationViewImpl.class)
 public interface ReservationView extends IsWidget {
 
@@ -17,10 +15,8 @@ public interface ReservationView extends IsWidget {
 
 	
 	public interface Presenter{
-		void setPlace(ReservationPlace place);
 		void gotoSubview(String view);
 		void makeReservation();
 		boolean checkReservationDetails();
-		ReservationPlace getPlace();
 	}
 }

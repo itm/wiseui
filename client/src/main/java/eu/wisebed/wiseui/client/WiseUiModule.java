@@ -9,6 +9,7 @@ import com.google.inject.Provides;
 import com.google.inject.Singleton;
 
 import eu.wisebed.wiseui.client.activity.WiseUiPlaceHistoryMapper;
+import eu.wisebed.wiseui.client.main.WiseUiPlace;
 import eu.wisebed.wiseui.client.testbedselection.TestbedSelectionPlace;
 
 
@@ -35,7 +36,7 @@ public class WiseUiModule extends AbstractGinModule {
             final PlaceController placeController, final EventBus eventBus) {
         final PlaceHistoryHandler historyHandler = new PlaceHistoryHandler(
                 mapper);
-        historyHandler.register(placeController, eventBus, new TestbedSelectionPlace());
+        historyHandler.register(placeController, eventBus, new WiseUiPlace());
         return historyHandler;
     }
 

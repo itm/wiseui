@@ -10,7 +10,6 @@ import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
 import com.google.inject.Inject;
 
-import eu.wisebed.wiseui.client.administration.AdministrationPlace;
 import eu.wisebed.wiseui.client.administration.event.CancelConfigurationEvent;
 import eu.wisebed.wiseui.client.administration.event.CancelConfigurationEvent.CancelConfigurationHandler;
 import eu.wisebed.wiseui.client.administration.event.CreateConfigurationEvent;
@@ -19,6 +18,8 @@ import eu.wisebed.wiseui.client.administration.event.SaveConfigurationEvent;
 import eu.wisebed.wiseui.client.administration.event.SaveConfigurationEvent.SaveConfigurationHandler;
 import eu.wisebed.wiseui.client.administration.view.ConfigurationFormView;
 import eu.wisebed.wiseui.client.administration.view.ConfigurationFormView.Presenter;
+import eu.wisebed.wiseui.client.main.WiseUiPlace;
+import eu.wisebed.wiseui.client.testbedlist.TestbedListPlace;
 import eu.wisebed.wiseui.client.testbedlist.event.TestbedSelectedEvent;
 import eu.wisebed.wiseui.client.testbedlist.event.TestbedSelectedEvent.ConfigurationSelectedHandler;
 import eu.wisebed.wiseui.shared.dto.TestbedConfiguration;
@@ -77,8 +78,9 @@ public class ConfigurationFormPresenter implements Presenter, ConfigurationSelec
 		urnPrefixProvider.setList(new ArrayList<String>(configuration.getUrnPrefixList()));
 	}
 	
-	public void setPlace(final AdministrationPlace place) {
-		if (place.getTestbedId() == null) {
+	public void setPlace(final WiseUiPlace place) {
+		final TestbedListPlace testbedListPlace = (TestbedListPlace) place.get(TestbedListPlace.class);
+		if (testbedListPlace.getTestbedId() == null) {
 			showNewConfigurationInfo();
 		}
 	}

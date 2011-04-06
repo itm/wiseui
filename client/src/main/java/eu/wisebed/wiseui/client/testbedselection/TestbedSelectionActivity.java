@@ -11,6 +11,7 @@ import com.google.inject.Inject;
 
 import eu.wisebed.wiseui.api.SessionManagementServiceAsync;
 import eu.wisebed.wiseui.client.WiseUiGinjector;
+import eu.wisebed.wiseui.client.main.WiseUiPlace;
 import eu.wisebed.wiseui.client.testbedlist.event.TestbedSelectedEvent;
 import eu.wisebed.wiseui.client.testbedlist.event.TestbedSelectedEvent.ConfigurationSelectedHandler;
 import eu.wisebed.wiseui.client.testbedselection.common.TestbedSelectionConstants;
@@ -40,7 +41,7 @@ public class TestbedSelectionActivity extends AbstractActivity implements Config
 
     private final SessionManagementServiceAsync sessionManagementService;
 
-    private TestbedSelectionPlace place;
+    private WiseUiPlace place;
 
     private WiseUiGinjector injector;
 
@@ -53,7 +54,7 @@ public class TestbedSelectionActivity extends AbstractActivity implements Config
         this.sessionManagementService = sessionManagementService;
     }
 
-    public void setPlace(final TestbedSelectionPlace place) {
+    public void setPlace(final WiseUiPlace place) {
         this.place = place;
     }
 
@@ -77,7 +78,8 @@ public class TestbedSelectionActivity extends AbstractActivity implements Config
         testbedSelectionPresenter.setPlace(place);
         final TestbedSelectionView testbedSelectionView = injector.getTestbedSelectionView();
         testbedSelectionView.setPresenter(testbedSelectionPresenter);
-        initContentPart(testbedSelectionView, place.getView());
+        final TestbedSelectionPlace testbedSelectionPlace = (TestbedSelectionPlace) place.get(TestbedSelectionPlace.class);
+        initContentPart(testbedSelectionView, testbedSelectionPlace.getView());
         container.setWidget(testbedSelectionView.asWidget());
     }
     
@@ -99,7 +101,6 @@ public class TestbedSelectionActivity extends AbstractActivity implements Config
     private void initDetailPart(final TestbedSelectionView testbedSelectionView) {
         GWT.log("Init Testbed Detail Part");
         final DetailPresenter detailPresenter = injector.getDetailPresenter();
-        detailPresenter.setPlace(place);
         final DetailView detailView = injector.getDetailView();
         detailView.setPresenter(detailPresenter);
         testbedSelectionView.getContentContainer().setWidget(detailView);
@@ -108,7 +109,6 @@ public class TestbedSelectionActivity extends AbstractActivity implements Config
     private void initMapPart(final TestbedSelectionView testbedSelectionView) {
         GWT.log("Init Testbed Map Part");
         final MapPresenter mapPresenter = injector.getMapPresenter();
-        mapPresenter.setPlace(place);
         final MapView mapView = injector.getMapView();
         mapView.setPresenter(mapPresenter);
         testbedSelectionView.getContentContainer().setWidget(mapView);
@@ -125,7 +125,6 @@ public class TestbedSelectionActivity extends AbstractActivity implements Config
     private void initLoginDialogPart() {
         GWT.log("Init Login Dialog Part");
         final LoginDialogPresenter loginDialogPresenter = injector.getLoginDialogPresenter();
-        loginDialogPresenter.setPlace(place);
         final LoginDialogView loginDialogView = injector.getLoginDialogView();
         loginDialogView.setPresenter(loginDialogPresenter);
     }

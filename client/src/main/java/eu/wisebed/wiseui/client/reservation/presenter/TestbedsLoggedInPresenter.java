@@ -1,5 +1,7 @@
 package eu.wisebed.wiseui.client.reservation.presenter;
 
+import java.util.List;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.place.shared.PlaceController;
@@ -9,27 +11,27 @@ import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SelectionChangeEvent.Handler;
 import com.google.gwt.view.client.SingleSelectionModel;
 import com.google.inject.Inject;
+
 import eu.wisebed.wiseui.api.ReservationServiceAsync;
 import eu.wisebed.wiseui.api.TestbedConfigurationServiceAsync;
 import eu.wisebed.wiseui.client.WiseUiGinjector;
+import eu.wisebed.wiseui.client.main.WiseUiPlace;
 import eu.wisebed.wiseui.client.reservation.ReservationPlace;
 import eu.wisebed.wiseui.client.reservation.common.Messages;
 import eu.wisebed.wiseui.client.reservation.event.TestbedSelectedChangedEvent;
 import eu.wisebed.wiseui.client.reservation.view.TestbedsLoggedInView;
 import eu.wisebed.wiseui.client.reservation.view.TestbedsLoggedInView.Presenter;
+import eu.wisebed.wiseui.client.testbedlist.TestbedListPlace;
 import eu.wisebed.wiseui.shared.dto.Node;
 import eu.wisebed.wiseui.shared.dto.TestbedConfiguration;
 import eu.wisebed.wiseui.widgets.messagebox.MessageBox;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class TestbedsLoggedInPresenter implements Presenter {
 
     private final TestbedConfigurationServiceAsync configurationService;
     private final ReservationServiceAsync reservationService;
     private final PlaceController placeController;
-    private ReservationPlace place;
+    private WiseUiPlace place;
     private WiseUiGinjector injector;
     private final TestbedsLoggedInView view;
     private SingleSelectionModel<TestbedConfiguration> testbedSelectionModel;
@@ -58,15 +60,16 @@ public class TestbedsLoggedInPresenter implements Presenter {
         bindEvents();
     }
 
-    @Override
-    public void setPlace(final ReservationPlace place) {
+    public void setPlace(final WiseUiPlace place) {
         this.place = place;
+        
+        final TestbedListPlace testbedListPlace = (TestbedListPlace) place.get(TestbedListPlace.class);
         if (testbedSelectionModel.getSelectedObject() == null)
             injector.getReservationView().reserveButton(false);
-        if (place.getTestbedId() == null || testbedList == null)
+        if (testbedListPlace.getTestbedId() == null || testbedList == null)
             return;
         for (TestbedConfiguration bed : testbedList) {
-            if (place.getTestbedId() == bed.getId()) {
+            if (testbedListPlace.getTestbedId() == bed.getId()) {
                 testbedSelectionModel.setSelected(bed, true);
             }
         }
@@ -85,6 +88,7 @@ public class TestbedsLoggedInPresenter implements Presenter {
      * has previously logged in.
      */
     public void getTestbedsLoggedIn(final List<String> urnPrefix) {
+    	final TestbedListPlace testbedListPlace = (TestbedListPlace) place.get(TestbedListPlace.class);
         configurationService.getTestbedLoggedIn(urnPrefix,
                 new AsyncCallback<List<TestbedConfiguration>>() {
                     public void onFailure(Throwable caught) {
@@ -98,8 +102,8 @@ public class TestbedsLoggedInPresenter implements Presenter {
                         } else {
                             for (TestbedConfiguration bed : testbeds) {
                                 dataProvider.getList().add(bed);
-                                if (place.getTestbedId() == null) continue;
-                                if (place.getTestbedId() == bed.getId()) {
+                                if (testbedListPlace.getTestbedId() == null) continue;
+                                if (testbedListPlace.getTestbedId() == bed.getId()) {
                                     testbedSelectionModel.setSelected(bed, true);
                                     injector.getReservationPresenter().enableReservation();
                                 }
@@ -142,12 +146,12 @@ public class TestbedsLoggedInPresenter implements Presenter {
     }
 
     private void onTestbedSelectionChange(final SelectionChangeEvent event) {
+    	final TestbedListPlace testbedListPlace = (TestbedListPlace) place.get(TestbedListPlace.class);
         TestbedConfiguration bed = testbedSelectionModel.getSelectedObject();
         getNetwork(bed.getSessionmanagementEndpointUrl());
         eventBus.fireEvent(new TestbedSelectedChangedEvent(bed));
-        if (place.getTestbedId() == null || place.getTestbedId() != bed.getId()) {
-            placeController.goTo(
-                    new ReservationPlace(bed.getId(), place.getView()));
+        if (testbedListPlace.getTestbedId() == null || testbedListPlace.getTestbedId() != bed.getId()) {
+            placeController.goTo(place.update(new ReservationPlace()));
         }
     }
 }

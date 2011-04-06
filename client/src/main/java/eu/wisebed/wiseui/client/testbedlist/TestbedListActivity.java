@@ -7,7 +7,6 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
@@ -17,11 +16,10 @@ import com.google.gwt.view.client.SingleSelectionModel;
 import com.google.inject.Inject;
 
 import eu.wisebed.wiseui.api.TestbedConfigurationServiceAsync;
-import eu.wisebed.wiseui.client.WiseUiPlace;
+import eu.wisebed.wiseui.client.main.WiseUiPlace;
 import eu.wisebed.wiseui.client.testbedlist.event.TestbedSelectedEvent;
 import eu.wisebed.wiseui.client.testbedlist.view.TestbedListView;
 import eu.wisebed.wiseui.client.testbedlist.view.TestbedListView.Presenter;
-import eu.wisebed.wiseui.client.testbedselection.TestbedSelectionPlace;
 import eu.wisebed.wiseui.shared.dto.TestbedConfiguration;
 
 /**
@@ -79,8 +77,9 @@ public class TestbedListActivity  extends AbstractActivity implements Presenter 
         final TestbedConfiguration configuration = configurationSelectionModel.getSelectedObject();
         if (null == configuration) return;
         final Integer index = configurations.indexOf(configuration);
-        if (!index.equals(place.getTestbedId())) {
-            placeController.goTo(place.copy(index));
+        final TestbedListPlace testbedListPlace = (TestbedListPlace) place.get(TestbedListPlace.class);
+        if (!index.equals(testbedListPlace.getTestbedId())) {
+            placeController.goTo(place.update(new TestbedListPlace(index)));
         }
     }
 
@@ -109,12 +108,14 @@ public class TestbedListActivity  extends AbstractActivity implements Presenter 
     }
 
     public TestbedConfiguration getSelectedConfiguration() {
-        final Integer selection = place.getTestbedId();
+    	final TestbedListPlace testbedListPlace = (TestbedListPlace) place.get(TestbedListPlace.class);
+        final Integer selection = testbedListPlace.getTestbedId();
         return selection != null ? configurations.get(selection) : null;
     }
 
     private void loadConfigurationSelectionFromPlace() {
-        final Integer selection = place.getTestbedId();
+    	final TestbedListPlace testbedListPlace = (TestbedListPlace) place.get(TestbedListPlace.class);
+        final Integer selection = testbedListPlace.getTestbedId();
         GWT.log("Selection: " + selection);
         if (selection != null) {
             final TestbedConfiguration configuration = getSelectedConfiguration();

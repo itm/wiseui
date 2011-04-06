@@ -4,9 +4,10 @@ import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.inject.Inject;
 
+import eu.wisebed.wiseui.client.main.WiseUiPlace;
 import eu.wisebed.wiseui.client.testbedlist.event.TestbedSelectedEvent;
-import eu.wisebed.wiseui.client.testbedselection.TestbedSelectionPlace;
 import eu.wisebed.wiseui.client.testbedlist.event.TestbedSelectedEvent.ConfigurationSelectedHandler;
+import eu.wisebed.wiseui.client.testbedselection.TestbedSelectionPlace;
 import eu.wisebed.wiseui.client.testbedselection.event.ShowLoginDialogEvent;
 import eu.wisebed.wiseui.client.testbedselection.event.ThrowableEvent;
 import eu.wisebed.wiseui.client.testbedselection.event.ThrowableEvent.ThrowableHandler;
@@ -14,9 +15,9 @@ import eu.wisebed.wiseui.client.testbedselection.event.WisemlLoadedEvent;
 import eu.wisebed.wiseui.client.testbedselection.event.WisemlLoadedEvent.WisemlLoadedHandler;
 import eu.wisebed.wiseui.client.testbedselection.view.TestbedSelectionView;
 import eu.wisebed.wiseui.client.testbedselection.view.TestbedSelectionView.Presenter;
-import eu.wisebed.wiseui.widgets.messagebox.MessageBox;
 import eu.wisebed.wiseui.shared.dto.TestbedConfiguration;
 import eu.wisebed.wiseui.shared.exception.WisemlException;
+import eu.wisebed.wiseui.widgets.messagebox.MessageBox;
 
 /**
  * The presenter for the {@link TestbedSelectionView}.
@@ -28,7 +29,7 @@ public class TestbedSelectionPresenter implements Presenter, ConfigurationSelect
     private final EventBus eventBus;
     private final TestbedSelectionView view;
     private PlaceController placeController;
-    private TestbedSelectionPlace place;
+    private WiseUiPlace place;
     private TestbedConfiguration configuration;
 
     @Inject
@@ -60,10 +61,10 @@ public class TestbedSelectionPresenter implements Presenter, ConfigurationSelect
         eventBus.fireEventFromSource(new ShowLoginDialogEvent(), this);
     }
 
-    @Override
-    public void setPlace(final TestbedSelectionPlace place) {
+    public void setPlace(final WiseUiPlace place) {
     	this.place = place;
-    	view.setContentSelection(place.getView());
+    	final TestbedSelectionPlace testbedSelectionPlace = (TestbedSelectionPlace) place.get(TestbedSelectionPlace.class);
+    	view.setContentSelection(testbedSelectionPlace.getView());
     }
 
     @Override
@@ -91,6 +92,6 @@ public class TestbedSelectionPresenter implements Presenter, ConfigurationSelect
 
     @Override
     public void setContentSelection(final String view) {
-    	placeController.goTo(new TestbedSelectionPlace(place.getTestbedId(), view));
+    	placeController.goTo(place.update(new TestbedSelectionPlace(view)));
     }
 }

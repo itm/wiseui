@@ -8,7 +8,6 @@ import com.google.gwt.view.client.SelectionModel;
 import com.google.gwt.view.client.SingleSelectionModel;
 import com.google.inject.ImplementedBy;
 
-import eu.wisebed.wiseui.client.reservation.ReservationPlace;
 import eu.wisebed.wiseui.shared.dto.TestbedConfiguration;
 
 @ImplementedBy(TestbedsLoggedInViewImpl.class)
@@ -20,7 +19,6 @@ public interface TestbedsLoggedInView extends IsWidget{
     HasData<TestbedConfiguration> getTestbedList();
     
 	public interface Presenter{
-		void setPlace(ReservationPlace place);
 		void getTestbedsLoggedIn(List<String> urnPrefix);
 		SingleSelectionModel<TestbedConfiguration> getTestbedSelectionModel();
 	}

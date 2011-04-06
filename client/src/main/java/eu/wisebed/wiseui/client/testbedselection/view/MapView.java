@@ -21,6 +21,6 @@ public interface MapView extends IsWidget {
 	HasLoadingIndicator getLoadingIndicator();
 	
 	public interface Presenter {
-		void setPlace(TestbedSelectionPlace place);
+		
 	}
 }
