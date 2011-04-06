@@ -78,7 +78,7 @@ public class ConfigurationFormPresenter implements Presenter, ConfigurationSelec
 	}
 	
 	public void setPlace(final AdministrationPlace place) {
-		if (place.getSelection() == null) {
+		if (place.getTestbedId() == null) {
 			showNewConfigurationInfo();
 		}
 	}

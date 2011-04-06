@@ -63,10 +63,10 @@ public class TestbedsLoggedInPresenter implements Presenter {
         this.place = place;
         if (testbedSelectionModel.getSelectedObject() == null)
             injector.getReservationView().reserveButton(false);
-        if (place.getSelection() == null || testbedList == null)
+        if (place.getTestbedId() == null || testbedList == null)
             return;
         for (TestbedConfiguration bed : testbedList) {
-            if (place.getSelection() == bed.getId()) {
+            if (place.getTestbedId() == bed.getId()) {
                 testbedSelectionModel.setSelected(bed, true);
             }
         }
@@ -98,8 +98,8 @@ public class TestbedsLoggedInPresenter implements Presenter {
                         } else {
                             for (TestbedConfiguration bed : testbeds) {
                                 dataProvider.getList().add(bed);
-                                if (place.getSelection() == null) continue;
-                                if (place.getSelection() == bed.getId()) {
+                                if (place.getTestbedId() == null) continue;
+                                if (place.getTestbedId() == bed.getId()) {
                                     testbedSelectionModel.setSelected(bed, true);
                                     injector.getReservationPresenter().enableReservation();
                                 }
@@ -145,7 +145,7 @@ public class TestbedsLoggedInPresenter implements Presenter {
         TestbedConfiguration bed = testbedSelectionModel.getSelectedObject();
         getNetwork(bed.getSessionmanagementEndpointUrl());
         eventBus.fireEvent(new TestbedSelectedChangedEvent(bed));
-        if (place.getSelection() == null || place.getSelection() != bed.getId()) {
+        if (place.getTestbedId() == null || place.getTestbedId() != bed.getId()) {
             placeController.goTo(
                     new ReservationPlace(bed.getId(), place.getView()));
         }

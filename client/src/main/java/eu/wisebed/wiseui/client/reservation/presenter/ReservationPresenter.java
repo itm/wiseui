@@ -190,6 +190,6 @@ public class ReservationPresenter implements Presenter, LoginRequiredEventHandle
 
     @Override
     public void gotoSubview(final String view) {
-    	placeController.goTo(new ReservationPlace(place.getSelection(), view));
+    	placeController.goTo(new ReservationPlace(place.getTestbedId(), view));
     }
 }

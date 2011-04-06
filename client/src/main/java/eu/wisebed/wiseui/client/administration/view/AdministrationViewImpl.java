@@ -28,8 +28,6 @@ public class AdministrationViewImpl extends Composite implements AdministrationV
     }
     
     @UiField
-    SimplePanel configurationContainer;
-    @UiField
     SimplePanel contentContainer;
     @UiField
     Button newButton;
@@ -69,11 +67,6 @@ public class AdministrationViewImpl extends Composite implements AdministrationV
     public void handleCancelButtonClicked(final ClickEvent event) {
     	presenter.cancel();
     }
-
-	@Override
-	public AcceptsOneWidget getConfigurationContainer() {
-		return configurationContainer;
-	}
 
 	@Override
 	public AcceptsOneWidget getContentContainer() {

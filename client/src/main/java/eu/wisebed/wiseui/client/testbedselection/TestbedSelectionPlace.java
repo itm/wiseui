@@ -2,10 +2,9 @@ package eu.wisebed.wiseui.client.testbedselection;
 
 import com.google.gwt.place.shared.PlaceTokenizer;
 
-import eu.wisebed.wiseui.client.util.Ints2;
-import eu.wisebed.wiseui.client.util.KeyValuePlace;
-import eu.wisebed.wiseui.client.util.Objects2;
+import eu.wisebed.wiseui.client.WiseUiPlace;
 import eu.wisebed.wiseui.client.testbedselection.common.TestbedSelectionConstants;
+import eu.wisebed.wiseui.client.util.Objects2;
 
 /**
  * This place represents the current state of the testbed-selection-view as reflected by the URL.
@@ -16,14 +15,14 @@ import eu.wisebed.wiseui.client.testbedselection.common.TestbedSelectionConstant
  *
  * @author Malte Legenhausen, Sönke Nommensen
  */
-public class TestbedSelectionPlace extends KeyValuePlace {
+public class TestbedSelectionPlace extends WiseUiPlace {
 
     public TestbedSelectionPlace() {
     	this(null, TestbedSelectionConstants.MAP_VIEW);
     }
 
     public TestbedSelectionPlace(final Integer selection, final String view) {
-    	set(TestbedSelectionConstants.TESTBED_SELECTION_STRING, Objects2.nullOrToString(selection));
+    	super(selection);
         set(TestbedSelectionConstants.TESTBED_VIEW_STRING, view);
     }
     
@@ -31,14 +30,15 @@ public class TestbedSelectionPlace extends KeyValuePlace {
     	this(null, TestbedSelectionConstants.MAP_VIEW);
     	parse(token);
     }
-
-    public Integer getSelection() {
-        return Ints2.nullOrValueOf(get(TestbedSelectionConstants.TESTBED_SELECTION_STRING));
-    }
     
     public String getView() {
 		return Objects2.nullOrToString(get(TestbedSelectionConstants.TESTBED_VIEW_STRING));
 	}
+    
+    @Override
+    public WiseUiPlace copy(final Integer testbedId) {
+    	return new TestbedSelectionPlace(testbedId, getView());
+    }
 
     /**
      * Tokenizer instance for serialization and deserialization of the TestbedSelectionPlace.

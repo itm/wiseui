@@ -1,34 +1,39 @@
 package eu.wisebed.wiseui.client.testbedlist;
 
+import java.util.List;
+
+import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SelectionChangeEvent.Handler;
 import com.google.gwt.view.client.SingleSelectionModel;
 import com.google.inject.Inject;
+
 import eu.wisebed.wiseui.api.TestbedConfigurationServiceAsync;
+import eu.wisebed.wiseui.client.WiseUiPlace;
 import eu.wisebed.wiseui.client.testbedlist.event.TestbedSelectedEvent;
 import eu.wisebed.wiseui.client.testbedlist.view.TestbedListView;
-import eu.wisebed.wiseui.client.testbedselection.TestbedSelectionPlace;
 import eu.wisebed.wiseui.client.testbedlist.view.TestbedListView.Presenter;
+import eu.wisebed.wiseui.client.testbedselection.TestbedSelectionPlace;
 import eu.wisebed.wiseui.shared.dto.TestbedConfiguration;
-
-import java.util.List;
 
 /**
  * The presenter for the {@link eu.wisebed.wiseui.client.testbedlist.view.TestbedListView}.
  *
  * @author Malte Legenhausen
  */
-public class TestbedListActivity implements Presenter {
+public class TestbedListActivity  extends AbstractActivity implements Presenter {
 
     private final EventBus eventBus;
     private final TestbedListView view;
-    private TestbedSelectionPlace place;
+    private WiseUiPlace place;
     private final PlaceController placeController;
     private SingleSelectionModel<TestbedConfiguration> configurationSelectionModel;
     private List<TestbedConfiguration> configurations;
@@ -48,9 +53,14 @@ public class TestbedListActivity implements Presenter {
         configurationSelectionModel = new SingleSelectionModel<TestbedConfiguration>();
         view.setTestbedConfigurationSelectionModel(configurationSelectionModel);
     }
+    
+	@Override
+	public void start(AcceptsOneWidget panel, EventBus eventBus) {
+		panel.setWidget(view);
+	}
 
-    public void setPlace(final TestbedSelectionPlace place) {
-        this.place = place;
+    public void setPlace(final WiseUiPlace place) {
+    	this.place = place;
         loadTestbedConfigurations();
         bind();
     }
@@ -69,8 +79,8 @@ public class TestbedListActivity implements Presenter {
         final TestbedConfiguration configuration = configurationSelectionModel.getSelectedObject();
         if (null == configuration) return;
         final Integer index = configurations.indexOf(configuration);
-        if (!index.equals(place.getSelection())) {
-            placeController.goTo(new TestbedSelectionPlace(index, place.getView()));
+        if (!index.equals(place.getTestbedId())) {
+            placeController.goTo(place.copy(index));
         }
     }
 
@@ -99,12 +109,12 @@ public class TestbedListActivity implements Presenter {
     }
 
     public TestbedConfiguration getSelectedConfiguration() {
-        final Integer selection = place.getSelection();
+        final Integer selection = place.getTestbedId();
         return selection != null ? configurations.get(selection) : null;
     }
 
     private void loadConfigurationSelectionFromPlace() {
-        final Integer selection = place.getSelection();
+        final Integer selection = place.getTestbedId();
         GWT.log("Selection: " + selection);
         if (selection != null) {
             final TestbedConfiguration configuration = getSelectedConfiguration();

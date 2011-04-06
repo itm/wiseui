@@ -2,23 +2,21 @@ package eu.wisebed.wiseui.client.administration;
 
 import com.google.gwt.place.shared.PlaceTokenizer;
 
-import eu.wisebed.wiseui.client.util.Ints2;
-import eu.wisebed.wiseui.client.util.KeyValuePlace;
-import eu.wisebed.wiseui.client.util.Objects2;
+import eu.wisebed.wiseui.client.WiseUiPlace;
 
 /**
  * Place for the administration view.
  * 
  * @author Malte Legenhausen
  */
-public class AdministrationPlace extends KeyValuePlace {
+public class AdministrationPlace extends WiseUiPlace {
 	
 	public AdministrationPlace() {
-		set("selection", null);
+		super();
 	}
 	
 	public AdministrationPlace(final Integer selection) {
-		set("selection", Objects2.nullOrToString(selection));
+		super(selection);
 	}
 	
 	public AdministrationPlace(final String token) {
@@ -26,8 +24,9 @@ public class AdministrationPlace extends KeyValuePlace {
 		parse(token);
 	}
 	
-	public Integer getSelection() {
-		return Ints2.nullOrValueOf(get("selection"));
+	@Override
+	public WiseUiPlace copy(Integer testbedId) {
+		return new AdministrationPlace(testbedId);
 	}
 
 	/**

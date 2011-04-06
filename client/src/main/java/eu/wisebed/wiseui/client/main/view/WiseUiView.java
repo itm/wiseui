@@ -8,6 +8,8 @@ import com.google.inject.ImplementedBy;
 public interface WiseUiView extends IsWidget {
 
     AcceptsOneWidget getNavigationPanel();
+    
+    AcceptsOneWidget getTestbedListPanel();
 
     AcceptsOneWidget getContentPanel();
 }

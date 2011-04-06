@@ -91,6 +91,6 @@ public class TestbedSelectionPresenter implements Presenter, ConfigurationSelect
 
     @Override
     public void setContentSelection(final String view) {
-	placeController.goTo(new TestbedSelectionPlace(place.getSelection(), view));
+    	placeController.goTo(new TestbedSelectionPlace(place.getTestbedId(), view));
     }
 }
