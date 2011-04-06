@@ -10,8 +10,8 @@ import eu.wisebed.wiseui.client.administration.event.RemoveConfigurationEvent;
 import eu.wisebed.wiseui.client.administration.event.SaveConfigurationEvent;
 import eu.wisebed.wiseui.client.administration.view.AdministrationView;
 import eu.wisebed.wiseui.client.administration.view.AdministrationView.Presenter;
-import eu.wisebed.wiseui.client.testbedselection.event.ConfigurationSelectedEvent;
-import eu.wisebed.wiseui.client.testbedselection.event.ConfigurationSelectedEvent.ConfigurationSelectedHandler;
+import eu.wisebed.wiseui.client.testbedlist.event.TestbedSelectedEvent;
+import eu.wisebed.wiseui.client.testbedlist.event.TestbedSelectedEvent.ConfigurationSelectedHandler;
 import eu.wisebed.wiseui.shared.dto.TestbedConfiguration;
 
 public class AdministrationPresenter implements Presenter, ConfigurationSelectedHandler {
@@ -57,7 +57,7 @@ public class AdministrationPresenter implements Presenter, ConfigurationSelected
 	}
 
 	@Override
-	public void onTestbedConfigurationSelected(ConfigurationSelectedEvent event) {
+	public void onTestbedConfigurationSelected(TestbedSelectedEvent event) {
 		configuration = event.getConfiguration();
 	}
 

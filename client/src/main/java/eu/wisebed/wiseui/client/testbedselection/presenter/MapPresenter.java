@@ -7,9 +7,9 @@ import com.google.common.collect.Lists;
 import com.google.gwt.event.shared.EventBus;
 import com.google.inject.Inject;
 
+import eu.wisebed.wiseui.client.testbedlist.event.TestbedSelectedEvent;
 import eu.wisebed.wiseui.client.testbedselection.TestbedSelectionPlace;
-import eu.wisebed.wiseui.client.testbedselection.event.ConfigurationSelectedEvent;
-import eu.wisebed.wiseui.client.testbedselection.event.ConfigurationSelectedEvent.ConfigurationSelectedHandler;
+import eu.wisebed.wiseui.client.testbedlist.event.TestbedSelectedEvent.ConfigurationSelectedHandler;
 import eu.wisebed.wiseui.client.testbedselection.event.ThrowableEvent;
 import eu.wisebed.wiseui.client.testbedselection.event.ThrowableEvent.ThrowableHandler;
 import eu.wisebed.wiseui.client.testbedselection.event.WisemlLoadedEvent;
@@ -41,7 +41,7 @@ public class MapPresenter implements MapView.Presenter, WisemlLoadedHandler, Con
     }
 
     private void bind() {
-        eventBus.addHandler(ConfigurationSelectedEvent.TYPE, this);
+        eventBus.addHandler(TestbedSelectedEvent.TYPE, this);
         eventBus.addHandler(WisemlLoadedEvent.TYPE, this);
         eventBus.addHandler(ThrowableEvent.TYPE, this);
     }
@@ -69,7 +69,7 @@ public class MapPresenter implements MapView.Presenter, WisemlLoadedHandler, Con
     }
 
     @Override
-    public void onTestbedConfigurationSelected(final ConfigurationSelectedEvent event) {
+    public void onTestbedConfigurationSelected(final TestbedSelectedEvent event) {
     	view.getLoadingIndicator().showLoading("Loading Testbed");
         this.configuration = event.getConfiguration();
         view.setTestbedCoordinate(null, null, null);

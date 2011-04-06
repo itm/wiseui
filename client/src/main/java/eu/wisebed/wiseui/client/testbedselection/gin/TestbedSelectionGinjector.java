@@ -2,14 +2,14 @@ package eu.wisebed.wiseui.client.testbedselection.gin;
 
 import com.google.gwt.inject.client.Ginjector;
 
+import eu.wisebed.wiseui.client.testbedlist.TestbedListActivity;
+import eu.wisebed.wiseui.client.testbedlist.view.TestbedListView;
 import eu.wisebed.wiseui.client.testbedselection.TestbedSelectionActivity;
-import eu.wisebed.wiseui.client.testbedselection.presenter.ConfigurationPresenter;
 import eu.wisebed.wiseui.client.testbedselection.presenter.DetailPresenter;
 import eu.wisebed.wiseui.client.testbedselection.presenter.LoginDialogPresenter;
 import eu.wisebed.wiseui.client.testbedselection.presenter.MapPresenter;
 import eu.wisebed.wiseui.client.testbedselection.presenter.RawWisemlPresenter;
 import eu.wisebed.wiseui.client.testbedselection.presenter.TestbedSelectionPresenter;
-import eu.wisebed.wiseui.client.testbedselection.view.ConfigurationView;
 import eu.wisebed.wiseui.client.testbedselection.view.DetailView;
 import eu.wisebed.wiseui.client.testbedselection.view.LoginDialogView;
 import eu.wisebed.wiseui.client.testbedselection.view.MapView;
@@ -20,7 +20,7 @@ public interface TestbedSelectionGinjector extends Ginjector {
 
     TestbedSelectionActivity getTestbedSelectionActivity();
 
-    ConfigurationPresenter getConfigurationPresenter();
+    TestbedListActivity getConfigurationPresenter();
 
     TestbedSelectionPresenter getTestbedSelectionPresenter();
 
@@ -32,7 +32,7 @@ public interface TestbedSelectionGinjector extends Ginjector {
 
     TestbedSelectionView getTestbedSelectionView();
 
-    ConfigurationView getConfigurationView();
+    TestbedListView getTestbedListView();
 
     DetailView getDetailView();
 

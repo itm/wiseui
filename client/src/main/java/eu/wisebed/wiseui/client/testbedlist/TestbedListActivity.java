@@ -1,4 +1,4 @@
-package eu.wisebed.wiseui.client.testbedselection.presenter;
+package eu.wisebed.wiseui.client.testbedlist;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
@@ -11,24 +11,23 @@ import com.google.gwt.view.client.SelectionChangeEvent.Handler;
 import com.google.gwt.view.client.SingleSelectionModel;
 import com.google.inject.Inject;
 import eu.wisebed.wiseui.api.TestbedConfigurationServiceAsync;
+import eu.wisebed.wiseui.client.testbedlist.event.TestbedSelectedEvent;
+import eu.wisebed.wiseui.client.testbedlist.view.TestbedListView;
 import eu.wisebed.wiseui.client.testbedselection.TestbedSelectionPlace;
-import eu.wisebed.wiseui.client.testbedselection.event.ConfigurationSelectedEvent;
-import eu.wisebed.wiseui.client.testbedselection.view.ConfigurationView;
-import eu.wisebed.wiseui.client.testbedselection.view.ConfigurationView.Presenter;
-import eu.wisebed.wiseui.shared.dto.TestbedConfiguration;
+import eu.wisebed.wiseui.client.testbedlist.view.TestbedListView.Presenter;
 import eu.wisebed.wiseui.shared.dto.TestbedConfiguration;
 
 import java.util.List;
 
 /**
- * The presenter for the {@link ConfigurationView}.
+ * The presenter for the {@link eu.wisebed.wiseui.client.testbedlist.view.TestbedListView}.
  *
  * @author Malte Legenhausen
  */
-public class ConfigurationPresenter implements Presenter {
+public class TestbedListActivity implements Presenter {
 
     private final EventBus eventBus;
-    private final ConfigurationView view;
+    private final TestbedListView view;
     private TestbedSelectionPlace place;
     private final PlaceController placeController;
     private SingleSelectionModel<TestbedConfiguration> configurationSelectionModel;
@@ -36,10 +35,10 @@ public class ConfigurationPresenter implements Presenter {
     private final TestbedConfigurationServiceAsync configurationService;
 
     @Inject
-    public ConfigurationPresenter(final EventBus eventBus,
-                                  final ConfigurationView view,
-                                  final PlaceController placeController,
-                                  final TestbedConfigurationServiceAsync configurationService) {
+    public TestbedListActivity(final EventBus eventBus,
+                               final TestbedListView view,
+                               final PlaceController placeController,
+                               final TestbedConfigurationServiceAsync configurationService) {
         this.eventBus = eventBus;
         this.view = view;
         this.placeController = placeController;
@@ -111,7 +110,7 @@ public class ConfigurationPresenter implements Presenter {
             final TestbedConfiguration configuration = getSelectedConfiguration();
             if (configuration != null) {
                 configurationSelectionModel.setSelected(configuration, true);
-                eventBus.fireEvent(new ConfigurationSelectedEvent(configuration));
+                eventBus.fireEvent(new TestbedSelectedEvent(configuration));
             }
         }
     }

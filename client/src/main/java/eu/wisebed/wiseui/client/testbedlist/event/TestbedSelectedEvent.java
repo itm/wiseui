@@ -1,22 +1,21 @@
-package eu.wisebed.wiseui.client.testbedselection.event;
+package eu.wisebed.wiseui.client.testbedlist.event;
 
 import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;
-import eu.wisebed.wiseui.client.testbedselection.event.ConfigurationSelectedEvent.ConfigurationSelectedHandler;
-import eu.wisebed.wiseui.shared.dto.TestbedConfiguration;
+import eu.wisebed.wiseui.client.testbedlist.event.TestbedSelectedEvent.ConfigurationSelectedHandler;
 import eu.wisebed.wiseui.shared.dto.TestbedConfiguration;
 
-public class ConfigurationSelectedEvent extends GwtEvent<ConfigurationSelectedHandler> {
+public class TestbedSelectedEvent extends GwtEvent<ConfigurationSelectedHandler> {
 
     public interface ConfigurationSelectedHandler extends EventHandler {
-        void onTestbedConfigurationSelected(ConfigurationSelectedEvent event);
+        void onTestbedConfigurationSelected(TestbedSelectedEvent event);
     }
 
     public static final Type<ConfigurationSelectedHandler> TYPE = new Type<ConfigurationSelectedHandler>();
 
     private final TestbedConfiguration configuration;
 
-    public ConfigurationSelectedEvent(final TestbedConfiguration configuration) {
+    public TestbedSelectedEvent(final TestbedConfiguration configuration) {
         this.configuration = configuration;
     }
 

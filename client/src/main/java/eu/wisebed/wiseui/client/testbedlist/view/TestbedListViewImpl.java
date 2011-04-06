@@ -1,4 +1,4 @@
-package eu.wisebed.wiseui.client.testbedselection.view;
+package eu.wisebed.wiseui.client.testbedlist.view;
 
 import java.util.List;
 
@@ -18,16 +18,16 @@ import eu.wisebed.wiseui.shared.dto.TestbedConfiguration;
 
 
 @Singleton
-public class ConfigurationViewImpl extends Composite implements ConfigurationView {
+public class TestbedListViewImpl extends Composite implements TestbedListView {
 
-    private static ConfigurationViewImplUiBinder uiBinder = GWT.create(ConfigurationViewImplUiBinder.class);
+    private static TestbedListViewImplUiBinder uiBinder = GWT.create(TestbedListViewImplUiBinder.class);
 
-    interface ConfigurationViewImplUiBinder extends UiBinder<Widget, ConfigurationViewImpl> {
+    interface TestbedListViewImplUiBinder extends UiBinder<Widget, TestbedListViewImpl> {
     }
     @UiField
     CellList<TestbedConfiguration> configurationList;
 
-    public ConfigurationViewImpl() {
+    public TestbedListViewImpl() {
         initWidget(uiBinder.createAndBindUi(this));
     }
 
@@ -48,7 +48,7 @@ public class ConfigurationViewImpl extends Composite implements ConfigurationVie
     }
 
     @Override
-    public void setPresenter(final Presenter presenter) {
+    public void setPresenter(final TestbedListView.Presenter presenter) {
     }
 
     @Override

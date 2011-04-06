@@ -11,18 +11,18 @@ import com.google.inject.Inject;
 
 import eu.wisebed.wiseui.api.SessionManagementServiceAsync;
 import eu.wisebed.wiseui.client.WiseUiGinjector;
+import eu.wisebed.wiseui.client.testbedlist.TestbedListActivity;
+import eu.wisebed.wiseui.client.testbedlist.view.TestbedListView;
+import eu.wisebed.wiseui.client.testbedlist.event.TestbedSelectedEvent;
 import eu.wisebed.wiseui.client.testbedselection.common.TestbedSelectionConstants;
-import eu.wisebed.wiseui.client.testbedselection.event.ConfigurationSelectedEvent;
-import eu.wisebed.wiseui.client.testbedselection.event.ConfigurationSelectedEvent.ConfigurationSelectedHandler;
+import eu.wisebed.wiseui.client.testbedlist.event.TestbedSelectedEvent.ConfigurationSelectedHandler;
 import eu.wisebed.wiseui.client.testbedselection.event.ThrowableEvent;
 import eu.wisebed.wiseui.client.testbedselection.event.WisemlLoadedEvent;
-import eu.wisebed.wiseui.client.testbedselection.presenter.ConfigurationPresenter;
 import eu.wisebed.wiseui.client.testbedselection.presenter.DetailPresenter;
 import eu.wisebed.wiseui.client.testbedselection.presenter.LoginDialogPresenter;
 import eu.wisebed.wiseui.client.testbedselection.presenter.MapPresenter;
 import eu.wisebed.wiseui.client.testbedselection.presenter.RawWisemlPresenter;
 import eu.wisebed.wiseui.client.testbedselection.presenter.TestbedSelectionPresenter;
-import eu.wisebed.wiseui.client.testbedselection.view.ConfigurationView;
 import eu.wisebed.wiseui.client.testbedselection.view.DetailView;
 import eu.wisebed.wiseui.client.testbedselection.view.LoginDialogView;
 import eu.wisebed.wiseui.client.testbedselection.view.MapView;
@@ -70,7 +70,7 @@ public class TestbedSelectionActivity extends AbstractActivity implements Config
     }
 
     private void bind() {
-        eventBus.addHandler(ConfigurationSelectedEvent.TYPE, this);
+        eventBus.addHandler(TestbedSelectedEvent.TYPE, this);
     }
 
     private void initTestbedSelectionPart(final AcceptsOneWidget container) {
@@ -101,11 +101,11 @@ public class TestbedSelectionActivity extends AbstractActivity implements Config
 
     private void initConfigurationPart(final TestbedSelectionView testbedSelectionView) {
         GWT.log("Init Testbed Configuration Part");
-        final ConfigurationPresenter configurationPresenter = injector.getConfigurationPresenter();
-        configurationPresenter.setPlace(place);
-        final ConfigurationView configurationView = injector.getConfigurationView();
-        configurationView.setPresenter(configurationPresenter);
-        testbedSelectionView.getConfigurationContainer().setWidget(configurationView);
+        final TestbedListActivity testbedListActivity = injector.getConfigurationPresenter();
+        testbedListActivity.setPlace(place);
+        final TestbedListView testbedListView = injector.getTestbedListView();
+        testbedListView.setPresenter(testbedListActivity);
+        testbedSelectionView.getConfigurationContainer().setWidget(testbedListView);
     }
 
     private void initDetailPart(final TestbedSelectionView testbedSelectionView) {
@@ -142,7 +142,7 @@ public class TestbedSelectionActivity extends AbstractActivity implements Config
         loginDialogView.setPresenter(loginDialogPresenter);
     }
 
-    public void onTestbedConfigurationSelected(final ConfigurationSelectedEvent event) {
+    public void onTestbedConfigurationSelected(final TestbedSelectedEvent event) {
         final TestbedConfiguration configuration = event.getConfiguration();
         final AsyncCallback<Wiseml> callback = new AsyncCallback<Wiseml>() {
 
