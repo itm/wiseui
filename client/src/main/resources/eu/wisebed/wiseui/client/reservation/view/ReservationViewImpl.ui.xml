@@ -7,7 +7,7 @@
 
 	<ui:style>
 		.reservationPanel{ width: 100%; height: 100%;}
-		.parametersPanel{ width: 100%; padding:4px;}
+		.parametersPanel{ width: 100%; padding:1px;}
 		.actionsPanel{ background-color: #D0E4F6;}
 		.reserveButtonContainer{ float:right; margin: 0 5px 0 0;}
 		.allButtonContainer{ margin: 5px 0 0 5px;}
@@ -29,8 +29,8 @@
 		<gwt:south size="35">
 			<gwt:HTMLPanel styleName='{style.actionsPanel}'>
 				<gwt:HTMLPanel styleName='{style.allButtonContainer}'>
+					<gwt:ToggleButton addStyleNames='{style.left}' ui:field="allReservationsButton">Public reservations</gwt:ToggleButton>
 					<gwt:ToggleButton addStyleNames='{style.left}' ui:field="newReservationButton">New reservation</gwt:ToggleButton>
-					<gwt:ToggleButton addStyleNames='{style.left}' ui:field="allReservationsButton">All reservations</gwt:ToggleButton>
 				</gwt:HTMLPanel>
 				<gwt:HTMLPanel styleName='{style.reserveButtonContainer}'>
 					<gwt:Button ui:field="reserveButton">Reserve</gwt:Button>

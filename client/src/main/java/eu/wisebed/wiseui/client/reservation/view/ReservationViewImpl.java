@@ -74,6 +74,10 @@ public class ReservationViewImpl extends Composite implements ReservationView {
 	public void reserveButton(boolean status){
 		reserveButton.setEnabled(status);
 	}
+	
+	public void newReservationToggleButton(boolean status){
+		newReservationButton.setEnabled(status);
+	}
 
 	/**
 	 * Toggle activity of 'all reservations' button.
@@ -89,19 +93,6 @@ public class ReservationViewImpl extends Composite implements ReservationView {
 	 */
 	private void allReservationsButton(boolean status){
 		allReservationsButton.setEnabled(status);
-	}
-	
-	/**
-	 * Tells the presenter to continue with a new reservation after checking
-	 * that all reservation details have properly been set
-	 * 
-	 * @param e ClickEvent
-	 */
-	@UiHandler("reserveButton")
-	public void onClickReserveButton(ClickEvent e) {
-		if(!presenter.checkReservationDetails()) 
-			return;
-		presenter.makeReservation();
 	}
 	
 	/**

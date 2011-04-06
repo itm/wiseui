@@ -1,14 +1,29 @@
 package eu.wisebed.wiseui.server.rpc;
 
+import java.util.AbstractSequentialList;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Set;
 
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
+import javax.xml.datatype.XMLGregorianCalendar;
+
+import org.dozer.Mapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.google.common.base.Function;
+import com.google.common.collect.Lists;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
+import eu.wisebed.testbed.api.rs.RSServiceHelper;
+import eu.wisebed.testbed.api.rs.v1.RS;
+import eu.wisebed.testbed.api.rs.v1.RSExceptionException;
 import eu.wisebed.testbed.api.wsn.WSNServiceHelper;
 import eu.wisebed.testbed.api.wsn.v22.SecretReservationKey;
 import eu.wisebed.testbed.api.wsn.v22.SessionManagement;
@@ -27,9 +42,13 @@ import eu.wisebed.wiseui.shared.exception.ReservationException;
 public class ReservationServiceImpl extends RemoteServiceServlet implements ReservationService {
 
 	private static final long serialVersionUID = -7715272862718944674L;
+	private static final Logger LOGGER = LoggerFactory.getLogger(ReservationServiceImpl.class);
+
+	private final Mapper mapper;
 
 	@Inject
-	public ReservationServiceImpl() {
+	public ReservationServiceImpl(final Mapper mapper) {
+		this.mapper = mapper;
 	}
 
 	/**
@@ -210,7 +229,37 @@ public class ReservationServiceImpl extends RemoteServiceServlet implements Rese
 		return null;
 	}
 
-    public List<PublicReservationData> getPublicReservations(Date from, Date to) {
-        return new ArrayList<PublicReservationData>();
-    }
+
+	public List<PublicReservationData> getPublicReservations(final String rsEndpointUrl, final Date from, final Date to) {
+		final RS rs = RSServiceHelper.getRSService(rsEndpointUrl);
+		List<eu.wisebed.testbed.api.rs.v1.PublicReservationData> resultList = null;
+		try {
+			resultList = rs.getReservations(convertDate2XmlGregorianCalendar(from), convertDate2XmlGregorianCalendar(to));
+		} catch (RSExceptionException e) {
+			LOGGER.error(e.getMessage(), e);
+		}
+		return new ArrayList<PublicReservationData>(Lists.transform(resultList, new Function<eu.wisebed.testbed.api.rs.v1.PublicReservationData, PublicReservationData>() {
+	        public PublicReservationData apply(final eu.wisebed.testbed.api.rs.v1.PublicReservationData r) {
+	            final PublicReservationData publicReservationData;
+	            publicReservationData = mapper.map(r, PublicReservationData.class);
+	            return publicReservationData;
+	        }
+	    }));
+
+	}
+	private XMLGregorianCalendar convertDate2XmlGregorianCalendar(final Date date) {
+		XMLGregorianCalendar xmlGregorianCalendar = null;
+
+		GregorianCalendar c = new GregorianCalendar();
+		c.setTime(date);
+
+		try {
+			xmlGregorianCalendar = DatatypeFactory.newInstance().newXMLGregorianCalendar(c);
+		} catch (DatatypeConfigurationException e) {
+			LOGGER.error(e.getMessage(), e);
+		}
+
+		return xmlGregorianCalendar;
+	}
+
 }

@@ -11,7 +11,7 @@ import eu.wisebed.wiseui.client.util.Objects2;
 public class ReservationPlace extends WiseUiPlace {
 
     public ReservationPlace() {
-    	this(null, Parameters.NEW_VIEW);
+    	this(null, Parameters.ALL_VIEW);
     }
     
     public ReservationPlace(final Integer selection, final String view) {

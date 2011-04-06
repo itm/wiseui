@@ -7,7 +7,9 @@ package eu.wisebed.wiseui.shared.dto;
  */
 public class BinaryImage implements Dto {
 
-    private Integer id;
+	private static final long serialVersionUID = -5391584607559079355L;
+
+	private Integer id;
     private String fileName;
     private long fileSize;
     private byte[] content;
