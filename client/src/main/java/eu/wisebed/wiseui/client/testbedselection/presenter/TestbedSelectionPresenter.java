@@ -4,9 +4,9 @@ import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.inject.Inject;
 
+import eu.wisebed.wiseui.client.testbedlist.event.TestbedSelectedEvent;
 import eu.wisebed.wiseui.client.testbedselection.TestbedSelectionPlace;
-import eu.wisebed.wiseui.client.testbedselection.event.ConfigurationSelectedEvent;
-import eu.wisebed.wiseui.client.testbedselection.event.ConfigurationSelectedEvent.ConfigurationSelectedHandler;
+import eu.wisebed.wiseui.client.testbedlist.event.TestbedSelectedEvent.ConfigurationSelectedHandler;
 import eu.wisebed.wiseui.client.testbedselection.event.ShowLoginDialogEvent;
 import eu.wisebed.wiseui.client.testbedselection.event.ThrowableEvent;
 import eu.wisebed.wiseui.client.testbedselection.event.ThrowableEvent.ThrowableHandler;
@@ -45,14 +45,14 @@ public class TestbedSelectionPresenter implements Presenter, ConfigurationSelect
 
     private void bind() {
         eventBus.addHandler(WisemlLoadedEvent.TYPE, this);
-        eventBus.addHandler(ConfigurationSelectedEvent.TYPE, this);
+        eventBus.addHandler(TestbedSelectedEvent.TYPE, this);
         eventBus.addHandler(ThrowableEvent.TYPE, this);
     }
 
     @Override
     public void reload() {
         view.getReloadEnabled().setEnabled(false);
-        eventBus.fireEvent(new ConfigurationSelectedEvent(configuration));
+        eventBus.fireEvent(new TestbedSelectedEvent(configuration));
     }
 
     @Override
@@ -72,7 +72,7 @@ public class TestbedSelectionPresenter implements Presenter, ConfigurationSelect
     }
 
     @Override
-    public void onTestbedConfigurationSelected(final ConfigurationSelectedEvent event) {
+    public void onTestbedConfigurationSelected(final TestbedSelectedEvent event) {
         configuration = event.getConfiguration();
         view.getLoginEnabled().setEnabled(true);
     }

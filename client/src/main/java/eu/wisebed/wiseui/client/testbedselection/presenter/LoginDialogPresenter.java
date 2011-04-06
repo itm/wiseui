@@ -4,11 +4,11 @@ import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.inject.Inject;
 import eu.wisebed.wiseui.api.SNAAServiceAsync;
+import eu.wisebed.wiseui.client.testbedlist.event.TestbedSelectedEvent;
 import eu.wisebed.wiseui.client.testbedselection.TestbedSelectionPlace;
 import eu.wisebed.wiseui.client.testbedselection.common.UrnPrefixInfo;
 import eu.wisebed.wiseui.client.testbedselection.common.UrnPrefixInfo.State;
-import eu.wisebed.wiseui.client.testbedselection.event.ConfigurationSelectedEvent;
-import eu.wisebed.wiseui.client.testbedselection.event.ConfigurationSelectedEvent.ConfigurationSelectedHandler;
+import eu.wisebed.wiseui.client.testbedlist.event.TestbedSelectedEvent.ConfigurationSelectedHandler;
 import eu.wisebed.wiseui.client.testbedselection.event.LoggedInEvent;
 import eu.wisebed.wiseui.client.testbedselection.event.ShowLoginDialogEvent;
 import eu.wisebed.wiseui.client.testbedselection.event.ShowLoginDialogEvent.ShowLoginDialogHandler;
@@ -19,7 +19,6 @@ import eu.wisebed.wiseui.client.testbedselection.view.LoginDialogView.Presenter;
 import eu.wisebed.wiseui.client.util.AuthenticationManager;
 import eu.wisebed.wiseui.shared.dto.TestbedConfiguration;
 import eu.wisebed.wiseui.shared.dto.SecretAuthenticationKey;
-import eu.wisebed.wiseui.shared.dto.TestbedConfiguration;
 
 /**
  * The presenter for the {@link LoginDialogView}.
@@ -58,7 +57,7 @@ public class LoginDialogPresenter implements Presenter, ConfigurationSelectedHan
     }
 
     private void bind() {
-        eventBus.addHandler(ConfigurationSelectedEvent.TYPE, this);
+        eventBus.addHandler(TestbedSelectedEvent.TYPE, this);
         eventBus.addHandler(ShowLoginDialogEvent.TYPE, this);
     }
 
@@ -114,7 +113,7 @@ public class LoginDialogPresenter implements Presenter, ConfigurationSelectedHan
     }
 
     @Override
-    public void onTestbedConfigurationSelected(final ConfigurationSelectedEvent event) {
+    public void onTestbedConfigurationSelected(final TestbedSelectedEvent event) {
         configuration = event.getConfiguration();
         dataProvider.getList().clear();
         for (String urnPrefix : configuration.getUrnPrefixList()) {

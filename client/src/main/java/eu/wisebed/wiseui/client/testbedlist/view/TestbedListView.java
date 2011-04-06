@@ -1,4 +1,4 @@
-package eu.wisebed.wiseui.client.testbedselection.view;
+package eu.wisebed.wiseui.client.testbedlist.view;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.view.client.SelectionModel;
@@ -7,8 +7,8 @@ import eu.wisebed.wiseui.shared.dto.TestbedConfiguration;
 
 import java.util.List;
 
-@ImplementedBy(ConfigurationViewImpl.class)
-public interface ConfigurationView extends IsWidget {
+@ImplementedBy(TestbedListViewImpl.class)
+public interface TestbedListView extends IsWidget {
 
     void setPresenter(Presenter presenter);
 

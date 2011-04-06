@@ -12,7 +12,7 @@ import eu.wisebed.wiseui.client.administration.presenter.ConfigurationFormPresen
 import eu.wisebed.wiseui.client.administration.presenter.ConfigurationPresenter;
 import eu.wisebed.wiseui.client.administration.view.AdministrationView;
 import eu.wisebed.wiseui.client.administration.view.ConfigurationFormView;
-import eu.wisebed.wiseui.client.testbedselection.view.ConfigurationView;
+import eu.wisebed.wiseui.client.testbedlist.view.TestbedListView;
 
 /**
  * The activity for the administration part of WiseUi.
@@ -58,9 +58,9 @@ public class AdministrationActivity extends AbstractActivity {
         GWT.log("Init Administration Configuration Part");
         final ConfigurationPresenter configurationPresenter = injector.getAdministrationConfigurationPresenter();
         configurationPresenter.setPlace(place);
-        final ConfigurationView configurationView = injector.getConfigurationView();
-        configurationView.setPresenter(configurationPresenter);
-        administrationView.getConfigurationContainer().setWidget(configurationView);
+        final TestbedListView testbedListView = injector.getTestbedListView();
+        testbedListView.setPresenter(configurationPresenter);
+        administrationView.getConfigurationContainer().setWidget(testbedListView);
     }
 
 	public void setPlace(final AdministrationPlace place) {

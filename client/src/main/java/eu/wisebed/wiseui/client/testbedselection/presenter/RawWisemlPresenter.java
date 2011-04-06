@@ -6,11 +6,10 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 
 import eu.wisebed.wiseui.api.SessionManagementServiceAsync;
-import eu.wisebed.wiseui.client.testbedselection.event.ConfigurationSelectedEvent;
-import eu.wisebed.wiseui.client.testbedselection.event.ConfigurationSelectedEvent.ConfigurationSelectedHandler;
+import eu.wisebed.wiseui.client.testbedlist.event.TestbedSelectedEvent;
+import eu.wisebed.wiseui.client.testbedlist.event.TestbedSelectedEvent.ConfigurationSelectedHandler;
 import eu.wisebed.wiseui.client.testbedselection.view.RawWisemlView;
 import eu.wisebed.wiseui.client.testbedselection.view.RawWisemlView.Presenter;
-import eu.wisebed.wiseui.shared.dto.TestbedConfiguration;
 import eu.wisebed.wiseui.shared.dto.TestbedConfiguration;
 
 /**
@@ -40,11 +39,11 @@ public class RawWisemlPresenter implements Presenter, ConfigurationSelectedHandl
 	}
 	
 	private void bind() {
-		eventBus.addHandler(ConfigurationSelectedEvent.TYPE, this);
+		eventBus.addHandler(TestbedSelectedEvent.TYPE, this);
 	}
 	
 	@Override
-	public void onTestbedConfigurationSelected(final ConfigurationSelectedEvent event) {
+	public void onTestbedConfigurationSelected(final TestbedSelectedEvent event) {
 		configuration = event.getConfiguration();
 		view.getLoadingIndicator().showLoading("Loading Testbed");
 		view.getXmlHasHTML().setText("");

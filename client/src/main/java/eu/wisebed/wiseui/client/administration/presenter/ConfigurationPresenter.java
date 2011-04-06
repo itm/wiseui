@@ -17,9 +17,8 @@ import eu.wisebed.wiseui.api.TestbedConfigurationServiceAsync;
 import eu.wisebed.wiseui.client.administration.AdministrationPlace;
 import eu.wisebed.wiseui.client.administration.event.CreateConfigurationEvent;
 import eu.wisebed.wiseui.client.administration.event.CreateConfigurationEvent.CreateConfigurationHandler;
-import eu.wisebed.wiseui.client.testbedselection.event.ConfigurationSelectedEvent;
-import eu.wisebed.wiseui.client.testbedselection.view.ConfigurationView;
-import eu.wisebed.wiseui.client.testbedselection.view.ConfigurationView.Presenter;
+import eu.wisebed.wiseui.client.testbedlist.event.TestbedSelectedEvent;
+import eu.wisebed.wiseui.client.testbedlist.view.TestbedListView;
 import eu.wisebed.wiseui.shared.dto.TestbedConfiguration;
 
 /**
@@ -27,9 +26,9 @@ import eu.wisebed.wiseui.shared.dto.TestbedConfiguration;
  * 
  * @author Malte Legenhausen
  */
-public class ConfigurationPresenter implements Presenter, CreateConfigurationHandler {
+public class ConfigurationPresenter implements TestbedListView.Presenter, CreateConfigurationHandler {
 
-	private final ConfigurationView view;
+	private final TestbedListView view;
 	private final TestbedConfigurationServiceAsync configurationService;
 	private final SingleSelectionModel<TestbedConfiguration> configurationSelectionModel;
     private final PlaceController placeController;
@@ -38,7 +37,7 @@ public class ConfigurationPresenter implements Presenter, CreateConfigurationHan
     private final EventBus eventBus;
 	
 	@Inject
-	public ConfigurationPresenter(final EventBus eventBus, final ConfigurationView view, final PlaceController placeController, final TestbedConfigurationServiceAsync configurationService) {
+	public ConfigurationPresenter(final EventBus eventBus, final TestbedListView view, final PlaceController placeController, final TestbedConfigurationServiceAsync configurationService) {
 		this.eventBus = eventBus;
 		this.view = view;
 		this.placeController = placeController;
@@ -111,7 +110,7 @@ public class ConfigurationPresenter implements Presenter, CreateConfigurationHan
             final TestbedConfiguration configuration = getSelectedConfiguration();
             if (configuration != null) {
                 configurationSelectionModel.setSelected(configuration, true);
-                eventBus.fireEvent(new ConfigurationSelectedEvent(configuration));
+                eventBus.fireEvent(new TestbedSelectedEvent(configuration));
             }
         }
     }

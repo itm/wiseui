@@ -6,10 +6,10 @@ import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
 import com.google.inject.Inject;
+import eu.wisebed.wiseui.client.testbedlist.event.TestbedSelectedEvent;
 import eu.wisebed.wiseui.client.testbedselection.TestbedSelectionPlace;
 import eu.wisebed.wiseui.client.testbedselection.common.TestbedTreeViewModel;
-import eu.wisebed.wiseui.client.testbedselection.event.ConfigurationSelectedEvent;
-import eu.wisebed.wiseui.client.testbedselection.event.ConfigurationSelectedEvent.ConfigurationSelectedHandler;
+import eu.wisebed.wiseui.client.testbedlist.event.TestbedSelectedEvent.ConfigurationSelectedHandler;
 import eu.wisebed.wiseui.client.testbedselection.event.ThrowableEvent;
 import eu.wisebed.wiseui.client.testbedselection.event.ThrowableEvent.ThrowableHandler;
 import eu.wisebed.wiseui.client.testbedselection.event.WisemlLoadedEvent;
@@ -50,7 +50,7 @@ public class DetailPresenter implements Presenter, ConfigurationSelectedHandler,
     }
 
     private void bind() {
-        eventBus.addHandler(ConfigurationSelectedEvent.TYPE, this);
+        eventBus.addHandler(TestbedSelectedEvent.TYPE, this);
         eventBus.addHandler(WisemlLoadedEvent.TYPE, this);
         eventBus.addHandler(ThrowableEvent.TYPE, this);
         nodeSelectionModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
@@ -93,7 +93,7 @@ public class DetailPresenter implements Presenter, ConfigurationSelectedHandler,
 
     }
 
-    public void onTestbedConfigurationSelected(final ConfigurationSelectedEvent event) {
+    public void onTestbedConfigurationSelected(final TestbedSelectedEvent event) {
     	configuration = event.getConfiguration();
     	view.getLoadingIndicator().showLoading("Loading Testbed");
         view.showMessage("");

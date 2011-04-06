@@ -19,8 +19,8 @@ import eu.wisebed.wiseui.client.administration.event.SaveConfigurationEvent;
 import eu.wisebed.wiseui.client.administration.event.SaveConfigurationEvent.SaveConfigurationHandler;
 import eu.wisebed.wiseui.client.administration.view.ConfigurationFormView;
 import eu.wisebed.wiseui.client.administration.view.ConfigurationFormView.Presenter;
-import eu.wisebed.wiseui.client.testbedselection.event.ConfigurationSelectedEvent;
-import eu.wisebed.wiseui.client.testbedselection.event.ConfigurationSelectedEvent.ConfigurationSelectedHandler;
+import eu.wisebed.wiseui.client.testbedlist.event.TestbedSelectedEvent;
+import eu.wisebed.wiseui.client.testbedlist.event.TestbedSelectedEvent.ConfigurationSelectedHandler;
 import eu.wisebed.wiseui.shared.dto.TestbedConfiguration;
 
 /**
@@ -49,7 +49,7 @@ public class ConfigurationFormPresenter implements Presenter, ConfigurationSelec
 	}
 	
 	private void bind() {
-		eventBus.addHandler(ConfigurationSelectedEvent.TYPE, this);
+		eventBus.addHandler(TestbedSelectedEvent.TYPE, this);
 		eventBus.addHandler(SaveConfigurationEvent.TYPE, this);
 		eventBus.addHandler(CancelConfigurationEvent.TYPE, this);
 		eventBus.addHandler(CreateConfigurationEvent.TYPE, this);
@@ -99,7 +99,7 @@ public class ConfigurationFormPresenter implements Presenter, ConfigurationSelec
 	}
 	
 	@Override
-	public void onTestbedConfigurationSelected(final ConfigurationSelectedEvent event) {
+	public void onTestbedConfigurationSelected(final TestbedSelectedEvent event) {
 		configuration = event.getConfiguration();
 		loadConfigurationToView();
 		view.setInfoVisibility(false);
