@@ -20,3 +20,4 @@ nb-configuration.xml
 .svn
 *.svn
 nbactions.xml
+.checkstyle
