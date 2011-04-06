@@ -8,9 +8,8 @@ public class NavigationPlace extends KeyValuePlace {
 	
 	private static final Integer DEFAULT_INDEX = 0;
 	
-	public NavigationPlace(final String token) {
+	public NavigationPlace() {
 		set(INDEX_STRING, DEFAULT_INDEX.toString());
-		parse(token);
 	}
 	
 	public NavigationPlace(final Integer index) {

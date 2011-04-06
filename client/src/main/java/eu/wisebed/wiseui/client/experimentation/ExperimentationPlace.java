@@ -7,8 +7,4 @@ public class ExperimentationPlace extends KeyValuePlace {
 	public ExperimentationPlace() {
 		
 	}
-	
-	public ExperimentationPlace(String token) {
-		parse(token);
-	}
 }

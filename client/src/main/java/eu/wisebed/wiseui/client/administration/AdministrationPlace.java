@@ -12,8 +12,4 @@ public class AdministrationPlace extends KeyValuePlace {
 	public AdministrationPlace() {
 		
 	}
-	
-	public AdministrationPlace(final String token) {
-		parse(token);
-	}
 }

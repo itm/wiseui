@@ -32,39 +32,37 @@ public class WiseUiPlace extends Place {
 		mapping.put(shortClassName(TestbedSelectionPlace.class), new Factory<TestbedSelectionPlace>() {
 			@Override
 			public TestbedSelectionPlace create(final String token) {
-				final TestbedSelectionPlace place = new TestbedSelectionPlace();
-				place.parse(token);
-				return place;
+				return KeyValuePlace.parse(new TestbedSelectionPlace(), token);
 			}
 		});
 		mapping.put(shortClassName(ExperimentationPlace.class), new Factory<ExperimentationPlace>() {
 			@Override
 			public ExperimentationPlace create(final String token) {
-				return new ExperimentationPlace(token);
+				return KeyValuePlace.parse(new ExperimentationPlace(), token);
 			}
 		});
 		mapping.put(shortClassName(ReservationPlace.class), new Factory<ReservationPlace>() {
 			@Override
 			public ReservationPlace create(final String token) {
-				return new ReservationPlace();
+				return KeyValuePlace.parse(new ReservationPlace(), token);
 			}
 		});
 		mapping.put(shortClassName(AdministrationPlace.class), new Factory<AdministrationPlace>() {
 			@Override
 			public AdministrationPlace create(final String token) {
-				return new AdministrationPlace(token);
+				return KeyValuePlace.parse(new AdministrationPlace(), token);
 			}
 		});
 		mapping.put(shortClassName(NavigationPlace.class), new Factory<NavigationPlace>() {
 			@Override
 			public NavigationPlace create(String token) {
-				return new NavigationPlace(token);
+				return KeyValuePlace.parse(new NavigationPlace(), token);
 			}
 		});
 		mapping.put(shortClassName(TestbedListPlace.class), new Factory<TestbedListPlace>() {
 			@Override
 			public TestbedListPlace create(String token) {
-				return new TestbedListPlace(token);
+				return KeyValuePlace.parse(new TestbedListPlace(), token);
 			}
 		});
 	}

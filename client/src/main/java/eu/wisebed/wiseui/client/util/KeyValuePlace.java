@@ -32,17 +32,12 @@ public class KeyValuePlace extends Place {
 		this.separator = separator;
 	}
 	
-	public KeyValuePlace(final String joiner, final String separator, final String token) {
-		this(joiner, separator);
-		parse(token);
-	}
-	
 	public KeyValuePlace() {
 		this(DEFAULT_JOINER, DEFAULT_SEPARATOR);
 	}
 	
 	public KeyValuePlace(final String token) {
-		this(DEFAULT_JOINER, DEFAULT_SEPARATOR, token);
+		this(DEFAULT_JOINER, DEFAULT_SEPARATOR);
 	}
 
 	public String get(final String key) {
@@ -53,7 +48,7 @@ public class KeyValuePlace extends Place {
 		variables.put(key, value);
 	}
 	
-    public final void parse(final String token) {
+    private final void parse(final String token) {
     	if (token != null) {
     		final Iterable<String> vars = Splitter.on(joiner).split(token);
         	for (final String variable : vars) {
@@ -63,6 +58,11 @@ public class KeyValuePlace extends Place {
         		}
         	}
     	}
+    }
+    
+    public static <T extends KeyValuePlace> T parse(T instance, String token) {
+    	instance.parse(token);
+    	return instance;
     }
     
     @Override

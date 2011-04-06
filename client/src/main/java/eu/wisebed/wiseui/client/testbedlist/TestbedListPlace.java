@@ -12,10 +12,6 @@ public class TestbedListPlace extends KeyValuePlace {
 		set(TESTBED_ID_STRING, null);
 	}
 	
-	public TestbedListPlace(final String token) {
-		parse(token);
-	}
-	
 	public TestbedListPlace(final Integer index) {
 		set(TESTBED_ID_STRING, Objects2.nullOrToString(index));
 	}
