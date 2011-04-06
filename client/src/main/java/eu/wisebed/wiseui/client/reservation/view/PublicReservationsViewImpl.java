@@ -42,6 +42,7 @@ public class PublicReservationsViewImpl extends Composite implements PublicReser
 
 	private void initCalendar(){
 		calendar.setDate(new Date());
+		calendar.setHeight("100%");
 		calendar.setDays(WEEK_DAYS);
 	}
 	
