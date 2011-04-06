@@ -8,15 +8,10 @@ import com.google.inject.ImplementedBy;
 public interface ReservationView extends IsWidget {
 
     void setPresenter(Presenter presenter);
-    void setSubview(String view);
-    void reserveButton(boolean status);
-    AcceptsOneWidget getTestbedsPanel();
     AcceptsOneWidget getParametersPanel();
 
 	
 	public interface Presenter{
-		void gotoSubview(String view);
 		void makeReservation();
-		boolean checkReservationDetails();
 	}
 }

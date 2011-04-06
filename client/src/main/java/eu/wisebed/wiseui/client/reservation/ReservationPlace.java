@@ -7,7 +7,7 @@ import eu.wisebed.wiseui.client.util.Objects2;
 public class ReservationPlace extends KeyValuePlace {
 
     public ReservationPlace() {
-    	this(Parameters.NEW_VIEW);
+    	this(Parameters.ALL_VIEW);
     }
     
     public ReservationPlace(final String view) {

@@ -5,7 +5,9 @@ package eu.wisebed.wiseui.shared.dto;
  */
 public class UrnPrefix implements Dto {
 
-    private Integer id;
+	private static final long serialVersionUID = -7693239881876639487L;
+
+	private Integer id;
 
     public UrnPrefix() {
     }
