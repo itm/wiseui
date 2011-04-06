@@ -19,8 +19,6 @@ import eu.wisebed.wiseui.client.reservation.event.ReservationFailedEvent;
 import eu.wisebed.wiseui.client.reservation.event.ReservationFailedEventHandler;
 import eu.wisebed.wiseui.client.reservation.event.ReservationSuccessEvent;
 import eu.wisebed.wiseui.client.reservation.event.ReservationSuccessEventHandler;
-import eu.wisebed.wiseui.client.reservation.event.TestbedSelectedChangedEvent;
-import eu.wisebed.wiseui.client.reservation.event.TestbedSelectedChangedEventHandler;
 import eu.wisebed.wiseui.client.reservation.view.ReservationView;
 import eu.wisebed.wiseui.client.reservation.view.ReservationView.Presenter;
 import eu.wisebed.wiseui.client.util.AuthenticationManager;
@@ -34,13 +32,12 @@ import eu.wisebed.wiseui.shared.dto.SecretAuthenticationKey;
 import eu.wisebed.wiseui.widgets.messagebox.MessageBox;
 
 public class ReservationPresenter implements Presenter, MissingReservationParametersEventHandler, 
-	ReservationSuccessEventHandler, ReservationFailedEventHandler, TestbedSelectedChangedEventHandler{
+	ReservationSuccessEventHandler, ReservationFailedEventHandler{
 
 	private final ReservationView view;
 	private ReservationPlace place;
 	private ReservationServiceAsync reservationService;
 	private PlaceController placeController;
-	private TestbedConfiguration testbedSelected;
 	private EventBus eventBus;
 	private WiseUiGinjector injector;
 
@@ -59,7 +56,6 @@ public class ReservationPresenter implements Presenter, MissingReservationParame
     @Override
     public void setPlace(final ReservationPlace place) {
     	this.place = place;
-    	view.setSubview(place.getView());
     }
     
     public ReservationPlace getPlace(){
@@ -70,25 +66,8 @@ public class ReservationPresenter implements Presenter, MissingReservationParame
 		eventBus.addHandler(MissingReservationParametersEvent.TYPE, this);
 		eventBus.addHandler(ReservationSuccessEvent.TYPE, this);
 		eventBus.addHandler(ReservationFailedEvent.TYPE, this);
-		eventBus.addHandler(TestbedSelectedChangedEvent.TYPE, this);
 	}
 	
-	public void enableNewReservationButton(){
-		view.newReservationToggleButton(true);
-	}
-	
-	public void disableNewReservationButton(){
-		view.newReservationToggleButton(false);
-	}
-	
-	public void disableReservation(){
-		view.reserveButton(false);
-	}
-	
-	public void enableReservation(){
-		view.reserveButton(true);
-	}
-
 	/**
 	 * Makes an Asynchronous callback to server asking for the nodes located in 
 	 * the network. Result consists of an array with all sensors' useful 
@@ -115,10 +94,8 @@ public class ReservationPresenter implements Presenter, MissingReservationParame
 	 * Sends reservation details to server and books a new reservation.
 	 */
 	public void makeReservation(){
-		TestbedConfiguration bed = testbedSelected;
-		if (bed == null){
-			GWT.log("Testbed selected is null!!");
-		}
+		// FIXME: Get testbed selected from testbed panel
+		TestbedConfiguration bed = new TestbedConfiguration();
 		final String rsEndpointUrl = bed.getRsEndpointUrl();
 		final String urnPrefix = bed.getUrnPrefixList().get(0); 	
 		final AuthenticationManager auth = injector.getAuthenticationManager();
@@ -145,10 +122,6 @@ public class ReservationPresenter implements Presenter, MissingReservationParame
 			});
 	}
 
-	public void onTestbedSelectedChanged(final TestbedSelectedChangedEvent event){
-		testbedSelected = event.getTestbedSelected();
-	}
-
 	public void onMissingReservationParameters( final MissingReservationParametersEvent event){
 		MessageBox.error(Messages.MISSING_RESERVATION_PARAMETERS_TITLE, Messages.MISSING_RESERVATION_PARAMETERS, null, 
 				null);		
@@ -161,9 +134,4 @@ public class ReservationPresenter implements Presenter, MissingReservationParame
 	public void onReservationFailed(final ReservationFailedEvent event){
 		MessageBox.error(Messages.RESERVATION_FAILED_TITLE, Messages.RESERVATION_FAILED, null, null);
 	}
-
-    @Override
-    public void gotoSubview(final String view) {
-    	placeController.goTo(new ReservationPlace(place.getTestbedId(), view));
-    }
 }
