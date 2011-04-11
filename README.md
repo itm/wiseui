@@ -40,12 +40,12 @@ In order to have Hibernate properly configured, make sure you declare the follow
             <profile>
                 <id>inject-hibernate-details</id>
                 <properties>
-                    <wiseui.hibernate.dialect>org.hibernate.dialect.MySQLDialect</wiseui.hibernate.dialect>
-                    <wiseui.jdbc.connection.driver_class>com.mysql.jdbc.Driver</wiseui.jdbc.connection.driver_class>
-                    <wiseui.jdbc.connection.url>jdbc:mysql://localhost/wiseuidb</wiseui.jdbc.connection.url>
-                    <wiseui.jdbc.connection.username>root</wiseui.jdbc.connection.username>
-                    <wiseui.jdbc.connection.password/>
-                    <wiseui.jdbc.connection.pool_size>10</wiseui.jdbc.connection.pool_size>
+                    <hibernate.dialect>org.hibernate.dialect.MySQLDialect</hibernate.dialect>
+                    <jdbc.connection.driver_class>com.mysql.jdbc.Driver</jdbc.connection.driver_class>
+                    <jdbc.connection.url>jdbc:mysql://localhost/wiseuidb</jdbc.connection.url>
+                    <jdbc.connection.username>root</jdbc.connection.username>
+                    <jdbc.connection.password/>
+                    <jdbc.connection.pool_size>10</jdbc.connection.pool_size>
                 </properties>
             </profile>
 		</profiles>
