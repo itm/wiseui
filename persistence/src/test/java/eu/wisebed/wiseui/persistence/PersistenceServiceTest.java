@@ -12,6 +12,7 @@ import java.util.ArrayList;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  * @author Soenke Nommensen
@@ -32,7 +33,7 @@ public class PersistenceServiceTest {
         persistenceService = null;
     }
 
-    @Test(timeout = 5000)
+    @Test(timeout = 10000)
     public void testStoreTestbedConfiguration() {
         TestbedConfiguration testbedConfiguration = createTestbedConfiguration();
 
@@ -67,6 +68,29 @@ public class PersistenceServiceTest {
         assertEquals(loadedTestbedConfiguration, persistedTestbedConfiguration);
 
         LOGGER.info(loadedTestbedConfiguration.toString());
+    }
+
+    @Test(timeout = 30000)
+    public void testLoadAllTestbedConfigurations() {
+        final int noOfConfigurations = 5;
+
+        for (int i = 0; i < noOfConfigurations; i++) {
+            persistenceService.storeTestbedConfiguration(createTestbedConfiguration());
+        }
+
+        assertTrue(persistenceService.loadAllTestbedConfigurations().size() == noOfConfigurations);
+    }
+
+    @Test(timeout = 10000)
+    public void testRemoveTestbedConfiguration() {
+        TestbedConfiguration testbedConfiguration =
+                persistenceService.storeTestbedConfiguration(createTestbedConfiguration());
+
+        assertTrue(persistenceService.loadAllTestbedConfigurations().size() == 1);
+
+        persistenceService.removeTestbedConfiguration(testbedConfiguration.getId());
+
+        assertTrue(persistenceService.loadAllTestbedConfigurations().isEmpty());
     }
 
     private TestbedConfiguration createTestbedConfiguration() {

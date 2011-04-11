@@ -3,6 +3,8 @@ package eu.wisebed.wiseui.api;
 import eu.wisebed.wiseui.shared.dto.TestbedConfiguration;
 import eu.wisebed.wiseui.shared.dto.BinaryImage;
 
+import java.util.List;
+
 /**
  * @author Soenke Nommensen
  */
@@ -25,6 +27,21 @@ public interface PersistenceService {
     TestbedConfiguration loadTestbedConfiguration(Integer id);
 
     /**
+     * Removes the specified {@link TestbedConfiguration} from the database.
+     *
+     * @param id The ID of the {@link TestbedConfiguration} to be removed
+     */
+    void removeTestbedConfiguration(Integer id);
+
+    /**
+     * Loads all available {@link TestbedConfiguration}s from the database.
+     * Returns an empty list, if no {@link TestbedConfiguration}s could be found.
+     *
+     * @return A list with all {@link TestbedConfiguration}s loaded from the database
+     */
+    List<TestbedConfiguration> loadAllTestbedConfigurations();
+
+    /**
      * Stores a {@link BinaryImage} in the database.
      *
      * @param binaryImage The {@link BinaryImage} to be stored
@@ -39,6 +56,15 @@ public interface PersistenceService {
      * @return The loaded instance of {@link BinaryImage} for the given ID.
      */
     BinaryImage loadBinaryImage(Integer id);
+
+
+    /**
+     * Removes the specified {@link BinaryImage} from the database.
+     *
+     * @param id The ID of the {@link BinaryImage} to be removed
+     */
+    void removeBinaryImage(Integer id);
+
 }
 
 

@@ -1,7 +1,9 @@
 package eu.wisebed.wiseui.shared.common;
 
+import java.util.Collection;
+
 /**
- * Utility class for common precondition checks.
+ * Utility class for common pre- and post-condition checks.
  * <p/>
  * The class provides two kinds of checks: Argument checks and general checks.
  * The difference is, that argument checks throw an {@link IllegalArgumentException},
@@ -9,7 +11,7 @@ package eu.wisebed.wiseui.shared.common;
  *
  * @author Soenke Nommensen
  */
-public class Preconditions {
+public class Checks {
 
     /**
      * @param expression Boolean expression, which shall be tested.
@@ -65,5 +67,14 @@ public class Preconditions {
      */
     public static void notNullOrEmpty(final String stringReference, final String message) {
         check(stringReference != null && !stringReference.isEmpty(), message);
+    }
+
+    /**
+     * @param collection Collection, which shall be tested for Null or empty.
+     * @param message    Error message
+     * @throws RuntimeException
+     */
+    public static void notNullOrEmpty(final Collection collection, final String message) {
+        check(collection != null && !collection.isEmpty(), message);
     }
 }
