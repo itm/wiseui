@@ -2,12 +2,13 @@ WiseUI
 ======
 
 The WiseUI is a [GWT][gwt] based web client for the [Testbed Runtime][testbedruntime].
-The project is carried out as a joint venture formed by R.A. Computer Technology Institute (University of Patras)
-and the Institute of Telemactics (University of Lübeck).
+The project is carried out as a joint venture formed by R.A. Computer Technology Institute (CIT, University of Patras)
+and the Institute of Telemactics (ITM, University of Lübeck).
 
 
 What do I need?
 ---------------
+
    * Git
    * JDK >= 1.6
    * Maven 2.2 or 3.0
@@ -102,11 +103,12 @@ You can deploy the resulting war-file with:
     $ cd client
     $ mvn install -Ddeploy=remote
     
-This Maven command activates the profile in client/pom.xml. The profile contains a maven-exec plugin  configuration, which uploads the *.war file to the designated server's Tomcat webapps directory. If the Tomcat server is configured to auto-deploy applications, the new web application will be deployed and started immediately.
+This Maven command activates the profile in client/pom.xml. The profile contains a maven-exec plugin  configuration, which uploads the `*.war` file to the designated server's Tomcat webapps directory. If the Tomcat server is configured to auto-deploy applications, the new web application will be deployed and started immediately.
 
 
 More Documentation
 ==================
+
 Take a look at our [wiki][].
 
 
@@ -115,8 +117,8 @@ Take a look at our [wiki][].
 [testbedruntime]:https://github.com/itm/testbed-runtime
 
 
-Continuous Integration -- Latest Stable build
-==================
+Continuous Integration - Latest Stable build
+============================================
 
 The latest stable version is available from [Hudson](http://ru1.cti.gr/hudson/job/wiseui/), the continuous integration tool.
 

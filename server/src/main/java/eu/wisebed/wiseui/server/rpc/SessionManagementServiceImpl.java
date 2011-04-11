@@ -38,14 +38,14 @@ public class SessionManagementServiceImpl extends RemoteServiceServlet implement
         }
     }
 
-	@Override
-	public String getWisemlAsXml(final String url) throws WisemlException {
-		try {
-			final SessionManagement sessionManagement = WSNServiceHelper.getSessionManagementService(url);
-			return sessionManagement.getNetwork();
-		} catch (final Exception e) {
+    @Override
+    public String getWisemlAsXml(final String url) throws WisemlException {
+        try {
+            final SessionManagement sessionManagement = WSNServiceHelper.getSessionManagementService(url);
+            return sessionManagement.getNetwork();
+        } catch (final Exception e) {
             LOGGER.error("Unable to load Wiseml from " + url, e);
-			throw new WisemlException("Unable to load Wiseml from " + url, e);
-		}
+            throw new WisemlException("Unable to load Wiseml from " + url, e);
+        }
     }
 }
