@@ -5,6 +5,8 @@ The WiseUI is a [GWT][gwt] based web client for the [Testbed Runtime][testbedrun
 The project is carried out as a joint venture formed by R.A. Computer Technology Institute (CTI, University of Patras)
 and the Institute of Telemactics (ITM, University of Lübeck).
 
+The WiseUI project is related to the research projects [WISEBED][wisebed] and [SmartSantander][smartsantander].
+
 
 What do I need?
 ---------------
@@ -111,10 +113,11 @@ More Documentation
 
 Take a look at our [wiki][].
 
-
 [gwt]:http://code.google.com/webtoolkit/doc/2.2/DevGuide.html
 [wiki]:https://github.com/itm/wiseui/wiki
 [testbedruntime]:https://github.com/itm/testbed-runtime
+[wisebed]:http://www.wisebed.eu
+[smartsantander]:http://www.smartsantander.eu
 
 
 Continuous Integration - Latest Stable build
