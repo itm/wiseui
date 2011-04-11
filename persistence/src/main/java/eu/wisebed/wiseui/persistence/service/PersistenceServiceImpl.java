@@ -1,10 +1,10 @@
-package eu.wisebed.wiseui.server.service;
+package eu.wisebed.wiseui.persistence.service;
 
 import eu.wisebed.wiseui.api.PersistenceService;
-import eu.wisebed.wiseui.server.dao.BinaryImageDao;
-import eu.wisebed.wiseui.server.dao.TestbedConfigurationDao;
-import eu.wisebed.wiseui.server.domain.BinaryImageBo;
-import eu.wisebed.wiseui.server.domain.TestbedConfigurationBo;
+import eu.wisebed.wiseui.persistence.dao.BinaryImageDao;
+import eu.wisebed.wiseui.persistence.dao.TestbedConfigurationDao;
+import eu.wisebed.wiseui.persistence.domain.BinaryImageBo;
+import eu.wisebed.wiseui.persistence.domain.TestbedConfigurationBo;
 import eu.wisebed.wiseui.shared.dto.BinaryImage;
 import eu.wisebed.wiseui.shared.dto.TestbedConfiguration;
 import eu.wisebed.wiseui.shared.common.Preconditions;
@@ -128,29 +128,5 @@ public class PersistenceServiceImpl implements PersistenceService {
         return dozerBeanMapper.map(bo, BinaryImage.class);
     }
 
-
-    /**
-     * Used by Spring inject {@link DozerBeanMapper}.
-     * @param dozerBeanMapper The property be injected.
-     */
-    public void setDozerBeanMapper(final DozerBeanMapper dozerBeanMapper) {
-       this.dozerBeanMapper = dozerBeanMapper;
-    }
-
-    /**
-     * Used by Spring inject {@link TestbedConfigurationDao}.
-     * @param testbedConfigurationDao The property be injected.
-     */
-    public void setTestbedConfigurationDao(final TestbedConfigurationDao testbedConfigurationDao) {
-        this.testbedConfigurationDao = testbedConfigurationDao;
-    }
-
-    /**
-     * Used by Spring inject {@link BinaryImageDao}.
-     * @param binaryImageDao The property be injected.
-     */
-    public void setBinaryImageDao(BinaryImageDao binaryImageDao) {
-        this.binaryImageDao = binaryImageDao;
-    }
 }
 

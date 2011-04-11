@@ -1,6 +1,5 @@
 package eu.wisebed.wiseui.server.rpc;
 
-import java.util.AbstractSequentialList;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.GregorianCalendar;

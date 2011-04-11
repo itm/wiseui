@@ -1,4 +1,4 @@
-package eu.wisebed.wiseui.server.domain;
+package eu.wisebed.wiseui.persistence.domain;
 
 import java.io.Serializable;
 

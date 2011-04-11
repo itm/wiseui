@@ -1,6 +1,6 @@
-package eu.wisebed.wiseui.server.dao;
+package eu.wisebed.wiseui.persistence.dao;
 
-import eu.wisebed.wiseui.server.domain.BinaryImageBo;
+import eu.wisebed.wiseui.persistence.domain.BinaryImageBo;
 import org.springframework.stereotype.Repository;
 
 /**

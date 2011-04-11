@@ -1,4 +1,4 @@
-package eu.wisebed.wiseui.server.dao;
+package eu.wisebed.wiseui.persistence.dao;
 
 import java.util.List;
 

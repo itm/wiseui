@@ -49,7 +49,7 @@
       Component auto-detection. Detects components via annotations, e.g. @Configuration, @Repository, @Service etc.
     -->
     <context:annotation-config/>
-    <bean class="org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor"/>
+    <!--bean class="org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor"/-->
     <context:component-scan base-package="eu.wisebed.wiseui"/>
 
 </beans>

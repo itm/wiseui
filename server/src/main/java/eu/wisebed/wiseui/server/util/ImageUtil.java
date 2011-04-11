@@ -1,8 +1,5 @@
 package eu.wisebed.wiseui.server.util;
 
-import java.io.DataInputStream;
-import java.io.InputStream;
-
 import eu.wisebed.testbed.api.wsn.v22.Program;
 import eu.wisebed.testbed.api.wsn.v22.ProgramMetaData;
 import eu.wisebed.wiseui.shared.dto.BinaryImage;

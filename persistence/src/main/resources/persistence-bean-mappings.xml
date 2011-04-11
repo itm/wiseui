@@ -3,11 +3,11 @@
           xsi:schemaLocation="http://dozer.sourceforge.net
           http://dozer.sourceforge.net/schema/beanmapping.xsd">
     <mapping>
-        <class-a>eu.wisebed.wiseui.server.domain.TestbedConfigurationBo</class-a>
+        <class-a>eu.wisebed.wiseui.persistence.domain.TestbedConfigurationBo</class-a>
         <class-b>eu.wisebed.wiseui.shared.dto.TestbedConfiguration</class-b>
     </mapping>
     <mapping>
-        <class-a>eu.wisebed.wiseui.server.domain.BinaryImageBo</class-a>
+        <class-a>eu.wisebed.wiseui.persistence.domain.BinaryImageBo</class-a>
         <class-b>eu.wisebed.wiseui.shared.dto.BinaryImage</class-b>
     </mapping>
 </mappings>

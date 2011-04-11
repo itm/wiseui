@@ -1,15 +1,10 @@
 package eu.wisebed.wiseui.server.rpc;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import eu.wisebed.wiseui.server.dao.BinaryImageDao;
-import eu.wisebed.wiseui.shared.dto.BinaryImage;
 import org.apache.commons.fileupload.FileItem;
-import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
 import com.google.inject.Singleton;
