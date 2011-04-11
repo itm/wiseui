@@ -142,8 +142,9 @@ public class TestbedConfiguration implements Dto {
         if (snaaEndpointUrl != null ? !snaaEndpointUrl.equals(that.snaaEndpointUrl) : that.snaaEndpointUrl != null)
             return false;
         if (testbedUrl != null ? !testbedUrl.equals(that.testbedUrl) : that.testbedUrl != null) return false;
-//      if (urnPrefixList != null ? urnPrefixList.size() != that.urnPrefixList.size() : that.urnPrefixList != null)
-//            return false;
+        // TODO SNO Test collection for real equality
+        if (urnPrefixList != null ? urnPrefixList.size() != that.urnPrefixList.size() : that.urnPrefixList != null)
+            return false;
 
         return true;
     }

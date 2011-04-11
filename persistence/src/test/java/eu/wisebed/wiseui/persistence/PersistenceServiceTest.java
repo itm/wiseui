@@ -45,7 +45,7 @@ public class PersistenceServiceTest {
         LOGGER.info(persistedTestbedConfiguration.toString());
     }
 
-    @Test(timeout = 5000)
+    @Test(timeout = 10000)
     public void testLoadTestbedConfiguration() {
         TestbedConfiguration testbedConfiguration = createTestbedConfiguration();
 
