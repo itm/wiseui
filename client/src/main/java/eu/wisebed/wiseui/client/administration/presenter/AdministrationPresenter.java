@@ -3,13 +3,14 @@ package eu.wisebed.wiseui.client.administration.presenter;
 import com.google.gwt.event.shared.EventBus;
 import com.google.inject.Inject;
 
-import eu.wisebed.wiseui.client.administration.AdministrationPlace;
 import eu.wisebed.wiseui.client.administration.event.CancelConfigurationEvent;
 import eu.wisebed.wiseui.client.administration.event.CreateConfigurationEvent;
 import eu.wisebed.wiseui.client.administration.event.RemoveConfigurationEvent;
 import eu.wisebed.wiseui.client.administration.event.SaveConfigurationEvent;
 import eu.wisebed.wiseui.client.administration.view.AdministrationView;
 import eu.wisebed.wiseui.client.administration.view.AdministrationView.Presenter;
+import eu.wisebed.wiseui.client.main.WiseUiPlace;
+import eu.wisebed.wiseui.client.testbedlist.TestbedListPlace;
 import eu.wisebed.wiseui.client.testbedlist.event.TestbedSelectedEvent;
 import eu.wisebed.wiseui.client.testbedlist.event.TestbedSelectedEvent.ConfigurationSelectedHandler;
 import eu.wisebed.wiseui.shared.dto.TestbedConfiguration;
@@ -30,10 +31,10 @@ public class AdministrationPresenter implements Presenter, ConfigurationSelected
 	private void bind() {
 		
 	}
-	
-	@Override
-	public void setPlace(final AdministrationPlace place) {
-		view.getRemoveHasEnabled().setEnabled(null != place.getTestbedId());
+
+	public void setPlace(final WiseUiPlace place) {
+		final TestbedListPlace testbedListPlace = (TestbedListPlace) place.get(TestbedListPlace.class);
+		view.getRemoveHasEnabled().setEnabled(null != testbedListPlace.getTestbedId());
 	}
 
 	@Override

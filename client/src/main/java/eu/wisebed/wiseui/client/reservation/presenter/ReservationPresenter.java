@@ -10,11 +10,11 @@ import com.google.inject.Inject;
 
 import eu.wisebed.wiseui.api.ReservationServiceAsync;
 import eu.wisebed.wiseui.client.WiseUiGinjector;
+import eu.wisebed.wiseui.client.main.WiseUiPlace;
 import eu.wisebed.wiseui.client.reservation.ReservationPlace;
 import eu.wisebed.wiseui.client.reservation.common.Messages;
 import eu.wisebed.wiseui.client.reservation.event.MissingReservationParametersEvent;
 import eu.wisebed.wiseui.client.reservation.event.MissingReservationParametersEventHandler;
-
 import eu.wisebed.wiseui.client.reservation.event.ReservationFailedEvent;
 import eu.wisebed.wiseui.client.reservation.event.ReservationFailedEventHandler;
 import eu.wisebed.wiseui.client.reservation.event.ReservationSuccessEvent;
@@ -24,18 +24,18 @@ import eu.wisebed.wiseui.client.reservation.view.ReservationView.Presenter;
 import eu.wisebed.wiseui.client.util.AuthenticationManager;
 import eu.wisebed.wiseui.shared.dto.Node;
 import eu.wisebed.wiseui.shared.dto.ReservationDetails;
+import eu.wisebed.wiseui.shared.dto.SecretAuthenticationKey;
 import eu.wisebed.wiseui.shared.dto.TestbedConfiguration;
 import eu.wisebed.wiseui.shared.exception.AuthenticationException;
 import eu.wisebed.wiseui.shared.exception.ReservationConflictException;
 import eu.wisebed.wiseui.shared.exception.ReservationException;
-import eu.wisebed.wiseui.shared.dto.SecretAuthenticationKey;
 import eu.wisebed.wiseui.widgets.messagebox.MessageBox;
 
 public class ReservationPresenter implements Presenter, MissingReservationParametersEventHandler, 
 	ReservationSuccessEventHandler, ReservationFailedEventHandler{
 
 	private final ReservationView view;
-	private ReservationPlace place;
+	private WiseUiPlace place;
 	private ReservationServiceAsync reservationService;
 	private PlaceController placeController;
 	private EventBus eventBus;
@@ -53,13 +53,8 @@ public class ReservationPresenter implements Presenter, MissingReservationParame
 		this.eventBus = eventBus;
 	}
 	
-    @Override
-    public void setPlace(final ReservationPlace place) {
+    public void setPlace(final WiseUiPlace place) {
     	this.place = place;
-    }
-    
-    public ReservationPlace getPlace(){
-    	return place;
     }
 
 	public void bindEnabledViewEvents() {

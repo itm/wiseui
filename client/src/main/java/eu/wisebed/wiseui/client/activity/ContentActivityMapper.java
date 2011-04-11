@@ -7,12 +7,10 @@ import com.google.inject.Inject;
 
 import eu.wisebed.wiseui.client.WiseUiGinjector;
 import eu.wisebed.wiseui.client.administration.AdministrationActivity;
-import eu.wisebed.wiseui.client.administration.AdministrationPlace;
-import eu.wisebed.wiseui.client.experimentation.ExperimentationPlace;
+import eu.wisebed.wiseui.client.main.WiseUiPlace;
+import eu.wisebed.wiseui.client.navigation.NavigationPlace;
 import eu.wisebed.wiseui.client.reservation.ReservationActivity;
-import eu.wisebed.wiseui.client.reservation.ReservationPlace;
 import eu.wisebed.wiseui.client.testbedselection.TestbedSelectionActivity;
-import eu.wisebed.wiseui.client.testbedselection.TestbedSelectionPlace;
 
 public class ContentActivityMapper implements ActivityMapper {
 
@@ -34,23 +32,24 @@ public class ContentActivityMapper implements ActivityMapper {
      * Map each Place to its corresponding Activity.
      */
     public Activity getActivity(final Place place) {
+    	final WiseUiPlace wiseUiPlace = (WiseUiPlace) place;
+    	final NavigationPlace navigationPlace = (NavigationPlace) wiseUiPlace.get(NavigationPlace.class);
+    	
+    	final Integer index = navigationPlace.getIndex();
         Activity mappedActivity = null;
-        if (place instanceof TestbedSelectionPlace) {
+        if (index.equals(0)) {
             final TestbedSelectionActivity activity = injector.getTestbedSelectionActivity();
-            activity.setPlace((TestbedSelectionPlace) place);
+            activity.setPlace(wiseUiPlace);
             mappedActivity = activity;
-        }
-        if (place instanceof ReservationPlace) {
+        } else if (index.equals(1)) {
         	final ReservationActivity activity = injector.getReservationActivity();
-        	activity.setPlace((ReservationPlace) place);
+        	activity.setPlace(wiseUiPlace);
             mappedActivity = activity;
-        }
-        if (place instanceof ExperimentationPlace) {
+        } else if (index.equals(2)) {
             mappedActivity = injector.getExperimentationActivity();
-        }
-        if (place instanceof AdministrationPlace) {
+        } else if (index.equals(3)) {
              final AdministrationActivity activitiy = injector.getAdministrationActivity();
-             activitiy.setPlace((AdministrationPlace) place); 
+             activitiy.setPlace(wiseUiPlace); 
              mappedActivity = activitiy;
         }
         return mappedActivity;

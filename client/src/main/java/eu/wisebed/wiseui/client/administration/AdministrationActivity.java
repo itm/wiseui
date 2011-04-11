@@ -11,6 +11,7 @@ import eu.wisebed.wiseui.client.administration.presenter.AdministrationPresenter
 import eu.wisebed.wiseui.client.administration.presenter.ConfigurationFormPresenter;
 import eu.wisebed.wiseui.client.administration.view.AdministrationView;
 import eu.wisebed.wiseui.client.administration.view.ConfigurationFormView;
+import eu.wisebed.wiseui.client.main.WiseUiPlace;
 
 /**
  * The activity for the administration part of WiseUi.
@@ -21,7 +22,7 @@ public class AdministrationActivity extends AbstractActivity {
 
 	private final WiseUiGinjector injector;
 	
-	private AdministrationPlace place;
+	private WiseUiPlace place;
 	
     @Inject
     public AdministrationActivity(final WiseUiGinjector injector) {
@@ -51,7 +52,7 @@ public class AdministrationActivity extends AbstractActivity {
 		testbedSelectionView.getContentContainer().setWidget(configurationFormView);
 	}
 
-	public void setPlace(final AdministrationPlace place) {
+	public void setPlace(final WiseUiPlace place) {
 		this.place = place;
 	}
 }

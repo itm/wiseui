@@ -5,7 +5,6 @@ import com.google.gwt.inject.client.Ginjector;
 import eu.wisebed.wiseui.client.administration.AdministrationActivity;
 import eu.wisebed.wiseui.client.administration.presenter.AdministrationPresenter;
 import eu.wisebed.wiseui.client.administration.presenter.ConfigurationFormPresenter;
-import eu.wisebed.wiseui.client.administration.presenter.ConfigurationPresenter;
 import eu.wisebed.wiseui.client.administration.view.AdministrationView;
 import eu.wisebed.wiseui.client.administration.view.ConfigurationFormView;
 
@@ -22,8 +21,6 @@ public interface AdministrationGinjector extends Ginjector {
     AdministrationActivity getAdministrationActivity();
     
 	AdministrationPresenter getAdministrationPresenter();
-	
-	ConfigurationPresenter getAdministrationConfigurationPresenter();
 	
 	ConfigurationFormView getConfigurationFormView();
 	

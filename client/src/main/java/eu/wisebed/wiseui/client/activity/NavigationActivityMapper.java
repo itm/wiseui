@@ -4,6 +4,8 @@ import com.google.gwt.activity.shared.Activity;
 import com.google.gwt.activity.shared.ActivityMapper;
 import com.google.gwt.place.shared.Place;
 import com.google.inject.Inject;
+
+import eu.wisebed.wiseui.client.main.WiseUiPlace;
 import eu.wisebed.wiseui.client.navigation.NavigationActivity;
 
 public class NavigationActivityMapper implements ActivityMapper {
@@ -16,7 +18,7 @@ public class NavigationActivityMapper implements ActivityMapper {
     }
 
     public Activity getActivity(final Place place) {
-        activity.setPlace(place);
+        activity.setPlace((WiseUiPlace) place);
         return activity;
     }
 }

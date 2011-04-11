@@ -1,84 +1,156 @@
 package eu.wisebed.wiseui.client.main;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.place.shared.Place;
-import com.google.gwt.place.shared.PlaceTokenizer;
-import eu.wisebed.wiseui.client.activity.WiseUiPlaceHistoryMapper;
-
 import java.util.Collection;
 import java.util.Map;
 import java.util.TreeMap;
 
+import com.google.common.base.Joiner;
+import com.google.common.base.Splitter;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Iterators;
+import com.google.gwt.place.shared.Place;
+import com.google.gwt.place.shared.PlaceTokenizer;
+
+import eu.wisebed.wiseui.client.administration.AdministrationPlace;
+import eu.wisebed.wiseui.client.experimentation.ExperimentationPlace;
+import eu.wisebed.wiseui.client.navigation.NavigationPlace;
+import eu.wisebed.wiseui.client.reservation.ReservationPlace;
+import eu.wisebed.wiseui.client.testbedlist.TestbedListPlace;
+import eu.wisebed.wiseui.client.testbedselection.TestbedSelectionPlace;
+import eu.wisebed.wiseui.client.util.KeyValuePlace;
+
 public class WiseUiPlace extends Place {
+	
+	private interface Factory<T extends KeyValuePlace> {
+		
+		public T create(String token);
+	}
+	
+	private static final Map<String, Factory<?>> mapping = new TreeMap<String, Factory<?>>();
+	
+	static {
+		mapping.put(shortClassName(TestbedSelectionPlace.class), new Factory<TestbedSelectionPlace>() {
+			@Override
+			public TestbedSelectionPlace create(final String token) {
+				return KeyValuePlace.parse(new TestbedSelectionPlace(), token);
+			}
+		});
+		mapping.put(shortClassName(ExperimentationPlace.class), new Factory<ExperimentationPlace>() {
+			@Override
+			public ExperimentationPlace create(final String token) {
+				return KeyValuePlace.parse(new ExperimentationPlace(), token);
+			}
+		});
+		mapping.put(shortClassName(ReservationPlace.class), new Factory<ReservationPlace>() {
+			@Override
+			public ReservationPlace create(final String token) {
+				return KeyValuePlace.parse(new ReservationPlace(), token);
+			}
+		});
+		mapping.put(shortClassName(AdministrationPlace.class), new Factory<AdministrationPlace>() {
+			@Override
+			public AdministrationPlace create(final String token) {
+				return KeyValuePlace.parse(new AdministrationPlace(), token);
+			}
+		});
+		mapping.put(shortClassName(NavigationPlace.class), new Factory<NavigationPlace>() {
+			@Override
+			public NavigationPlace create(String token) {
+				return KeyValuePlace.parse(new NavigationPlace(), token);
+			}
+		});
+		mapping.put(shortClassName(TestbedListPlace.class), new Factory<TestbedListPlace>() {
+			@Override
+			public TestbedListPlace create(String token) {
+				return KeyValuePlace.parse(new TestbedListPlace(), token);
+			}
+		});
+	}
+	
+	public static final String DEFAULT_JOINER = ";";
+	
+	public static final String DEFAULT_SEPARATOR = ":";
+	
+	private static final int TUPLE_LENGTH = 2;
+	
+	private final String joiner;
+	
+	private final String separator;
 
-    private Map<String, Place> places = new TreeMap<String, Place>();
-    private String current;
-
+    private Map<String, KeyValuePlace> places = new TreeMap<String, KeyValuePlace>();
+    
     public WiseUiPlace() {
+		this(DEFAULT_JOINER, DEFAULT_SEPARATOR);
+	}
+    
+    public WiseUiPlace(final String joiner, final String separator) {
+    	this.joiner = joiner;
+    	this.separator = separator;
     }
 
-    private WiseUiPlace(final Map<String, Place> places) {
+    private WiseUiPlace(final Map<String, KeyValuePlace> places) {
+    	this(DEFAULT_JOINER, DEFAULT_SEPARATOR);
         this.places = places;
     }
+    
+    private WiseUiPlace(String token) {
+    	this(DEFAULT_JOINER, DEFAULT_SEPARATOR);
+    	parse(token);
+    }
+    
+    private static String shortClassName(Class<?> clazz) {
+    	return Iterables.getLast(Splitter.on(".").split(clazz.getName()));
+    }
 
-    public Collection<Place> getPlaces() {
+    public Collection<KeyValuePlace> getPlaces() {
         return places.values();
     }
 
-    public Place get(final Class<? extends Place> place) {
-        return places.get(place.getName());
+    public KeyValuePlace get(final Class<? extends Place> clazz) {
+    	final String name = shortClassName(clazz);
+    	KeyValuePlace place = places.get(name);
+    	if (place == null) {
+    		place = mapping.get(name).create(null);
+    	}
+    	return place;
     }
 
-    public Place getCurrent() {
-        return places.get(current);
-    }
-
-    public void setCurrent(final Place place) {
-        current = place.getClass().getName();
-        places.put(current, place);
-    }
-
-    public WiseUiPlace update(final Place place) {
-        places.put(place.getClass().getName(), place);
+    public WiseUiPlace update(final KeyValuePlace place) {
+        places.put(shortClassName(place.getClass()), place);
         return new WiseUiPlace(places);
     }
-
+    
+    public String toString() {
+    	return Joiner.on(joiner).withKeyValueSeparator(separator).join(places);
+    }
+    
+    public void parse(final String token) {
+    	final Iterable<String> tokens = Splitter.on(joiner).split(token);
+    	for (final String place : tokens) {
+    		parsePlace(place);
+    	}
+    }
+    
+    private void parsePlace(String token) {
+    	final String[] tuple = token.split(separator, TUPLE_LENGTH);
+    	if (tuple.length == TUPLE_LENGTH) {
+    		final String name = tuple[0];
+    		if (mapping.containsKey(name)) {
+    			final KeyValuePlace place = mapping.get(tuple[0]).create(tuple[1]);
+        		places.put(name, place);
+    		}
+    	}
+    }
+    
     public static class Tokenizer implements PlaceTokenizer<WiseUiPlace> {
+    	@Override
+    	public WiseUiPlace getPlace(String token) {
+    		return new WiseUiPlace(token);
+    	}
 
-        private static final String SEPARATOR = "&";
-        private final WiseUiPlaceHistoryMapper mapper = GWT.create(WiseUiPlaceHistoryMapper.class);
-
-        private String[] removeLast(final String[] array) {
-            final String[] result = new String[array.length - 1];
-            System.arraycopy(array, 0, result, 0, array.length - 1);
-            return result;
-        }
-
-        public String getToken(final WiseUiPlace place) {
-            final StringBuilder buffer = new StringBuilder();
-            for (Place entry : place.getPlaces()) {
-                buffer.append(mapper.getToken(entry)).append(SEPARATOR);
-            }
-            final String current = place.getCurrent().getClass().getName();
-            buffer.append(current);
-            return buffer.toString();
-        }
-
-        public WiseUiPlace getPlace(final String token) {
-            final WiseUiPlace wiseUiPlace = new WiseUiPlace();
-            final String[] tokens = token.split(SEPARATOR);
-            if (tokens.length >= 2) {
-                final String[] entries = removeLast(tokens);
-                final String current = tokens[tokens.length - 1];
-                for (String entry : entries) {
-                    final Place place = mapper.getPlace(entry);
-                    wiseUiPlace.update(place);
-                    if (current.equals(place.getClass().getName())) {
-                        wiseUiPlace.setCurrent(place);
-                    }
-                }
-            }
-            return wiseUiPlace;
-        }
+    	@Override
+    	public String getToken(WiseUiPlace place) {
+    		return place.toString();
+    	}
     }
 }

@@ -6,6 +6,7 @@ import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.inject.Inject;
 
 import eu.wisebed.wiseui.client.WiseUiGinjector;
+import eu.wisebed.wiseui.client.main.WiseUiPlace;
 import eu.wisebed.wiseui.client.reservation.presenter.PublicReservationsPresenter;
 import eu.wisebed.wiseui.client.reservation.presenter.ReservationPresenter;
 import eu.wisebed.wiseui.client.reservation.view.PublicReservationsView;
@@ -14,7 +15,7 @@ import eu.wisebed.wiseui.client.reservation.view.ReservationView;
 public class ReservationActivity extends AbstractActivity{
 
 	private WiseUiGinjector injector;
-	private ReservationPlace place;
+	private WiseUiPlace place;
 
 	@Inject
 	public ReservationActivity(final WiseUiGinjector injector) {
@@ -42,7 +43,7 @@ public class ReservationActivity extends AbstractActivity{
 		reservationView.getParametersPanel().setWidget(publicReservationsView);
 	}
 	
-	public void setPlace(final ReservationPlace place){
+	public void setPlace(final WiseUiPlace place){
 		this.place = place;
 	}
 }
