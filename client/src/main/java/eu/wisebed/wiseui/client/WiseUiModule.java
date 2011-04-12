@@ -10,7 +10,6 @@ import com.google.inject.Singleton;
 
 import eu.wisebed.wiseui.client.activity.WiseUiPlaceHistoryMapper;
 import eu.wisebed.wiseui.client.main.WiseUiPlace;
-import eu.wisebed.wiseui.client.testbedselection.TestbedSelectionPlace;
 
 
 /**
