@@ -3,10 +3,10 @@ package eu.wisebed.wiseui.persistence.dao;
 import java.util.List;
 
 /**
- * Generic interface for a dao that encompasses all typical operations
- * that needs to be carried out on business objects.
+ * Generic interface for a Data Access Object (DAO) that encompasses all typical operations
+ * that needs to be carried out on business objects (BOs).
  *
- * @param <T> type of the business objects on which the dao shall
+ * @param <T> Type of the business objects on which the DAO shall
  *            operate.
  */
 public interface Dao<T> {

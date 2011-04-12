@@ -8,7 +8,7 @@ import java.util.List;
  * Abstract dao that provides implementations for the typical data
  * access operations.
  *
- * @param <T> type of the business objects on which the DAO shall
+ * @param <T> Type of the business objects (BOs) on which the DAO shall
  *            operate.
  */
 public abstract class AbstractDaoImpl<T> implements Dao<T> {
@@ -44,7 +44,7 @@ public abstract class AbstractDaoImpl<T> implements Dao<T> {
     @Override
     public List<T> findAll() {
         return entityManager.createQuery(
-                "SELECT x FROM " + persistentClass.getName() + " x", persistentClass).getResultList();
+                String.format("SELECT x FROM %s x", persistentClass.getName()), persistentClass).getResultList();
     }
 
     public Class<T> getPersistentClass() {

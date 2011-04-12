@@ -136,14 +136,12 @@ public class TestbedConfiguration implements Dto {
         if (name != null ? !name.equals(that.name) : that.name != null) return false;
         if (rsEndpointUrl != null ? !rsEndpointUrl.equals(that.rsEndpointUrl) : that.rsEndpointUrl != null)
             return false;
-        if (sessionmanagementEndpointUrl != null ? !sessionmanagementEndpointUrl.equals(
-                that.sessionmanagementEndpointUrl) : that.sessionmanagementEndpointUrl != null)
+        if (sessionmanagementEndpointUrl != null ? !sessionmanagementEndpointUrl.equals(that.sessionmanagementEndpointUrl) : that.sessionmanagementEndpointUrl != null)
             return false;
         if (snaaEndpointUrl != null ? !snaaEndpointUrl.equals(that.snaaEndpointUrl) : that.snaaEndpointUrl != null)
             return false;
         if (testbedUrl != null ? !testbedUrl.equals(that.testbedUrl) : that.testbedUrl != null) return false;
-        // TODO SNO Test collection for real equality
-        if (urnPrefixList != null ? urnPrefixList.size() != that.urnPrefixList.size() : that.urnPrefixList != null)
+        if (urnPrefixList != null ? !urnPrefixList.equals(that.urnPrefixList) : that.urnPrefixList != null)
             return false;
 
         return true;
@@ -157,6 +155,7 @@ public class TestbedConfiguration implements Dto {
         result = 31 * result + (snaaEndpointUrl != null ? snaaEndpointUrl.hashCode() : 0);
         result = 31 * result + (rsEndpointUrl != null ? rsEndpointUrl.hashCode() : 0);
         result = 31 * result + (sessionmanagementEndpointUrl != null ? sessionmanagementEndpointUrl.hashCode() : 0);
+        result = 31 * result + (urnPrefixList != null ? urnPrefixList.hashCode() : 0);
         result = 31 * result + (isFederated ? 1 : 0);
         result = 31 * result + testbedId;
         return result;

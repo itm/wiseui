@@ -65,6 +65,14 @@ public interface PersistenceService {
      */
     void removeBinaryImage(Integer id);
 
+    /**
+     * Loads all available {@link BinaryImage}s from the database.
+     * Returns an empty list, if no {@link BinaryImage}s could be found.
+     *
+     * @return A list with all {@link BinaryImage}s loaded from the database
+     */
+    List<BinaryImage> loadAllBinaryImages();
+
 }
 
 

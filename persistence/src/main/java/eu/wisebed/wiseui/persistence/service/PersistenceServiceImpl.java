@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * This service provides transactional methods to load and store WiseUi-relevant objects in a database.
+ * This service provides transactional methods to load and store WiseUI-relevant objects in a database.
  *
  * @author Soenke Nommensen
  */
@@ -47,7 +47,7 @@ public class PersistenceServiceImpl implements PersistenceService {
 
         LOGGER.info("storeTestbedConfiguration( " + dto + " )");
 
-        TestbedConfigurationBo bo;
+        final TestbedConfigurationBo bo;
         if (dto.getId() == null) {
             // Create and persist new persistent object
             bo = dozerBeanMapper.map(dto, TestbedConfigurationBo.class);
@@ -90,7 +90,7 @@ public class PersistenceServiceImpl implements PersistenceService {
      */
     @Override
     @Transactional
-    public void removeTestbedConfiguration(Integer id) {
+    public void removeTestbedConfiguration(final Integer id) {
         Checks.notNullArgument(id, "Argument 'id' is null!");
 
         LOGGER.info("removeTestbedConfiguration( " + id + " )");
@@ -111,7 +111,7 @@ public class PersistenceServiceImpl implements PersistenceService {
     public List<TestbedConfiguration> loadAllTestbedConfigurations() {
         LOGGER.info("loadAllTestbedConfigurations()");
 
-        List<TestbedConfiguration> testbedConfigurations = new ArrayList<TestbedConfiguration>();
+        final List<TestbedConfiguration> testbedConfigurations = new ArrayList<TestbedConfiguration>();
 
         for (TestbedConfigurationBo bo : testbedConfigurationDao.findAll()) {
             testbedConfigurations.add(dozerBeanMapper.map(bo, TestbedConfiguration.class));
@@ -130,7 +130,7 @@ public class PersistenceServiceImpl implements PersistenceService {
 
         LOGGER.info("storeBinaryImage( " + dto + " )");
 
-        BinaryImageBo bo;
+        final BinaryImageBo bo;
         if (dto.getId() == null) {
             // Create and persist new persistent object
             bo = dozerBeanMapper.map(dto, BinaryImageBo.class);
@@ -155,7 +155,7 @@ public class PersistenceServiceImpl implements PersistenceService {
      */
     @Override
     @Transactional(readOnly = true)
-    public BinaryImage loadBinaryImage(Integer id) {
+    public BinaryImage loadBinaryImage(final Integer id) {
         Checks.notNullArgument(id, "Argument 'id' is null!");
 
         LOGGER.info("loadBinaryImage( " + id + " )");
@@ -173,7 +173,7 @@ public class PersistenceServiceImpl implements PersistenceService {
      */
     @Override
     @Transactional
-    public void removeBinaryImage(Integer id) {
+    public void removeBinaryImage(final Integer id) {
         Checks.notNullArgument(id, "Argument 'id' is null!");
 
         LOGGER.info("removeBinaryImage( " + id + " )");
@@ -184,6 +184,19 @@ public class PersistenceServiceImpl implements PersistenceService {
                 + "' does not exist!");
 
         binaryImageDao.remove(bo);
+    }
+
+    @Override
+    public List<BinaryImage> loadAllBinaryImages() {
+        LOGGER.info("loadAllBinaryImages()");
+
+        final List<BinaryImage> binaryImages = new ArrayList<BinaryImage>();
+
+        for (BinaryImageBo bo : binaryImageDao.findAll()) {
+            binaryImages.add(dozerBeanMapper.map(bo, BinaryImage.class));
+        }
+
+        return binaryImages;
     }
 
 }
