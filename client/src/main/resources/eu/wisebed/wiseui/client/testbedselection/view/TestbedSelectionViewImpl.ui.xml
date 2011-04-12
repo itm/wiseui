@@ -44,6 +44,8 @@
             text-align: center;
         }
     </ui:style>
+    
+    <ui:with field='res' type='eu.wisebed.wiseui.widgets.famfamfam.FamFamFamResources'/>
 
     <g:DockLayoutPanel styleName="{style.fullLayout}">
         <g:center>
