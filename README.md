@@ -55,20 +55,26 @@ In order to have Hibernate properly configured, make sure you declare the follow
 	</settings>
 
 
-Build and Start the WiseUI with Maven
--------------------------------------
+Build and Start the WiseUI
+--------------------------
 
-On the command-line go to the WiseUI directory. Perform a clean build on the project to make sure, that all Maven
-artifacts are installed in your local Maven repository (~/.m2/repository). If you are running Maven for the first time,
-this will take a while as Maven downloads all project dependencies from the internet.
+On the command-line go to the WiseUI directory. Perform a clean build on the project to make sure, that all Maven artifacts are installed in your local Maven repository (~/.m2/repository). If you are running Maven for the first time, it will take some time as Maven downloads all project dependencies from the internet.
 
     $ cd wiseui
     $ mvn clean install
+    
+Or, if you don't want to execute the JUnit tests, try:
+
+    $ mvn clean install -DskipTests    
 
 To start the WiseUI in "hosted mode", do the following:
 
     $ cd wiseui/client
-    $ mvn gwt:run # or mvn gwt:debug
+    $ mvn gwt:run
+    
+For debug mode type:
+
+    $ mvn gwt:debug    
 
 
 Deploy to a Remote Tomcat
