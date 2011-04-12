@@ -73,7 +73,6 @@ public class PersistenceServiceTest {
         assertNotNull("loadedTestbedConfiguration is null", loadedTestbedConfiguration);
         assertNotNull("loadedTestbedConfiguration's ID is null", loadedTestbedConfiguration.getId());
 
-        assertEquals(loadedTestbedConfiguration.getId(), persistedTestbedConfiguration.getId());
         assertEquals(loadedTestbedConfiguration, persistedTestbedConfiguration);
 
         LOGGER.info(loadedTestbedConfiguration.toString());
@@ -136,7 +135,7 @@ public class PersistenceServiceTest {
         assertNotNull("loadedBinaryImage is null", loadedBinaryImage);
         assertNotNull("loadedBinaryImage's ID is null", loadedBinaryImage.getId());
 
-        assertEquals(loadedBinaryImage.getId(), persistedBinaryImage.getId());
+        assertEquals(loadedBinaryImage, persistedBinaryImage);
 
         LOGGER.info(loadedBinaryImage.toString());
     }
