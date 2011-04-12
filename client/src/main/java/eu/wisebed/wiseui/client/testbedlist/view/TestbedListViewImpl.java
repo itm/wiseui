@@ -14,6 +14,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.SelectionModel;
 import com.google.inject.Singleton;
+
 import eu.wisebed.wiseui.shared.dto.TestbedConfiguration;
 
 
@@ -24,6 +25,7 @@ public class TestbedListViewImpl extends Composite implements TestbedListView {
 
     interface TestbedListViewImplUiBinder extends UiBinder<Widget, TestbedListViewImpl> {
     }
+    
     @UiField
     CellList<TestbedConfiguration> configurationList;
 
