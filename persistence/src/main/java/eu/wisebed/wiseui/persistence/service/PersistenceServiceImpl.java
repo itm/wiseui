@@ -186,6 +186,9 @@ public class PersistenceServiceImpl implements PersistenceService {
         binaryImageDao.remove(bo);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<BinaryImage> loadAllBinaryImages() {
         LOGGER.info("loadAllBinaryImages()");

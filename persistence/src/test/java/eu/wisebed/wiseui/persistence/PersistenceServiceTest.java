@@ -141,6 +141,17 @@ public class PersistenceServiceTest {
         LOGGER.info(loadedBinaryImage.toString());
     }
 
+    @Test(timeout = 30000)
+    public void testLoadAllBinaryImages() {
+        final int noOfConfigurations = 5;
+
+        for (int i = 0; i < noOfConfigurations; i++) {
+            persistenceService.storeBinaryImage(createBinaryImage());
+        }
+
+        assertTrue(persistenceService.loadAllBinaryImages().size() == noOfConfigurations);
+    }
+
     @Test(timeout = 10000)
     public void testRemoveBinaryImage() {
         BinaryImage binaryImage =
