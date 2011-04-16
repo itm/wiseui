@@ -6,6 +6,7 @@ import com.google.gwt.view.client.HasData;
 import com.google.inject.ImplementedBy;
 
 import eu.wisebed.wiseui.client.testbedselection.common.UrnPrefixInfo;
+import eu.wisebed.wiseui.client.util.Bindable;
 
 @ImplementedBy(LoginDialogViewImpl.class)
 public interface LoginDialogView {
@@ -30,7 +31,7 @@ public interface LoginDialogView {
 
     void hide();
 
-    public interface Presenter {
+    public interface Presenter extends Bindable {
 
         void submit();
 

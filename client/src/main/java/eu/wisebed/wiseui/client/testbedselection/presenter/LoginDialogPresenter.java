@@ -3,12 +3,12 @@ package eu.wisebed.wiseui.client.testbedselection.presenter;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.inject.Inject;
+
 import eu.wisebed.wiseui.api.SNAAServiceAsync;
 import eu.wisebed.wiseui.client.testbedlist.event.TestbedSelectedEvent;
-import eu.wisebed.wiseui.client.testbedselection.TestbedSelectionPlace;
+import eu.wisebed.wiseui.client.testbedlist.event.TestbedSelectedEvent.ConfigurationSelectedHandler;
 import eu.wisebed.wiseui.client.testbedselection.common.UrnPrefixInfo;
 import eu.wisebed.wiseui.client.testbedselection.common.UrnPrefixInfo.State;
-import eu.wisebed.wiseui.client.testbedlist.event.TestbedSelectedEvent.ConfigurationSelectedHandler;
 import eu.wisebed.wiseui.client.testbedselection.event.LoggedInEvent;
 import eu.wisebed.wiseui.client.testbedselection.event.ShowLoginDialogEvent;
 import eu.wisebed.wiseui.client.testbedselection.event.ShowLoginDialogEvent.ShowLoginDialogHandler;
@@ -17,8 +17,9 @@ import eu.wisebed.wiseui.client.testbedselection.util.AuthenticationHelper.Callb
 import eu.wisebed.wiseui.client.testbedselection.view.LoginDialogView;
 import eu.wisebed.wiseui.client.testbedselection.view.LoginDialogView.Presenter;
 import eu.wisebed.wiseui.client.util.AuthenticationManager;
-import eu.wisebed.wiseui.shared.dto.TestbedConfiguration;
+import eu.wisebed.wiseui.client.util.EventBusManager;
 import eu.wisebed.wiseui.shared.dto.SecretAuthenticationKey;
+import eu.wisebed.wiseui.shared.dto.TestbedConfiguration;
 
 /**
  * The presenter for the {@link LoginDialogView}.
@@ -27,7 +28,7 @@ import eu.wisebed.wiseui.shared.dto.SecretAuthenticationKey;
  */
 public class LoginDialogPresenter implements Presenter, ConfigurationSelectedHandler, ShowLoginDialogHandler {
 
-    private final EventBus eventBus;
+    private final EventBusManager eventBus;
 
     private final LoginDialogView view;
 
@@ -46,19 +47,23 @@ public class LoginDialogPresenter implements Presenter, ConfigurationSelectedHan
                                 final LoginDialogView view,
                                 final SNAAServiceAsync authenticationService,
                                 final AuthenticationManager authenticationManager) {
-        this.eventBus = eventBus;
+        this.eventBus = new EventBusManager(eventBus);
         this.view = view;
         this.authenticationService = authenticationService;
         this.authenticationManager = authenticationManager;
 
         dataProvider.addDataDisplay(view.getUrnPrefixList());
-
-        bind();
     }
 
-    private void bind() {
+    @Override
+    public void bind() {
         eventBus.addHandler(TestbedSelectedEvent.TYPE, this);
         eventBus.addHandler(ShowLoginDialogEvent.TYPE, this);
+    }
+    
+    @Override
+    public void unbind() {
+    	eventBus.removeAll();
     }
 
     @Override

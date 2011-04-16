@@ -10,6 +10,7 @@ import eu.wisebed.wiseui.client.testbedlist.event.TestbedSelectedEvent;
 import eu.wisebed.wiseui.client.testbedlist.event.TestbedSelectedEvent.ConfigurationSelectedHandler;
 import eu.wisebed.wiseui.client.testbedselection.view.RawWisemlView;
 import eu.wisebed.wiseui.client.testbedselection.view.RawWisemlView.Presenter;
+import eu.wisebed.wiseui.client.util.EventBusManager;
 import eu.wisebed.wiseui.shared.dto.TestbedConfiguration;
 
 /**
@@ -19,7 +20,7 @@ import eu.wisebed.wiseui.shared.dto.TestbedConfiguration;
  */
 public class RawWisemlPresenter implements Presenter, ConfigurationSelectedHandler {
 
-	private final EventBus eventBus;
+	private final EventBusManager eventBus;
 	
 	private final RawWisemlView view;
 	
@@ -31,15 +32,20 @@ public class RawWisemlPresenter implements Presenter, ConfigurationSelectedHandl
 	public RawWisemlPresenter(final EventBus eventBus, 
 				  final RawWisemlView view,
 				  final SessionManagementServiceAsync sessionManagementService) {
-		this.eventBus = eventBus;
+		this.eventBus = new EventBusManager(eventBus);
 		this.view = view;
 		this.sessionManagementService = sessionManagementService;
-		bind();
 		view.getXmlHasHTML().setText("Select a Testbed Configuration.");
 	}
 	
-	private void bind() {
+	@Override
+	public void bind() {
 		eventBus.addHandler(TestbedSelectedEvent.TYPE, this);
+	}
+	
+	@Override
+	public void unbind() {
+		eventBus.removeAll();
 	}
 	
 	@Override

@@ -8,7 +8,6 @@ import com.google.gwt.event.shared.EventBus;
 import com.google.inject.Inject;
 
 import eu.wisebed.wiseui.client.testbedlist.event.TestbedSelectedEvent;
-import eu.wisebed.wiseui.client.testbedselection.TestbedSelectionPlace;
 import eu.wisebed.wiseui.client.testbedlist.event.TestbedSelectedEvent.ConfigurationSelectedHandler;
 import eu.wisebed.wiseui.client.testbedselection.event.ThrowableEvent;
 import eu.wisebed.wiseui.client.testbedselection.event.ThrowableEvent.ThrowableHandler;
@@ -16,11 +15,12 @@ import eu.wisebed.wiseui.client.testbedselection.event.WisemlLoadedEvent;
 import eu.wisebed.wiseui.client.testbedselection.event.WisemlLoadedEvent.WisemlLoadedHandler;
 import eu.wisebed.wiseui.client.testbedselection.view.MapView;
 import eu.wisebed.wiseui.client.util.Coordinates;
+import eu.wisebed.wiseui.client.util.EventBusManager;
 import eu.wisebed.wiseui.client.util.GrahamScan;
-import eu.wisebed.wiseui.shared.dto.TestbedConfiguration;
 import eu.wisebed.wiseui.shared.dto.Coordinate;
 import eu.wisebed.wiseui.shared.dto.Node;
 import eu.wisebed.wiseui.shared.dto.Setup;
+import eu.wisebed.wiseui.shared.dto.TestbedConfiguration;
 
 /**
  * The presenter for the {@link MapView}.
@@ -29,21 +29,26 @@ import eu.wisebed.wiseui.shared.dto.Setup;
  */
 public class MapPresenter implements MapView.Presenter, WisemlLoadedHandler, ConfigurationSelectedHandler, ThrowableHandler {
 
-    private final EventBus eventBus;
+    private final EventBusManager eventBus;
     private final MapView view;
     private TestbedConfiguration configuration;
 
     @Inject
     public MapPresenter(final EventBus eventBus, final MapView view) {
-        this.eventBus = eventBus;
+        this.eventBus = new EventBusManager(eventBus);
         this.view = view;
-        bind();
     }
 
-    private void bind() {
+    @Override
+    public void bind() {
         eventBus.addHandler(TestbedSelectedEvent.TYPE, this);
         eventBus.addHandler(WisemlLoadedEvent.TYPE, this);
         eventBus.addHandler(ThrowableEvent.TYPE, this);
+    }
+    
+    @Override
+    public void unbind() {
+    	eventBus.removeAll();
     }
 
     @Override

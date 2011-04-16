@@ -1,26 +1,27 @@
 package eu.wisebed.wiseui.client.testbedselection.presenter;
 
-import com.google.gwt.event.shared.EventBus;
 import com.google.common.base.Strings;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
 import com.google.inject.Inject;
+
 import eu.wisebed.wiseui.client.testbedlist.event.TestbedSelectedEvent;
-import eu.wisebed.wiseui.client.testbedselection.TestbedSelectionPlace;
-import eu.wisebed.wiseui.client.testbedselection.common.TestbedTreeViewModel;
 import eu.wisebed.wiseui.client.testbedlist.event.TestbedSelectedEvent.ConfigurationSelectedHandler;
+import eu.wisebed.wiseui.client.testbedselection.common.TestbedTreeViewModel;
 import eu.wisebed.wiseui.client.testbedselection.event.ThrowableEvent;
 import eu.wisebed.wiseui.client.testbedselection.event.ThrowableEvent.ThrowableHandler;
 import eu.wisebed.wiseui.client.testbedselection.event.WisemlLoadedEvent;
 import eu.wisebed.wiseui.client.testbedselection.event.WisemlLoadedEvent.WisemlLoadedHandler;
 import eu.wisebed.wiseui.client.testbedselection.view.DetailView;
 import eu.wisebed.wiseui.client.testbedselection.view.DetailView.Presenter;
-import eu.wisebed.wiseui.shared.dto.TestbedConfiguration;
-import eu.wisebed.wiseui.shared.exception.WisemlException;
+import eu.wisebed.wiseui.client.util.EventBusManager;
 import eu.wisebed.wiseui.shared.dto.Capability;
 import eu.wisebed.wiseui.shared.dto.Node;
 import eu.wisebed.wiseui.shared.dto.Setup;
+import eu.wisebed.wiseui.shared.dto.TestbedConfiguration;
+import eu.wisebed.wiseui.shared.exception.WisemlException;
 
 
 /**
@@ -32,7 +33,7 @@ public class DetailPresenter implements Presenter, ConfigurationSelectedHandler,
 
     private final DetailView view;
 
-    private final EventBus eventBus;
+    private final EventBusManager eventBus;
     
     private final ListDataProvider<Capability> capabilityListDataProvider = new ListDataProvider<Capability>();
 
@@ -43,13 +44,13 @@ public class DetailPresenter implements Presenter, ConfigurationSelectedHandler,
     @Inject
     public DetailPresenter(final EventBus eventBus, final DetailView view) {
         this.view = view;
-        this.eventBus = eventBus;
+        this.eventBus = new EventBusManager(eventBus);
         capabilityListDataProvider.addDataDisplay(view.getCapababilitesList());
-        bind();
         view.showMessage("Select a Testbed Configuration.");
     }
 
-    private void bind() {
+    @Override
+    public void bind() {
         eventBus.addHandler(TestbedSelectedEvent.TYPE, this);
         eventBus.addHandler(WisemlLoadedEvent.TYPE, this);
         eventBus.addHandler(ThrowableEvent.TYPE, this);
@@ -61,6 +62,11 @@ public class DetailPresenter implements Presenter, ConfigurationSelectedHandler,
                 onNodeSelection(node);
             }
         });
+    }
+    
+    @Override
+    public void unbind() {
+    	eventBus.removeAll();
     }
 
     private void onNodeSelection(final Node node) {

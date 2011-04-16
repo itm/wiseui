@@ -27,6 +27,7 @@ import eu.wisebed.wiseui.client.testbedselection.view.LoginDialogView;
 import eu.wisebed.wiseui.client.testbedselection.view.MapView;
 import eu.wisebed.wiseui.client.testbedselection.view.RawWisemlView;
 import eu.wisebed.wiseui.client.testbedselection.view.TestbedSelectionView;
+import eu.wisebed.wiseui.client.util.BindingManager;
 import eu.wisebed.wiseui.client.util.DefaultsHelper;
 import eu.wisebed.wiseui.shared.dto.TestbedConfiguration;
 import eu.wisebed.wiseui.shared.dto.Wiseml;
@@ -38,9 +39,11 @@ import eu.wisebed.wiseui.shared.dto.Wiseml;
  * @author Malte Legenhausen
  */
 public class TestbedSelectionActivity extends AbstractActivity implements ConfigurationSelectedHandler {
-
+	
     private final SessionManagementServiceAsync sessionManagementService;
 
+    private final BindingManager bindingManager = new BindingManager();
+    
     private WiseUiPlace place;
 
     private WiseUiGinjector injector;
@@ -65,17 +68,21 @@ public class TestbedSelectionActivity extends AbstractActivity implements Config
         this.eventBus = eventBus;
         initTestbedSelectionPart(containerWidget);
         initLoginDialogPart();
-        bind();
-    }
-
-    private void bind() {
+        
         eventBus.addHandler(TestbedSelectedEvent.TYPE, this);
+        bindingManager.bind();
+    }
+    
+    @Override
+    public void onStop() {
+    	bindingManager.unbind();
     }
 
     private void initTestbedSelectionPart(final AcceptsOneWidget container) {
         GWT.log("Init Testbed Selection Part");
         final TestbedSelectionPresenter testbedSelectionPresenter = injector.getTestbedSelectionPresenter();
         testbedSelectionPresenter.setPlace(place);
+        bindingManager.add(testbedSelectionPresenter);
         final TestbedSelectionView testbedSelectionView = injector.getTestbedSelectionView();
         testbedSelectionView.setPresenter(testbedSelectionPresenter);
         final TestbedSelectionPlace testbedSelectionPlace = (TestbedSelectionPlace) place.get(TestbedSelectionPlace.class);
@@ -101,6 +108,7 @@ public class TestbedSelectionActivity extends AbstractActivity implements Config
     private void initDetailPart(final TestbedSelectionView testbedSelectionView) {
         GWT.log("Init Testbed Detail Part");
         final DetailPresenter detailPresenter = injector.getDetailPresenter();
+        bindingManager.add(detailPresenter);
         final DetailView detailView = injector.getDetailView();
         detailView.setPresenter(detailPresenter);
         testbedSelectionView.getContentContainer().setWidget(detailView);
@@ -109,6 +117,7 @@ public class TestbedSelectionActivity extends AbstractActivity implements Config
     private void initMapPart(final TestbedSelectionView testbedSelectionView) {
         GWT.log("Init Testbed Map Part");
         final MapPresenter mapPresenter = injector.getMapPresenter();
+        bindingManager.add(mapPresenter);
         final MapView mapView = injector.getMapView();
         mapView.setPresenter(mapPresenter);
         testbedSelectionView.getContentContainer().setWidget(mapView);
@@ -117,6 +126,7 @@ public class TestbedSelectionActivity extends AbstractActivity implements Config
     private void initRawWisemlPart(final TestbedSelectionView testbedSelectionView) {
     	GWT.log("Init Testbed Raw WiseML Part");
     	final RawWisemlPresenter rawWisemlPresenter = injector.getRawWisemlPresenter();
+    	bindingManager.add(rawWisemlPresenter);
     	final RawWisemlView rawWisemlView = injector.getRawWisemlView();
     	rawWisemlView.setPresenter(rawWisemlPresenter);
     	testbedSelectionView.getContentContainer().setWidget(rawWisemlView);
@@ -125,6 +135,7 @@ public class TestbedSelectionActivity extends AbstractActivity implements Config
     private void initLoginDialogPart() {
         GWT.log("Init Login Dialog Part");
         final LoginDialogPresenter loginDialogPresenter = injector.getLoginDialogPresenter();
+        bindingManager.add(loginDialogPresenter);
         final LoginDialogView loginDialogView = injector.getLoginDialogView();
         loginDialogView.setPresenter(loginDialogPresenter);
     }

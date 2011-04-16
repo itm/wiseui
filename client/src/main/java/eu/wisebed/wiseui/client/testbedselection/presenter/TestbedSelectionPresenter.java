@@ -15,6 +15,7 @@ import eu.wisebed.wiseui.client.testbedselection.event.WisemlLoadedEvent;
 import eu.wisebed.wiseui.client.testbedselection.event.WisemlLoadedEvent.WisemlLoadedHandler;
 import eu.wisebed.wiseui.client.testbedselection.view.TestbedSelectionView;
 import eu.wisebed.wiseui.client.testbedselection.view.TestbedSelectionView.Presenter;
+import eu.wisebed.wiseui.client.util.EventBusManager;
 import eu.wisebed.wiseui.shared.dto.TestbedConfiguration;
 import eu.wisebed.wiseui.shared.exception.WisemlException;
 import eu.wisebed.wiseui.widgets.messagebox.MessageBox;
@@ -26,7 +27,7 @@ import eu.wisebed.wiseui.widgets.messagebox.MessageBox;
  */
 public class TestbedSelectionPresenter implements Presenter, ConfigurationSelectedHandler, WisemlLoadedHandler, ThrowableHandler {
 
-    private final EventBus eventBus;
+    private final EventBusManager eventBus;
     private final TestbedSelectionView view;
     private PlaceController placeController;
     private WiseUiPlace place;
@@ -36,18 +37,11 @@ public class TestbedSelectionPresenter implements Presenter, ConfigurationSelect
     public TestbedSelectionPresenter(final EventBus eventBus,
                                      final PlaceController placeController,
                                      final TestbedSelectionView view) {
-        this.eventBus = eventBus;
+        this.eventBus = new EventBusManager(eventBus);
         this.placeController = placeController;
         this.view = view;
         view.getLoginEnabled().setEnabled(false);
         view.getReloadEnabled().setEnabled(false);
-        bind();
-    }
-
-    private void bind() {
-        eventBus.addHandler(WisemlLoadedEvent.TYPE, this);
-        eventBus.addHandler(TestbedSelectedEvent.TYPE, this);
-        eventBus.addHandler(ThrowableEvent.TYPE, this);
     }
 
     @Override
@@ -94,4 +88,16 @@ public class TestbedSelectionPresenter implements Presenter, ConfigurationSelect
     public void setContentSelection(final String view) {
     	placeController.goTo(place.update(new TestbedSelectionPlace(view)));
     }
+
+	@Override
+	public void bind() {
+		eventBus.addHandler(WisemlLoadedEvent.TYPE, this);
+        eventBus.addHandler(TestbedSelectedEvent.TYPE, this);
+        eventBus.addHandler(ThrowableEvent.TYPE, this);
+	}
+
+	@Override
+	public void unbind() {
+		eventBus.removeAll();
+	}
 }

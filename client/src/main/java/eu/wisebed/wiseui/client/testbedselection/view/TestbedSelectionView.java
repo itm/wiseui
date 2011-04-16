@@ -5,6 +5,8 @@ import com.google.gwt.user.client.ui.HasEnabled;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.inject.ImplementedBy;
 
+import eu.wisebed.wiseui.client.util.Bindable;
+
 @ImplementedBy(TestbedSelectionViewImpl.class)
 public interface TestbedSelectionView extends IsWidget {
 
@@ -18,7 +20,7 @@ public interface TestbedSelectionView extends IsWidget {
     
     void setContentSelection(String view);
 
-    public interface Presenter {
+    public interface Presenter extends Bindable {
     	
     	void setContentSelection(String view);
 
