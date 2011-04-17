@@ -1,4 +1,4 @@
-package eu.wisebed.wiseui.client.testbedselection.util;
+package eu.wisebed.wiseui.client.testbedlist.util;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;

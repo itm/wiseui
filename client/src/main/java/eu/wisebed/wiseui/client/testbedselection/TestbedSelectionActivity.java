@@ -14,16 +14,16 @@ import eu.wisebed.wiseui.client.WiseUiGinjector;
 import eu.wisebed.wiseui.client.main.WiseUiPlace;
 import eu.wisebed.wiseui.client.testbedlist.event.TestbedSelectedEvent;
 import eu.wisebed.wiseui.client.testbedlist.event.TestbedSelectedEvent.ConfigurationSelectedHandler;
+import eu.wisebed.wiseui.client.testbedlist.presenter.LoginDialogPresenter;
+import eu.wisebed.wiseui.client.testbedlist.view.LoginDialogView;
 import eu.wisebed.wiseui.client.testbedselection.common.TestbedSelectionConstants;
 import eu.wisebed.wiseui.client.testbedselection.event.ThrowableEvent;
 import eu.wisebed.wiseui.client.testbedselection.event.WisemlLoadedEvent;
 import eu.wisebed.wiseui.client.testbedselection.presenter.DetailPresenter;
-import eu.wisebed.wiseui.client.testbedselection.presenter.LoginDialogPresenter;
 import eu.wisebed.wiseui.client.testbedselection.presenter.MapPresenter;
 import eu.wisebed.wiseui.client.testbedselection.presenter.RawWisemlPresenter;
 import eu.wisebed.wiseui.client.testbedselection.presenter.TestbedSelectionPresenter;
 import eu.wisebed.wiseui.client.testbedselection.view.DetailView;
-import eu.wisebed.wiseui.client.testbedselection.view.LoginDialogView;
 import eu.wisebed.wiseui.client.testbedselection.view.MapView;
 import eu.wisebed.wiseui.client.testbedselection.view.RawWisemlView;
 import eu.wisebed.wiseui.client.testbedselection.view.TestbedSelectionView;
@@ -64,7 +64,6 @@ public class TestbedSelectionActivity extends AbstractActivity implements Config
     public void start(final AcceptsOneWidget containerWidget, final EventBus eventBus) {
         this.eventBus = eventBus;
         initTestbedSelectionPart(containerWidget);
-        initLoginDialogPart();
         
         bind();
     }
@@ -121,13 +120,6 @@ public class TestbedSelectionActivity extends AbstractActivity implements Config
     	final RawWisemlView rawWisemlView = injector.getRawWisemlView();
     	rawWisemlView.setPresenter(rawWisemlPresenter);
     	testbedSelectionView.getContentContainer().setWidget(rawWisemlView);
-    }
-
-    private void initLoginDialogPart() {
-        GWT.log("Init Login Dialog Part");
-        final LoginDialogPresenter loginDialogPresenter = injector.getLoginDialogPresenter();
-        final LoginDialogView loginDialogView = injector.getLoginDialogView();
-        loginDialogView.setPresenter(loginDialogPresenter);
     }
 
     public void onTestbedConfigurationSelected(final TestbedSelectedEvent event) {

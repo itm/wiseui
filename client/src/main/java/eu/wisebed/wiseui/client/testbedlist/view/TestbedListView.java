@@ -1,5 +1,6 @@
 package eu.wisebed.wiseui.client.testbedlist.view;
 
+import com.google.gwt.user.client.ui.HasEnabled;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.view.client.SelectionModel;
 import com.google.inject.ImplementedBy;
@@ -16,8 +17,10 @@ public interface TestbedListView extends IsWidget {
 
     void setConfigurations(List<TestbedConfiguration> configurations);
 
+    HasEnabled getLoginEnabled();
+
     public interface Presenter {
 
-
+    	void showLoginDialog();
     }
 }

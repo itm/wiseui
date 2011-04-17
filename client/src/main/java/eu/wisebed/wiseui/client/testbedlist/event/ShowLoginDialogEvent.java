@@ -1,8 +1,9 @@
-package eu.wisebed.wiseui.client.testbedselection.event;
+package eu.wisebed.wiseui.client.testbedlist.event;
 
 import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;
-import eu.wisebed.wiseui.client.testbedselection.event.ShowLoginDialogEvent.ShowLoginDialogHandler;
+
+import eu.wisebed.wiseui.client.testbedlist.event.ShowLoginDialogEvent.ShowLoginDialogHandler;
 
 public class ShowLoginDialogEvent extends GwtEvent<ShowLoginDialogHandler> {
 

@@ -1,8 +1,9 @@
-package eu.wisebed.wiseui.client.testbedselection.event;
+package eu.wisebed.wiseui.client.testbedlist.event;
 
 import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;
-import eu.wisebed.wiseui.client.testbedselection.event.LoggedInEvent.LoggedInHandler;
+
+import eu.wisebed.wiseui.client.testbedlist.event.LoggedInEvent.LoggedInHandler;
 import eu.wisebed.wiseui.shared.dto.SecretAuthenticationKey;
 
 public class LoggedInEvent extends GwtEvent<LoggedInHandler> {

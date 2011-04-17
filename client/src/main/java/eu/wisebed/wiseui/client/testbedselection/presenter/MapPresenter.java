@@ -81,6 +81,7 @@ public class MapPresenter implements MapView.Presenter, WisemlLoadedHandler, Con
 
 	@Override
 	public void onPlaceChange(final PlaceChangeEvent event) {
+		view.getLoadingIndicator().hideLoading();
 		eventBus.removeAll();
 	}
 }

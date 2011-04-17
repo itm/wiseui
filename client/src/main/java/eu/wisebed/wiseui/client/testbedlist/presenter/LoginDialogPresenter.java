@@ -1,24 +1,22 @@
-package eu.wisebed.wiseui.client.testbedselection.presenter;
+package eu.wisebed.wiseui.client.testbedlist.presenter;
 
 import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.place.shared.PlaceChangeEvent;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.inject.Inject;
 
 import eu.wisebed.wiseui.api.SNAAServiceAsync;
+import eu.wisebed.wiseui.client.testbedlist.event.LoggedInEvent;
+import eu.wisebed.wiseui.client.testbedlist.event.ShowLoginDialogEvent;
 import eu.wisebed.wiseui.client.testbedlist.event.TestbedSelectedEvent;
+import eu.wisebed.wiseui.client.testbedlist.event.ShowLoginDialogEvent.ShowLoginDialogHandler;
 import eu.wisebed.wiseui.client.testbedlist.event.TestbedSelectedEvent.ConfigurationSelectedHandler;
+import eu.wisebed.wiseui.client.testbedlist.util.AuthenticationHelper;
+import eu.wisebed.wiseui.client.testbedlist.util.AuthenticationHelper.Callback;
+import eu.wisebed.wiseui.client.testbedlist.view.LoginDialogView;
+import eu.wisebed.wiseui.client.testbedlist.view.LoginDialogView.Presenter;
 import eu.wisebed.wiseui.client.testbedselection.common.UrnPrefixInfo;
 import eu.wisebed.wiseui.client.testbedselection.common.UrnPrefixInfo.State;
-import eu.wisebed.wiseui.client.testbedselection.event.LoggedInEvent;
-import eu.wisebed.wiseui.client.testbedselection.event.ShowLoginDialogEvent;
-import eu.wisebed.wiseui.client.testbedselection.event.ShowLoginDialogEvent.ShowLoginDialogHandler;
-import eu.wisebed.wiseui.client.testbedselection.util.AuthenticationHelper;
-import eu.wisebed.wiseui.client.testbedselection.util.AuthenticationHelper.Callback;
-import eu.wisebed.wiseui.client.testbedselection.view.LoginDialogView;
-import eu.wisebed.wiseui.client.testbedselection.view.LoginDialogView.Presenter;
 import eu.wisebed.wiseui.client.util.AuthenticationManager;
-import eu.wisebed.wiseui.client.util.EventBusManager;
 import eu.wisebed.wiseui.shared.dto.SecretAuthenticationKey;
 import eu.wisebed.wiseui.shared.dto.TestbedConfiguration;
 
@@ -27,9 +25,9 @@ import eu.wisebed.wiseui.shared.dto.TestbedConfiguration;
  *
  * @author Malte Legenhausen
  */
-public class LoginDialogPresenter implements Presenter, ConfigurationSelectedHandler, ShowLoginDialogHandler, PlaceChangeEvent.Handler {
+public class LoginDialogPresenter implements Presenter, ConfigurationSelectedHandler, ShowLoginDialogHandler {
 
-    private final EventBusManager eventBus;
+    private final EventBus eventBus;
 
     private final LoginDialogView view;
 
@@ -48,7 +46,7 @@ public class LoginDialogPresenter implements Presenter, ConfigurationSelectedHan
                                 final LoginDialogView view,
                                 final SNAAServiceAsync authenticationService,
                                 final AuthenticationManager authenticationManager) {
-        this.eventBus = new EventBusManager(eventBus);
+        this.eventBus = eventBus;
         this.view = view;
         this.authenticationService = authenticationService;
         this.authenticationManager = authenticationManager;
@@ -58,7 +56,6 @@ public class LoginDialogPresenter implements Presenter, ConfigurationSelectedHan
     }
 
     public void bind() {
-    	eventBus.addHandler(PlaceChangeEvent.TYPE, this);
         eventBus.addHandler(TestbedSelectedEvent.TYPE, this);
         eventBus.addHandler(ShowLoginDialogEvent.TYPE, this);
     }
@@ -124,9 +121,4 @@ public class LoginDialogPresenter implements Presenter, ConfigurationSelectedHan
     public void onShowLoginDialog(final ShowLoginDialogEvent event) {
         view.show("Login to " + configuration.getName());
     }
-
-	@Override
-	public void onPlaceChange(PlaceChangeEvent event) {
-		eventBus.removeAll();
-	}
 }

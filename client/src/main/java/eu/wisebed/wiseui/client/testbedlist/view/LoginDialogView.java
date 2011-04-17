@@ -1,4 +1,4 @@
-package eu.wisebed.wiseui.client.testbedselection.view;
+package eu.wisebed.wiseui.client.testbedlist.view;
 
 import com.google.gwt.user.client.ui.HasEnabled;
 import com.google.gwt.user.client.ui.HasText;

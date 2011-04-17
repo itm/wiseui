@@ -5,12 +5,16 @@ import java.util.List;
 import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiFactory;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.cellview.client.CellList;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HasEnabled;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.SelectionModel;
 import com.google.inject.Singleton;
@@ -28,6 +32,10 @@ public class TestbedListViewImpl extends Composite implements TestbedListView {
     
     @UiField
     CellList<TestbedConfiguration> configurationList;
+    @UiField
+    Button loginButton;
+    
+    private Presenter presenter;
 
     public TestbedListViewImpl() {
         initWidget(uiBinder.createAndBindUi(this));
@@ -48,9 +56,15 @@ public class TestbedListViewImpl extends Composite implements TestbedListView {
         };
         return new CellList<TestbedConfiguration>(cell);
     }
+    
+    @UiHandler("loginButton")
+    public void handleLoginClick(final ClickEvent event) {
+        presenter.showLoginDialog();
+    }
 
     @Override
-    public void setPresenter(final TestbedListView.Presenter presenter) {
+    public void setPresenter(final Presenter presenter) {
+    	this.presenter = presenter;
     }
 
     @Override
@@ -62,5 +76,10 @@ public class TestbedListViewImpl extends Composite implements TestbedListView {
     @Override
     public void setTestbedConfigurationSelectionModel(final SelectionModel<TestbedConfiguration> selectionModel) {
         configurationList.setSelectionModel(selectionModel);
+    }
+    
+    @Override
+    public HasEnabled getLoginEnabled() {
+        return loginButton;
     }
 }

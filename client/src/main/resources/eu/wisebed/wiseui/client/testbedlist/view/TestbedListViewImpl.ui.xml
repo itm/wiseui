@@ -9,11 +9,41 @@
 			width: 100%;
 			height: 100%;
 		}
+		
+		.buttonPanel {
+            width: 100%;
+            background-color: #d0e4f6;
+        }
+
+        .buttonTable {
+            margin-left: auto;
+            margin-right: 0px;
+            padding: 2px;
+        }
+        
+        .button {
+        	width: 160px;
+        }
 	</ui:style>
 
 	<my:CaptionPanel caption='Testbed Configurations'>
-		<g:ScrollPanel styleName="{style.fullLayout}">
-			<c:CellList ui:field="configurationList" />
-		</g:ScrollPanel>
+		<g:DockLayoutPanel styleName="{style.fullLayout}">
+			<g:center>
+				<g:ScrollPanel styleName="{style.fullLayout}">
+					<c:CellList ui:field="configurationList" />
+				</g:ScrollPanel>
+			</g:center>
+			<g:south size="35">
+				<g:HTMLPanel styleName="{style.buttonPanel}">
+	                <table class="{style.buttonTable}">
+	                    <tr>
+	                        <td>
+	                            <g:Button ui:field="loginButton" addStyleNames="{style.button}">Connect to Testbed...</g:Button>
+	                        </td>
+	                    </tr>
+	                </table>
+	            </g:HTMLPanel>
+			</g:south>
+		</g:DockLayoutPanel>
 	</my:CaptionPanel>
 </ui:UiBinder> 

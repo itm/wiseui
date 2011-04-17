@@ -12,8 +12,6 @@ public interface TestbedSelectionView extends IsWidget {
     
     AcceptsOneWidget getContentContainer();
 
-    HasEnabled getLoginEnabled();
-
     HasEnabled getReloadEnabled();
     
     void setContentSelection(String view);
@@ -23,7 +21,5 @@ public interface TestbedSelectionView extends IsWidget {
     	void setContentSelection(String view);
 
         void reload();
-
-        void showLoginDialog();
     }
 }

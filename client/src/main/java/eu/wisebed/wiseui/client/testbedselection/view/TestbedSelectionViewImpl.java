@@ -30,8 +30,6 @@ public class TestbedSelectionViewImpl extends Composite implements TestbedSelect
     @UiField
     Button reloadButton;
     @UiField
-    Button loginButton;
-    @UiField
     ToggleButton mapToggleButton;
     @UiField
     ToggleButton detailToggleButton;
@@ -48,11 +46,6 @@ public class TestbedSelectionViewImpl extends Composite implements TestbedSelect
     @UiHandler("reloadButton")
     public void handleReloadClick(final ClickEvent event) {
         presenter.reload();
-    }
-
-    @UiHandler("loginButton")
-    public void handleLoginClick(final ClickEvent event) {
-        presenter.showLoginDialog();
     }
 
     @UiHandler("mapToggleButton")
@@ -78,11 +71,6 @@ public class TestbedSelectionViewImpl extends Composite implements TestbedSelect
     @Override
     public AcceptsOneWidget getContentContainer() {
         return contentPanel;
-    }
-
-    @Override
-    public HasEnabled getLoginEnabled() {
-        return loginButton;
     }
 
     @Override

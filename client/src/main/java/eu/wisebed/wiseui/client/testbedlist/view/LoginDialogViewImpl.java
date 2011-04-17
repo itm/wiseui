@@ -1,4 +1,4 @@
-package eu.wisebed.wiseui.client.testbedselection.view;
+package eu.wisebed.wiseui.client.testbedlist.view;
 
 import com.google.gwt.cell.client.AbstractEditableCell;
 import com.google.gwt.cell.client.CheckboxCell;

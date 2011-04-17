@@ -16,8 +16,12 @@ import com.google.gwt.view.client.SingleSelectionModel;
 import com.google.inject.Inject;
 
 import eu.wisebed.wiseui.api.TestbedConfigurationServiceAsync;
+import eu.wisebed.wiseui.client.WiseUiGinjector;
 import eu.wisebed.wiseui.client.main.WiseUiPlace;
+import eu.wisebed.wiseui.client.testbedlist.event.ShowLoginDialogEvent;
 import eu.wisebed.wiseui.client.testbedlist.event.TestbedSelectedEvent;
+import eu.wisebed.wiseui.client.testbedlist.presenter.LoginDialogPresenter;
+import eu.wisebed.wiseui.client.testbedlist.view.LoginDialogView;
 import eu.wisebed.wiseui.client.testbedlist.view.TestbedListView;
 import eu.wisebed.wiseui.client.testbedlist.view.TestbedListView.Presenter;
 import eu.wisebed.wiseui.shared.dto.TestbedConfiguration;
@@ -29,7 +33,8 @@ import eu.wisebed.wiseui.shared.dto.TestbedConfiguration;
  */
 public class TestbedListActivity  extends AbstractActivity implements Presenter {
 
-    private final EventBus eventBus;
+	private final WiseUiGinjector injector;
+    private EventBus eventBus;
     private final TestbedListView view;
     private WiseUiPlace place;
     private final PlaceController placeController;
@@ -38,22 +43,26 @@ public class TestbedListActivity  extends AbstractActivity implements Presenter 
     private final TestbedConfigurationServiceAsync configurationService;
 
     @Inject
-    public TestbedListActivity(final EventBus eventBus,
+    public TestbedListActivity(final WiseUiGinjector injector,
                                final TestbedListView view,
                                final PlaceController placeController,
                                final TestbedConfigurationServiceAsync configurationService) {
-        this.eventBus = eventBus;
+    	this.injector = injector;
         this.view = view;
         this.placeController = placeController;
         this.configurationService = configurationService;
         
+        view.setPresenter(this);
         // Init selection model
         configurationSelectionModel = new SingleSelectionModel<TestbedConfiguration>();
         view.setTestbedConfigurationSelectionModel(configurationSelectionModel);
+        view.getLoginEnabled().setEnabled(false);
     }
     
 	@Override
 	public void start(AcceptsOneWidget panel, EventBus eventBus) {
+        this.eventBus = eventBus;
+        initLoginDialogPart();
 		panel.setWidget(view);
 	}
 
@@ -71,6 +80,13 @@ public class TestbedListActivity  extends AbstractActivity implements Presenter 
                 onConfigurationSelectionChange(event);
             }
         });
+    }
+    
+    private void initLoginDialogPart() {
+        GWT.log("Init Login Dialog Part");
+        final LoginDialogPresenter loginDialogPresenter = injector.getLoginDialogPresenter();
+        final LoginDialogView loginDialogView = injector.getLoginDialogView();
+        loginDialogView.setPresenter(loginDialogPresenter);
     }
 
     private void onConfigurationSelectionChange(final SelectionChangeEvent event) {
@@ -121,8 +137,14 @@ public class TestbedListActivity  extends AbstractActivity implements Presenter 
             final TestbedConfiguration configuration = getSelectedConfiguration();
             if (configuration != null) {
                 configurationSelectionModel.setSelected(configuration, true);
+                view.getLoginEnabled().setEnabled(true);
                 eventBus.fireEvent(new TestbedSelectedEvent(configuration));
             }
         }
+    }
+
+    @Override
+    public void showLoginDialog() {
+        eventBus.fireEventFromSource(new ShowLoginDialogEvent(), this);
     }
 }

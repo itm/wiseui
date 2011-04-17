@@ -62,9 +62,6 @@
                         <td>
                             <g:Button ui:field="reloadButton" addStyleNames="{style.button}">Reload Network</g:Button>
                         </td>
-                        <td>
-                            <g:Button ui:field="loginButton" addStyleNames="{style.button}">Connect to Testbed...</g:Button>
-                        </td>
                     </tr>
                 </table>
             </g:HTMLPanel>
