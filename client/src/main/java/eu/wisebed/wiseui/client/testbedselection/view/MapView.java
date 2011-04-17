@@ -5,7 +5,6 @@ import java.util.List;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.inject.ImplementedBy;
 
-import eu.wisebed.wiseui.client.util.Bindable;
 import eu.wisebed.wiseui.shared.dto.Coordinate;
 import eu.wisebed.wiseui.widgets.loading.HasLoadingIndicator;
 
@@ -20,7 +19,7 @@ public interface MapView extends IsWidget {
 	
 	HasLoadingIndicator getLoadingIndicator();
 	
-	public interface Presenter extends Bindable {
+	public interface Presenter {
 		
 	}
 }

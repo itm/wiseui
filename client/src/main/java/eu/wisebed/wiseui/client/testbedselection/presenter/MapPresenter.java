@@ -5,6 +5,7 @@ import java.util.List;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.place.shared.PlaceChangeEvent;
 import com.google.inject.Inject;
 
 import eu.wisebed.wiseui.client.testbedlist.event.TestbedSelectedEvent;
@@ -27,7 +28,7 @@ import eu.wisebed.wiseui.shared.dto.TestbedConfiguration;
  * 
  * @author Malte Legenhausen
  */
-public class MapPresenter implements MapView.Presenter, WisemlLoadedHandler, ConfigurationSelectedHandler, ThrowableHandler {
+public class MapPresenter implements MapView.Presenter, WisemlLoadedHandler, ConfigurationSelectedHandler, ThrowableHandler, PlaceChangeEvent.Handler {
 
     private final EventBusManager eventBus;
     private final MapView view;
@@ -37,18 +38,14 @@ public class MapPresenter implements MapView.Presenter, WisemlLoadedHandler, Con
     public MapPresenter(final EventBus eventBus, final MapView view) {
         this.eventBus = new EventBusManager(eventBus);
         this.view = view;
+        bind();
     }
 
-    @Override
     public void bind() {
+    	eventBus.addHandler(PlaceChangeEvent.TYPE, this);
         eventBus.addHandler(TestbedSelectedEvent.TYPE, this);
         eventBus.addHandler(WisemlLoadedEvent.TYPE, this);
         eventBus.addHandler(ThrowableEvent.TYPE, this);
-    }
-    
-    @Override
-    public void unbind() {
-    	eventBus.removeAll();
     }
 
     @Override
@@ -80,5 +77,10 @@ public class MapPresenter implements MapView.Presenter, WisemlLoadedHandler, Con
 	@Override
 	public void onThrowable(ThrowableEvent event) {
 		view.getLoadingIndicator().hideLoading();
+	}
+
+	@Override
+	public void onPlaceChange(final PlaceChangeEvent event) {
+		eventBus.removeAll();
 	}
 }

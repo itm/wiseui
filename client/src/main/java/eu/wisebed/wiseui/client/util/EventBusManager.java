@@ -9,7 +9,13 @@ import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.GwtEvent.Type;
 import com.google.gwt.event.shared.HandlerRegistration;
 
-public class EventBusManager {
+
+/**
+ * EventBus implementation that stores all registration handlers inside for easy autoremove.
+ * 
+ * @author Malte Legenhausen
+ */
+public class EventBusManager extends EventBus {
 
 	private final List<HandlerRegistration> registrations = new ArrayList<HandlerRegistration>();
 	
@@ -19,17 +25,28 @@ public class EventBusManager {
 		this.eventBus = eventBus;
 	}
 	
-	public <H extends EventHandler> void addHandler(Type<H> type, H handler) {
+	@Override
+	public <H extends EventHandler> HandlerRegistration addHandler(Type<H> type, H handler) {
     	final HandlerRegistration registration = eventBus.addHandler(type, handler);
     	registrations.add(registration);
+    	return registration;
     }
 	
+	@Override
 	public void fireEvent(GwtEvent<?> event) {
 		eventBus.fireEvent(event);
 	}
 	
+	@Override
 	public void fireEventFromSource(GwtEvent<?> event, Object source) {
 		eventBus.fireEventFromSource(event, source);
+	}
+
+	@Override
+	public <H extends EventHandler> HandlerRegistration addHandlerToSource(Type<H> type, Object source, H handler) {
+		final HandlerRegistration registration = eventBus.addHandlerToSource(type, source, handler);
+		registrations.add(registration);
+		return registration;
 	}
 	
 	public void removeAll() {

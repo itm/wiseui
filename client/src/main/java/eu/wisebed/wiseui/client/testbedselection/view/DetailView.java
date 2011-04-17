@@ -6,8 +6,6 @@ import com.google.gwt.view.client.HasData;
 import com.google.gwt.view.client.TreeViewModel;
 import com.google.inject.ImplementedBy;
 
-import eu.wisebed.wiseui.client.testbedselection.TestbedSelectionPlace;
-import eu.wisebed.wiseui.client.util.Bindable;
 import eu.wisebed.wiseui.shared.dto.Capability;
 import eu.wisebed.wiseui.widgets.loading.HasLoadingIndicator;
 
@@ -49,7 +47,7 @@ public interface DetailView extends IsWidget {
      * 
      * @author Malte Legenhausen
      */
-    public interface Presenter extends Bindable {
+    public interface Presenter {
 
     }	
 }

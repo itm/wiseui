@@ -2,6 +2,7 @@ package eu.wisebed.wiseui.client.testbedselection.presenter;
 
 import com.google.common.base.Strings;
 import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.place.shared.PlaceChangeEvent;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
@@ -29,7 +30,7 @@ import eu.wisebed.wiseui.shared.exception.WisemlException;
  * 
  * @author Malte Legenhausen
  */
-public class DetailPresenter implements Presenter, ConfigurationSelectedHandler, WisemlLoadedHandler, ThrowableHandler {
+public class DetailPresenter implements Presenter, ConfigurationSelectedHandler, WisemlLoadedHandler, ThrowableHandler, PlaceChangeEvent.Handler {
 
     private final DetailView view;
 
@@ -47,10 +48,11 @@ public class DetailPresenter implements Presenter, ConfigurationSelectedHandler,
         this.eventBus = new EventBusManager(eventBus);
         capabilityListDataProvider.addDataDisplay(view.getCapababilitesList());
         view.showMessage("Select a Testbed Configuration.");
+        bind();
     }
 
-    @Override
     public void bind() {
+    	eventBus.addHandler(PlaceChangeEvent.TYPE, this);
         eventBus.addHandler(TestbedSelectedEvent.TYPE, this);
         eventBus.addHandler(WisemlLoadedEvent.TYPE, this);
         eventBus.addHandler(ThrowableEvent.TYPE, this);
@@ -62,11 +64,6 @@ public class DetailPresenter implements Presenter, ConfigurationSelectedHandler,
                 onNodeSelection(node);
             }
         });
-    }
-    
-    @Override
-    public void unbind() {
-    	eventBus.removeAll();
     }
 
     private void onNodeSelection(final Node node) {
@@ -117,4 +114,9 @@ public class DetailPresenter implements Presenter, ConfigurationSelectedHandler,
         }
         view.getLoadingIndicator().hideLoading();
     }
+
+	@Override
+	public void onPlaceChange(final PlaceChangeEvent event) {
+		eventBus.removeAll();
+	}
 }

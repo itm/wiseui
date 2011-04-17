@@ -1,6 +1,7 @@
 package eu.wisebed.wiseui.client.testbedselection.presenter;
 
 import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.place.shared.PlaceChangeEvent;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.inject.Inject;
 
@@ -25,7 +26,7 @@ import eu.wisebed.wiseui.widgets.messagebox.MessageBox;
  *
  * @author Malte Legenhausen
  */
-public class TestbedSelectionPresenter implements Presenter, ConfigurationSelectedHandler, WisemlLoadedHandler, ThrowableHandler {
+public class TestbedSelectionPresenter implements Presenter, ConfigurationSelectedHandler, WisemlLoadedHandler, ThrowableHandler, PlaceChangeEvent.Handler {
 
     private final EventBusManager eventBus;
     private final TestbedSelectionView view;
@@ -42,7 +43,15 @@ public class TestbedSelectionPresenter implements Presenter, ConfigurationSelect
         this.view = view;
         view.getLoginEnabled().setEnabled(false);
         view.getReloadEnabled().setEnabled(false);
+        bind();
     }
+    
+	public void bind() {
+		eventBus.addHandler(PlaceChangeEvent.TYPE, this);
+		eventBus.addHandler(WisemlLoadedEvent.TYPE, this);
+        eventBus.addHandler(TestbedSelectedEvent.TYPE, this);
+        eventBus.addHandler(ThrowableEvent.TYPE, this);
+	}
 
     @Override
     public void reload() {
@@ -90,14 +99,7 @@ public class TestbedSelectionPresenter implements Presenter, ConfigurationSelect
     }
 
 	@Override
-	public void bind() {
-		eventBus.addHandler(WisemlLoadedEvent.TYPE, this);
-        eventBus.addHandler(TestbedSelectedEvent.TYPE, this);
-        eventBus.addHandler(ThrowableEvent.TYPE, this);
-	}
-
-	@Override
-	public void unbind() {
+	public void onPlaceChange(PlaceChangeEvent event) {
 		eventBus.removeAll();
 	}
 }

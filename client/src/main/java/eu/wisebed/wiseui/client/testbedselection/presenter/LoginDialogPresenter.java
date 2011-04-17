@@ -1,6 +1,7 @@
 package eu.wisebed.wiseui.client.testbedselection.presenter;
 
 import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.place.shared.PlaceChangeEvent;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.inject.Inject;
 
@@ -26,7 +27,7 @@ import eu.wisebed.wiseui.shared.dto.TestbedConfiguration;
  *
  * @author Malte Legenhausen
  */
-public class LoginDialogPresenter implements Presenter, ConfigurationSelectedHandler, ShowLoginDialogHandler {
+public class LoginDialogPresenter implements Presenter, ConfigurationSelectedHandler, ShowLoginDialogHandler, PlaceChangeEvent.Handler {
 
     private final EventBusManager eventBus;
 
@@ -53,17 +54,13 @@ public class LoginDialogPresenter implements Presenter, ConfigurationSelectedHan
         this.authenticationManager = authenticationManager;
 
         dataProvider.addDataDisplay(view.getUrnPrefixList());
+        bind();
     }
 
-    @Override
     public void bind() {
+    	eventBus.addHandler(PlaceChangeEvent.TYPE, this);
         eventBus.addHandler(TestbedSelectedEvent.TYPE, this);
         eventBus.addHandler(ShowLoginDialogEvent.TYPE, this);
-    }
-    
-    @Override
-    public void unbind() {
-    	eventBus.removeAll();
     }
 
     @Override
@@ -127,4 +124,9 @@ public class LoginDialogPresenter implements Presenter, ConfigurationSelectedHan
     public void onShowLoginDialog(final ShowLoginDialogEvent event) {
         view.show("Login to " + configuration.getName());
     }
+
+	@Override
+	public void onPlaceChange(PlaceChangeEvent event) {
+		eventBus.removeAll();
+	}
 }

@@ -1,6 +1,7 @@
 package eu.wisebed.wiseui.client.testbedselection.presenter;
 
 import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.place.shared.PlaceChangeEvent;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
@@ -18,7 +19,7 @@ import eu.wisebed.wiseui.shared.dto.TestbedConfiguration;
  *
  * @author Malte Legenhausen
  */
-public class RawWisemlPresenter implements Presenter, ConfigurationSelectedHandler {
+public class RawWisemlPresenter implements Presenter, ConfigurationSelectedHandler, PlaceChangeEvent.Handler {
 
 	private final EventBusManager eventBus;
 	
@@ -38,14 +39,9 @@ public class RawWisemlPresenter implements Presenter, ConfigurationSelectedHandl
 		view.getXmlHasHTML().setText("Select a Testbed Configuration.");
 	}
 	
-	@Override
 	public void bind() {
+		eventBus.addHandler(PlaceChangeEvent.TYPE, this);
 		eventBus.addHandler(TestbedSelectedEvent.TYPE, this);
-	}
-	
-	@Override
-	public void unbind() {
-		eventBus.removeAll();
 	}
 	
 	@Override
@@ -67,5 +63,10 @@ public class RawWisemlPresenter implements Presenter, ConfigurationSelectedHandl
 				view.getLoadingIndicator().hideLoading();
 			}
 		});
+	}
+
+	@Override
+	public void onPlaceChange(PlaceChangeEvent event) {
+		eventBus.removeAll();
 	}
 }
