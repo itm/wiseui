@@ -12,9 +12,12 @@ import com.google.gwt.uibinder.client.UiFactory;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.cellview.client.CellList;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasEnabled;
+import com.google.gwt.user.client.ui.MenuBar;
+import com.google.gwt.user.client.ui.MenuItem;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.SelectionModel;
 import com.google.inject.Singleton;
@@ -34,11 +37,48 @@ public class TestbedListViewImpl extends Composite implements TestbedListView {
     CellList<TestbedConfiguration> configurationList;
     @UiField
     Button loginButton;
+    @UiField
+    MenuBar menuBar;
     
     private Presenter presenter;
+    
+    private final MenuItem loginMenuItem;
 
     public TestbedListViewImpl() {
         initWidget(uiBinder.createAndBindUi(this));
+        
+        final Command loginCommand = new Command() {
+			@Override
+			public void execute() {
+				presenter.showLoginDialog();
+			}
+		};
+		final Command newCommand = new Command() {
+			@Override
+			public void execute() {
+				
+			}
+		};
+		final Command editCommand = new Command() {
+			@Override
+			public void execute() {
+				
+			}
+		};
+		final Command deleteCommand = new Command() {
+			@Override
+			public void execute() {
+				
+			}
+		};
+        
+        final MenuBar menu = new MenuBar(true);
+        loginMenuItem = menu.addItem("Login...", loginCommand);
+        menu.addSeparator();
+        menu.addItem("New...", newCommand);
+        menu.addItem("Edit...", editCommand);
+        menu.addItem("Delete", deleteCommand);
+        menuBar.addItem("Menu", menu);
     }
 
     @UiFactory
@@ -80,6 +120,18 @@ public class TestbedListViewImpl extends Composite implements TestbedListView {
     
     @Override
     public HasEnabled getLoginEnabled() {
-        return loginButton;
+        return new HasEnabled() {
+			
+			@Override
+			public void setEnabled(boolean enabled) {
+				loginButton.setEnabled(enabled);
+				loginMenuItem.setEnabled(enabled);
+			}
+			
+			@Override
+			public boolean isEnabled() {
+				return loginButton.isEnabled() && loginMenuItem.isEnabled();
+			}
+		};
     }
 }
