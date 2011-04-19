@@ -6,7 +6,6 @@ import com.google.gwt.place.shared.PlaceController;
 import com.google.inject.Inject;
 
 import eu.wisebed.wiseui.client.main.WiseUiPlace;
-import eu.wisebed.wiseui.client.testbedlist.event.ShowLoginDialogEvent;
 import eu.wisebed.wiseui.client.testbedlist.event.TestbedSelectedEvent;
 import eu.wisebed.wiseui.client.testbedlist.event.TestbedSelectedEvent.ConfigurationSelectedHandler;
 import eu.wisebed.wiseui.client.testbedselection.TestbedSelectionPlace;

@@ -21,6 +21,8 @@ import eu.wisebed.wiseui.widgets.messagebox.MessageBox.Button;
 
 public class TestbedEditPresenter implements Presenter, EditTestbedEvent.Handler {
 
+	private static final String DEFAULT_NEW_TITLE = "New Testbed Configuration";
+	
 	private final EventBusManager eventBus;
 	
 	private final TestbedEditView view;
@@ -31,11 +33,13 @@ public class TestbedEditPresenter implements Presenter, EditTestbedEvent.Handler
 	
 	private TestbedConfiguration configuration;
 	
+	private String title = DEFAULT_NEW_TITLE;
+	
 	@Inject
-	public TestbedEditPresenter(final EventBus eventBus,
-								final TestbedEditView view) {
+	public TestbedEditPresenter(final EventBus eventBus, final TestbedEditView view) {
 		this.eventBus = new EventBusManager(eventBus);
 		this.view = view;
+		
 		urnPrefixProvider.addDataDisplay(view.getUrnPrefixHasData());
 		view.setFederatedItems(Arrays.asList("Yes", "No"));
 		view.setUrnPrefixSelectionModel(selectionModel);
@@ -77,7 +81,7 @@ public class TestbedEditPresenter implements Presenter, EditTestbedEvent.Handler
 		configuration.setUrnPrefixList(urnPrefixProvider.getList());
 		
 		//TODO: Do here the save operation.
-		MessageBox.success(configuration.getName(), configuration.getName() + " was successfully saved.", new MessageBox.Callback() {
+		MessageBox.success(title, configuration.getName() + " was successfully saved.", new MessageBox.Callback() {
 			
 			@Override
 			public void onButtonClicked(final Button button) {
@@ -89,7 +93,7 @@ public class TestbedEditPresenter implements Presenter, EditTestbedEvent.Handler
 
 	@Override
 	public void cancel() {
-		MessageBox.warning(configuration.getName(), "Do you want to discard your changes?", new MessageBox.Callback() {
+		MessageBox.warning(title, "Do you want to discard your changes?", new MessageBox.Callback() {
 			
 			@Override
 			public void onButtonClicked(final Button button) {
@@ -118,7 +122,7 @@ public class TestbedEditPresenter implements Presenter, EditTestbedEvent.Handler
 	@Override
 	public void onEditTestbed(final EditTestbedEvent event) {
 		configuration = Objects.firstNonNull(event.getConfiguration(), new TestbedConfiguration());
-		final String title = Objects.firstNonNull(configuration.getName(), "New Testbed Configuration");
+		title = Objects.firstNonNull(configuration.getName(), DEFAULT_NEW_TITLE);
 		loadConfigurationToView();
 		view.show(title);
 	}
