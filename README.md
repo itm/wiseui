@@ -75,10 +75,13 @@ To start the WiseUI in "hosted mode", do the following:
 For debug mode type:
 
     $ mvn gwt:debug    
+
+Loading Initial Testbed Configurations
+--------------------------
     
 If you want to have an initial set of testbed configurations, you can load this dump into your local MySQL database.
 
-    $ mysql -u dbuser -p dbpass somedb < wiseui/blob/master/persistence/src/main/resources/wiseuidb.sql    
+    $ mysql -u dbuser -p dbpass somedb < wiseui/persistence/src/main/resources/wiseuidb.sql    
 
 
 Deploy to a Remote Tomcat
