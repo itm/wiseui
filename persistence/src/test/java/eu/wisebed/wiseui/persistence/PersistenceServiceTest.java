@@ -46,6 +46,9 @@ public class PersistenceServiceTest {
 
     private static final String BINARY_IMAGE_PATH = "src/test/resources/test_image.ihex";
 
+    /**
+     * Instance of the {@link PersistenceService} to be tested.
+     */
     private PersistenceService persistenceService;
 
     @Before
@@ -202,7 +205,6 @@ public class PersistenceServiceTest {
     private byte[] loadBinaryImageFromDisk(final String path) {
         byte[] bytes = null;
         FileInputStream in = null;
-
         try {
             in = new FileInputStream(path);
         } catch (final FileNotFoundException e) {

@@ -14,13 +14,14 @@ import eu.wisebed.wiseui.client.main.WiseUiPlace;
 
 /**
  * Configuration module for the WiseUiGinjector.
- * 
+ *
  * @author Malte Legenhausen
  */
 public class WiseUiModule extends AbstractGinModule {
 
     @Override
-    protected void configure() {}
+    protected void configure() {
+    }
 
     @Singleton
     @Provides
