@@ -67,7 +67,7 @@ public class MapPresenter implements MapView.Presenter, WisemlLoadedHandler, Con
     }
 
     @Override
-    public void onTestbedConfigurationSelected(final TestbedSelectedEvent event) {
+    public void onTestbedSelected(final TestbedSelectedEvent event) {
     	view.getLoadingIndicator().showLoading("Loading Testbed");
         this.configuration = event.getConfiguration();
         view.setTestbedCoordinate(null, null, null);

@@ -32,5 +32,7 @@ public interface TestbedListView extends IsWidget {
     	void showEditTestbedDialog();
     	
     	void deleteTestbed();
+    	
+    	void refresh();
     }
 }

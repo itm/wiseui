@@ -5,22 +5,22 @@ import com.google.gwt.event.shared.GwtEvent;
 
 import eu.wisebed.wiseui.shared.dto.TestbedConfiguration;
 
-public class TestbedEditEvent extends GwtEvent<TestbedEditEvent.Handler> {
+public class EditTestbedEvent extends GwtEvent<EditTestbedEvent.Handler> {
 
 	public interface Handler extends EventHandler {
 		
-		void onTestbedEdit(TestbedEditEvent event);
+		void onEditTestbed(EditTestbedEvent event);
 	}
 	
 	public static final Type<Handler> TYPE = new Type<Handler>();
 
 	private final TestbedConfiguration configuration;
 	
-	public TestbedEditEvent() {
+	public EditTestbedEvent() {
 		configuration = null;
 	}
 	
-	public TestbedEditEvent(final TestbedConfiguration configuration) {
+	public EditTestbedEvent(final TestbedConfiguration configuration) {
 		this.configuration = configuration;
 	}
 	
@@ -35,6 +35,6 @@ public class TestbedEditEvent extends GwtEvent<TestbedEditEvent.Handler> {
 
 	@Override
 	protected void dispatch(final Handler handler) {
-		handler.onTestbedEdit(this);
+		handler.onEditTestbed(this);
 	}
 }

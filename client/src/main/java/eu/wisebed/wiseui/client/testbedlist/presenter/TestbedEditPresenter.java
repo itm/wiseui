@@ -10,7 +10,8 @@ import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
 import com.google.inject.Inject;
 
-import eu.wisebed.wiseui.client.testbedlist.event.TestbedEditEvent;
+import eu.wisebed.wiseui.client.testbedlist.event.EditTestbedEvent;
+import eu.wisebed.wiseui.client.testbedlist.event.RefreshTestbedListEvent;
 import eu.wisebed.wiseui.client.testbedlist.view.TestbedEditView;
 import eu.wisebed.wiseui.client.testbedlist.view.TestbedEditView.Presenter;
 import eu.wisebed.wiseui.client.util.EventBusManager;
@@ -18,7 +19,7 @@ import eu.wisebed.wiseui.shared.dto.TestbedConfiguration;
 import eu.wisebed.wiseui.widgets.messagebox.MessageBox;
 import eu.wisebed.wiseui.widgets.messagebox.MessageBox.Button;
 
-public class TestbedEditPresenter implements Presenter, TestbedEditEvent.Handler {
+public class TestbedEditPresenter implements Presenter, EditTestbedEvent.Handler {
 
 	private final EventBusManager eventBus;
 	
@@ -43,7 +44,7 @@ public class TestbedEditPresenter implements Presenter, TestbedEditEvent.Handler
 	}
 	
 	private void bind() {
-		eventBus.addHandler(TestbedEditEvent.TYPE, this);
+		eventBus.addHandler(EditTestbedEvent.TYPE, this);
 		
 		selectionModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
 			@Override
@@ -81,6 +82,7 @@ public class TestbedEditPresenter implements Presenter, TestbedEditEvent.Handler
 			@Override
 			public void onButtonClicked(final Button button) {
 				view.hide();
+				eventBus.fireEventFromSource(new RefreshTestbedListEvent(), TestbedEditPresenter.this);
 			}
 		});
 	}
@@ -114,7 +116,7 @@ public class TestbedEditPresenter implements Presenter, TestbedEditEvent.Handler
 	}
 
 	@Override
-	public void onTestbedEdit(final TestbedEditEvent event) {
+	public void onEditTestbed(final EditTestbedEvent event) {
 		configuration = Objects.firstNonNull(event.getConfiguration(), new TestbedConfiguration());
 		final String title = Objects.firstNonNull(configuration.getName(), "New Testbed Configuration");
 		loadConfigurationToView();

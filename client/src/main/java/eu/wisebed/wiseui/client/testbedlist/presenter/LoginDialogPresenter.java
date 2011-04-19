@@ -107,7 +107,7 @@ public class LoginDialogPresenter implements Presenter, ConfigurationSelectedHan
     }
 
     @Override
-    public void onTestbedConfigurationSelected(final TestbedSelectedEvent event) {
+    public void onTestbedSelected(final TestbedSelectedEvent event) {
         configuration = event.getConfiguration();
         dataProvider.getList().clear();
         for (String urnPrefix : configuration.getUrnPrefixList()) {

@@ -5,18 +5,18 @@ import com.google.gwt.event.shared.GwtEvent;
 
 import eu.wisebed.wiseui.shared.dto.TestbedConfiguration;
 
-public class TestbedDeleteEvent extends GwtEvent<TestbedDeleteEvent.Handler> {
+public class DeleteTestbedEvent extends GwtEvent<DeleteTestbedEvent.Handler> {
 
 	public interface Handler extends EventHandler {
 		
-		void onDeleteTestbed(TestbedDeleteEvent event);
+		void onDeleteTestbed(DeleteTestbedEvent event);
 	}
 	
 	public static final Type<Handler> TYPE = new Type<Handler>();
 
 	private final TestbedConfiguration configuration;
 	
-	public TestbedDeleteEvent(final TestbedConfiguration configuration) {
+	public DeleteTestbedEvent(final TestbedConfiguration configuration) {
 		this.configuration = configuration;
 	}
 	

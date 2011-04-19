@@ -5,7 +5,7 @@ import java.util.TreeMap;
 
 import eu.maydu.gwt.validation.client.i18n.ValidationMessages;
 
-public class ConfigurationFormValidationMessages extends ValidationMessages {
+public class TestbedEditValidationMessages extends ValidationMessages {
 
 	private static final Map<String, String> DESCRIPTIONS = new TreeMap<String, String>();
 	

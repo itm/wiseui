@@ -4,7 +4,6 @@ import java.util.List;
 
 import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.cell.client.Cell;
-import com.google.gwt.cell.client.TextCell;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
@@ -76,6 +75,12 @@ public class TestbedListViewImpl extends Composite implements TestbedListView {
 				presenter.deleteTestbed();
 			}
 		};
+		final Command refreshCommand = new Command() {
+			@Override
+			public void execute() {
+				presenter.refresh();
+			}
+		};
         
         final MenuBar menu = new MenuBar(true);
         loginMenuItem = menu.addItem("Login...", loginCommand);
@@ -83,6 +88,8 @@ public class TestbedListViewImpl extends Composite implements TestbedListView {
         menu.addItem("New...", newCommand);
         testbedEditMenuItem = menu.addItem("Edit...", editCommand);
         testbedDeleteMenuItem = menu.addItem("Delete", deleteCommand);
+        menu.addSeparator();
+        menu.addItem("Refresh", refreshCommand);
         menuBar.addItem("Menu", menu);
     }
 

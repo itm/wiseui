@@ -18,9 +18,10 @@ import com.google.inject.Inject;
 import eu.wisebed.wiseui.api.TestbedConfigurationServiceAsync;
 import eu.wisebed.wiseui.client.WiseUiGinjector;
 import eu.wisebed.wiseui.client.main.WiseUiPlace;
+import eu.wisebed.wiseui.client.testbedlist.event.RefreshTestbedListEvent;
 import eu.wisebed.wiseui.client.testbedlist.event.ShowLoginDialogEvent;
-import eu.wisebed.wiseui.client.testbedlist.event.TestbedDeleteEvent;
-import eu.wisebed.wiseui.client.testbedlist.event.TestbedEditEvent;
+import eu.wisebed.wiseui.client.testbedlist.event.DeleteTestbedEvent;
+import eu.wisebed.wiseui.client.testbedlist.event.EditTestbedEvent;
 import eu.wisebed.wiseui.client.testbedlist.event.TestbedSelectedEvent;
 import eu.wisebed.wiseui.client.testbedlist.presenter.LoginDialogPresenter;
 import eu.wisebed.wiseui.client.testbedlist.presenter.TestbedEditPresenter;
@@ -35,7 +36,7 @@ import eu.wisebed.wiseui.shared.dto.TestbedConfiguration;
  *
  * @author Malte Legenhausen
  */
-public class TestbedListActivity  extends AbstractActivity implements Presenter {
+public class TestbedListActivity  extends AbstractActivity implements Presenter, RefreshTestbedListEvent.Handler {
 
 	private final WiseUiGinjector injector;
     private EventBus eventBus;
@@ -71,15 +72,17 @@ public class TestbedListActivity  extends AbstractActivity implements Presenter 
         initLoginDialogPart();
         initTestbedEditPart();
 		panel.setWidget(view);
+		bind();
 	}
 
     public void setPlace(final WiseUiPlace place) {
     	this.place = place;
         loadTestbedConfigurations();
-        bind();
     }
 
     private void bind() {
+    	eventBus.addHandler(RefreshTestbedListEvent.TYPE, this);
+    	
         configurationSelectionModel.addSelectionChangeHandler(new Handler() {
 
             @Override
@@ -166,18 +169,28 @@ public class TestbedListActivity  extends AbstractActivity implements Presenter 
 
 	@Override
 	public void showNewTestbedDialog() {
-		eventBus.fireEventFromSource(new TestbedEditEvent(), this);
+		eventBus.fireEventFromSource(new EditTestbedEvent(), this);
 	}
 
 	@Override
 	public void showEditTestbedDialog() {
 		final TestbedConfiguration configuration = getSelectedConfiguration();
-		eventBus.fireEventFromSource(new TestbedEditEvent(configuration), this);
+		eventBus.fireEventFromSource(new EditTestbedEvent(configuration), this);
 	}
 
 	@Override
 	public void deleteTestbed() {
 		final TestbedConfiguration configuration = getSelectedConfiguration();
-		eventBus.fireEventFromSource(new TestbedDeleteEvent(configuration), this);
+		eventBus.fireEventFromSource(new DeleteTestbedEvent(configuration), this);
+	}
+
+	@Override
+	public void refresh() {
+		eventBus.fireEventFromSource(new RefreshTestbedListEvent(), this);
+	}
+
+	@Override
+	public void onRefreshTestbedList(RefreshTestbedListEvent event) {
+		loadTestbedConfigurations();
 	}
 }

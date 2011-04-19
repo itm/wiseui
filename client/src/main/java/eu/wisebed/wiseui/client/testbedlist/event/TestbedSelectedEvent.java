@@ -8,7 +8,7 @@ import eu.wisebed.wiseui.shared.dto.TestbedConfiguration;
 public class TestbedSelectedEvent extends GwtEvent<ConfigurationSelectedHandler> {
 
     public interface ConfigurationSelectedHandler extends EventHandler {
-        void onTestbedConfigurationSelected(TestbedSelectedEvent event);
+        void onTestbedSelected(TestbedSelectedEvent event);
     }
 
     public static final Type<ConfigurationSelectedHandler> TYPE = new Type<ConfigurationSelectedHandler>();
@@ -21,7 +21,7 @@ public class TestbedSelectedEvent extends GwtEvent<ConfigurationSelectedHandler>
 
     @Override
     protected void dispatch(final ConfigurationSelectedHandler handler) {
-        handler.onTestbedConfigurationSelected(this);
+        handler.onTestbedSelected(this);
     }
 
     @Override

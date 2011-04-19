@@ -65,7 +65,7 @@ public class TestbedEditViewImpl extends HasWidgetsDialogBox implements TestbedE
     
     private Presenter presenter;
     
-    private final ValidationMessages messages = new ConfigurationFormValidationMessages();
+    private final ValidationMessages messages = new TestbedEditValidationMessages();
     private final PopupDescription popupDescription = new PopupDescription(messages, Location.BOTTOM);
     private final ValidationProcessor validator = new DefaultValidationProcessor(messages);
 

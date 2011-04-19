@@ -122,7 +122,7 @@ public class TestbedSelectionActivity extends AbstractActivity implements Config
     	testbedSelectionView.getContentContainer().setWidget(rawWisemlView);
     }
 
-    public void onTestbedConfigurationSelected(final TestbedSelectedEvent event) {
+    public void onTestbedSelected(final TestbedSelectedEvent event) {
         final TestbedConfiguration configuration = event.getConfiguration();
         final AsyncCallback<Wiseml> callback = new AsyncCallback<Wiseml>() {
 

@@ -70,7 +70,7 @@ public class TestbedSelectionPresenter implements Presenter, ConfigurationSelect
     }
 
     @Override
-    public void onTestbedConfigurationSelected(final TestbedSelectedEvent event) {
+    public void onTestbedSelected(final TestbedSelectedEvent event) {
         configuration = event.getConfiguration();
     }
 

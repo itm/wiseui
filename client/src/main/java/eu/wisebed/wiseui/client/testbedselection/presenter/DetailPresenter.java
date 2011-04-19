@@ -92,7 +92,7 @@ public class DetailPresenter implements Presenter, ConfigurationSelectedHandler,
 		capabilityListDataProvider.setList(node.getCapability());
     }
 
-    public void onTestbedConfigurationSelected(final TestbedSelectedEvent event) {
+    public void onTestbedSelected(final TestbedSelectedEvent event) {
     	configuration = event.getConfiguration();
     	view.getLoadingIndicator().showLoading("Loading Testbed");
         view.showMessage("");
