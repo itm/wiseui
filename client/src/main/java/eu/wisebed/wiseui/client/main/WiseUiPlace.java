@@ -10,7 +10,6 @@ import com.google.common.collect.Iterables;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceTokenizer;
 
-import eu.wisebed.wiseui.client.administration.AdministrationPlace;
 import eu.wisebed.wiseui.client.experimentation.ExperimentationPlace;
 import eu.wisebed.wiseui.client.navigation.NavigationPlace;
 import eu.wisebed.wiseui.client.reservation.ReservationPlace;
@@ -44,12 +43,6 @@ public class WiseUiPlace extends Place {
 			@Override
 			public ReservationPlace create(final String token) {
 				return KeyValuePlace.parse(new ReservationPlace(), token);
-			}
-		});
-		mapping.put(shortClassName(AdministrationPlace.class), new Factory<AdministrationPlace>() {
-			@Override
-			public AdministrationPlace create(final String token) {
-				return KeyValuePlace.parse(new AdministrationPlace(), token);
 			}
 		});
 		mapping.put(shortClassName(NavigationPlace.class), new Factory<NavigationPlace>() {

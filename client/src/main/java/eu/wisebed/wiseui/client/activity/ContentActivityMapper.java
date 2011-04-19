@@ -6,7 +6,6 @@ import com.google.gwt.place.shared.Place;
 import com.google.inject.Inject;
 
 import eu.wisebed.wiseui.client.WiseUiGinjector;
-import eu.wisebed.wiseui.client.administration.AdministrationActivity;
 import eu.wisebed.wiseui.client.main.WiseUiPlace;
 import eu.wisebed.wiseui.client.navigation.NavigationPlace;
 import eu.wisebed.wiseui.client.reservation.ReservationActivity;
@@ -47,10 +46,6 @@ public class ContentActivityMapper implements ActivityMapper {
             mappedActivity = activity;
         } else if (index.equals(2)) {
             mappedActivity = injector.getExperimentationActivity();
-        } else if (index.equals(3)) {
-             final AdministrationActivity activitiy = injector.getAdministrationActivity();
-             activitiy.setPlace(wiseUiPlace); 
-             mappedActivity = activitiy;
         }
         return mappedActivity;
     }

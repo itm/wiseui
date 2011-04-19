@@ -28,7 +28,6 @@ import eu.maydu.gwt.validation.client.description.PopupDescription;
 import eu.maydu.gwt.validation.client.description.PopupDescription.Location;
 import eu.maydu.gwt.validation.client.i18n.ValidationMessages;
 import eu.maydu.gwt.validation.client.validators.strings.StringLengthValidator;
-import eu.wisebed.wiseui.client.administration.view.ConfigurationFormValidationMessages;
 import eu.wisebed.wiseui.widgets.HasWidgetsDialogBox;
 
 @Singleton

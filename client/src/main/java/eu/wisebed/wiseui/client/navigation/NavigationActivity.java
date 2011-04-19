@@ -50,7 +50,6 @@ public class NavigationActivity extends AbstractActivity implements NavigationVi
         navigation.add(new Entry("Testbed Selection", new NavigationPlace(0)));
         navigation.add(new Entry("Reservation", new NavigationPlace(1)));
         navigation.add(new Entry("Experimentation", new NavigationPlace(2)));
-        navigation.add(new Entry("Administration", new NavigationPlace(3)));
     }
 
     public void start(final AcceptsOneWidget container, final EventBus eventBus) {
