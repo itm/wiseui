@@ -19,9 +19,13 @@ import eu.wisebed.wiseui.api.TestbedConfigurationServiceAsync;
 import eu.wisebed.wiseui.client.WiseUiGinjector;
 import eu.wisebed.wiseui.client.main.WiseUiPlace;
 import eu.wisebed.wiseui.client.testbedlist.event.ShowLoginDialogEvent;
+import eu.wisebed.wiseui.client.testbedlist.event.TestbedDeleteEvent;
+import eu.wisebed.wiseui.client.testbedlist.event.TestbedEditEvent;
 import eu.wisebed.wiseui.client.testbedlist.event.TestbedSelectedEvent;
 import eu.wisebed.wiseui.client.testbedlist.presenter.LoginDialogPresenter;
+import eu.wisebed.wiseui.client.testbedlist.presenter.TestbedEditPresenter;
 import eu.wisebed.wiseui.client.testbedlist.view.LoginDialogView;
+import eu.wisebed.wiseui.client.testbedlist.view.TestbedEditView;
 import eu.wisebed.wiseui.client.testbedlist.view.TestbedListView;
 import eu.wisebed.wiseui.client.testbedlist.view.TestbedListView.Presenter;
 import eu.wisebed.wiseui.shared.dto.TestbedConfiguration;
@@ -57,12 +61,15 @@ public class TestbedListActivity  extends AbstractActivity implements Presenter 
         configurationSelectionModel = new SingleSelectionModel<TestbedConfiguration>();
         view.setTestbedConfigurationSelectionModel(configurationSelectionModel);
         view.getLoginEnabled().setEnabled(false);
+        view.getTestbedEditEnabled().setEnabled(false);
+        view.getTestbedDeleteEnabled().setEnabled(false);
     }
     
 	@Override
 	public void start(AcceptsOneWidget panel, EventBus eventBus) {
         this.eventBus = eventBus;
         initLoginDialogPart();
+        initTestbedEditPart();
 		panel.setWidget(view);
 	}
 
@@ -87,6 +94,13 @@ public class TestbedListActivity  extends AbstractActivity implements Presenter 
         final LoginDialogPresenter loginDialogPresenter = injector.getLoginDialogPresenter();
         final LoginDialogView loginDialogView = injector.getLoginDialogView();
         loginDialogView.setPresenter(loginDialogPresenter);
+    }
+    
+    private void initTestbedEditPart() {
+    	GWT.log("Init Testbed Edit Part");
+    	final TestbedEditPresenter testbedEditPresenter = injector.getTestbedEditPresenter();
+    	final TestbedEditView testbedEditView = injector.getTestbedEditView();
+    	testbedEditView.setPresenter(testbedEditPresenter);
     }
 
     private void onConfigurationSelectionChange(final SelectionChangeEvent event) {
@@ -138,6 +152,8 @@ public class TestbedListActivity  extends AbstractActivity implements Presenter 
             if (configuration != null) {
                 configurationSelectionModel.setSelected(configuration, true);
                 view.getLoginEnabled().setEnabled(true);
+                view.getTestbedEditEnabled().setEnabled(true);
+                view.getTestbedDeleteEnabled().setEnabled(true);
                 eventBus.fireEvent(new TestbedSelectedEvent(configuration));
             }
         }
@@ -147,4 +163,21 @@ public class TestbedListActivity  extends AbstractActivity implements Presenter 
     public void showLoginDialog() {
         eventBus.fireEventFromSource(new ShowLoginDialogEvent(), this);
     }
+
+	@Override
+	public void showNewTestbedDialog() {
+		eventBus.fireEventFromSource(new TestbedEditEvent(), this);
+	}
+
+	@Override
+	public void showEditTestbedDialog() {
+		final TestbedConfiguration configuration = getSelectedConfiguration();
+		eventBus.fireEventFromSource(new TestbedEditEvent(configuration), this);
+	}
+
+	@Override
+	public void deleteTestbed() {
+		final TestbedConfiguration configuration = getSelectedConfiguration();
+		eventBus.fireEventFromSource(new TestbedDeleteEvent(configuration), this);
+	}
 }

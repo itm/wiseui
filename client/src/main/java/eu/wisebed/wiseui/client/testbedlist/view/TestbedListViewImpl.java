@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.cell.client.Cell;
+import com.google.gwt.cell.client.TextCell;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
@@ -43,6 +44,10 @@ public class TestbedListViewImpl extends Composite implements TestbedListView {
     private Presenter presenter;
     
     private final MenuItem loginMenuItem;
+    
+    private final MenuItem testbedEditMenuItem;
+    
+    private final MenuItem testbedDeleteMenuItem;
 
     public TestbedListViewImpl() {
         initWidget(uiBinder.createAndBindUi(this));
@@ -56,19 +61,19 @@ public class TestbedListViewImpl extends Composite implements TestbedListView {
 		final Command newCommand = new Command() {
 			@Override
 			public void execute() {
-				
+				presenter.showNewTestbedDialog();
 			}
 		};
 		final Command editCommand = new Command() {
 			@Override
 			public void execute() {
-				
+				presenter.showEditTestbedDialog();
 			}
 		};
 		final Command deleteCommand = new Command() {
 			@Override
 			public void execute() {
-				
+				presenter.deleteTestbed();
 			}
 		};
         
@@ -76,8 +81,8 @@ public class TestbedListViewImpl extends Composite implements TestbedListView {
         loginMenuItem = menu.addItem("Login...", loginCommand);
         menu.addSeparator();
         menu.addItem("New...", newCommand);
-        menu.addItem("Edit...", editCommand);
-        menu.addItem("Delete", deleteCommand);
+        testbedEditMenuItem = menu.addItem("Edit...", editCommand);
+        testbedDeleteMenuItem = menu.addItem("Delete", deleteCommand);
         menuBar.addItem("Menu", menu);
     }
 
@@ -96,7 +101,7 @@ public class TestbedListViewImpl extends Composite implements TestbedListView {
         };
         return new CellList<TestbedConfiguration>(cell);
     }
-    
+
     @UiHandler("loginButton")
     public void handleLoginClick(final ClickEvent event) {
         presenter.showLoginDialog();
@@ -134,4 +139,14 @@ public class TestbedListViewImpl extends Composite implements TestbedListView {
 			}
 		};
     }
+
+	@Override
+	public HasEnabled getTestbedEditEnabled() {
+		return testbedEditMenuItem;
+	}
+
+	@Override
+	public HasEnabled getTestbedDeleteEnabled() {
+		return testbedDeleteMenuItem;
+	}
 }

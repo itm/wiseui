@@ -15,6 +15,8 @@ import eu.wisebed.wiseui.client.main.view.WiseUiView;
 import eu.wisebed.wiseui.client.navigation.gin.NavigationGinjector;
 import eu.wisebed.wiseui.client.reservation.gin.ReservationGinjector;
 import eu.wisebed.wiseui.client.testbedlist.TestbedListGinjector;
+import eu.wisebed.wiseui.client.testbedlist.presenter.TestbedEditPresenter;
+import eu.wisebed.wiseui.client.testbedlist.view.TestbedEditView;
 import eu.wisebed.wiseui.client.testbedselection.gin.TestbedSelectionGinjector;
 import eu.wisebed.wiseui.client.util.AuthenticationManager;
 
