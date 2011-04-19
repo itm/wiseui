@@ -30,6 +30,8 @@ import eu.wisebed.wiseui.client.testbedlist.view.TestbedEditView;
 import eu.wisebed.wiseui.client.testbedlist.view.TestbedListView;
 import eu.wisebed.wiseui.client.testbedlist.view.TestbedListView.Presenter;
 import eu.wisebed.wiseui.shared.dto.TestbedConfiguration;
+import eu.wisebed.wiseui.widgets.messagebox.MessageBox;
+import eu.wisebed.wiseui.widgets.messagebox.MessageBox.Button;
 
 /**
  * The presenter for the {@link eu.wisebed.wiseui.client.testbedlist.view.TestbedListView}.
@@ -181,7 +183,15 @@ public class TestbedListActivity  extends AbstractActivity implements Presenter,
 	@Override
 	public void deleteTestbed() {
 		final TestbedConfiguration configuration = getSelectedConfiguration();
-		eventBus.fireEventFromSource(new DeleteTestbedEvent(configuration), this);
+		MessageBox.warning(configuration.getName(), "Do you really want to delete " + configuration.getName() + "?", new MessageBox.Callback() {
+			
+			@Override
+			public void onButtonClicked(Button button) {
+				if (Button.OK.equals(button)) {
+					eventBus.fireEventFromSource(new DeleteTestbedEvent(configuration), this);
+				}
+			}
+		});
 	}
 
 	@Override
