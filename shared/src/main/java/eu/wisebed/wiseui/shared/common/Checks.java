@@ -28,7 +28,7 @@ public class Checks {
      * @param argument Object reference, which shall be tested for Null.
      * @param message  Error message
      */
-    public static void notNullArgument(final Object argument, final String message) {
+    public static void ifNullArgument(final Object argument, final String message) {
         checkArgument(argument != null, message);
     }
 
@@ -36,7 +36,7 @@ public class Checks {
      * @param stringArgument String reference, which shall be tested for Null or empty.
      * @param message        Error message
      */
-    public static void notNullOrEmptyArgument(final String stringArgument, final String message) {
+    public static void ifNullOrEmptyArgument(final String stringArgument, final String message) {
         checkArgument(stringArgument != null && !stringArgument.isEmpty(), message);
     }
 
@@ -56,7 +56,7 @@ public class Checks {
      * @param message   Error message
      * @throws RuntimeException
      */
-    public static void notNull(final Object reference, final String message) {
+    public static void ifNull(final Object reference, final String message) {
         check(reference != null, message);
     }
 
@@ -65,7 +65,7 @@ public class Checks {
      * @param message         Error message
      * @throws RuntimeException
      */
-    public static void notNullOrEmpty(final String stringReference, final String message) {
+    public static void ifNullOrEmpty(final String stringReference, final String message) {
         check(stringReference != null && !stringReference.isEmpty(), message);
     }
 
@@ -74,7 +74,7 @@ public class Checks {
      * @param message    Error message
      * @throws RuntimeException
      */
-    public static void notNullOrEmpty(final Collection collection, final String message) {
+    public static void ifNullOrEmpty(final Collection collection, final String message) {
         check(collection != null && !collection.isEmpty(), message);
     }
 }

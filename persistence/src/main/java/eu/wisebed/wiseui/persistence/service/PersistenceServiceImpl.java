@@ -21,7 +21,10 @@ import eu.wisebed.wiseui.persistence.dao.BinaryImageDao;
 import eu.wisebed.wiseui.persistence.dao.TestbedConfigurationDao;
 import eu.wisebed.wiseui.persistence.domain.BinaryImageBo;
 import eu.wisebed.wiseui.persistence.domain.TestbedConfigurationBo;
-import eu.wisebed.wiseui.shared.common.Checks;
+
+import static eu.wisebed.wiseui.shared.common.Checks.ifNullArgument;
+import static eu.wisebed.wiseui.shared.common.Checks.ifNull;
+
 import eu.wisebed.wiseui.shared.dto.BinaryImage;
 import eu.wisebed.wiseui.shared.dto.TestbedConfiguration;
 import org.dozer.DozerBeanMapper;
@@ -59,7 +62,7 @@ public class PersistenceServiceImpl implements PersistenceService {
     @Override
     @Transactional
     public TestbedConfiguration storeTestbedConfiguration(final TestbedConfiguration dto) {
-        Checks.notNullArgument(dto, "Argument 'dto' is null!");
+        ifNullArgument(dto, "Argument 'dto' is null!");
 
         LOGGER.info("storeTestbedConfiguration( " + dto + " )");
 
@@ -79,7 +82,7 @@ public class PersistenceServiceImpl implements PersistenceService {
             }
         }
 
-        Checks.notNull(bo, "Error creating TestbedConfigurationBo! (bo is null)");
+        ifNull(bo, "Error creating TestbedConfigurationBo! (bo is null)");
         return dozerBeanMapper.map(bo, TestbedConfiguration.class);
     }
 
@@ -89,12 +92,12 @@ public class PersistenceServiceImpl implements PersistenceService {
     @Override
     @Transactional(readOnly = true)
     public TestbedConfiguration loadTestbedConfiguration(final Integer id) {
-        Checks.notNullArgument(id, "Argument 'id' is null!");
+        ifNullArgument(id, "Argument 'id' is null!");
 
         LOGGER.info("loadTestbedConfiguration( " + id + " )");
 
         final TestbedConfigurationBo bo = testbedConfigurationDao.findById(id);
-        Checks.notNull(bo, "TestbedConfiguration with id '"
+        ifNull(bo, "TestbedConfiguration with id '"
                 + id
                 + "' does not exist!");
 
@@ -107,12 +110,12 @@ public class PersistenceServiceImpl implements PersistenceService {
     @Override
     @Transactional
     public void removeTestbedConfiguration(final Integer id) {
-        Checks.notNullArgument(id, "Argument 'id' is null!");
+        ifNullArgument(id, "Argument 'id' is null!");
 
         LOGGER.info("removeTestbedConfiguration( " + id + " )");
 
         final TestbedConfigurationBo bo = testbedConfigurationDao.findById(id);
-        Checks.notNull(bo, "TestbedConfiguration with id '"
+        ifNull(bo, "TestbedConfiguration with id '"
                 + id
                 + "' does not exist!");
 
@@ -142,7 +145,7 @@ public class PersistenceServiceImpl implements PersistenceService {
     @Override
     @Transactional
     public BinaryImage storeBinaryImage(final BinaryImage dto) {
-        Checks.notNullArgument(dto, "Argument 'dto' is null!");
+        ifNullArgument(dto, "Argument 'dto' is null!");
 
         LOGGER.info("storeBinaryImage( " + dto + " )");
 
@@ -162,7 +165,7 @@ public class PersistenceServiceImpl implements PersistenceService {
             }
         }
 
-        Checks.notNull(bo, "Error creating BinaryImageBo! (bo is null)");
+        ifNull(bo, "Error creating BinaryImageBo! (bo is null)");
         return dozerBeanMapper.map(bo, BinaryImage.class);
     }
 
@@ -172,12 +175,12 @@ public class PersistenceServiceImpl implements PersistenceService {
     @Override
     @Transactional(readOnly = true)
     public BinaryImage loadBinaryImage(final Integer id) {
-        Checks.notNullArgument(id, "Argument 'id' is null!");
+        ifNullArgument(id, "Argument 'id' is null!");
 
         LOGGER.info("loadBinaryImage( " + id + " )");
 
         final BinaryImageBo bo = binaryImageDao.findById(id);
-        Checks.notNull(bo, "BinaryImage with id '"
+        ifNull(bo, "BinaryImage with id '"
                 + id
                 + "' does not exist!");
 
@@ -190,12 +193,12 @@ public class PersistenceServiceImpl implements PersistenceService {
     @Override
     @Transactional
     public void removeBinaryImage(final Integer id) {
-        Checks.notNullArgument(id, "Argument 'id' is null!");
+        ifNullArgument(id, "Argument 'id' is null!");
 
         LOGGER.info("removeBinaryImage( " + id + " )");
 
         final BinaryImageBo bo = binaryImageDao.findById(id);
-        Checks.notNull(bo, "BinaryImage with id '"
+        ifNull(bo, "BinaryImage with id '"
                 + id
                 + "' does not exist!");
 
