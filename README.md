@@ -17,19 +17,6 @@ What do I need?
 
 All library dependencies are downloaded by Maven.
 
-Git Workflow
-------------
-
-The following commands show how to clone the WiseUI repository and how to make first changes.
-
-    $ git clone git@github.com:itm/wiseui.git
-    $ cd wiseui
-    $ (edit files)
-    $ git add (files)
-    $ git commit -a -m "Explain what I changed"
-    $ git status
-    $ git push origin master
-
 Configure Hibernate
 -------------------
 
