@@ -20,6 +20,7 @@ public class MessageBox implements Presenter {
         CANCEL("Cancel"),
         YES("Yes"),
         NO("No");
+
         private final String value;
 
         private Button(final String value) {
