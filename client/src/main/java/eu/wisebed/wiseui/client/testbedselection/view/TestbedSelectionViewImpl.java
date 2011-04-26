@@ -15,7 +15,7 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-import eu.wisebed.wiseui.client.testbedselection.common.TestbedSelectionConstants;
+import eu.wisebed.wiseui.client.testbedselection.common.TestbedSelectionParams;
 
 @Singleton
 public class TestbedSelectionViewImpl extends Composite implements TestbedSelectionView {
@@ -50,17 +50,17 @@ public class TestbedSelectionViewImpl extends Composite implements TestbedSelect
 
     @UiHandler("mapToggleButton")
     public void handleMapAnchorClicked(final ClickEvent event) {
-        presenter.setContentSelection(TestbedSelectionConstants.MAP_VIEW);
+        presenter.setContentSelection(TestbedSelectionParams.MAP_VIEW.getValue());
     }
 
     @UiHandler("detailToggleButton")
     public void handleDetailAnchorClicked(final ClickEvent event) {
-        presenter.setContentSelection(TestbedSelectionConstants.DETAIL_VIEW);
+        presenter.setContentSelection(TestbedSelectionParams.DETAIL_VIEW.getValue());
     }
 
     @UiHandler("rawToggleButton")
     public void handleRawAnchorClicked(final ClickEvent event) {
-        presenter.setContentSelection(TestbedSelectionConstants.RAW_WISEML_VIEW);
+        presenter.setContentSelection(TestbedSelectionParams.RAW_WISEML_VIEW.getValue());
     }
 
     @Override
@@ -80,8 +80,8 @@ public class TestbedSelectionViewImpl extends Composite implements TestbedSelect
 
 	@Override
 	public void setContentSelection(final String view) {
-		mapToggleButton.setDown(TestbedSelectionConstants.MAP_VIEW.equals(view));
-		detailToggleButton.setDown(TestbedSelectionConstants.DETAIL_VIEW.equals(view));
-		rawToggleButton.setDown(TestbedSelectionConstants.RAW_WISEML_VIEW.equals(view));
+		mapToggleButton.setDown(TestbedSelectionParams.MAP_VIEW.getValue().equals(view));
+		detailToggleButton.setDown(TestbedSelectionParams.DETAIL_VIEW.getValue().equals(view));
+		rawToggleButton.setDown(TestbedSelectionParams.RAW_WISEML_VIEW.getValue().equals(view));
 	}
 }

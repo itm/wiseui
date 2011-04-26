@@ -25,7 +25,8 @@ import eu.wisebed.wiseui.widgets.messagebox.MessageBox;
  *
  * @author Malte Legenhausen
  */
-public class TestbedSelectionPresenter implements Presenter, ConfigurationSelectedHandler, WisemlLoadedHandler, ThrowableHandler, PlaceChangeEvent.Handler {
+public class TestbedSelectionPresenter implements Presenter, ConfigurationSelectedHandler,
+        WisemlLoadedHandler, ThrowableHandler, PlaceChangeEvent.Handler {
 
     private final EventBusManager eventBus;
     private final TestbedSelectionView view;
@@ -59,7 +60,8 @@ public class TestbedSelectionPresenter implements Presenter, ConfigurationSelect
 
     public void setPlace(final WiseUiPlace place) {
     	this.place = place;
-    	final TestbedSelectionPlace testbedSelectionPlace = (TestbedSelectionPlace) place.get(TestbedSelectionPlace.class);
+    	final TestbedSelectionPlace testbedSelectionPlace =
+                (TestbedSelectionPlace) place.get(TestbedSelectionPlace.class);
     	view.setContentSelection(testbedSelectionPlace.getView());
     }
 

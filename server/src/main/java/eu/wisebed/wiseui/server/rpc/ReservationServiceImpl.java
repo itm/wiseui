@@ -1,3 +1,19 @@
+/*
+ * Copyright 2011 Universität zu Lübeck, Institut für Telematik (ITM),
+ *              Research Academic Computer Technology Institute (RACTI)
+ *
+ * ITM and RACTI license this file under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with the
+ * License. You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package eu.wisebed.wiseui.server.rpc;
 
 import java.util.ArrayList;
@@ -87,11 +103,11 @@ public class ReservationServiceImpl extends RemoteServiceServlet implements Rese
 	/**
 	 * Cancels a reservation on services and deletes the appropriate reservation
 	 * entry from the persistent model
-	 * @param <code>sessionID</code>, current session ID.
-	 * @param <code>reservationID</code>, ID of the cancelled reservation.
+	 * @param <code>sessionId</code>, current session ID.
+	 * @param <code>reservationId</code>, ID of the cancelled reservation.
 	 */
-	public String cancelReservation(final String sessionID,
-			final int reservationID) throws ReservationException {
+	public String cancelReservation(final String sessionId,
+			final int reservationId) throws ReservationException {
 		// TODO: Add functionality while integrating
 		return null;
 	}
@@ -220,7 +236,7 @@ public class ReservationServiceImpl extends RemoteServiceServlet implements Rese
 	/**
 	 * Given a a reservation ID fetch the imageFilename of the reservation made
 	 * by this user.
-	 * @param <code>reservationID</code>, a reservation ID.
+	 * @param reservationID, The ID of the reservation.
 	 * @return a <code>List</code> of node URNs.
 	 */
 	public final static String fetchImageFileName(final int reservationID){
@@ -229,7 +245,9 @@ public class ReservationServiceImpl extends RemoteServiceServlet implements Rese
 	}
 
 
-	public List<PublicReservationData> getPublicReservations(final String rsEndpointUrl, final Date from, final Date to) {
+	public List<PublicReservationData> getPublicReservations(final String rsEndpointUrl,
+                                                             final Date from,
+                                                             final Date to) {
 		final RS rs = RSServiceHelper.getRSService(rsEndpointUrl);
 		List<eu.wisebed.testbed.api.rs.v1.PublicReservationData> resultList = null;
 		try {
@@ -244,16 +262,21 @@ public class ReservationServiceImpl extends RemoteServiceServlet implements Rese
 	            return publicReservationData;
 	        }
 	    }));
-
 	}
+
+    /**
+     * Convenience method for converting {@link Date} objects to {@link XMLGregorianCalendar} objects.
+     * @param date Date to be converted to {@link XMLGregorianCalendar}
+     * @return Returns {@link XMLGregorianCalendar} object converted from the given {@link Date} object.
+     */
 	private XMLGregorianCalendar convertDate2XmlGregorianCalendar(final Date date) {
 		XMLGregorianCalendar xmlGregorianCalendar = null;
 
-		GregorianCalendar c = new GregorianCalendar();
-		c.setTime(date);
+		final GregorianCalendar calendar = new GregorianCalendar();
+		calendar.setTime(date);
 
 		try {
-			xmlGregorianCalendar = DatatypeFactory.newInstance().newXMLGregorianCalendar(c);
+			xmlGregorianCalendar = DatatypeFactory.newInstance().newXMLGregorianCalendar(calendar);
 		} catch (DatatypeConfigurationException e) {
 			LOGGER.error(e.getMessage(), e);
 		}

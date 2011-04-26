@@ -35,6 +35,7 @@
         <testbedUrl>http://www.wisebed.eu</testbedUrl>
         <snaaEndpointUrl>http://wbportal.ibr.cs.tu-bs.de:8083/snaa</snaaEndpointUrl>
         <sessionmanagementEndpointUrl>http://wbportal.ibr.cs.tu-bs.de:8080/sessions</sessionmanagementEndpointUrl>
+        <rsEndpointUrl>http://wbportal.ibr.cs.tu-bs.de:8082/rs</rsEndpointUrl>
         <urnPrefix>urn:wisebed:tubs:</urnPrefix>
     </configuration>
     <configuration isFederated="false">

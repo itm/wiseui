@@ -30,9 +30,7 @@ import eu.wisebed.wiseui.client.WiseUiGinjector;
 import eu.wisebed.wiseui.client.main.WiseUiPlace;
 import eu.wisebed.wiseui.client.testbedlist.event.TestbedSelectedEvent;
 import eu.wisebed.wiseui.client.testbedlist.event.TestbedSelectedEvent.ConfigurationSelectedHandler;
-import eu.wisebed.wiseui.client.testbedlist.presenter.LoginDialogPresenter;
-import eu.wisebed.wiseui.client.testbedlist.view.LoginDialogView;
-import eu.wisebed.wiseui.client.testbedselection.common.TestbedSelectionConstants;
+import eu.wisebed.wiseui.client.testbedselection.common.TestbedSelectionParams;
 import eu.wisebed.wiseui.client.testbedselection.event.ThrowableEvent;
 import eu.wisebed.wiseui.client.testbedselection.event.WisemlLoadedEvent;
 import eu.wisebed.wiseui.client.testbedselection.presenter.DetailPresenter;
@@ -100,13 +98,13 @@ public class TestbedSelectionActivity extends AbstractActivity implements Config
     }
     
     private void initContentPart(final TestbedSelectionView testbedSelectionView, final String view) {
-        if (TestbedSelectionConstants.MAP_VIEW.equals(view)) {
+        if (TestbedSelectionParams.MAP_VIEW.getValue().equals(view)) {
             initMapPart(testbedSelectionView);
         }
-        else if (TestbedSelectionConstants.DETAIL_VIEW.equals(view)) {
+        else if (TestbedSelectionParams.DETAIL_VIEW.getValue().equals(view)) {
             initDetailPart(testbedSelectionView);
         }
-        else if (TestbedSelectionConstants.RAW_WISEML_VIEW.equals(view)) {
+        else if (TestbedSelectionParams.RAW_WISEML_VIEW.getValue().equals(view)) {
             initRawWisemlPart(testbedSelectionView);
         }
         else {

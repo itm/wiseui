@@ -4,7 +4,7 @@
 	xmlns:c="urn:import:com.bradrydzewski.gwt.calendar.client">
 
 	<ui:with field='publicReservationsResources' type='eu.wisebed.wiseui.client.reservation.view.resources.PublicReservationsResources'/>
-	<gwt:SimplePanel styleName='{publicReservationsResources.style.center}' ui:field='calendarPanel'>
-		<c:Calendar ui:field='calendar'></c:Calendar>
+	<gwt:SimplePanel ui:field="reservationContainer" styleName="{publicReservationsResources.style.center}">
+		<c:Calendar ui:field="calendarPanel"/>
 	</gwt:SimplePanel>
 </ui:UiBinder>

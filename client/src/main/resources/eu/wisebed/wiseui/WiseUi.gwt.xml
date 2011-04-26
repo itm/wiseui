@@ -17,6 +17,7 @@
     <inherits name="com.google.gwt.activity.Activity"/>
     <inherits name="com.google.gwt.place.Place"/>
     <inherits name="com.google.gwt.inject.Inject"/>
+    <inherits name="com.google.gwt.i18n.I18N"/>
     <inherits name="com.google.gwt.maps.GoogleMaps"/>
     <inherits name="com.google.gwt.junit.JUnit"/>
     <inherits name="com.google.common.collect.Collect"/>
@@ -37,6 +38,10 @@
 
     <!-- Specify the paths for translatable code                    -->
     <source path="client"/>
-    <inherits name="com.google.gwt.junit.JUnit"/>
-    <inherits name="com.google.gwt.junit.JUnit"/>
+
+    <!-- Specify available locales -->
+    <extend-property name="locale" values="en"/>
+    <extend-property name="locale" values="de"/>
+
+    <set-property-fallback name="locale" value="en"/>
 </module>

@@ -14,19 +14,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package eu.wisebed.wiseui.client.reservation.presenter;
+package eu.wisebed.wiseui.client.testbedselection.common;
 
-import com.google.inject.Inject;
+/**
+ * Constants for the testbed-selection-view and -place.
+ *
+ * @author Sönke Nommensen
+ */
+public enum TestbedSelectionParams {
 
-import eu.wisebed.wiseui.client.reservation.view.NewReservationView;
-import eu.wisebed.wiseui.client.reservation.view.NewReservationView.Presenter;
+    TESTBED_SELECTION_STRING("s"),
+    TESTBED_VIEW_STRING("v"),
+    MAP_VIEW("m"),
+    DETAIL_VIEW("d"),
+    RAW_WISEML_VIEW("r");
 
-public class NewReservationPresenter implements Presenter {
+    private String value;
 
-    private final NewReservationView view;
+    TestbedSelectionParams(String value) {
+        this.value = value;
+    }
 
-    @Inject
-    public NewReservationPresenter(final NewReservationView view) {
-        this.view = view;
+    public String getValue() {
+        return value;
+    }
+
+    public String toString() {
+        return value;
     }
 }

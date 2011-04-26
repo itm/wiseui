@@ -16,7 +16,7 @@
  */
 package eu.wisebed.wiseui.client.testbedselection;
 
-import eu.wisebed.wiseui.client.testbedselection.common.TestbedSelectionConstants;
+import eu.wisebed.wiseui.client.testbedselection.common.TestbedSelectionParams;
 import eu.wisebed.wiseui.client.util.KeyValuePlace;
 import eu.wisebed.wiseui.client.util.Objects2;
 
@@ -32,14 +32,14 @@ import eu.wisebed.wiseui.client.util.Objects2;
 public class TestbedSelectionPlace extends KeyValuePlace {
 
     public TestbedSelectionPlace() {
-    	this(TestbedSelectionConstants.MAP_VIEW);
+    	this(TestbedSelectionParams.MAP_VIEW.getValue());
     }
 
     public TestbedSelectionPlace(final String view) {
-        set(TestbedSelectionConstants.TESTBED_VIEW_STRING, view);
+        set(TestbedSelectionParams.TESTBED_VIEW_STRING.getValue(), view);
     }
     
     public String getView() {
-		return Objects2.nullOrToString(get(TestbedSelectionConstants.TESTBED_VIEW_STRING));
+		return Objects2.nullOrToString(get(TestbedSelectionParams.TESTBED_VIEW_STRING.getValue()));
 	}
 }
