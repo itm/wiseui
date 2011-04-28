@@ -103,16 +103,29 @@ public class PublicReservationsPresenter implements PublicReservationsView.Prese
         }
     }
 
+    /**
+     * Call GWT-RPC getPublicReservations(...) from {@link eu.wisebed.wiseui.api.ReservationService}.
+     * The resulting {@link eu.wisebed.wiseui.shared.dto.ReservationDetails} are rendered in the calendar widget.
+     */
     private void loadPublicReservations() {
+        GWT.log("loadPublicReservations()");
         if (configuration == null) {
+            final String errorMessage = "Reservation URL not found.";
+            GWT.log(errorMessage);
             MessageBox.warning("Configuration could not be loaded!",
-                    "Reservation URL not found.",
+                    errorMessage,
                     null);
         }
 
+        view.removeAllReservations();
+
         final Date from = view.getFrom();
         final Date to = view.getTo();
-        service.getPublicReservations(configuration.getRsEndpointUrl(), from, to, new AsyncCallback<List<PublicReservationData>>() {
+
+        // Make the service call
+        service.getPublicReservations(configuration.getRsEndpointUrl(),
+                from, to, new AsyncCallback<List<PublicReservationData>>() {
+
             public void onFailure(Throwable caught) {
                 GWT.log("Error fetching reservation data!\n" + caught.getMessage());
                 eventBus.fireEvent(new ThrowableEvent(caught));
@@ -120,14 +133,16 @@ public class PublicReservationsPresenter implements PublicReservationsView.Prese
 
             public void onSuccess(final List<PublicReservationData> publicReservations) {
                 if (publicReservations == null || publicReservations.isEmpty()) {
-                    final String errorMessage = "Public reservation data is null or empty.";
+                    final String errorMessage = "No public reservation data found.";
                     GWT.log(errorMessage);
                     MessageBox.warning("Error fetching reservation data!", errorMessage, null);
                 } else {
+                    // Render the {@link eu.wisebed.wiseui.shared.dto.ReservationDetails}
                     view.renderPublicReservations(publicReservations);
                 }
             }
         });
+
         view.getLoadingIndicator().hideLoading();
     }
 }

@@ -20,6 +20,7 @@
         <testbedUrl>http://www.wisebed.eu</testbedUrl>
         <snaaEndpointUrl>http://wisebed-portal.lancs.ac.uk:3200/snaa</snaaEndpointUrl>
         <sessionmanagementEndpointUrl>http://wisebed-portal.lancs.ac.uk:3000</sessionmanagementEndpointUrl>
+        <rsEndpointUrl>http://wisebed-portal.lancs.ac.uk:3100</rsEndpointUrl>
         <urnPrefix>urn:wisebed:ulanc:</urnPrefix>
     </configuration>
     <configuration isFederated="false">
@@ -43,6 +44,7 @@
         <testbedUrl>http://www.wisebed.eu</testbedUrl>
         <snaaEndpointUrl>http://gridlab23.unibe.ch:3001/</snaaEndpointUrl>
         <sessionmanagementEndpointUrl>http://gridlab23.unibe.ch:3001/</sessionmanagementEndpointUrl>
+        <rsEndpointUrl>http://gridlab23.unibe.ch:3100</rsEndpointUrl>
         <urnPrefix>urn:wisebed:ubern:</urnPrefix>
     </configuration>
     <configuration isFederated="false">
@@ -50,6 +52,7 @@
         <testbedUrl>http://www.wisebed.eu</testbedUrl>
         <snaaEndpointUrl>http://dutigw.st.ewi.tudelft.nl:3200/snaa</snaaEndpointUrl>
         <sessionmanagementEndpointUrl>http://dutigw.st.ewi.tudelft.nl:3000</sessionmanagementEndpointUrl>
+        <rsEndpointUrl>http://dutigw.st.ewi.tudelft.nl:3100</rsEndpointUrl>
         <urnPrefix>urn:wisebed:tud:</urnPrefix>
     </configuration>
     <configuration isFederated="false">
@@ -64,6 +67,7 @@
         <testbedUrl>http://www.wisebed.eu</testbedUrl>
         <snaaEndpointUrl>http://wiseportal.mi.fu-berlin.de:3000/snaa</snaaEndpointUrl>
         <sessionmanagementEndpointUrl>http://wiseportal.mi.fu-berlin.de:3000</sessionmanagementEndpointUrl>
+        <rsEndpointUrl>http://wiseportal.mi.fu-berlin.de:3100</rsEndpointUrl>
         <urnPrefix>urn:wisebed:fub:</urnPrefix>
     </configuration>
     <configuration isFederated="false">
@@ -71,6 +75,7 @@
         <testbedUrl>http://www.wisebed.eu</testbedUrl>
         <snaaEndpointUrl>http://testbed.tcs.unige.ch:8890/snaa</snaaEndpointUrl>
         <sessionmanagementEndpointUrl>http://testbed.tcs.unige.ch:8888/sessions</sessionmanagementEndpointUrl>
+        <rsEndpointUrl>http://testbed.tcs.unige.ch:8889/rs</rsEndpointUrl>
         <urnPrefix>urn:wisebed:unigetestbed:</urnPrefix>
     </configuration>
 </configurations>

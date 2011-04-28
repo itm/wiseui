@@ -1,5 +1,7 @@
 package eu.wisebed.wiseui.server.rpc;
 
+import static eu.wisebed.wiseui.shared.common.Checks.ifNullOrEmptyArgument;
+
 import org.dozer.Mapper;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
@@ -29,6 +31,7 @@ public class SessionManagementServiceImpl extends RemoteServiceServlet implement
 
     @Override
     public Wiseml getWiseml(final String url) throws WisemlException {
+        ifNullOrEmptyArgument(url, "Session Management URL not set!");
         try {
             final eu.wisebed.ns.wiseml._1.Wiseml wiseml = WiseMLHelper.deserialize(getWisemlAsXml(url));
             return mapper.map(wiseml, Wiseml.class);
@@ -40,6 +43,7 @@ public class SessionManagementServiceImpl extends RemoteServiceServlet implement
 
     @Override
     public String getWisemlAsXml(final String url) throws WisemlException {
+        ifNullOrEmptyArgument(url, "Session Management URL not set!");
         try {
             final SessionManagement sessionManagement = WSNServiceHelper.getSessionManagementService(url);
             return sessionManagement.getNetwork();

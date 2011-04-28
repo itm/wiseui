@@ -89,7 +89,6 @@ public class PublicReservationsViewImpl extends Composite implements PublicReser
      * {@inheritDoc}
      */
     public void renderPublicReservations(final List<PublicReservationData> publicReservations) {
-        calendarPanel.clearAppointments();
         calendarPanel.suspendLayout();
         for (PublicReservationData reservation : publicReservations) {
             addReservation(reservation);
@@ -135,7 +134,7 @@ public class PublicReservationsViewImpl extends Composite implements PublicReser
         return this;
     }
 
-    // TODO Better display and cleaner code
+    // TODO Better display and UI binding
     @Override
     public void showReservationDetails(final Appointment appointment) {
         DecoratedPopupPanel popUp = new DecoratedPopupPanel(true);

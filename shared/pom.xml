@@ -22,13 +22,6 @@
             <artifactId>gwt-user</artifactId>
             <scope>provided</scope>
         </dependency>
-        <dependency>
-        	<groupId>com.googlecode.gwtupload</groupId>
-        	<artifactId>gwtupload</artifactId>
-        	<version>0.6.1</version>
-        	<type>jar</type>
-        	<scope>compile</scope>
-        </dependency>
     </dependencies>
     <build>
         <plugins>

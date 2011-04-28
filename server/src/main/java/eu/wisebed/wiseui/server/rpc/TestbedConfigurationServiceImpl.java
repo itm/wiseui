@@ -77,18 +77,19 @@ public class TestbedConfigurationServiceImpl extends RemoteServiceServlet implem
             throw new ConfigurationException(e.getMessage(), e);
         }
     }
-    
+
     /**
      * For the urnprefix sent from the client, identify the testbeds logged in.
+     *
      * @param urnPrefix, List of urns for testbeds. Only one element for non
-     * 		  federated testbeds.
+     *                   federated testbeds.
      * @return testbeds the testbeds identified.
      */
     public List<TestbedConfiguration> getTestbedLoggedIn(
-    		final List<String> urnPrefix){
+            final List<String> urnPrefix) {
 //    	final List<TestbedConfiguration> testbeds =
 //    		TestbedConfigurationManager.fetchTestbedByUrn(urnPrefix);
-    	// TODO FIXME
+        // TODO FIXME
         return null;
     }
 }
