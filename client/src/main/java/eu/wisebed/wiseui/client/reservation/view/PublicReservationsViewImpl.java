@@ -19,22 +19,26 @@ package eu.wisebed.wiseui.client.reservation.view;
 import com.bradrydzewski.gwt.calendar.client.Appointment;
 import com.bradrydzewski.gwt.calendar.client.AppointmentStyle;
 import com.bradrydzewski.gwt.calendar.client.Calendar;
+import com.bradrydzewski.gwt.calendar.client.CalendarSettings;
 import com.bradrydzewski.gwt.calendar.client.CalendarViews;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.uibinder.client.UiTemplate;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DecoratedPopupPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextArea;
+import com.google.gwt.user.client.ui.ToggleButton;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Singleton;
 import eu.wisebed.wiseui.shared.dto.PublicReservationData;
+import eu.wisebed.wiseui.widgets.CaptionPanel;
 import eu.wisebed.wiseui.widgets.loading.HasLoadingIndicator;
-import eu.wisebed.wiseui.widgets.loading.LoadingIndicator;
 
 import java.util.Date;
 import java.util.List;
@@ -43,27 +47,28 @@ import java.util.List;
  * @author John I. Gakos, Soenke Nommensen
  */
 @Singleton
-public class PublicReservationsViewImpl extends Composite implements PublicReservationsView, HasLoadingIndicator {
-
-    private static final int WEEK_DAYS = 7;
-
-    private LoadingIndicator loadingIndicator;
+public class PublicReservationsViewImpl extends Composite implements PublicReservationsView {
 
     @UiTemplate("PublicReservationsViewImpl.ui.xml")
-    interface PublicReservationsViewImplUiBinder extends
-            UiBinder<Widget, PublicReservationsViewImpl> {
+    interface PublicReservationsViewImplUiBinder extends UiBinder<Widget, PublicReservationsViewImpl> {
     }
 
-    private static PublicReservationsViewImplUiBinder uiBinder =
-            GWT.create(PublicReservationsViewImplUiBinder.class);
+    private static PublicReservationsViewImplUiBinder uiBinder = GWT.create(PublicReservationsViewImplUiBinder.class);
 
-    public void setPresenter(Presenter presenter) {
-    }
+    private Date to = new Date();
 
     @UiField
-    SimplePanel reservationContainer;
+    CaptionPanel container;
+    @UiField
+    SimplePanel calendarContainer;
     @UiField
     Calendar calendarPanel;
+    @UiField
+    ToggleButton dayToggleButton;
+    @UiField
+    ToggleButton weekToggleButton;
+    @UiField
+    ToggleButton monthToggleButton;
 
     public PublicReservationsViewImpl() {
         initWidget(uiBinder.createAndBindUi(this));
@@ -75,8 +80,15 @@ public class PublicReservationsViewImpl extends Composite implements PublicReser
     }
 
     public Date getTo() {
-        Date to = new Date();
-        to.setTime(System.currentTimeMillis() + ((long) WEEK_DAYS) * 24 * 60 * 60 * 1000);
+        // TODO Better sync between calendar view and reservation loading
+
+        if (calendarPanel.getDays() == 1)
+            to.setTime(System.currentTimeMillis() + ((long) 1) * 24 * 60 * 60 * 1000);
+        else if (calendarPanel.getDays() == 7)
+            to.setTime(System.currentTimeMillis() + ((long) 7) * 24 * 60 * 60 * 1000);
+        else if (calendarPanel.getDays() > 7)
+            to.setTime(System.currentTimeMillis() + ((long) 31) * 24 * 60 * 60 * 1000);
+
         return to;
     }
 
@@ -118,20 +130,8 @@ public class PublicReservationsViewImpl extends Composite implements PublicReser
     }
 
     @Override
-    public void showLoading(final String text) {
-        loadingIndicator = LoadingIndicator.on(calendarPanel).show(text);
-    }
-
-    @Override
-    public void hideLoading() {
-        if (loadingIndicator != null) {
-            loadingIndicator.hide();
-        }
-    }
-
-    @Override
     public HasLoadingIndicator getLoadingIndicator() {
-        return this;
+        return container;
     }
 
     // TODO Better display and UI binding
@@ -165,10 +165,47 @@ public class PublicReservationsViewImpl extends Composite implements PublicReser
         popUp.show();
     }
 
+    @Override
+    public void setPresenter(Presenter presenter) {
+
+    }
+
+    @UiHandler("dayToggleButton")
+    public void handleDayClicked(final ClickEvent event) {
+		dayToggleButton.setDown(true);
+		weekToggleButton.setDown(false);
+		monthToggleButton.setDown(false);
+        calendarPanel.setView(CalendarViews.DAY, Days.ONE_DAY.getValue());
+    }
+
+    @UiHandler("weekToggleButton")
+    public void handleWeekClicked(final ClickEvent event) {
+		dayToggleButton.setDown(false);
+		weekToggleButton.setDown(true);
+		monthToggleButton.setDown(false);
+        calendarPanel.setView(CalendarViews.DAY, Days.WEEK.getValue());
+    }
+
+    @UiHandler("monthToggleButton")
+    public void handleMonthClicked(final ClickEvent event) {
+		dayToggleButton.setDown(false);
+		weekToggleButton.setDown(false);
+		monthToggleButton.setDown(true);
+        calendarPanel.setView(CalendarViews.MONTH);
+    }
+
     private void initCalendar() {
+        CalendarSettings settings = new CalendarSettings();
+        settings.setOffsetHourLabels(false);
+        settings.setTimeBlockClickNumber(CalendarSettings.Click.Double);
+        settings.setEnableDragDrop(true);
+
+        calendarPanel.setSettings(settings);
         calendarPanel.setDate(new Date());
-        calendarPanel.setHeight("100%");
-        calendarPanel.setView(CalendarViews.DAY, 9);
+        calendarPanel.doLayout();
+        calendarPanel.doSizing();
+        calendarPanel.setView(CalendarViews.DAY, Days.WEEK.getValue());
+        weekToggleButton.setDown(true);
     }
 
     private String concatList(final List<String> list) {
@@ -177,5 +214,23 @@ public class PublicReservationsViewImpl extends Composite implements PublicReser
             result += s + "\n";
         }
         return result;
+    }
+
+    enum Days {
+
+        ONE_DAY(1),
+        THREE_DAYS(3),
+        WORK_WEEK(5),
+        WEEK(7);
+
+        private int value;
+
+        Days(int value) {
+            this.value = value;
+        }
+
+        public int getValue() {
+            return value;
+        }
     }
 }

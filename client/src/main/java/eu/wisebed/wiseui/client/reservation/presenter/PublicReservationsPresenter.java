@@ -20,17 +20,21 @@ import java.util.Date;
 import java.util.List;
 
 import com.bradrydzewski.gwt.calendar.client.Appointment;
+import com.bradrydzewski.gwt.calendar.client.event.DeleteEvent;
+import com.bradrydzewski.gwt.calendar.client.event.DeleteHandler;
+import com.bradrydzewski.gwt.calendar.client.event.UpdateEvent;
+import com.bradrydzewski.gwt.calendar.client.event.UpdateHandler;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.OpenEvent;
 import com.google.gwt.event.logical.shared.OpenHandler;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.place.shared.PlaceChangeEvent;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 
 import eu.wisebed.wiseui.api.ReservationServiceAsync;
 import eu.wisebed.wiseui.client.reservation.view.PublicReservationsView;
-import eu.wisebed.wiseui.client.reservation.view.PublicReservationsView.Presenter;
 import eu.wisebed.wiseui.client.testbedlist.event.TestbedSelectedEvent;
 import eu.wisebed.wiseui.client.testbedselection.event.ThrowableEvent;
 import eu.wisebed.wiseui.client.util.EventBusManager;
@@ -69,6 +73,32 @@ public class PublicReservationsPresenter implements PublicReservationsView.Prese
             public void onOpen(OpenEvent<Appointment> event) {
                 GWT.log("Calendar entry double clicked");
                 view.showReservationDetails(event.getTarget());
+            }
+        });
+        view.getCalendar().addDeleteHandler(new DeleteHandler<Appointment>() {
+            @Override
+            public void onDelete(DeleteEvent<Appointment> event) {
+                boolean commit = Window
+                        .confirm(
+                                "Are you sure you want to delete appointment \""
+                                        + event.getTarget().getTitle() + "\"");
+                if (!commit) {
+                    event.setCancelled(true);
+                    System.out.println("Cancelled Appointment deletion");
+                }
+            }
+        });
+        view.getCalendar().addUpdateHandler(new UpdateHandler<Appointment>() {
+            @Override
+            public void onUpdate(UpdateEvent<Appointment> event) {
+                boolean commit = Window
+                        .confirm(
+                                "Are you sure you want to update the appointment \""
+                                        + event.getTarget().getTitle() + "\"");
+                if (!commit) {
+                    event.setCancelled(true);
+                    System.out.println("Cancelled Appointment update");
+                }
             }
         });
     }
@@ -126,22 +156,22 @@ public class PublicReservationsPresenter implements PublicReservationsView.Prese
         service.getPublicReservations(configuration.getRsEndpointUrl(),
                 from, to, new AsyncCallback<List<PublicReservationData>>() {
 
-            public void onFailure(Throwable caught) {
-                GWT.log("Error fetching reservation data!\n" + caught.getMessage());
-                eventBus.fireEvent(new ThrowableEvent(caught));
-            }
+                    public void onFailure(Throwable caught) {
+                        GWT.log("Error fetching reservation data!\n" + caught.getMessage());
+                        eventBus.fireEvent(new ThrowableEvent(caught));
+                    }
 
-            public void onSuccess(final List<PublicReservationData> publicReservations) {
-                if (publicReservations == null || publicReservations.isEmpty()) {
-                    final String errorMessage = "No public reservation data found.";
-                    GWT.log(errorMessage);
-                    MessageBox.warning("Error fetching reservation data!", errorMessage, null);
-                } else {
-                    // Render the {@link eu.wisebed.wiseui.shared.dto.ReservationDetails}
-                    view.renderPublicReservations(publicReservations);
-                }
-            }
-        });
+                    public void onSuccess(final List<PublicReservationData> publicReservations) {
+                        if (publicReservations == null || publicReservations.isEmpty()) {
+                            final String errorMessage = "No public reservation data found.";
+                            GWT.log(errorMessage);
+                            MessageBox.warning("Error fetching reservation data!", errorMessage, null);
+                        } else {
+                            // Render the {@link eu.wisebed.wiseui.shared.dto.ReservationDetails}
+                            view.renderPublicReservations(publicReservations);
+                        }
+                    }
+                });
 
         view.getLoadingIndicator().hideLoading();
     }
