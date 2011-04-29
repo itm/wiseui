@@ -24,5 +24,4 @@ public interface ReservationGinjector extends Ginjector {
     PublicReservationsView getAllReservationsView();
     
     PublicReservationsPresenter getAllReservationsPresenter();
-    
 }

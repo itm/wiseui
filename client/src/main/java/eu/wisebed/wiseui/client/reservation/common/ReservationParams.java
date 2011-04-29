@@ -14,19 +14,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package eu.wisebed.wiseui.client.reservation.presenter;
+package eu.wisebed.wiseui.client.reservation.common;
 
-import com.google.inject.Inject;
+public enum ReservationParams {
 
-import eu.wisebed.wiseui.client.reservation.view.NewReservationView;
-import eu.wisebed.wiseui.client.reservation.view.NewReservationView.Presenter;
+    VIEW("view"),
+    SELECTION("selection"),
+    NEW("new"),
+    ALL("all");
 
-public class NewReservationPresenter implements Presenter {
+    private String value;
 
-    private final NewReservationView view;
+    ReservationParams(String value) {
+        this.value = value;
+    }
 
-    @Inject
-    public NewReservationPresenter(final NewReservationView view) {
-        this.view = view;
+    public String getValue() {
+        return value;
+    }
+
+    public String toString() {
+        return value;
     }
 }

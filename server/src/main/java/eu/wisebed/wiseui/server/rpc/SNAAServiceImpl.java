@@ -1,5 +1,7 @@
 package eu.wisebed.wiseui.server.rpc;
 
+import static eu.wisebed.wiseui.shared.common.Checks.ifNullOrEmptyArgument;
+
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -30,12 +32,14 @@ public class SNAAServiceImpl extends RemoteServiceServlet implements SNAAService
     public SNAAServiceImpl(final DozerBeanMapper mapper) {
         this.mapper = mapper;
     }
-    
-    private AuthenticationTriple createTriple(final String urn, final String username, final String password) {
-    	final AuthenticationTriple triple = new AuthenticationTriple();
-        triple.setUsername(username);
+
+    private AuthenticationTriple createTriple(final String urn, final String userName, final String password) {
+        final AuthenticationTriple triple = new AuthenticationTriple();
+
+        triple.setUsername(userName);
         triple.setUrnPrefix(urn);
         triple.setPassword(password);
+
         return triple;
     }
 
@@ -44,9 +48,15 @@ public class SNAAServiceImpl extends RemoteServiceServlet implements SNAAService
                                                 final String urn,
                                                 final String userName,
                                                 final String password) throws AuthenticationException {
+        ifNullOrEmptyArgument(endpointUrl, "SNAA Endpoint URL not set!");
+        ifNullOrEmptyArgument(urn, "URN not set!");
+        ifNullOrEmptyArgument(userName, "User name not set!");
+        ifNullOrEmptyArgument(password, "Password not set!");
+
         final SNAA snaaService = SNAAServiceHelper.getSNAAService(endpointUrl);
         final AuthenticationTriple triple = createTriple(urn, userName, password);
         eu.wisebed.testbed.api.snaa.v1.SecretAuthenticationKey key;
+
         try {
             key = snaaService.authenticate(Arrays.asList(triple)).get(0);
         } catch (final AuthenticationExceptionException e) {

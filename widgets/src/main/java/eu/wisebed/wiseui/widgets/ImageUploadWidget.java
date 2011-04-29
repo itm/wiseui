@@ -28,8 +28,7 @@ public class ImageUploadWidget extends Composite implements ImageUpload{
 	private Presenter presenter;
 	private String imageFileName;
 	private String imageFileNameField;
-	
-	
+
 	public ImageUploadWidget(){
 		initWidget(uiBinder.createAndBindUi(this));
         this.imagePicker.addOnFinishUploadHandler(onFinishUploaderHandler);

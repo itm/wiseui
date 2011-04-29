@@ -121,12 +121,12 @@
             <dependency>
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
-                <version>r08</version>
+                <version>r09</version>
             </dependency>
             <dependency>
                 <groupId>com.google.code</groupId>
                 <artifactId>gwt-guava</artifactId>
-                <version>r08</version>
+                <version>r09</version>
             </dependency>
             <dependency>
                 <groupId>com.googlecode.gwtupload</groupId>

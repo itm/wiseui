@@ -14,19 +14,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package eu.wisebed.wiseui.client.reservation.presenter;
+package eu.wisebed.wiseui.client.reservation.i18n;
 
-import com.google.inject.Inject;
+import com.google.gwt.i18n.client.Constants;
 
-import eu.wisebed.wiseui.client.reservation.view.NewReservationView;
-import eu.wisebed.wiseui.client.reservation.view.NewReservationView.Presenter;
+/**
+ * @author Soenke Nommensen
+ */
+public interface ReservationMessages extends Constants {
 
-public class NewReservationPresenter implements Presenter {
+	String noPublicReservationTitle();
 
-    private final NewReservationView view;
+	String noPublicReservation();
 
-    @Inject
-    public NewReservationPresenter(final NewReservationView view) {
-        this.view = view;
-    }
+	String noNodesReturnedTitle();
+
+	String noNodesReturned();
+
+	String testbedsIdentifiedTitle();
+
+	String testbedsIdentified();
+
+	String missingReservationParametersTitle();
+
+	String missingReservationParameters();
+
+	String reservationSuccessTitle();
+
+	String reservationSuccess();
+
+	String reservationFailedTitle();
+
+	String reservationFailed();
 }

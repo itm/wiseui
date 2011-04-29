@@ -1,3 +1,19 @@
+/*
+ * Copyright 2011 Universität zu Lübeck, Institut für Telematik (ITM),
+ *              Research Academic Computer Technology Institute (RACTI)
+ *
+ * ITM and RACTI license this file under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with the
+ * License. You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package eu.wisebed.wiseui.client.testbedselection;
 
 import com.google.gwt.activity.shared.AbstractActivity;
@@ -14,9 +30,7 @@ import eu.wisebed.wiseui.client.WiseUiGinjector;
 import eu.wisebed.wiseui.client.main.WiseUiPlace;
 import eu.wisebed.wiseui.client.testbedlist.event.TestbedSelectedEvent;
 import eu.wisebed.wiseui.client.testbedlist.event.TestbedSelectedEvent.ConfigurationSelectedHandler;
-import eu.wisebed.wiseui.client.testbedlist.presenter.LoginDialogPresenter;
-import eu.wisebed.wiseui.client.testbedlist.view.LoginDialogView;
-import eu.wisebed.wiseui.client.testbedselection.common.TestbedSelectionConstants;
+import eu.wisebed.wiseui.client.testbedselection.common.TestbedSelectionParams;
 import eu.wisebed.wiseui.client.testbedselection.event.ThrowableEvent;
 import eu.wisebed.wiseui.client.testbedselection.event.WisemlLoadedEvent;
 import eu.wisebed.wiseui.client.testbedselection.presenter.DetailPresenter;
@@ -84,13 +98,13 @@ public class TestbedSelectionActivity extends AbstractActivity implements Config
     }
     
     private void initContentPart(final TestbedSelectionView testbedSelectionView, final String view) {
-        if (TestbedSelectionConstants.MAP_VIEW.equals(view)) {
+        if (TestbedSelectionParams.MAP_VIEW.getValue().equals(view)) {
             initMapPart(testbedSelectionView);
         }
-        else if (TestbedSelectionConstants.DETAIL_VIEW.equals(view)) {
+        else if (TestbedSelectionParams.DETAIL_VIEW.getValue().equals(view)) {
             initDetailPart(testbedSelectionView);
         }
-        else if (TestbedSelectionConstants.RAW_WISEML_VIEW.equals(view)) {
+        else if (TestbedSelectionParams.RAW_WISEML_VIEW.getValue().equals(view)) {
             initRawWisemlPart(testbedSelectionView);
         }
         else {

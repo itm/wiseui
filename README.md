@@ -17,19 +17,6 @@ What do I need?
 
 All library dependencies are downloaded by Maven.
 
-Git Workflow
-------------
-
-The following commands show how to clone the WiseUI repository and how to make first changes.
-
-    $ git clone git@github.com:itm/wiseui.git
-    $ cd wiseui
-    $ (edit files)
-    $ git add (files)
-    $ git commit -a -m "Explain what I changed"
-    $ git status
-    $ git push origin master
-
 Configure Hibernate
 -------------------
 
@@ -75,6 +62,13 @@ To start the WiseUI in "hosted mode", do the following:
 For debug mode type:
 
     $ mvn gwt:debug    
+
+Loading Initial Testbed Configurations
+--------------------------
+    
+If you want to have an initial set of testbed configurations, you can load this dump into your local MySQL database.
+
+    $ mysql -u dbuser -p dbpass somedb < wiseui/persistence/src/main/resources/wiseuidb.sql    
 
 
 Deploy to a Remote Tomcat

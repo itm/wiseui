@@ -20,6 +20,7 @@ public class MessageBox implements Presenter {
         CANCEL("Cancel"),
         YES("Yes"),
         NO("No");
+
         private final String value;
 
         private Button(final String value) {
@@ -112,7 +113,7 @@ public class MessageBox implements Presenter {
         if (type.equals(Type.ERROR)) {
             url = BUNDLE.getErrorImageResource().getURL();
         } else if (type.equals(Type.WARNING)) {
-            url = BUNDLE.getErrorImageResource().getURL();
+            url = BUNDLE.getWarningImageResource().getURL();
         }
         view.setMessageImageUrl(url);
     }

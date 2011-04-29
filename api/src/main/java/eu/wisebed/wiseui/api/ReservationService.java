@@ -28,9 +28,8 @@ public interface ReservationService extends RemoteService {
             ReservationConflictException;
 
     List<PublicReservationData> getPublicReservations(String rsEndpointUrl, Date from, Date to);
-    	
+
     List<ReservationDetails> getUserReservations(SecretAuthenticationKey key) throws ReservationException;
 
-    String cancelReservation(String username, int reservationID) throws ReservationException;
-
+    String cancelReservation(String sessionId, int reservationId) throws ReservationException;
 }
