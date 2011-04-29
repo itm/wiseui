@@ -27,6 +27,8 @@ import com.bradrydzewski.gwt.calendar.client.event.UpdateHandler;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.OpenEvent;
 import com.google.gwt.event.logical.shared.OpenHandler;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.place.shared.PlaceChangeEvent;
 import com.google.gwt.user.client.Window;
@@ -101,11 +103,17 @@ public class PublicReservationsPresenter implements PublicReservationsView.Prese
                 }
             }
         });
+        view.getDateBox().addValueChangeHandler(new ValueChangeHandler<Date>() {
+            @Override
+            public void onValueChange(ValueChangeEvent<Date> event) {
+                view.getCalendar().setDate(event.getValue());
+            }
+        });
     }
 
     @Override
     public void onTestbedSelected(TestbedSelectedEvent event) {
-        view.getLoadingIndicator().showLoading("Loading Reservations");
+        view.getLoadingIndicator().showLoading("Reservations");
         this.configuration = event.getConfiguration();
         loadPublicReservations();
     }
@@ -138,9 +146,11 @@ public class PublicReservationsPresenter implements PublicReservationsView.Prese
      * The resulting {@link eu.wisebed.wiseui.shared.dto.ReservationDetails} are rendered in the calendar widget.
      */
     private void loadPublicReservations() {
-        GWT.log("loadPublicReservations()");
+        String testbedName = "<unknown>";
+        if (configuration != null) testbedName = configuration.getName();
+        GWT.log("Loading public reservations for Testbed" + testbedName);
         if (configuration == null) {
-            final String errorMessage = "Reservation URL not found.";
+            final String errorMessage = "Reservation URL not found for Testbed" + testbedName;
             GWT.log(errorMessage);
             MessageBox.warning("Configuration could not be loaded!",
                     errorMessage,

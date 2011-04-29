@@ -2,7 +2,8 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
              xmlns:g="urn:import:com.google.gwt.user.client.ui"
              xmlns:c="urn:import:com.bradrydzewski.gwt.calendar.client"
-             xmlns:my="urn:import:eu.wisebed.wiseui.widgets">
+             xmlns:my="urn:import:eu.wisebed.wiseui.widgets"
+             xmlns:datepicker="urn:import:com.google.gwt.user.datepicker.client">
 
     <ui:style>
         .fullLayout {
@@ -22,12 +23,28 @@
             width: 55px;
             text-align: center;
         }
+
+        .navButton {
+            float: left;
+            margin-top: 5px;
+            padding: 2px;
+            height: 18px;
+            width: 25px;
+            text-align: center;
+        }
+
+        .dateBox {
+            float: left;
+            margin: 8px 8px;
+            height: 18px;
+        }
     </ui:style>
 
+    <ui:with field='famfamfam' type="eu.wisebed.wiseui.widgets.famfamfam.FamFamFamResources"/>
 
     <g:DockLayoutPanel styleName="{style.fullLayout}">
         <g:center>
-            <my:CaptionPanel caption="Public Reservations" ui:field="container"  styleName="{style.fullLayout}">
+            <my:CaptionPanel caption="Public Reservations" ui:field="container" styleName="{style.fullLayout}">
                 <g:SimplePanel ui:field="calendarContainer">
                     <c:Calendar ui:field="calendarPanel"/>
                 </g:SimplePanel>
@@ -36,9 +53,17 @@
         <g:south size="35">
             <g:HTMLPanel styleName="{style.buttonPanel}">
                 <label style="float:left;margin: 8px 8px">Calendar View:</label>
+                <g:PushButton addStyleNames="{style.navButton}" ui:field="backButton">
+                    <g:upFace image="{famfamfam.controlRewindBlue}"/>
+                </g:PushButton>
                 <g:ToggleButton addStyleNames="{style.viewButton}" ui:field="dayToggleButton">Day</g:ToggleButton>
                 <g:ToggleButton addStyleNames="{style.viewButton}" ui:field="weekToggleButton">Week</g:ToggleButton>
                 <g:ToggleButton addStyleNames="{style.viewButton}" ui:field="monthToggleButton">Month</g:ToggleButton>
+                <g:PushButton addStyleNames="{style.navButton}" ui:field="forwardButton">
+                    <g:upFace image="{famfamfam.controlFastforwardBlue}"/>
+                </g:PushButton>
+                <datepicker:DateBox addStyleNames="{style.dateBox}" ui:field="dateBox" />
+                <g:Button text="Today" addStyleNames="{style.viewButton}" ui:field="todayButton"/>
             </g:HTMLPanel>
         </g:south>
     </g:DockLayoutPanel>

@@ -60,6 +60,7 @@
         <testbedUrl>http://www.wisebed.eu</testbedUrl>
         <snaaEndpointUrl>http://wisebed2.lsi.upc.edu:8890/snaa</snaaEndpointUrl>
         <sessionmanagementEndpointUrl>http://wisebed2.lsi.upc.edu:8888/sessions</sessionmanagementEndpointUrl>
+        <rsEndpointUrl>http://wisebed2.lsi.upc.edu:8889/rs</rsEndpointUrl>
         <urnPrefix>urn:wisebed:upc1:</urnPrefix>
     </configuration>
     <configuration isFederated="false">

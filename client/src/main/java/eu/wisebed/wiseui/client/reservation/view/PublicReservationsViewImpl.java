@@ -27,15 +27,19 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.uibinder.client.UiTemplate;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DecoratedPopupPanel;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.ToggleButton;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.datepicker.client.DateBox;
 import com.google.inject.Singleton;
+import eu.wisebed.wiseui.shared.common.DateTimeUtil;
 import eu.wisebed.wiseui.shared.dto.PublicReservationData;
 import eu.wisebed.wiseui.widgets.CaptionPanel;
 import eu.wisebed.wiseui.widgets.loading.HasLoadingIndicator;
@@ -45,6 +49,8 @@ import java.util.List;
 
 /**
  * @author John I. Gakos, Soenke Nommensen
+ *
+ * TODO: Add time zone support!
  */
 @Singleton
 public class PublicReservationsViewImpl extends Composite implements PublicReservationsView {
@@ -55,7 +61,7 @@ public class PublicReservationsViewImpl extends Composite implements PublicReser
 
     private static PublicReservationsViewImplUiBinder uiBinder = GWT.create(PublicReservationsViewImplUiBinder.class);
 
-    private Date to = new Date();
+    private static final Date TODAY = new Date();
 
     @UiField
     CaptionPanel container;
@@ -69,25 +75,38 @@ public class PublicReservationsViewImpl extends Composite implements PublicReser
     ToggleButton weekToggleButton;
     @UiField
     ToggleButton monthToggleButton;
+    @UiField
+    PushButton backButton;
+    @UiField
+    PushButton forwardButton;
+    @UiField
+    DateBox dateBox;
+    @UiField
+    Button todayButton;
 
     public PublicReservationsViewImpl() {
         initWidget(uiBinder.createAndBindUi(this));
         initCalendar();
+        dateBox.setValue(TODAY);
     }
 
+    @Override
     public Date getFrom() {
         return calendarPanel.getDate();
     }
 
+    @Override
     public Date getTo() {
-        // TODO Better sync between calendar view and reservation loading
+        Date to = calendarPanel.getDate();
 
-        if (calendarPanel.getDays() == 1)
-            to.setTime(System.currentTimeMillis() + ((long) 1) * 24 * 60 * 60 * 1000);
-        else if (calendarPanel.getDays() == 7)
-            to.setTime(System.currentTimeMillis() + ((long) 7) * 24 * 60 * 60 * 1000);
-        else if (calendarPanel.getDays() > 7)
-            to.setTime(System.currentTimeMillis() + ((long) 31) * 24 * 60 * 60 * 1000);
+        if (calendarPanel.getDays() == DateTimeUtil.ONE_DAY) {
+            to.setTime(DateTimeUtil.addDays(calendarPanel.getDate().getTime(), DateTimeUtil.ONE_DAY));
+        } else if (calendarPanel.getDays() == DateTimeUtil.WEEK) {
+            to.setTime(DateTimeUtil.addDays(calendarPanel.getDate().getTime(), DateTimeUtil.WEEK));
+        } else {
+            to.setTime(DateTimeUtil.addDays(calendarPanel.getDate().getTime(),
+                    DateTimeUtil.getDaysOfMonth(calendarPanel.getDate())));
+        }
 
         return to;
     }
@@ -97,9 +116,15 @@ public class PublicReservationsViewImpl extends Composite implements PublicReser
         return calendarPanel;
     }
 
+    @Override
+    public DateBox getDateBox() {
+        return dateBox;
+    }
+
     /**
      * {@inheritDoc}
      */
+    @Override
     public void renderPublicReservations(final List<PublicReservationData> publicReservations) {
         calendarPanel.suspendLayout();
         for (PublicReservationData reservation : publicReservations) {
@@ -111,6 +136,7 @@ public class PublicReservationsViewImpl extends Composite implements PublicReser
     /**
      * {@inheritDoc}
      */
+    @Override
     public void addReservation(final PublicReservationData reservation) {
         // TODO: Work on a more descriptive representation of reservations
         Appointment appointment = new Appointment();
@@ -134,7 +160,8 @@ public class PublicReservationsViewImpl extends Composite implements PublicReser
         return container;
     }
 
-    // TODO Better display and UI binding
+    // TODO Better display and UI binding. An extra ReservationDetails widget would be nice,
+    // which can be used for viewing and editing reservation details.
     @Override
     public void showReservationDetails(final Appointment appointment) {
         DecoratedPopupPanel popUp = new DecoratedPopupPanel(true);
@@ -172,26 +199,70 @@ public class PublicReservationsViewImpl extends Composite implements PublicReser
 
     @UiHandler("dayToggleButton")
     public void handleDayClicked(final ClickEvent event) {
-		dayToggleButton.setDown(true);
-		weekToggleButton.setDown(false);
-		monthToggleButton.setDown(false);
-        calendarPanel.setView(CalendarViews.DAY, Days.ONE_DAY.getValue());
+        dayToggleButton.setDown(true);
+        weekToggleButton.setDown(false);
+        monthToggleButton.setDown(false);
+        calendarPanel.setView(CalendarViews.DAY, DateTimeUtil.ONE_DAY);
     }
 
     @UiHandler("weekToggleButton")
     public void handleWeekClicked(final ClickEvent event) {
-		dayToggleButton.setDown(false);
-		weekToggleButton.setDown(true);
-		monthToggleButton.setDown(false);
-        calendarPanel.setView(CalendarViews.DAY, Days.WEEK.getValue());
+        dayToggleButton.setDown(false);
+        weekToggleButton.setDown(true);
+        monthToggleButton.setDown(false);
+        calendarPanel.setView(CalendarViews.DAY, DateTimeUtil.WEEK);
     }
 
     @UiHandler("monthToggleButton")
     public void handleMonthClicked(final ClickEvent event) {
-		dayToggleButton.setDown(false);
-		weekToggleButton.setDown(false);
-		monthToggleButton.setDown(true);
+        dayToggleButton.setDown(false);
+        weekToggleButton.setDown(false);
+        monthToggleButton.setDown(true);
         calendarPanel.setView(CalendarViews.MONTH);
+    }
+
+    @UiHandler("backButton")
+    public void handleBackClicked(final ClickEvent event) {
+        final long currentTimeMillis = calendarPanel.getDate().getTime();
+        if (calendarPanel.getDays() == DateTimeUtil.ONE_DAY) {
+            calendarPanel.setDate(
+                    new Date(DateTimeUtil.substractDays(currentTimeMillis, DateTimeUtil.ONE_DAY)),
+                    DateTimeUtil.ONE_DAY);
+        } else if (calendarPanel.getDays() == DateTimeUtil.WEEK) {
+            calendarPanel.setDate(
+                    new Date(DateTimeUtil.substractDays(currentTimeMillis, DateTimeUtil.WEEK)),
+                    DateTimeUtil.WEEK);
+        } else {
+            calendarPanel.setDate(
+                    new Date(DateTimeUtil.substractDays(currentTimeMillis,
+                            DateTimeUtil.getDaysOfMonth(calendarPanel.getDate()))));
+        }
+        dateBox.setValue(calendarPanel.getDate());
+    }
+
+    @UiHandler("forwardButton")
+    public void handleForwardClicked(final ClickEvent event) {
+        final long currentTimeMillis = calendarPanel.getDate().getTime();
+        if (calendarPanel.getDays() == DateTimeUtil.ONE_DAY) {
+            calendarPanel.setDate(
+                    new Date(DateTimeUtil.addDays(currentTimeMillis, DateTimeUtil.ONE_DAY)),
+                    DateTimeUtil.ONE_DAY);
+        } else if (calendarPanel.getDays() == DateTimeUtil.WEEK) {
+            calendarPanel.setDate(
+                    new Date(DateTimeUtil.addDays(currentTimeMillis, DateTimeUtil.WEEK)),
+                    DateTimeUtil.WEEK);
+        } else {
+            calendarPanel.setDate(
+                    new Date(DateTimeUtil.addDays(currentTimeMillis,
+                            DateTimeUtil.getDaysOfMonth(calendarPanel.getDate()))));
+        }
+        dateBox.setValue(calendarPanel.getDate());
+    }
+
+    @UiHandler("todayButton")
+    public void handleTodayClicked(final ClickEvent event) {
+        calendarPanel.setDate(TODAY);
+        dateBox.setValue(TODAY);
     }
 
     private void initCalendar() {
@@ -201,10 +272,8 @@ public class PublicReservationsViewImpl extends Composite implements PublicReser
         settings.setEnableDragDrop(true);
 
         calendarPanel.setSettings(settings);
-        calendarPanel.setDate(new Date());
-        calendarPanel.doLayout();
-        calendarPanel.doSizing();
-        calendarPanel.setView(CalendarViews.DAY, Days.WEEK.getValue());
+        calendarPanel.setDate(TODAY);
+        calendarPanel.setView(CalendarViews.DAY, DateTimeUtil.WEEK);
         weekToggleButton.setDown(true);
     }
 
@@ -214,23 +283,5 @@ public class PublicReservationsViewImpl extends Composite implements PublicReser
             result += s + "\n";
         }
         return result;
-    }
-
-    enum Days {
-
-        ONE_DAY(1),
-        THREE_DAYS(3),
-        WORK_WEEK(5),
-        WEEK(7);
-
-        private int value;
-
-        Days(int value) {
-            this.value = value;
-        }
-
-        public int getValue() {
-            return value;
-        }
     }
 }
