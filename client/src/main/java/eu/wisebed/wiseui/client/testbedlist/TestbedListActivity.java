@@ -18,10 +18,10 @@ import com.google.inject.Inject;
 import eu.wisebed.wiseui.api.TestbedConfigurationServiceAsync;
 import eu.wisebed.wiseui.client.WiseUiGinjector;
 import eu.wisebed.wiseui.client.main.WiseUiPlace;
-import eu.wisebed.wiseui.client.testbedlist.event.RefreshTestbedListEvent;
-import eu.wisebed.wiseui.client.testbedlist.event.ShowLoginDialogEvent;
 import eu.wisebed.wiseui.client.testbedlist.event.DeleteTestbedEvent;
 import eu.wisebed.wiseui.client.testbedlist.event.EditTestbedEvent;
+import eu.wisebed.wiseui.client.testbedlist.event.RefreshTestbedListEvent;
+import eu.wisebed.wiseui.client.testbedlist.event.ShowLoginDialogEvent;
 import eu.wisebed.wiseui.client.testbedlist.event.TestbedSelectedEvent;
 import eu.wisebed.wiseui.client.testbedlist.presenter.LoginDialogPresenter;
 import eu.wisebed.wiseui.client.testbedlist.presenter.TestbedEditPresenter;
@@ -183,12 +183,26 @@ public class TestbedListActivity  extends AbstractActivity implements Presenter,
 	@Override
 	public void deleteTestbed() {
 		final TestbedConfiguration configuration = getSelectedConfiguration();
+		
+		final AsyncCallback<Void> callback = new AsyncCallback<Void>() {
+
+			@Override
+			public void onFailure(Throwable caught) {
+				MessageBox.error("Delete Testbed", "Unable to delete testbed " + configuration.getName(), caught, null);
+			}
+
+			@Override
+			public void onSuccess(Void result) {
+				MessageBox.success("Testbed successful deleted", configuration.getName() + " was successfully deleted", null);
+			}
+		};
+		
 		MessageBox.warning(configuration.getName(), "Do you really want to delete " + configuration.getName() + "?", new MessageBox.Callback() {
 			
 			@Override
 			public void onButtonClicked(Button button) {
 				if (Button.OK.equals(button)) {
-					eventBus.fireEventFromSource(new DeleteTestbedEvent(configuration), this);
+					configurationService.removeConfiguration(configuration.getId(), callback);
 				}
 			}
 		});

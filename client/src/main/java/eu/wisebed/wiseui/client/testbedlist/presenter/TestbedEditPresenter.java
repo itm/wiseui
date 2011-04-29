@@ -5,11 +5,13 @@ import java.util.Arrays;
 
 import com.google.common.base.Objects;
 import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
 import com.google.inject.Inject;
 
+import eu.wisebed.wiseui.api.TestbedConfigurationServiceAsync;
 import eu.wisebed.wiseui.client.testbedlist.event.EditTestbedEvent;
 import eu.wisebed.wiseui.client.testbedlist.event.RefreshTestbedListEvent;
 import eu.wisebed.wiseui.client.testbedlist.view.TestbedEditView;
@@ -31,14 +33,17 @@ public class TestbedEditPresenter implements Presenter, EditTestbedEvent.Handler
 	
 	private final SingleSelectionModel<String> selectionModel = new SingleSelectionModel<String>();
 	
+	private final TestbedConfigurationServiceAsync service;
+	
 	private TestbedConfiguration configuration;
 	
 	private String title = DEFAULT_NEW_TITLE;
 	
 	@Inject
-	public TestbedEditPresenter(final EventBus eventBus, final TestbedEditView view) {
+	public TestbedEditPresenter(final EventBus eventBus, final TestbedEditView view, final TestbedConfigurationServiceAsync service) {
 		this.eventBus = new EventBusManager(eventBus);
 		this.view = view;
+		this.service = service;
 		
 		urnPrefixProvider.addDataDisplay(view.getUrnPrefixHasData());
 		view.setFederatedItems(Arrays.asList("Yes", "No"));
@@ -80,15 +85,28 @@ public class TestbedEditPresenter implements Presenter, EditTestbedEvent.Handler
 		configuration.setFederated(view.getFederatedSelectedIndex() != 0);
 		configuration.setUrnPrefixList(urnPrefixProvider.getList());
 		
-		//TODO: Do here the save operation.
-		MessageBox.success(title, configuration.getName() + " was successfully saved.", new MessageBox.Callback() {
+		final MessageBox.Callback messageBoxCallback = new MessageBox.Callback() {
 			
 			@Override
 			public void onButtonClicked(final Button button) {
 				view.hide();
 				eventBus.fireEventFromSource(new RefreshTestbedListEvent(), TestbedEditPresenter.this);
 			}
-		});
+		};
+		
+		final AsyncCallback<TestbedConfiguration> callback = new AsyncCallback<TestbedConfiguration>() {
+
+			@Override
+			public void onFailure(Throwable caught) {
+				MessageBox.error("Save Testbed", "Unable to save testbed.", caught, null);
+			}
+
+			@Override
+			public void onSuccess(TestbedConfiguration result) {
+				MessageBox.success(title, configuration.getName() + " was successfully saved.", messageBoxCallback);
+			}
+		};
+		service.storeConfiguration(configuration, callback);
 	}
 
 	@Override
