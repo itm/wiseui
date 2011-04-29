@@ -219,7 +219,7 @@ public class ReservationServiceImpl extends RemoteServiceServlet implements Rese
      * @param <code>reservationID</code>, a reservation ID.
      * @return experiment image filename
      */
-    public final static String fetchImageFileNameField(
+    public static String fetchImageFileNameField(
             final int reservationID) {
         // TODO: Add functionality while integrating
         return null;
@@ -231,7 +231,7 @@ public class ReservationServiceImpl extends RemoteServiceServlet implements Rese
      * @param <code>userID</code>, a user ID.
      * @return a reservation ID if exists, else -1.
      */
-    public final static Integer fetchReservationID(final int userID) {
+    public static Integer fetchReservationID(final int userID) {
         // TODO: Add functionality while integrating
         return null;
     }
@@ -243,7 +243,7 @@ public class ReservationServiceImpl extends RemoteServiceServlet implements Rese
      * @param <code>reservationID</code>, a reservation ID.
      * @return a <code>List</code> of node URNs.
      */
-    public final static List<String> fetchNodeURNs(final int reservationID) {
+    public static List<String> fetchNodeURNs(final int reservationID) {
         // TODO: Add functionality while integrating
         return null;
     }
@@ -255,12 +255,13 @@ public class ReservationServiceImpl extends RemoteServiceServlet implements Rese
      * @param reservationID, The ID of the reservation.
      * @return a <code>List</code> of node URNs.
      */
-    public final static String fetchImageFileName(final int reservationID) {
+    public static String fetchImageFileName(final int reservationID) {
         // TODO: Add functionality while integrating
         return null;
     }
 
 
+    @Override
     public List<PublicReservationData> getPublicReservations(final String rsEndpointUrl,
                                                              final Date from,
                                                              final Date to) {
@@ -276,6 +277,7 @@ public class ReservationServiceImpl extends RemoteServiceServlet implements Rese
             LOGGER.error(e.getMessage(), e);
         }
         return new ArrayList<PublicReservationData>(Lists.transform(resultList, new Function<eu.wisebed.testbed.api.rs.v1.PublicReservationData, PublicReservationData>() {
+            @Override
             public PublicReservationData apply(final eu.wisebed.testbed.api.rs.v1.PublicReservationData r) {
                 final PublicReservationData publicReservationData;
                 publicReservationData = mapper.map(r, PublicReservationData.class);
