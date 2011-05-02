@@ -93,8 +93,8 @@ public class DateTimeUtil {
 
     public static int getDaysOfMonth(final Date date) {
         Checks.ifNullArgument(date, "date is null");
+        // Deprecated getMonth()-method is used here, because java.util.Calendar is not available.
         final int month = date.getMonth() + 1;
-        GWT.log("month=" + month);
         if (daysOfMonth.containsKey(Months.fromInt(month)))
             return daysOfMonth.get(Months.fromInt(month));
         return 0;

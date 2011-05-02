@@ -21,7 +21,7 @@ public interface ReservationGinjector extends Ginjector {
 
     NewReservationView getNewReservationView();
     
-    PublicReservationsView getAllReservationsView();
+    PublicReservationsView getPublicReservationsView();
     
-    PublicReservationsPresenter getAllReservationsPresenter();
+    PublicReservationsPresenter getPublicReservationsPresenter();
 }
