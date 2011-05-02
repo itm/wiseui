@@ -35,7 +35,9 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 
+import eu.wisebed.wiseui.api.ReservationService;
 import eu.wisebed.wiseui.api.ReservationServiceAsync;
+import eu.wisebed.wiseui.api.CalendarServiceAsync;
 import eu.wisebed.wiseui.client.reservation.view.PublicReservationsView;
 import eu.wisebed.wiseui.client.testbedlist.event.TestbedSelectedEvent;
 import eu.wisebed.wiseui.client.testbedselection.event.ThrowableEvent;
@@ -54,15 +56,18 @@ public class PublicReservationsPresenter implements PublicReservationsView.Prese
     private final EventBusManager eventBus;
     private final PublicReservationsView view;
     private final ReservationServiceAsync service;
+    private final CalendarServiceAsync calendarService;
     private TestbedConfiguration testbedConfiguration;
 
     @Inject
     public PublicReservationsPresenter(final EventBus eventBus,
                                        final PublicReservationsView view,
-                                       final ReservationServiceAsync service) {
+                                       final ReservationServiceAsync service,
+                                       final CalendarServiceAsync calendarService) {
         this.eventBus = new EventBusManager(eventBus);
         this.view = view;
         this.service = service;
+        this.calendarService = calendarService;
         bind();
     }
 
@@ -77,6 +82,7 @@ public class PublicReservationsPresenter implements PublicReservationsView.Prese
                 view.showReservationDetails(event.getTarget());
             }
         });
+        // TODO Check for authorization, apply changes in reservation system
         view.getCalendar().addDeleteHandler(new DeleteHandler<Appointment>() {
             @Override
             public void onDelete(DeleteEvent<Appointment> event) {
@@ -90,6 +96,7 @@ public class PublicReservationsPresenter implements PublicReservationsView.Prese
                 }
             }
         });
+        // TODO Check for authorization, apply changes in reservation system
         view.getCalendar().addUpdateHandler(new UpdateHandler<Appointment>() {
             @Override
             public void onUpdate(UpdateEvent<Appointment> event) {
@@ -107,25 +114,26 @@ public class PublicReservationsPresenter implements PublicReservationsView.Prese
             @Override
             public void onValueChange(ValueChangeEvent<Date> event) {
                 view.getCalendar().setDate(event.getValue());
+                loadPublicReservations(view.getCalendar().getDate());
             }
         });
     }
 
     @Override
-    public void onTestbedSelected(TestbedSelectedEvent event) {
+    public void onTestbedSelected(final TestbedSelectedEvent event) {
         view.getLoadingIndicator().showLoading("Reservations");
         this.testbedConfiguration = event.getConfiguration();
-        loadPublicReservations();
+        loadPublicReservations(view.getCalendar().getDate());
     }
 
     @Override
-    public void onPlaceChange(PlaceChangeEvent event) {
+    public void onPlaceChange(final PlaceChangeEvent event) {
         view.getLoadingIndicator().hideLoading();
         eventBus.removeAll();
     }
 
     @Override
-    public void onThrowable(ThrowableEvent event) {
+    public void onThrowable(final ThrowableEvent event) {
         view.getLoadingIndicator().hideLoading();
         if (event.getThrowable() == null) return;
         if (testbedConfiguration != null && testbedConfiguration.getName() != null) {
@@ -146,26 +154,34 @@ public class PublicReservationsPresenter implements PublicReservationsView.Prese
      * The resulting {@link eu.wisebed.wiseui.shared.dto.ReservationDetails} are rendered in the calendar widget.
      */
     @Override
-    public void loadPublicReservations() {
+    public void loadPublicReservations(final Date current) {
+        // Logging
         String testbedName = "<unknown>";
         if (testbedConfiguration != null) testbedName = testbedConfiguration.getName();
-        GWT.log("Loading public reservations for Testbed" + testbedName);
+        GWT.log("Loading public reservations for Testbed '" + testbedName + "'");
         if (testbedConfiguration == null) {
-            final String errorMessage = "Reservation URL not found for Testbed" + testbedName;
+            final String errorMessage = "Reservation URL not found for Testbed '" + testbedName + "'";
             GWT.log(errorMessage);
             MessageBox.warning("Configuration could not be loaded!",
                     errorMessage,
                     null);
         }
 
+        // Remove all current calendar entries
         view.removeAllReservations();
 
-        final Date from = view.getFrom();
-        final Date to = view.getTo();
+        ReservationService.Range range;
+        if (view.getCalendar().getDays() == ONE_DAY) {
+            range = ReservationService.Range.ONE_DAY;
+        } else if (view.getCalendar().getDays() == WEEK) {
+            range = ReservationService.Range.WEEK;
+        } else {
+            range = ReservationService.Range.MONTH;
+        }
 
         // Make the service call
         service.getPublicReservations(testbedConfiguration.getRsEndpointUrl(),
-                from, to, new AsyncCallback<List<PublicReservationData>>() {
+                current, range, new AsyncCallback<List<PublicReservationData>>() {
 
                     public void onFailure(Throwable caught) {
                         GWT.log("Error fetching reservation data!\n" + caught.getMessage());
@@ -185,5 +201,97 @@ public class PublicReservationsPresenter implements PublicReservationsView.Prese
                 });
 
         view.getLoadingIndicator().hideLoading();
+    }
+
+    public void handleBackClicked() {
+        final Date current = view.getCalendar().getDate();
+        if (view.getCalendar().getDays() == ONE_DAY) {
+            subtractDays(current, ONE_DAY);
+        } else if (view.getCalendar().getDays() == WEEK) {
+            subtractDays(current, WEEK);
+        } else {
+            subtractMonth(current);
+        }
+    }
+
+    public void handleForwardClicked() {
+        final Date current = view.getCalendar().getDate();
+        if (view.getCalendar().getDays() == ONE_DAY) {
+            addDays(current, ONE_DAY);
+        } else if (view.getCalendar().getDays() == WEEK) {
+            addDays(current, WEEK);
+        } else {
+            addMonth(current);
+        }
+    }
+
+    public void handleTodayClicked() {
+        view.getCalendar().setDate(TODAY);
+        view.getDateBox().setValue(TODAY);
+        loadPublicReservations(TODAY);
+    }
+
+    private void addDays(final Date current, final int days) {
+        calendarService.addDays(current, days, new AsyncCallback<Date>() {
+
+            public void onFailure(final Throwable caught) {
+                GWT.log("Error in calendar service!\n" + caught.getMessage());
+                eventBus.fireEvent(new ThrowableEvent(caught));
+            }
+
+            public void onSuccess(final Date result) {
+                view.getCalendar().setDate(result, days);
+                view.getDateBox().setValue(result);
+                loadPublicReservations(result);
+            }
+        });
+    }
+
+    private void subtractDays(final Date current, final int days) {
+        calendarService.subtractDays(current, days, new AsyncCallback<Date>() {
+
+            public void onFailure(final Throwable caught) {
+                GWT.log("Error in calendar service!\n" + caught.getMessage());
+                eventBus.fireEvent(new ThrowableEvent(caught));
+            }
+
+            public void onSuccess(final Date result) {
+                view.getCalendar().setDate(result, days);
+                view.getDateBox().setValue(result);
+                loadPublicReservations(result);
+            }
+        });
+    }
+
+    private void addMonth(final Date current) {
+        calendarService.addMonth(current, new AsyncCallback<Date>() {
+
+            public void onFailure(final Throwable caught) {
+                GWT.log("Error in calendar service!\n" + caught.getMessage());
+                eventBus.fireEvent(new ThrowableEvent(caught));
+            }
+
+            public void onSuccess(final Date result) {
+                view.getCalendar().setDate(result);
+                view.getDateBox().setValue(result);
+                loadPublicReservations(result);
+            }
+        });
+    }
+
+    private void subtractMonth(final Date current) {
+        calendarService.subtractMonth(current, new AsyncCallback<Date>() {
+
+            public void onFailure(final Throwable caught) {
+                GWT.log("Error in calendar service!\n" + caught.getMessage());
+                eventBus.fireEvent(new ThrowableEvent(caught));
+            }
+
+            public void onSuccess(final Date result) {
+                view.getCalendar().setDate(result);
+                view.getDateBox().setValue(result);
+                loadPublicReservations(result);
+            }
+        });
     }
 }

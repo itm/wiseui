@@ -47,10 +47,6 @@ public interface PublicReservationsView extends IsWidget {
 
     void removeAllReservations();
 
-    Date getFrom();
-
-    Date getTo();
-
     Calendar getCalendar();
 
     DateBox getDateBox();
@@ -60,6 +56,17 @@ public interface PublicReservationsView extends IsWidget {
     void showReservationDetails(Appointment appointment);
 
     public interface Presenter {
-        void loadPublicReservations();
+
+        static final int ONE_DAY = 1;
+        static final int WEEK = 7;
+        static final Date TODAY = new Date();
+
+        void loadPublicReservations(Date current);
+
+        void handleBackClicked();
+
+        void handleForwardClicked();
+
+        void handleTodayClicked();
     }
 }

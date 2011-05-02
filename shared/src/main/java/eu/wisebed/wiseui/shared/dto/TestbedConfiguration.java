@@ -1,5 +1,6 @@
 package eu.wisebed.wiseui.shared.dto;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,9 +9,10 @@ import java.util.List;
  *
  * @author Soenke Nommensen
  */
-public class TestbedConfiguration implements Dto {
+public class TestbedConfiguration implements Serializable {
 
-    private static final long serialVersionUID = 1721396665761010739L;
+    // private static final long serialVersionUID = 1721396665761010739L;
+
     private Integer id;
     private String name;
     private String testbedUrl;
@@ -76,35 +78,35 @@ public class TestbedConfiguration implements Dto {
         this.id = id;
     }
 
-    public void setName(String name) {
+    public void setName(final String name) {
         this.name = name;
     }
 
-    public void setTestbedUrl(String testbedUrl) {
+    public void setTestbedUrl(final String testbedUrl) {
         this.testbedUrl = testbedUrl;
     }
 
-    public void setSnaaEndpointUrl(String snaaEndpointUrl) {
+    public void setSnaaEndpointUrl(final String snaaEndpointUrl) {
         this.snaaEndpointUrl = snaaEndpointUrl;
     }
 
-    public void setRsEndpointUrl(String rsEndpointUrl) {
+    public void setRsEndpointUrl(final String rsEndpointUrl) {
         this.rsEndpointUrl = rsEndpointUrl;
     }
 
-    public void setSessionmanagementEndpointUrl(String sessionmanagementEndpointUrl) {
+    public void setSessionmanagementEndpointUrl(final String sessionmanagementEndpointUrl) {
         this.sessionmanagementEndpointUrl = sessionmanagementEndpointUrl;
     }
 
-    public void setUrnPrefixList(List<String> urnPrefixList) {
+    public void setUrnPrefixList(final List<String> urnPrefixList) {
         this.urnPrefixList = urnPrefixList;
     }
 
-    public void setFederated(boolean isFederated) {
+    public void setFederated(final boolean isFederated) {
         this.isFederated = isFederated;
     }
 
-    public void setTestbedId(int testbedId) {
+    public void setTestbedId(final int testbedId) {
         this.testbedId = testbedId;
     }
 
@@ -124,7 +126,7 @@ public class TestbedConfiguration implements Dto {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 

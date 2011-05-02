@@ -27,9 +27,15 @@ public interface ReservationService extends RemoteService {
             throws AuthenticationException, ReservationException,
             ReservationConflictException;
 
-    List<PublicReservationData> getPublicReservations(String rsEndpointUrl, Date from, Date to);
+    List<PublicReservationData> getPublicReservations(String rsEndpointUrl, Date current, Range range);
 
     List<ReservationDetails> getUserReservations(SecretAuthenticationKey key) throws ReservationException;
 
     String cancelReservation(String sessionId, int reservationId) throws ReservationException;
+
+    enum Range {
+        ONE_DAY,
+        WEEK,
+        MONTH
+    }
 }

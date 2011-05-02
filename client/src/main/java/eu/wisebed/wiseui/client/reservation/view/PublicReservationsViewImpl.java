@@ -39,7 +39,6 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.datepicker.client.DateBox;
 import com.google.inject.Singleton;
-import eu.wisebed.wiseui.shared.common.DateTimeUtil;
 import eu.wisebed.wiseui.shared.dto.PublicReservationData;
 import eu.wisebed.wiseui.widgets.CaptionPanel;
 import eu.wisebed.wiseui.widgets.loading.HasLoadingIndicator;
@@ -60,8 +59,6 @@ public class PublicReservationsViewImpl extends Composite implements PublicReser
     }
 
     private static PublicReservationsViewImplUiBinder uiBinder = GWT.create(PublicReservationsViewImplUiBinder.class);
-
-    private static final Date TODAY = new Date();
 
     private Presenter presenter;
 
@@ -89,42 +86,7 @@ public class PublicReservationsViewImpl extends Composite implements PublicReser
     public PublicReservationsViewImpl() {
         initWidget(uiBinder.createAndBindUi(this));
         initCalendar();
-        dateBox.setValue(TODAY);
-    }
-
-    @Override
-    public Date getFrom() {
-        Date from = calendarPanel.getDate();
-
-        if (calendarPanel.getDays() == DateTimeUtil.ONE_DAY) {
-
-        } else if (calendarPanel.getDays() == DateTimeUtil.WEEK) {
-
-        } else {
-            final int day = from.getDay();
-            if (day > 1) {
-                int daysOfMonth = DateTimeUtil.getDaysOfMonth(from);
-                from.setTime(DateTimeUtil.substractDays(from.getTime(), daysOfMonth - day + 1));
-            }
-        }
-
-        return from;
-    }
-
-    @Override
-    public Date getTo() {
-        Date to = calendarPanel.getDate();
-
-        if (calendarPanel.getDays() == DateTimeUtil.ONE_DAY) {
-            to.setTime(DateTimeUtil.addDays(calendarPanel.getDate().getTime(), DateTimeUtil.ONE_DAY));
-        } else if (calendarPanel.getDays() == DateTimeUtil.WEEK) {
-            to.setTime(DateTimeUtil.addDays(calendarPanel.getDate().getTime(), DateTimeUtil.WEEK));
-        } else {
-            to.setTime(DateTimeUtil.addDays(calendarPanel.getDate().getTime(),
-                    DateTimeUtil.getDaysOfMonth(calendarPanel.getDate())));
-        }
-
-        return to;
+        dateBox.setValue(Presenter.TODAY);
     }
 
     @Override
@@ -218,8 +180,8 @@ public class PublicReservationsViewImpl extends Composite implements PublicReser
         dayToggleButton.setDown(true);
         weekToggleButton.setDown(false);
         monthToggleButton.setDown(false);
-        calendarPanel.setView(CalendarViews.DAY, DateTimeUtil.ONE_DAY);
-        presenter.loadPublicReservations();
+        calendarPanel.setView(CalendarViews.DAY, Presenter.ONE_DAY);
+        presenter.loadPublicReservations(calendarPanel.getDate());
     }
 
     @UiHandler("weekToggleButton")
@@ -227,8 +189,8 @@ public class PublicReservationsViewImpl extends Composite implements PublicReser
         dayToggleButton.setDown(false);
         weekToggleButton.setDown(true);
         monthToggleButton.setDown(false);
-        calendarPanel.setView(CalendarViews.DAY, DateTimeUtil.WEEK);
-        presenter.loadPublicReservations();
+        calendarPanel.setView(CalendarViews.DAY, Presenter.WEEK);
+        presenter.loadPublicReservations(calendarPanel.getDate());
     }
 
     @UiHandler("monthToggleButton")
@@ -237,54 +199,22 @@ public class PublicReservationsViewImpl extends Composite implements PublicReser
         weekToggleButton.setDown(false);
         monthToggleButton.setDown(true);
         calendarPanel.setView(CalendarViews.MONTH);
-        presenter.loadPublicReservations();
+        presenter.loadPublicReservations(calendarPanel.getDate());
     }
 
     @UiHandler("backButton")
     public void handleBackClicked(final ClickEvent event) {
-        final long currentTimeMillis = calendarPanel.getDate().getTime();
-        if (calendarPanel.getDays() == DateTimeUtil.ONE_DAY) {
-            calendarPanel.setDate(
-                    new Date(DateTimeUtil.substractDays(currentTimeMillis, DateTimeUtil.ONE_DAY)),
-                    DateTimeUtil.ONE_DAY);
-        } else if (calendarPanel.getDays() == DateTimeUtil.WEEK) {
-            calendarPanel.setDate(
-                    new Date(DateTimeUtil.substractDays(currentTimeMillis, DateTimeUtil.WEEK)),
-                    DateTimeUtil.WEEK);
-        } else {
-            calendarPanel.setDate(
-                    new Date(DateTimeUtil.substractDays(currentTimeMillis,
-                            DateTimeUtil.getDaysOfMonth(calendarPanel.getDate()))));
-        }
-        dateBox.setValue(calendarPanel.getDate());
-        presenter.loadPublicReservations();
+        presenter.handleBackClicked();
     }
 
     @UiHandler("forwardButton")
     public void handleForwardClicked(final ClickEvent event) {
-        final long currentTimeMillis = calendarPanel.getDate().getTime();
-        if (calendarPanel.getDays() == DateTimeUtil.ONE_DAY) {
-            calendarPanel.setDate(
-                    new Date(DateTimeUtil.addDays(currentTimeMillis, DateTimeUtil.ONE_DAY)),
-                    DateTimeUtil.ONE_DAY);
-        } else if (calendarPanel.getDays() == DateTimeUtil.WEEK) {
-            calendarPanel.setDate(
-                    new Date(DateTimeUtil.addDays(currentTimeMillis, DateTimeUtil.WEEK)),
-                    DateTimeUtil.WEEK);
-        } else {
-            calendarPanel.setDate(
-                    new Date(DateTimeUtil.addDays(currentTimeMillis,
-                            DateTimeUtil.getDaysOfMonth(calendarPanel.getDate()))));
-        }
-        dateBox.setValue(calendarPanel.getDate());
-        presenter.loadPublicReservations();
+        presenter.handleForwardClicked();
     }
 
     @UiHandler("todayButton")
     public void handleTodayClicked(final ClickEvent event) {
-        calendarPanel.setDate(TODAY);
-        dateBox.setValue(TODAY);
-        presenter.loadPublicReservations();
+        presenter.handleTodayClicked();
     }
 
     private void initCalendar() {
@@ -294,8 +224,8 @@ public class PublicReservationsViewImpl extends Composite implements PublicReser
         settings.setEnableDragDrop(true);
 
         calendarPanel.setSettings(settings);
-        calendarPanel.setDate(TODAY);
-        calendarPanel.setView(CalendarViews.DAY, DateTimeUtil.WEEK);
+        calendarPanel.setDate(Presenter.TODAY);
+        calendarPanel.setView(CalendarViews.DAY, Presenter.WEEK);
         weekToggleButton.setDown(true);
     }
 

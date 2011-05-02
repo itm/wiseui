@@ -17,6 +17,7 @@
 package eu.wisebed.wiseui.server.rpc;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -92,8 +93,7 @@ public class ReservationServiceImpl extends RemoteServiceServlet implements Rese
     /**
      * Make reservation of some nodes in a specific time span
      *
-     * @param <code>sessionID</code> , current session ID.
-     * @param <code>rsData</code>    ,an <code>ReservationDetails</code> object
+     * @param data    ,an <code>ReservationDetails</code> object
      *                               containing the necessary information to make a reservation.
      */
     // TODO remove return make this method void
@@ -109,8 +109,7 @@ public class ReservationServiceImpl extends RemoteServiceServlet implements Rese
      * Cancels a reservation on services and deletes the appropriate reservation
      * entry from the persistent model
      *
-     * @param <code>sessionId</code>,     current session ID.
-     * @param <code>reservationId</code>, ID of the cancelled reservation.
+     * @param reservationId, ID of the cancelled reservation.
      */
     public String cancelReservation(final String sessionId,
                                     final int reservationId) throws ReservationException {
@@ -121,8 +120,6 @@ public class ReservationServiceImpl extends RemoteServiceServlet implements Rese
     /**
      * Get all reservations made by a user.
      *
-     * @param <code>sessionID</code>, current session ID in order to identify
-     *                                the user.
      * @return an <code>ArrayList</code> of <code>ReservationDetails</code>.
      *         objects that are the reservations madey by a user.
      */
@@ -156,7 +153,7 @@ public class ReservationServiceImpl extends RemoteServiceServlet implements Rese
      * Given a list of the sensor IDs fetch all sensor details with the
      * corresponding IDs.
      *
-     * @param <code>sensorIDs</code>, a list of integers as sensor IDs.
+     * @param sensorIDs, a list of integers as sensor IDs.
      * @return a <code>Set</code> of <code>SensorDetails</code> objects.
      */
     public static final Set<SensorDetails> fetchSensors(
@@ -168,7 +165,7 @@ public class ReservationServiceImpl extends RemoteServiceServlet implements Rese
     /**
      * Given a reservation ID fetch the corresponding secret reservation keys.
      *
-     * @param <code>reservationID</code>, ID of a reservationID.
+     * @param reservationID, ID of a reservationID.
      * @return a <code>SecretReservationKey</code> object or <code>null</code>
      *         if reservation does not exist
      */
@@ -263,27 +260,55 @@ public class ReservationServiceImpl extends RemoteServiceServlet implements Rese
 
     @Override
     public List<PublicReservationData> getPublicReservations(final String rsEndpointUrl,
-                                                             final Date from,
-                                                             final Date to) {
+                                                             final Date current,
+                                                             final Range range) {
         ifNullOrEmptyArgument(rsEndpointUrl, "Reservation Service Endpoint URL not set!");
-        ifNullArgument(from, "From-date not set!");
-        ifNullArgument(to, "To-date not set!");
+        ifNullArgument(current, "current not set!");
+
+        /* Convert from range to date to avoid client-site date calculation */
+        Date start = null;
+        Date end = null;
+        final Calendar calendar = Calendar.getInstance();
+        if (Range.ONE_DAY == range) {
+            calendar.setTime(current);
+            calendar.add(Calendar.DAY_OF_MONTH, 1);
+            start = current;
+            end = calendar.getTime();
+        } else if (Range.WEEK == range) {
+            calendar.setTime(current);
+            calendar.add(Calendar.DAY_OF_MONTH, 7);
+            start = current;
+            end = calendar.getTime();
+        } else if (Range.MONTH == range) {
+            calendar.setTime(current);
+            final int firstDayOfMonth = calendar.getActualMinimum(Calendar.DAY_OF_MONTH);
+            final int lastDayOfMonth = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
+            calendar.set(Calendar.DAY_OF_MONTH, firstDayOfMonth);
+            start = calendar.getTime();
+            calendar.set(Calendar.DAY_OF_MONTH, lastDayOfMonth);
+            end = calendar.getTime();
+        }
+
+        LOGGER.info("getPublicReservations( start: " + start + ", end: " + end);
 
         final RS rs = RSServiceHelper.getRSService(rsEndpointUrl);
         List<eu.wisebed.testbed.api.rs.v1.PublicReservationData> resultList = null;
         try {
-            resultList = rs.getReservations(convertDate2XmlGregorianCalendar(from), convertDate2XmlGregorianCalendar(to));
+            resultList = rs.getReservations(
+                    convertDate2XmlGregorianCalendar(start),
+                    convertDate2XmlGregorianCalendar(end));
         } catch (RSExceptionException e) {
             LOGGER.error(e.getMessage(), e);
         }
-        return new ArrayList<PublicReservationData>(Lists.transform(resultList, new Function<eu.wisebed.testbed.api.rs.v1.PublicReservationData, PublicReservationData>() {
-            @Override
-            public PublicReservationData apply(final eu.wisebed.testbed.api.rs.v1.PublicReservationData r) {
-                final PublicReservationData publicReservationData;
-                publicReservationData = mapper.map(r, PublicReservationData.class);
-                return publicReservationData;
-            }
-        }));
+        return new ArrayList<PublicReservationData>(Lists.transform(resultList,
+                new Function<eu.wisebed.testbed.api.rs.v1.PublicReservationData, PublicReservationData>() {
+                    @Override
+                    public PublicReservationData apply(final eu.wisebed.testbed.api.rs.v1.PublicReservationData r) {
+                        final PublicReservationData publicReservationData;
+                        publicReservationData = mapper.map(r, PublicReservationData.class);
+                        return publicReservationData;
+                    }
+                }));
     }
 
     /**

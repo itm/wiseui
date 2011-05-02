@@ -16,7 +16,7 @@
             <property name="hibernate.connection.driver_class" value="${jdbc.connection.driver_class}"/>
             <property name="hibernate.connection.password" value="${jdbc.connection.password}"/>
             <property name="hibernate.connection.url" value="${jdbc.connection.url}"/>
-            <property name="hibernate.hbm2ddl.auto" value="create"/>
+            <!--property name="hibernate.hbm2ddl.auto" value="create"/-->
             <property name="hibernate.show_sql" value="false"/>
             <property name="hibernate.format_sql" value="false"/>
         </properties>

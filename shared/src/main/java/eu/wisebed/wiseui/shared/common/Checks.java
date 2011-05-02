@@ -10,6 +10,8 @@ import java.util.Collection;
  * while general checks throw a {@link RuntimeException}.
  *
  * @author Soenke Nommensen
+ *
+ * TODO: Show MessageBox when used in the client.
  */
 public class Checks {
 
