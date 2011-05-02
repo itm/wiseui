@@ -37,8 +37,8 @@ public class ReservationActivity extends AbstractActivity{
 	}
 	
 	private void initPublicReservationsPanel(final ReservationView reservationView){
-		final PublicReservationsPresenter publicReservationsPresenter = injector.getAllReservationsPresenter();
-		final PublicReservationsView publicReservationsView = injector.getAllReservationsView();
+		final PublicReservationsPresenter publicReservationsPresenter = injector.getPublicReservationsPresenter();
+		final PublicReservationsView publicReservationsView = injector.getPublicReservationsView();
 		publicReservationsView.setPresenter(publicReservationsPresenter);
 		reservationView.getParametersPanel().setWidget(publicReservationsView);
 	}

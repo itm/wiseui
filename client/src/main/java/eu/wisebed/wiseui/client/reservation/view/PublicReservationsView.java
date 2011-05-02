@@ -60,5 +60,6 @@ public interface PublicReservationsView extends IsWidget {
     void showReservationDetails(Appointment appointment);
 
     public interface Presenter {
+        void loadPublicReservations();
     }
 }

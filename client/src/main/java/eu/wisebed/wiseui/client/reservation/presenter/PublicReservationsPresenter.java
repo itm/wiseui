@@ -54,7 +54,7 @@ public class PublicReservationsPresenter implements PublicReservationsView.Prese
     private final EventBusManager eventBus;
     private final PublicReservationsView view;
     private final ReservationServiceAsync service;
-    private TestbedConfiguration configuration;
+    private TestbedConfiguration testbedConfiguration;
 
     @Inject
     public PublicReservationsPresenter(final EventBus eventBus,
@@ -86,7 +86,7 @@ public class PublicReservationsPresenter implements PublicReservationsView.Prese
                                         + event.getTarget().getTitle() + "\"");
                 if (!commit) {
                     event.setCancelled(true);
-                    System.out.println("Cancelled Appointment deletion");
+                    GWT.log("Cancelled Appointment deletion");
                 }
             }
         });
@@ -99,7 +99,7 @@ public class PublicReservationsPresenter implements PublicReservationsView.Prese
                                         + event.getTarget().getTitle() + "\"");
                 if (!commit) {
                     event.setCancelled(true);
-                    System.out.println("Cancelled Appointment update");
+                    GWT.log("Cancelled Appointment update");
                 }
             }
         });
@@ -114,7 +114,7 @@ public class PublicReservationsPresenter implements PublicReservationsView.Prese
     @Override
     public void onTestbedSelected(TestbedSelectedEvent event) {
         view.getLoadingIndicator().showLoading("Reservations");
-        this.configuration = event.getConfiguration();
+        this.testbedConfiguration = event.getConfiguration();
         loadPublicReservations();
     }
 
@@ -128,9 +128,9 @@ public class PublicReservationsPresenter implements PublicReservationsView.Prese
     public void onThrowable(ThrowableEvent event) {
         view.getLoadingIndicator().hideLoading();
         if (event.getThrowable() == null) return;
-        if (configuration != null && configuration.getName() != null) {
+        if (testbedConfiguration != null && testbedConfiguration.getName() != null) {
             MessageBox.error("Error fetching reservation data for testbed '"
-                    + configuration.getName()
+                    + testbedConfiguration.getName()
                     + "'!",
                     event.getThrowable().getMessage(),
                     event.getThrowable(), null);
@@ -145,11 +145,12 @@ public class PublicReservationsPresenter implements PublicReservationsView.Prese
      * Call GWT-RPC getPublicReservations(...) from {@link eu.wisebed.wiseui.api.ReservationService}.
      * The resulting {@link eu.wisebed.wiseui.shared.dto.ReservationDetails} are rendered in the calendar widget.
      */
-    private void loadPublicReservations() {
+    @Override
+    public void loadPublicReservations() {
         String testbedName = "<unknown>";
-        if (configuration != null) testbedName = configuration.getName();
+        if (testbedConfiguration != null) testbedName = testbedConfiguration.getName();
         GWT.log("Loading public reservations for Testbed" + testbedName);
-        if (configuration == null) {
+        if (testbedConfiguration == null) {
             final String errorMessage = "Reservation URL not found for Testbed" + testbedName;
             GWT.log(errorMessage);
             MessageBox.warning("Configuration could not be loaded!",
@@ -163,7 +164,7 @@ public class PublicReservationsPresenter implements PublicReservationsView.Prese
         final Date to = view.getTo();
 
         // Make the service call
-        service.getPublicReservations(configuration.getRsEndpointUrl(),
+        service.getPublicReservations(testbedConfiguration.getRsEndpointUrl(),
                 from, to, new AsyncCallback<List<PublicReservationData>>() {
 
                     public void onFailure(Throwable caught) {

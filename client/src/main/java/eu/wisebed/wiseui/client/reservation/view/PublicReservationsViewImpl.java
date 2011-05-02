@@ -49,8 +49,8 @@ import java.util.List;
 
 /**
  * @author John I. Gakos, Soenke Nommensen
- *
- * TODO: Add time zone support!
+ *         <p/>
+ *         TODO: Add time zone support!
  */
 @Singleton
 public class PublicReservationsViewImpl extends Composite implements PublicReservationsView {
@@ -62,6 +62,8 @@ public class PublicReservationsViewImpl extends Composite implements PublicReser
     private static PublicReservationsViewImplUiBinder uiBinder = GWT.create(PublicReservationsViewImplUiBinder.class);
 
     private static final Date TODAY = new Date();
+
+    private Presenter presenter;
 
     @UiField
     CaptionPanel container;
@@ -92,7 +94,21 @@ public class PublicReservationsViewImpl extends Composite implements PublicReser
 
     @Override
     public Date getFrom() {
-        return calendarPanel.getDate();
+        Date from = calendarPanel.getDate();
+
+        if (calendarPanel.getDays() == DateTimeUtil.ONE_DAY) {
+
+        } else if (calendarPanel.getDays() == DateTimeUtil.WEEK) {
+
+        } else {
+            final int day = from.getDay();
+            if (day > 1) {
+                int daysOfMonth = DateTimeUtil.getDaysOfMonth(from);
+                from.setTime(DateTimeUtil.substractDays(from.getTime(), daysOfMonth - day + 1));
+            }
+        }
+
+        return from;
     }
 
     @Override
@@ -193,8 +209,8 @@ public class PublicReservationsViewImpl extends Composite implements PublicReser
     }
 
     @Override
-    public void setPresenter(Presenter presenter) {
-
+    public void setPresenter(final Presenter presenter) {
+        this.presenter = presenter;
     }
 
     @UiHandler("dayToggleButton")
@@ -203,6 +219,7 @@ public class PublicReservationsViewImpl extends Composite implements PublicReser
         weekToggleButton.setDown(false);
         monthToggleButton.setDown(false);
         calendarPanel.setView(CalendarViews.DAY, DateTimeUtil.ONE_DAY);
+        presenter.loadPublicReservations();
     }
 
     @UiHandler("weekToggleButton")
@@ -211,6 +228,7 @@ public class PublicReservationsViewImpl extends Composite implements PublicReser
         weekToggleButton.setDown(true);
         monthToggleButton.setDown(false);
         calendarPanel.setView(CalendarViews.DAY, DateTimeUtil.WEEK);
+        presenter.loadPublicReservations();
     }
 
     @UiHandler("monthToggleButton")
@@ -219,6 +237,7 @@ public class PublicReservationsViewImpl extends Composite implements PublicReser
         weekToggleButton.setDown(false);
         monthToggleButton.setDown(true);
         calendarPanel.setView(CalendarViews.MONTH);
+        presenter.loadPublicReservations();
     }
 
     @UiHandler("backButton")
@@ -238,6 +257,7 @@ public class PublicReservationsViewImpl extends Composite implements PublicReser
                             DateTimeUtil.getDaysOfMonth(calendarPanel.getDate()))));
         }
         dateBox.setValue(calendarPanel.getDate());
+        presenter.loadPublicReservations();
     }
 
     @UiHandler("forwardButton")
@@ -257,12 +277,14 @@ public class PublicReservationsViewImpl extends Composite implements PublicReser
                             DateTimeUtil.getDaysOfMonth(calendarPanel.getDate()))));
         }
         dateBox.setValue(calendarPanel.getDate());
+        presenter.loadPublicReservations();
     }
 
     @UiHandler("todayButton")
     public void handleTodayClicked(final ClickEvent event) {
         calendarPanel.setDate(TODAY);
         dateBox.setValue(TODAY);
+        presenter.loadPublicReservations();
     }
 
     private void initCalendar() {
