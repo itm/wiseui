@@ -99,7 +99,7 @@
 
 
     <build>
-        <!--<outputDirectory>${webappDirectory}/WEB-INF/classes</outputDirectory> -->
+        <outputDirectory>${webappDirectory}/WEB-INF/classes</outputDirectory>
         <finalName>wiseui-beta</finalName>
         <resources>
             <resource>
@@ -159,7 +159,7 @@
                 <configuration>
                     <server>tomcat6</server>
                     <path>/wiseui-beta</path>
-                    <url>${wiseui.manager.url}</url>
+                    <url>${tomcat.manager.url}</url>
                 </configuration>
             </plugin>
             <plugin>
