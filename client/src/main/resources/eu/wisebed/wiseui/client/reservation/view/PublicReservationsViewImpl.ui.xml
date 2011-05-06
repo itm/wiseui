@@ -3,7 +3,7 @@
              xmlns:g="urn:import:com.google.gwt.user.client.ui"
              xmlns:c="urn:import:com.bradrydzewski.gwt.calendar.client"
              xmlns:my="urn:import:eu.wisebed.wiseui.widgets"
-             xmlns:datepicker="urn:import:com.google.gwt.user.datepicker.client">
+             xmlns:d="urn:import:com.google.gwt.user.datepicker.client">
 
     <ui:style>
         .fullLayout {
@@ -33,10 +33,26 @@
             text-align: center;
         }
 
+        .todayButton {
+            float: right;
+            margin-top: 5px;
+            margin-right: 5px;
+            padding: 2px;
+            width: 55px;
+            text-align: center;
+        }
+
         .dateBox {
-            float: left;
-            margin: 8px 8px;
-            height: 18px;
+            float: right;
+            width: 175px;
+            margin-top: 5px;
+            margin-right: 5px;
+        }
+
+        .dateBoxContainer {
+            width: 100%;
+            background-color: #d0e4f6;
+            padding: 2px;
         }
     </ui:style>
 
@@ -45,14 +61,18 @@
     <g:DockLayoutPanel styleName="{style.fullLayout}">
         <g:center>
             <my:CaptionPanel caption="Public Reservations" ui:field="container" styleName="{style.fullLayout}">
-                <g:SimplePanel ui:field="calendarContainer">
-                    <c:Calendar ui:field="calendarPanel"/>
+                <g:SimplePanel ui:field="calendarContainer" styleName="{style.fullLayout}">
+                    <g:VerticalPanel>
+                        <c:Calendar styleName="{style.fullLayout}" ui:field="calendarPanel"/>
+                        <g:HorizontalPanel styleName="{style.dateBoxContainer}">
+                            <d:DateBox addStyleNames="{style.dateBox}" ui:field="dateBox"/>
+                        </g:HorizontalPanel>
+                    </g:VerticalPanel>
                 </g:SimplePanel>
             </my:CaptionPanel>
         </g:center>
         <g:south size="35">
             <g:HTMLPanel styleName="{style.buttonPanel}">
-                <label style="float:left;margin: 8px 8px">Calendar View:</label>
                 <g:PushButton addStyleNames="{style.navButton}" ui:field="backButton">
                     <g:upFace image="{famfamfam.controlRewindBlue}"/>
                 </g:PushButton>
@@ -62,8 +82,7 @@
                 <g:PushButton addStyleNames="{style.navButton}" ui:field="forwardButton">
                     <g:upFace image="{famfamfam.controlFastforwardBlue}"/>
                 </g:PushButton>
-                <datepicker:DateBox addStyleNames="{style.dateBox}" ui:field="dateBox" />
-                <g:Button text="Today" addStyleNames="{style.viewButton}" ui:field="todayButton"/>
+                <g:Button text="Today" addStyleNames="{style.todayButton}" ui:field="todayButton"/>
             </g:HTMLPanel>
         </g:south>
     </g:DockLayoutPanel>

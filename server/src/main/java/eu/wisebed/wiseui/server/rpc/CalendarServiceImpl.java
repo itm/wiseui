@@ -49,7 +49,7 @@ public class CalendarServiceImpl extends RemoteServiceServlet implements Calenda
     @Override
     public Date subtractDays(final Date date, final int days) {
         ifNullArgument(date, "date not set!");
-        LOG.info("addDays( date: " + date + ", days: " + days + " )");
+        LOG.info("subtractDays( date: " + date + ", days: " + days + " )");
         CALENDAR.setTime(date);
         CALENDAR.add(Calendar.DAY_OF_MONTH, -days);
         return CALENDAR.getTime();

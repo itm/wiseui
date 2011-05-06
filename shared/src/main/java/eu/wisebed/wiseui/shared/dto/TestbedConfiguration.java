@@ -9,9 +9,9 @@ import java.util.List;
  *
  * @author Soenke Nommensen
  */
-public class TestbedConfiguration implements Serializable {
+public class TestbedConfiguration implements Dto {
 
-    // private static final long serialVersionUID = 1721396665761010739L;
+    private static final long serialVersionUID = 1721396665761010739L;
 
     private Integer id;
     private String name;

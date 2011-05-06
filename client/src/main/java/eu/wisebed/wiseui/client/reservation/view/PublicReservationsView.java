@@ -23,13 +23,15 @@ import com.bradrydzewski.gwt.calendar.client.Appointment;
 import com.bradrydzewski.gwt.calendar.client.Calendar;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.datepicker.client.DateBox;
+import com.google.gwt.user.datepicker.client.DatePicker;
 import com.google.inject.ImplementedBy;
 
 import eu.wisebed.wiseui.shared.dto.PublicReservationData;
 import eu.wisebed.wiseui.widgets.loading.HasLoadingIndicator;
 
 /**
- * @author John I. Gakos, Soenke Nommensen
+ * @author John I. Gakos
+ * @author Soenke Nommensen
  */
 @ImplementedBy(PublicReservationsViewImpl.class)
 public interface PublicReservationsView extends IsWidget {
@@ -49,7 +51,7 @@ public interface PublicReservationsView extends IsWidget {
 
     Calendar getCalendar();
 
-    DateBox getDateBox();
+    DateBox getDatePicker();
 
     HasLoadingIndicator getLoadingIndicator();
 
@@ -59,7 +61,6 @@ public interface PublicReservationsView extends IsWidget {
 
         static final int ONE_DAY = 1;
         static final int WEEK = 7;
-        static final Date TODAY = new Date();
 
         void loadPublicReservations(Date current);
 
