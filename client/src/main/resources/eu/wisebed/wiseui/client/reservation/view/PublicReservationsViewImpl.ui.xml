@@ -13,78 +13,82 @@
 
         .buttonPanel {
             width: 100%;
-            background-color: #d0e4f6;
         }
 
         .viewButton {
             float: left;
-            margin-top: 5px;
             padding: 2px;
             width: 55px;
             text-align: center;
+            margin-top: 5px;
+            margin-bottom: 5px;
         }
 
-        .navButton {
+        .backNavButton {
             float: left;
-            margin-top: 5px;
             padding: 2px;
-            height: 18px;
             width: 25px;
+            height: 18px;
             text-align: center;
+            margin-top: 5px;
+            margin-bottom: 5px;
+            margin-left: 5px;
         }
 
-        .todayButton {
-            float: right;
-            margin-top: 5px;
-            margin-right: 5px;
+        .forwardNavButton {
+            float: left;
             padding: 2px;
-            width: 55px;
+            width: 25px;
+            height: 18px;
             text-align: center;
+            margin-top: 5px;
+            margin-bottom: 5px;
         }
 
         .dateBox {
             float: right;
             width: 175px;
+            height: 24px;
+            padding: 2px;
             margin-top: 5px;
-            margin-right: 5px;
+            margin-bottom: 5px;
         }
 
-        .dateBoxContainer {
-            width: 100%;
-            background-color: #d0e4f6;
+        .todayButton {
+            float: right;
             padding: 2px;
+            width: 55px;
+            height: 24px;
+            text-align: center;
+            margin-top: 5px;
+            margin-right: 5px;
+            margin-bottom: 5px;
         }
     </ui:style>
 
     <ui:with field='famfamfam' type="eu.wisebed.wiseui.widgets.famfamfam.FamFamFamResources"/>
 
-    <g:DockLayoutPanel styleName="{style.fullLayout}">
-        <g:center>
-            <my:CaptionPanel caption="Public Reservations" ui:field="container" styleName="{style.fullLayout}">
-                <g:SimplePanel ui:field="calendarContainer" styleName="{style.fullLayout}">
-                    <g:VerticalPanel>
-                        <c:Calendar styleName="{style.fullLayout}" ui:field="calendarPanel"/>
-                        <g:HorizontalPanel styleName="{style.dateBoxContainer}">
-                            <d:DateBox addStyleNames="{style.dateBox}" ui:field="dateBox"/>
-                        </g:HorizontalPanel>
-                    </g:VerticalPanel>
-                </g:SimplePanel>
-            </my:CaptionPanel>
-        </g:center>
-        <g:south size="35">
+    <my:CaptionPanel caption="Public Reservations" ui:field="container" styleName="{style.fullLayout}">
+        <g:VerticalPanel>
             <g:HTMLPanel styleName="{style.buttonPanel}">
-                <g:PushButton addStyleNames="{style.navButton}" ui:field="backButton">
+                <g:Button text="Today" addStyleNames="{style.todayButton}" ui:field="todayButton"/>
+                <g:PushButton addStyleNames="{style.backNavButton}" ui:field="backButton">
                     <g:upFace image="{famfamfam.controlRewindBlue}"/>
                 </g:PushButton>
                 <g:ToggleButton addStyleNames="{style.viewButton}" ui:field="dayToggleButton">Day</g:ToggleButton>
                 <g:ToggleButton addStyleNames="{style.viewButton}" ui:field="weekToggleButton">Week</g:ToggleButton>
                 <g:ToggleButton addStyleNames="{style.viewButton}" ui:field="monthToggleButton">Month</g:ToggleButton>
-                <g:PushButton addStyleNames="{style.navButton}" ui:field="forwardButton">
+                <g:PushButton addStyleNames="{style.forwardNavButton}" ui:field="forwardButton">
                     <g:upFace image="{famfamfam.controlFastforwardBlue}"/>
                 </g:PushButton>
-                <g:Button text="Today" addStyleNames="{style.todayButton}" ui:field="todayButton"/>
+                <d:DateBox addStyleNames="{style.dateBox}" ui:field="dateBox"/>
             </g:HTMLPanel>
-        </g:south>
-    </g:DockLayoutPanel>
+            <g:SimplePanel ui:field="calendarContainer" styleName="{style.fullLayout}">
+                <g:VerticalPanel>
+                    <c:Calendar styleName="{style.fullLayout}" ui:field="calendarPanel"/>
+                </g:VerticalPanel>
+            </g:SimplePanel>
+        </g:VerticalPanel>
+    </my:CaptionPanel>
 
 </ui:UiBinder>

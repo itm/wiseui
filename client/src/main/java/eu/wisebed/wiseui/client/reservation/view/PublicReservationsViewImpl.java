@@ -49,8 +49,6 @@ import java.util.List;
 /**
  * @author John I. Gakos
  * @author Soenke Nommensen
- *         <p/>
- *         TODO: Add time zone support!
  */
 @Singleton
 public class PublicReservationsViewImpl extends Composite implements PublicReservationsView {
@@ -106,9 +104,11 @@ public class PublicReservationsViewImpl extends Composite implements PublicReser
     @Override
     public void renderPublicReservations(final List<PublicReservationData> publicReservations) {
         calendarPanel.suspendLayout();
+        container.showLoading("Rendering reservations...");
         for (PublicReservationData reservation : publicReservations) {
             addReservation(reservation);
         }
+        container.hideLoading();
         calendarPanel.resumeLayout();
     }
 

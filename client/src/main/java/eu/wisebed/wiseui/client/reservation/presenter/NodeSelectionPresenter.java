@@ -83,7 +83,9 @@ public class NodeSelectionPresenter implements NodeSelectionView.Presenter,
     @Override
     public void onTestbedSelected(final TestbedSelectedEvent event) {
         view.getLoadingIndicator().showLoading("Testbed Nodes");
+
         this.testbedConfiguration = event.getConfiguration();
+
         final AsyncCallback<Wiseml> callback = new AsyncCallback<Wiseml>() {
 
             public void onSuccess(final Wiseml result) {
