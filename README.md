@@ -23,9 +23,10 @@ Configure Hibernate
 In order to have Hibernate properly configured, make sure you declare the following required properties in your local Maven settings file (~/.m2/settings.xml):
 
 	<settings>
+	    ...
 		<profiles>
             <profile>
-                <id>inject-hibernate-details</id>
+                <id>inject-hibernate-details-wiseui</id>
                 <properties>
                     <hibernate.dialect>org.hibernate.dialect.MySQLDialect</hibernate.dialect>
                     <jdbc.connection.driver_class>com.mysql.jdbc.Driver</jdbc.connection.driver_class>
@@ -37,8 +38,9 @@ In order to have Hibernate properly configured, make sure you declare the follow
             </profile>
 		</profiles>
 		<activeProfiles>
-			<activeProfile>inject-hibernate-details</activeProfile>
+			<activeProfile>inject-hibernate-details-wiseui</activeProfile>
 		</activeProfiles>
+		...
 	</settings>
 
 
@@ -62,6 +64,7 @@ To start the WiseUI in "hosted mode", do the following:
 For debug mode type:
 
     $ mvn gwt:debug    
+    
 
 Loading Initial Testbed Configurations
 --------------------------
@@ -70,42 +73,53 @@ If you want to have an initial set of testbed configurations, you can load this 
 
     $ mysql -u dbuser -p dbpass somedb < wiseui/persistence/src/main/resources/wiseuidb.sql    
 
+This will create a table called `testbed_config` in the database `somedb` containing the intial [WISEBED][wisebed] testbed configurations.
 
-Deploy to a Remote Tomcat
--------------------------
 
-To use this profile, make sure you settings.xml (~.m2/settings.xml) looks like the example below. Replace the property values with your specific credentials, hostname, etc.
+Deploy to a Tomcat
+------------------
 
-> Also, it is highly recommended that you SSH client is configured to log in on you remote server (deployment target) without password. This requires a special SSH setup.
-> You have to create a private key with ssh-keygen and copy it into the file ~.ssh/authorized_keys on your remote server.
-
-This is how your settings.xml should look like:
+Your `~/.m2/settings.xml` should include a server configuration:
 
     <settings>
+        ...
+        <servers>
+            <server>
+               <id>tomcat6</id>
+               <username>tomcat</username>
+               <password>yourpassword</password>
+            </server>
+        </servers>
+        ...
         <profiles>
             <profile>
-                <id>inject-deployment-details</id>
+                <id>inject-tomcat-details-wiseui</id>
                 <properties>
-                    <deployment.artifact.name>wiseui</deployment.artifact.name>
-                    <deployment.user>root</deployment.user>
-                    <deployment.host>10.0.0.1</deployment.host>
-                    <deployment.directory>/usr/local/tomcat/webapps/</deployment.directory>
+                    <tomcat.manager.url>http://localhost:8080/manager</tomcat.manager.url>
                 </properties>
-            </profile>
+           </profile>
         </profiles>
+        ...
         <activeProfiles>
-            <activeProfile>inject-deployment-details</activeProfile>
+           <activeProfile>inject-tomcat-details-wiseui</activeProfile>
         </activeProfiles>
+        ...
     </settings>
 
-You can deploy the resulting war-file with:
+This requires a user `tomcat` with the role `manager` in your Tomcat installation for the configure URL `${tomcat.manager.url}`. ([more info][tomcatmanager])! Furthermore, it is important that you use the id `tomcat6`, because this is used in the WiseUI master POM.
+
+You can deploy the WiseUI web application with the Tomcat Maven plugin:
 
     $ pwd
     > [...]/wiseui
     $ cd client
-    $ mvn install -Ddeploy=remote
+    $ mvn tomcat:deploy
     
-This Maven command activates the profile in client/pom.xml. The profile contains a maven-exec plugin  configuration, which uploads the `*.war` file to the designated server's Tomcat webapps directory. If the Tomcat server is configured to auto-deploy applications, the new web application will be deployed and started immediately.
+If you already have the web application running, you have to use `redeploy`:
+
+    $ mvn tomcat:redeploy
+    
+For more information about the Tomcat Maven plugin visit the [plugin website][tomcatmvnplugin].
 
 
 More Documentation
@@ -118,6 +132,8 @@ Take a look at our [wiki][].
 [testbedruntime]:https://github.com/itm/testbed-runtime
 [wisebed]:http://www.wisebed.eu
 [smartsantander]:http://www.smartsantander.eu
+[tomcatmvnplugin]:http://mojo.codehaus.org/tomcat-maven-plugin/
+[tomcatmanager]:http://tomcat.apache.org/tomcat-6.0-doc/manager-howto.html#Configuring_Manager_Application_Access
 
 
 Continuous Integration - Latest Stable build

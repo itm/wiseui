@@ -22,6 +22,8 @@ import java.util.List;
 import com.bradrydzewski.gwt.calendar.client.Appointment;
 import com.bradrydzewski.gwt.calendar.client.event.DeleteEvent;
 import com.bradrydzewski.gwt.calendar.client.event.DeleteHandler;
+import com.bradrydzewski.gwt.calendar.client.event.TimeBlockClickEvent;
+import com.bradrydzewski.gwt.calendar.client.event.TimeBlockClickHandler;
 import com.bradrydzewski.gwt.calendar.client.event.UpdateEvent;
 import com.bradrydzewski.gwt.calendar.client.event.UpdateHandler;
 import com.google.gwt.core.client.GWT;
@@ -47,7 +49,8 @@ import eu.wisebed.wiseui.shared.dto.TestbedConfiguration;
 import eu.wisebed.wiseui.widgets.messagebox.MessageBox;
 
 /**
- * @author John I. Gakos, Soenke Nommensen
+ * @author John I. Gakos
+ * @author Soenke Nommensen
  */
 public class PublicReservationsPresenter implements PublicReservationsView.Presenter,
         TestbedSelectedEvent.ConfigurationSelectedHandler,
@@ -78,7 +81,6 @@ public class PublicReservationsPresenter implements PublicReservationsView.Prese
         view.getCalendar().addOpenHandler(new OpenHandler<Appointment>() {
             @Override
             public void onOpen(OpenEvent<Appointment> event) {
-                GWT.log("Calendar entry double clicked");
                 view.showReservationDetails(event.getTarget());
             }
         });
@@ -110,10 +112,20 @@ public class PublicReservationsPresenter implements PublicReservationsView.Prese
                 }
             }
         });
-        view.getDateBox().addValueChangeHandler(new ValueChangeHandler<Date>() {
+        view.getCalendar().addTimeBlockClickHandler(new TimeBlockClickHandler<Date>() {
+            @Override
+            public void onTimeBlockClick(TimeBlockClickEvent<Date> event) {
+                Date startDate = event.getTarget();
+                // TODO Show popup to create a new reservation an add to the calendar.
+                // This new reservation has to be sent back to the reservation system.
+                GWT.log("Time block clicked");
+            }
+        });
+        view.getDatePicker().addValueChangeHandler(new ValueChangeHandler<Date>() {
             @Override
             public void onValueChange(ValueChangeEvent<Date> event) {
                 view.getCalendar().setDate(event.getValue());
+                GWT.log("onValueChange() => loadPublicReservations()");
                 loadPublicReservations(view.getCalendar().getDate());
             }
         });
@@ -121,7 +133,6 @@ public class PublicReservationsPresenter implements PublicReservationsView.Prese
 
     @Override
     public void onTestbedSelected(final TestbedSelectedEvent event) {
-        view.getLoadingIndicator().showLoading("Reservations");
         this.testbedConfiguration = event.getConfiguration();
         loadPublicReservations(view.getCalendar().getDate());
     }
@@ -155,6 +166,8 @@ public class PublicReservationsPresenter implements PublicReservationsView.Prese
      */
     @Override
     public void loadPublicReservations(final Date current) {
+        view.getLoadingIndicator().showLoading("Reservations");
+
         // Logging
         String testbedName = "<unknown>";
         if (testbedConfiguration != null) testbedName = testbedConfiguration.getName();
@@ -226,9 +239,10 @@ public class PublicReservationsPresenter implements PublicReservationsView.Prese
     }
 
     public void handleTodayClicked() {
-        view.getCalendar().setDate(TODAY);
-        view.getDateBox().setValue(TODAY);
-        loadPublicReservations(TODAY);
+        final Date today = new Date();
+        view.getCalendar().setDate(today);
+        view.getDatePicker().setValue(today);
+        loadPublicReservations(today);
     }
 
     private void addDays(final Date current, final int days) {
@@ -241,7 +255,7 @@ public class PublicReservationsPresenter implements PublicReservationsView.Prese
 
             public void onSuccess(final Date result) {
                 view.getCalendar().setDate(result, days);
-                view.getDateBox().setValue(result);
+                view.getDatePicker().setValue(result);
                 loadPublicReservations(result);
             }
         });
@@ -257,7 +271,7 @@ public class PublicReservationsPresenter implements PublicReservationsView.Prese
 
             public void onSuccess(final Date result) {
                 view.getCalendar().setDate(result, days);
-                view.getDateBox().setValue(result);
+                view.getDatePicker().setValue(result);
                 loadPublicReservations(result);
             }
         });
@@ -273,7 +287,7 @@ public class PublicReservationsPresenter implements PublicReservationsView.Prese
 
             public void onSuccess(final Date result) {
                 view.getCalendar().setDate(result);
-                view.getDateBox().setValue(result);
+                view.getDatePicker().setValue(result);
                 loadPublicReservations(result);
             }
         });
@@ -289,7 +303,7 @@ public class PublicReservationsPresenter implements PublicReservationsView.Prese
 
             public void onSuccess(final Date result) {
                 view.getCalendar().setDate(result);
-                view.getDateBox().setValue(result);
+                view.getDatePicker().setValue(result);
                 loadPublicReservations(result);
             }
         });

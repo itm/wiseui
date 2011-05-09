@@ -268,6 +268,8 @@ public class ReservationServiceImpl extends RemoteServiceServlet implements Rese
         ifNullOrEmptyArgument(rsEndpointUrl, "Reservation Service Endpoint URL not set!");
         ifNullArgument(current, "current not set!");
 
+        LOGGER.debug("current=" + current);
+
         /* Convert from range to date to avoid client-site date calculation */
         Date start = null;
         Date end = null;
@@ -292,7 +294,7 @@ public class ReservationServiceImpl extends RemoteServiceServlet implements Rese
             end = calendar.getTime();
         }
 
-        LOGGER.info("getPublicReservations( start: " + start + ", end: " + end);
+        LOGGER.info("getPublicReservations( start: " + start + ", end: " + end + " )");
 
         final RS rs = RSServiceHelper.getRSService(rsEndpointUrl);
         List<eu.wisebed.testbed.api.rs.v1.PublicReservationData> resultList = null;
@@ -328,6 +330,7 @@ public class ReservationServiceImpl extends RemoteServiceServlet implements Rese
 
         try {
             xmlGregorianCalendar = DatatypeFactory.newInstance().newXMLGregorianCalendar(calendar);
+            LOGGER.debug("convertDate2XmlGregorianCalendar( date: " + date.getTime() + " ) = " + xmlGregorianCalendar);
         } catch (DatatypeConfigurationException e) {
             LOGGER.error(e.getMessage(), e);
         }

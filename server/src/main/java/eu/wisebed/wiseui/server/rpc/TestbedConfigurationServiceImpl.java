@@ -14,6 +14,7 @@ import eu.wisebed.wiseui.shared.dto.TestbedConfiguration;
 public class TestbedConfigurationServiceImpl extends RemoteServiceServlet implements TestbedConfigurationService {
 
     private static final long serialVersionUID = 5174874924600302509L;
+
     private final PersistenceService persistenceService;
 
     @Inject

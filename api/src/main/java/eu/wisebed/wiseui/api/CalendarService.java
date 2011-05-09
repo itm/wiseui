@@ -8,7 +8,7 @@ import java.util.Date;
 /**
  * @author Soenke Nommensen
  *         <p/>
- *         Make use of the far more intuitive java.util.Calendar for date caculcation.
+ *         Make use of the far more intuitive java.util.Calendar for date calculcation.
  */
 @RemoteServiceRelativePath("calendar.rpc")
 public interface CalendarService extends RemoteService {

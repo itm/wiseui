@@ -23,7 +23,6 @@ import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
 import com.google.inject.Inject;
-
 import eu.wisebed.wiseui.client.testbedlist.event.TestbedSelectedEvent;
 import eu.wisebed.wiseui.client.testbedlist.event.TestbedSelectedEvent.ConfigurationSelectedHandler;
 import eu.wisebed.wiseui.client.testbedselection.common.TestbedTreeViewModel;
@@ -43,7 +42,7 @@ import eu.wisebed.wiseui.shared.exception.WisemlException;
 
 /**
  * Presenter implementation for the <code>DetailView</code>.
- * 
+ *
  * @author Malte Legenhausen
  */
 public class DetailPresenter implements Presenter, ConfigurationSelectedHandler, WisemlLoadedHandler, ThrowableHandler, PlaceChangeEvent.Handler {
@@ -51,7 +50,7 @@ public class DetailPresenter implements Presenter, ConfigurationSelectedHandler,
     private final DetailView view;
 
     private final EventBusManager eventBus;
-    
+
     private final ListDataProvider<Capability> capabilityListDataProvider = new ListDataProvider<Capability>();
 
     private TestbedConfiguration configuration;
@@ -68,7 +67,7 @@ public class DetailPresenter implements Presenter, ConfigurationSelectedHandler,
     }
 
     public void bind() {
-    	eventBus.addHandler(PlaceChangeEvent.TYPE, this);
+        eventBus.addHandler(PlaceChangeEvent.TYPE, this);
         eventBus.addHandler(TestbedSelectedEvent.TYPE, this);
         eventBus.addHandler(WisemlLoadedEvent.TYPE, this);
         eventBus.addHandler(ThrowableEvent.TYPE, this);
@@ -83,34 +82,34 @@ public class DetailPresenter implements Presenter, ConfigurationSelectedHandler,
     }
 
     private void onNodeSelection(final Node node) {
-    	view.getNodeIdHasText().setText(node.getId());
-    	view.getNodeTypeHasText().setText(node.getNodeType());
-		view.getNodePositionHasText().setText(node.getPosition().toString());
-		
-		final Boolean isGateway = node.isGateway();
-		String gateway = "Unknown";
-		if (isGateway != null) {
-			gateway = isGateway ? "Yes" : "No";
-		}
-		view.getNodeGatewayHasText().setText(gateway);
-		
-		String description = node.getDescription();
-		if (Strings.isNullOrEmpty(description)) {
-			description = "No details available for this node.";
-		}
-		view.getNodeDescriptionHasText().setText(description);
-		
-		String programDetails = node.getProgramDetails();
-		if (Strings.isNullOrEmpty(programDetails)) {
-			programDetails = "No program details available for this node.";
-		}
-		view.getNodeProgramDetailsHasText().setText(programDetails);
-		capabilityListDataProvider.setList(node.getCapability());
+        view.getNodeIdHasText().setText(node.getId());
+        view.getNodeTypeHasText().setText(node.getNodeType());
+        view.getNodePositionHasText().setText(node.getPosition().toString());
+
+        final Boolean isGateway = node.isGateway();
+        String gateway = "Unknown";
+        if (isGateway != null) {
+            gateway = isGateway ? "Yes" : "No";
+        }
+        view.getNodeGatewayHasText().setText(gateway);
+
+        String description = node.getDescription();
+        if (Strings.isNullOrEmpty(description)) {
+            description = "No details available for this node.";
+        }
+        view.getNodeDescriptionHasText().setText(description);
+
+        String programDetails = node.getProgramDetails();
+        if (Strings.isNullOrEmpty(programDetails)) {
+            programDetails = "No program details available for this node.";
+        }
+        view.getNodeProgramDetailsHasText().setText(programDetails);
+        capabilityListDataProvider.setList(node.getCapability());
     }
 
     public void onTestbedSelected(final TestbedSelectedEvent event) {
-    	configuration = event.getConfiguration();
-    	view.getLoadingIndicator().showLoading("Loading Testbed");
+        configuration = event.getConfiguration();
+        view.getLoadingIndicator().showLoading("Loading Testbed");
         view.showMessage("");
         view.getDescriptionHasText().setText("");
     }
@@ -118,8 +117,8 @@ public class DetailPresenter implements Presenter, ConfigurationSelectedHandler,
     public void onWisemlLoaded(final WisemlLoadedEvent event) {
         final Setup setup = event.getWiseml().getSetup();
         if (setup != null) {
-        	view.getDescriptionHasText().setText(setup.getDescription());
-        	view.setTreeViewModel(new TestbedTreeViewModel(configuration, setup.getNode(), nodeSelectionModel));
+            view.getDescriptionHasText().setText(setup.getDescription());
+            view.setTreeViewModel(new TestbedTreeViewModel(configuration, setup.getNode(), nodeSelectionModel));
         }
         view.getLoadingIndicator().hideLoading();
     }
@@ -131,8 +130,8 @@ public class DetailPresenter implements Presenter, ConfigurationSelectedHandler,
         view.getLoadingIndicator().hideLoading();
     }
 
-	@Override
-	public void onPlaceChange(final PlaceChangeEvent event) {
-		eventBus.removeAll();
-	}
+    @Override
+    public void onPlaceChange(final PlaceChangeEvent event) {
+        eventBus.removeAll();
+    }
 }

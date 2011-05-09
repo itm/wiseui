@@ -7,6 +7,7 @@ import com.google.gwt.uibinder.client.UiTemplate;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.ui.SplitLayoutPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Singleton;
 
@@ -26,14 +27,22 @@ public class ReservationViewImpl extends Composite implements ReservationView {
 	}
 	
 	private Presenter presenter;
-	
-	public void setPresenter(final Presenter presenter) {
+
+    @UiField
+    SimplePanel reservationPanel;
+    @UiField
+    SimplePanel nodeSelectionPanel;
+
+    public SimplePanel getReservationPanel() {
+        return reservationPanel;
+    }
+
+    public SimplePanel getNodeSelectionPanel() {
+        return nodeSelectionPanel;
+    }
+
+    public void setPresenter(final Presenter presenter) {
 		this.presenter = presenter;
 	}
 
-	@UiField SimplePanel parametersPanel;
-	    
-	public AcceptsOneWidget getParametersPanel(){
-		return parametersPanel;
-	}
 }

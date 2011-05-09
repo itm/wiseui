@@ -47,9 +47,8 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * @author John I. Gakos, Soenke Nommensen
- *         <p/>
- *         TODO: Add time zone support!
+ * @author John I. Gakos
+ * @author Soenke Nommensen
  */
 @Singleton
 public class PublicReservationsViewImpl extends Composite implements PublicReservationsView {
@@ -86,7 +85,7 @@ public class PublicReservationsViewImpl extends Composite implements PublicReser
     public PublicReservationsViewImpl() {
         initWidget(uiBinder.createAndBindUi(this));
         initCalendar();
-        dateBox.setValue(Presenter.TODAY);
+        dateBox.setValue(new Date());
     }
 
     @Override
@@ -95,7 +94,7 @@ public class PublicReservationsViewImpl extends Composite implements PublicReser
     }
 
     @Override
-    public DateBox getDateBox() {
+    public DateBox getDatePicker() {
         return dateBox;
     }
 
@@ -105,9 +104,11 @@ public class PublicReservationsViewImpl extends Composite implements PublicReser
     @Override
     public void renderPublicReservations(final List<PublicReservationData> publicReservations) {
         calendarPanel.suspendLayout();
+        container.showLoading("Rendering reservations...");
         for (PublicReservationData reservation : publicReservations) {
             addReservation(reservation);
         }
+        container.hideLoading();
         calendarPanel.resumeLayout();
     }
 
@@ -172,6 +173,7 @@ public class PublicReservationsViewImpl extends Composite implements PublicReser
 
     @Override
     public void setPresenter(final Presenter presenter) {
+        GWT.log("setPresenter( " + presenter.toString() + " )");
         this.presenter = presenter;
     }
 
@@ -224,7 +226,7 @@ public class PublicReservationsViewImpl extends Composite implements PublicReser
         settings.setEnableDragDrop(true);
 
         calendarPanel.setSettings(settings);
-        calendarPanel.setDate(Presenter.TODAY);
+        calendarPanel.setDate(new Date());
         calendarPanel.setView(CalendarViews.DAY, Presenter.WEEK);
         weekToggleButton.setDown(true);
     }
