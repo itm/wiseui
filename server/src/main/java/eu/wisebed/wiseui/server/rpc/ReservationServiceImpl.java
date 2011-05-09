@@ -44,18 +44,19 @@ import eu.wisebed.testbed.api.rs.RSServiceHelper;
 import eu.wisebed.testbed.api.rs.v1.RS;
 import eu.wisebed.testbed.api.rs.v1.RSExceptionException;
 import eu.wisebed.testbed.api.wsn.WSNServiceHelper;
-import eu.wisebed.testbed.api.wsn.v22.SecretReservationKey;
+//import eu.wisebed.testbed.api.rs.v1.SecretReservationKey;
+//import eu.wisebed.testbed.api.wsn.v22.SecretReservationKey;
 import eu.wisebed.testbed.api.wsn.v22.SessionManagement;
 import eu.wisebed.wiseui.api.ReservationService;
 import eu.wisebed.wiseui.shared.dto.Node;
 import eu.wisebed.wiseui.shared.dto.PublicReservationData;
 import eu.wisebed.wiseui.shared.dto.ReservationDetails;
 import eu.wisebed.wiseui.shared.dto.SecretAuthenticationKey;
+import eu.wisebed.wiseui.shared.dto.SecretReservationKey;
 import eu.wisebed.wiseui.shared.dto.SensorDetails;
 import eu.wisebed.wiseui.shared.exception.AuthenticationException;
 import eu.wisebed.wiseui.shared.exception.ReservationConflictException;
 import eu.wisebed.wiseui.shared.exception.ReservationException;
-
 
 @Singleton
 public class ReservationServiceImpl extends RemoteServiceServlet implements ReservationService {
@@ -79,7 +80,7 @@ public class ReservationServiceImpl extends RemoteServiceServlet implements Rese
             final String sessionManagementEndpointUrl) {
 
         SessionManagement sessionManagement = WSNServiceHelper.
-                                                                      getSessionManagementService(sessionManagementEndpointUrl);
+        	getSessionManagementService(sessionManagementEndpointUrl);
         String serializedWiseML = sessionManagement.getNetwork();
 
         // TODO FIXME!!!
@@ -96,13 +97,15 @@ public class ReservationServiceImpl extends RemoteServiceServlet implements Rese
      * @param data    ,an <code>ReservationDetails</code> object
      *                               containing the necessary information to make a reservation.
      */
-    // TODO remove return make this method void
-    public String makeReservation(SecretAuthenticationKey secretAuthenticationKey,
+    public SecretReservationKey makeReservation(SecretAuthenticationKey secretAuthenticationKey,
                                   String rsEndpointUrl, ReservationDetails data)
             throws AuthenticationException, ReservationException,
             ReservationConflictException {
         // TODO: Add functionality while integrating
-        return "OK";
+    	
+    	SecretReservationKey key = null;
+    	
+        return key;
     }
 
     /**

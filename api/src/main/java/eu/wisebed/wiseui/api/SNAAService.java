@@ -8,5 +8,11 @@ import eu.wisebed.wiseui.shared.dto.SecretAuthenticationKey;
 @RemoteServiceRelativePath("snaa.rpc")
 public interface SNAAService extends RemoteService {
 
-    SecretAuthenticationKey authenticate(String endpointUrl, String urn, String username, String password) throws AuthenticationException;
+    SecretAuthenticationKey authenticate(
+    		String endpointUrl,
+    		String urn,
+    		String username,
+    		String password) 
+    		throws 
+    		AuthenticationException;
 }

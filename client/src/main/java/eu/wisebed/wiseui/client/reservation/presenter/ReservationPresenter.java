@@ -37,6 +37,7 @@ import eu.wisebed.wiseui.client.util.AuthenticationManager;
 import eu.wisebed.wiseui.shared.dto.Node;
 import eu.wisebed.wiseui.shared.dto.ReservationDetails;
 import eu.wisebed.wiseui.shared.dto.SecretAuthenticationKey;
+import eu.wisebed.wiseui.shared.dto.SecretReservationKey;
 import eu.wisebed.wiseui.shared.dto.TestbedConfiguration;
 import eu.wisebed.wiseui.shared.exception.AuthenticationException;
 import eu.wisebed.wiseui.shared.exception.ReservationConflictException;
@@ -116,7 +117,7 @@ public class ReservationPresenter implements Presenter, MissingReservationParame
         SecretAuthenticationKey secretAuthKey = auth.getKeyHash().get(urnPrefix);
         // FIXME: Retrieve reservation details from google cal;
         final ReservationDetails data = null;
-        reservationService.makeReservation(secretAuthKey, rsEndpointUrl, data, new AsyncCallback<String>() {
+        reservationService.makeReservation(secretAuthKey, rsEndpointUrl, data, new AsyncCallback<SecretReservationKey>() {
             public void onFailure(Throwable caught) {
                 if (caught instanceof AuthenticationException) {
                     GWT.log("User not authorized to make reservations");
@@ -131,7 +132,7 @@ public class ReservationPresenter implements Presenter, MissingReservationParame
                 eventBus.fireEvent(new ReservationFailedEvent());
             }
 
-            public void onSuccess(String result) {
+            public void onSuccess(SecretReservationKey result) {
                 eventBus.fireEvent(new ReservationSuccessEvent());
             }
         });

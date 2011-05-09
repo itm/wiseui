@@ -2,7 +2,6 @@ package eu.wisebed.wiseui.client.experimentation.presenter;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 
 import com.google.gwt.core.client.GWT;
@@ -11,7 +10,6 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 
 import eu.wisebed.wiseui.api.ReservationServiceAsync;
-import eu.wisebed.wiseui.api.ReservationService;
 import eu.wisebed.wiseui.client.WiseUiGinjector;
 import eu.wisebed.wiseui.client.experimentation.view.ExperimentView;
 import eu.wisebed.wiseui.client.experimentation.view.ExperimentationView;
@@ -26,23 +24,22 @@ public class ExperimentationPresenter implements Presenter{
 
 	private final WiseUiGinjector injector;
 	private ExperimentationView view;
-	private EventBus eventBus;
 	private ReservationServiceAsync service;
 
 
 	@Inject
-	public ExperimentationPresenter(final WiseUiGinjector injector,	// TODO should we really inject the inject0r in order to get other stuff like the authentication manager
-			final ExperimentationView view,final EventBus eventBus){
+	public ExperimentationPresenter(final WiseUiGinjector injector,
+			final ExperimentationView view,final EventBus eventBus,
+			final ReservationServiceAsync service){
 		this.injector = injector;
+		
 		this.view = view;
-		this.eventBus = eventBus;
 		view.setPresenter(this);
 
-		// init service
-		service = GWT.create(ReservationService.class); // TODO GINject service instead of GWT.create
+		this.service = service;
 	}
 
-	public void setView(ExperimentationView view) {
+	public void setView(final ExperimentationView view) {
 		this.view = view;
 	}
 
@@ -53,21 +50,31 @@ public class ExperimentationPresenter implements Presenter{
 	@SuppressWarnings("deprecation")
 	@Override
 	public void getUserReservations() {
-
-
-		// TODO this multikey multilogin issue should be rediscussed in my opinion as far as experimentation is concerned
-		@SuppressWarnings("unchecked")
-		Collection<SecretAuthenticationKey> keys =  injector.getAuthenticationManager().getKeyHash().values();
-		SecretAuthenticationKey key = keys.iterator().next();
-		if(key == null){
-			GWT.log("ExperimentPresenter.getUserReservations : key is null");
-			return;
-		}
-		// dont like it one bit...
-
+		
+		// Let's see ...
+		// 
+		// Let the user being authenticated in N testbeds and has already made M reservations
+		// 
+		// 1. Retrieve testbed credentials of user that includes both N s.a.k and M s.r.k
+		// 	  (Retrieved from local storage)
+		// 2. With those credentials retrieve users reservations
+		// 	  (Look up on the remote services)
+		// 3. Bring them back and print them on the views
+		
 		final List<ExperimentView> experimentViews = 
 			new ArrayList<ExperimentView>();
+		
+//		// TODO this multikey multilogin issue should be rediscussed in my opinion as far as experimentation is concerned
+//		@SuppressWarnings("unchecked")
+//		Collection<SecretAuthenticationKey> keys =  injector.getAuthenticationManager().getKeyHash().values();
+//		SecretAuthenticationKey key = keys.iterator().next();
+//		if(key == null){
+//			GWT.log("ExperimentPresenter.getUserReservations : key is null");
+//			return;
+//		}
+//		// dont like it one bit...
 
+		
 		// setup rpc callback
 		AsyncCallback<List<ReservationDetails>> callback = 
 			new AsyncCallback<List<ReservationDetails>>(){
@@ -125,6 +132,6 @@ public class ExperimentationPresenter implements Presenter{
 		};
 
 		// make the rpc
-		service.getUserReservations(key, callback);
+//		service.getUserReservations(key, callback);
 	}
 }

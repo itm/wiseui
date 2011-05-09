@@ -39,18 +39,19 @@ public class AuthenticationManager {
 
 	private final List<SecretAuthenticationKey> secretAuthenticationKeys = Lists.newLinkedList();
 
-	private final HashMap<String, SecretAuthenticationKey> keyHash = new HashMap<String, SecretAuthenticationKey>();
+	private final HashMap<String, SecretAuthenticationKey> map = new HashMap<String, SecretAuthenticationKey>();
 	
 	/**
 	 * Load all authentication keys from the cookie.
 	 */
 	public void init() {
+		
 		GWT.log("Init Authentication Manager");
 		if (!Cookies.isCookieEnabled()) {
 			GWT.log("Cookies disabled");
 			return;
 		}
-
+		
 		final Collection<String> names = Collections2.filter(Cookies.getCookieNames(), new Predicate<String>() {
 			@Override
 			public boolean apply(String name) {
@@ -66,7 +67,7 @@ public class AuthenticationManager {
 		secretAuthenticationKeys.addAll(keys);
 		
 		for(SecretAuthenticationKey key: keys){
-			keyHash.put(key.getUrnPrefix(), key);
+			map.put(key.getUrnPrefix(), key);
 		}
 	}
 
@@ -88,7 +89,7 @@ public class AuthenticationManager {
 	}
 
 	public void addSecretAuthenticationKey(final SecretAuthenticationKey key) {
-		keyHash.put(key.getUrnPrefix(), key);
+		map.put(key.getUrnPrefix(), key);
 		secretAuthenticationKeys.add(key);
 		if (Cookies.isCookieEnabled()) {
 			final Date expiration =  new Date(System.currentTimeMillis() + VALIDITY);
@@ -101,11 +102,11 @@ public class AuthenticationManager {
 	}
 
 	public HashMap<String, SecretAuthenticationKey> getKeyHash(){
-		return keyHash;
+		return map;
 	}
 	
 	public void removeSecretAuthenticationKey(final SecretAuthenticationKey key) {
-		keyHash.remove(key.getUrnPrefix());
+		map.remove(key.getUrnPrefix());
 		secretAuthenticationKeys.remove(key);
 		if (Cookies.isCookieEnabled()) {
 			Cookies.removeCookie(toCookieName(key));

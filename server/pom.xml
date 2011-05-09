@@ -94,6 +94,11 @@
         	<artifactId>tr.wisebed-cmdline-client</artifactId>
         	<version>0.6.1</version>			
         </dependency>
+            <dependency>
+        <groupId>ichatz</groupId>
+        	<artifactId>wiseml</artifactId>
+        	<version>1.1-SNAPSHOT</version>
+    	</dependency>
         <dependency>
             <groupId>joda-time</groupId>
             <artifactId>joda-time</artifactId>

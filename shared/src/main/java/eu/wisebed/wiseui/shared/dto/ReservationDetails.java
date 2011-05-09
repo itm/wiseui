@@ -19,7 +19,7 @@ public class ReservationDetails implements Serializable {
     private String secretReservationKey;
     private String urnPrefix;
     private int reservationid;
-    private AuthenticationDetails user;
+    //private AuthenticationDetails user;
     private Set<SensorDetails> sensors;
 
     public ReservationDetails() {
@@ -92,13 +92,13 @@ public class ReservationDetails implements Serializable {
         return this.reservationid;
     }
 
-    public void setUser(AuthenticationDetails user) {
-        this.user = user;
-    }
-
-    public AuthenticationDetails getUser() {
-        return this.user;
-    }
+//    public void setUser(AuthenticationDetails user) {
+//        this.user = user;
+//    }
+//
+//    public AuthenticationDetails getUser() {
+//        return this.user;
+//    }
 
     public void setSensors(final Set<SensorDetails> sensors) {
         this.sensors = sensors;
