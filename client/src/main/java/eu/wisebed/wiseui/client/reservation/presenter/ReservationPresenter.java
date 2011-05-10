@@ -117,25 +117,25 @@ public class ReservationPresenter implements Presenter, MissingReservationParame
         SecretAuthenticationKey secretAuthKey = auth.getKeyHash().get(urnPrefix);
         // FIXME: Retrieve reservation details from google cal;
         final ReservationDetails data = null;
-        reservationService.makeReservation(secretAuthKey, rsEndpointUrl, data, new AsyncCallback<SecretReservationKey>() {
-            public void onFailure(Throwable caught) {
-                if (caught instanceof AuthenticationException) {
-                    GWT.log("User not authorized to make reservations");
-                } else if (caught instanceof ReservationException) {
-                    GWT.log("RS system failed");
-                } else if (caught instanceof ReservationConflictException) {
-                    GWT.log("Cannot make reservations some nodes are " +
-                            "already reserved");
-                } else {
-                    GWT.log("Error occured while contacting the server");
-                }
-                eventBus.fireEvent(new ReservationFailedEvent());
-            }
-
-            public void onSuccess(SecretReservationKey result) {
-                eventBus.fireEvent(new ReservationSuccessEvent());
-            }
-        });
+//        reservationService.makeReservation(secretAuthKey, rsEndpointUrl, data, new AsyncCallback<SecretReservationKey>() {
+//            public void onFailure(Throwable caught) {
+//                if (caught instanceof AuthenticationException) {
+//                    GWT.log("User not authorized to make reservations");
+//                } else if (caught instanceof ReservationException) {
+//                    GWT.log("RS system failed");
+//                } else if (caught instanceof ReservationConflictException) {
+//                    GWT.log("Cannot make reservations some nodes are " +
+//                            "already reserved");
+//                } else {
+//                    GWT.log("Error occured while contacting the server");
+//                }
+//                eventBus.fireEvent(new ReservationFailedEvent());
+//            }
+//
+//            public void onSuccess(SecretReservationKey result) {
+//                eventBus.fireEvent(new ReservationSuccessEvent());
+//            }
+//        });
     }
 
     public void onMissingReservationParameters(final MissingReservationParametersEvent event) {

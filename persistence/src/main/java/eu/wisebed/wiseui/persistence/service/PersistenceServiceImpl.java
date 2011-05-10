@@ -66,7 +66,7 @@ public class PersistenceServiceImpl implements PersistenceService {
 
         LOGGER.info("storeTestbedConfiguration( " + dto + " )");
 
-        final TestbedConfigurationBo bo;
+        TestbedConfigurationBo bo;
         if (dto.getId() == null) {
             // Create and persist new persistent object
             bo = dozerBeanMapper.map(dto, TestbedConfigurationBo.class);
@@ -75,6 +75,7 @@ public class PersistenceServiceImpl implements PersistenceService {
             // Update existing persistent object
             bo = testbedConfigurationDao.findById(dto.getId());
             if (bo != null) {
+                bo = dozerBeanMapper.map(dto, TestbedConfigurationBo.class);
                 testbedConfigurationDao.update(bo);
             } else {
                 LOGGER.error("TestbedConfiguration with id #" + dto.getId()

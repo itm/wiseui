@@ -7,6 +7,7 @@ import eu.wisebed.wiseui.client.testbedlist.presenter.TestbedEditPresenter;
 import eu.wisebed.wiseui.client.testbedlist.view.LoginDialogView;
 import eu.wisebed.wiseui.client.testbedlist.view.TestbedEditView;
 import eu.wisebed.wiseui.client.testbedlist.view.TestbedListView;
+import eu.wisebed.wiseui.client.util.AuthenticationManager;
 
 public interface TestbedListGinjector extends Ginjector {
 
@@ -21,4 +22,6 @@ public interface TestbedListGinjector extends Ginjector {
 	TestbedEditPresenter getTestbedEditPresenter();
 	
 	TestbedEditView getTestbedEditView();
+
+    AuthenticationManager getAuthenticationManager();
 }

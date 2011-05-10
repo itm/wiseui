@@ -2,6 +2,7 @@ package eu.wisebed.wiseui.client.testbedlist.presenter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import com.google.common.base.Objects;
 import com.google.gwt.event.shared.EventBus;
@@ -85,7 +86,12 @@ public class TestbedEditPresenter implements Presenter, EditTestbedEvent.Handler
         configuration.setRsEndpointUrl(view.getRsEndpointUrlHasText().getText());
         configuration.setSessionmanagementEndpointUrl(view.getSessionManagementEndpointUrlHasText().getText());
         configuration.setFederated(view.getFederatedSelectedIndex() != 0);
-        configuration.setUrnPrefixList(urnPrefixProvider.getList());
+        // Copy list to avoid SerializationException!
+        List<String> urnPrefixes = new ArrayList<String>(urnPrefixProvider.getList().size());
+        for (String s : urnPrefixProvider.getList()) {
+            urnPrefixes.add(s);
+        }
+        configuration.setUrnPrefixList(urnPrefixes);
 
         final MessageBox.Callback messageBoxCallback = new MessageBox.Callback() {
 
@@ -96,7 +102,7 @@ public class TestbedEditPresenter implements Presenter, EditTestbedEvent.Handler
             }
         };
 
-        final AsyncCallback<TestbedConfiguration> callback = new AsyncCallback<TestbedConfiguration>() {
+        final AsyncCallback<Void> callback = new AsyncCallback<Void>() {
 
             @Override
             public void onFailure(Throwable caught) {
@@ -104,7 +110,7 @@ public class TestbedEditPresenter implements Presenter, EditTestbedEvent.Handler
             }
 
             @Override
-            public void onSuccess(TestbedConfiguration result) {
+            public void onSuccess(Void result) {
                 MessageBox.success(title, configuration.getName() + " was successfully saved.", messageBoxCallback);
             }
         };

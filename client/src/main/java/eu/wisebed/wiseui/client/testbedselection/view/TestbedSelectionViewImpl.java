@@ -9,6 +9,7 @@ import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HasEnabled;
+import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.ToggleButton;
 import com.google.gwt.user.client.ui.Widget;
@@ -28,7 +29,7 @@ public class TestbedSelectionViewImpl extends Composite implements TestbedSelect
     @UiField
     SimplePanel contentPanel;
     @UiField
-    Button reloadButton;
+    PushButton reloadButton;
     @UiField
     ToggleButton mapToggleButton;
     @UiField

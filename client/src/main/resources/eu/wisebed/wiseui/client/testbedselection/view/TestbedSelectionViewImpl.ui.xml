@@ -24,7 +24,6 @@
         }
 
         .button {
-            width: 160px;
         }
 
         .fullLayout {
@@ -45,7 +44,7 @@
         }
     </ui:style>
     
-    <ui:with field='res' type='eu.wisebed.wiseui.widgets.famfamfam.FamFamFamResources'/>
+    <ui:with field='famfamfam' type='eu.wisebed.wiseui.widgets.famfamfam.FamFamFamResources'/>
 
     <g:DockLayoutPanel styleName="{style.fullLayout}">
         <g:center>
@@ -54,13 +53,21 @@
         <g:south size="35">
             <g:HTMLPanel styleName="{style.buttonPanel}">
                 <label style="float:left;margin: 8px 8px">Testbed View:</label>
-                <g:ToggleButton addStyleNames="{style.viewButton}" ui:field="mapToggleButton">Map</g:ToggleButton>
-                <g:ToggleButton addStyleNames="{style.viewButton}" ui:field="detailToggleButton">Detail</g:ToggleButton>
-                <g:ToggleButton addStyleNames="{style.viewButton}" ui:field="rawToggleButton">WiseML</g:ToggleButton>
+                <g:ToggleButton addStyleNames="{style.viewButton}" ui:field="mapToggleButton" title="Map overview">
+                    <g:upFace image="{famfamfam.map}"/>
+                </g:ToggleButton>
+                <g:ToggleButton addStyleNames="{style.viewButton}" ui:field="detailToggleButton" title="Details">
+                    <g:upFace image="{famfamfam.transmit}"/>
+                </g:ToggleButton>
+                <g:ToggleButton addStyleNames="{style.viewButton}" ui:field="rawToggleButton" title="WiseML">
+                    <g:upFace image="{famfamfam.tag}"/>
+                </g:ToggleButton>
                 <table class="{style.buttonTable}">
                     <tr>
                         <td>
-                            <g:Button ui:field="reloadButton" addStyleNames="{style.button}">Reload Network</g:Button>
+                            <g:PushButton ui:field="reloadButton" addStyleNames="{style.button}" title="Refresh">
+                                 <g:upFace image="{famfamfam.arrowRefresh}"/>
+                            </g:PushButton>
                         </td>
                     </tr>
                 </table>

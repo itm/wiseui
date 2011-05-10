@@ -18,21 +18,23 @@ public interface TestbedListView extends IsWidget {
     void setConfigurations(List<TestbedConfiguration> configurations);
 
     HasEnabled getLoginEnabled();
-    
+
     HasEnabled getTestbedEditEnabled();
-    
+
     HasEnabled getTestbedDeleteEnabled();
 
     public interface Presenter {
 
-    	void showLoginDialog();
-    	
-    	void showNewTestbedDialog();
-    	
-    	void showEditTestbedDialog();
-    	
-    	void deleteTestbed();
-    	
-    	void refresh();
+        void showLoginDialog();
+
+        void showNewTestbedDialog();
+
+        void showEditTestbedDialog();
+
+        void deleteTestbed();
+
+        void refresh();
+
+        boolean isAuthenticated(TestbedConfiguration testbedConfiguration);
     }
 }

@@ -1,9 +1,7 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
              xmlns:g="urn:import:com.google.gwt.user.client.ui"
-             xmlns:c="urn:import:com.bradrydzewski.gwt.calendar.client"
-             xmlns:my="urn:import:eu.wisebed.wiseui.widgets"
-             xmlns:d="urn:import:com.google.gwt.user.datepicker.client">
+             xmlns:my="urn:import:eu.wisebed.wiseui.widgets">
 
     <ui:style>
         .fullLayout {

@@ -1,5 +1,6 @@
 package eu.wisebed.wiseui.client.testbedlist.presenter;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.inject.Inject;

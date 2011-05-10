@@ -29,6 +29,7 @@ import eu.wisebed.wiseui.client.testbedlist.view.LoginDialogView;
 import eu.wisebed.wiseui.client.testbedlist.view.TestbedEditView;
 import eu.wisebed.wiseui.client.testbedlist.view.TestbedListView;
 import eu.wisebed.wiseui.client.testbedlist.view.TestbedListView.Presenter;
+import eu.wisebed.wiseui.client.util.AuthenticationManager;
 import eu.wisebed.wiseui.shared.dto.TestbedConfiguration;
 import eu.wisebed.wiseui.widgets.messagebox.MessageBox;
 import eu.wisebed.wiseui.widgets.messagebox.MessageBox.Button;
@@ -45,6 +46,7 @@ public class TestbedListActivity  extends AbstractActivity implements Presenter,
     private final TestbedListView view;
     private WiseUiPlace place;
     private final PlaceController placeController;
+    private final AuthenticationManager authenticationManager;
     private SingleSelectionModel<TestbedConfiguration> configurationSelectionModel;
     private List<TestbedConfiguration> configurations;
     private final TestbedConfigurationServiceAsync configurationService;
@@ -53,11 +55,13 @@ public class TestbedListActivity  extends AbstractActivity implements Presenter,
     public TestbedListActivity(final WiseUiGinjector injector,
                                final TestbedListView view,
                                final PlaceController placeController,
-                               final TestbedConfigurationServiceAsync configurationService) {
+                               final TestbedConfigurationServiceAsync configurationService,
+                               final AuthenticationManager authenticationManager) {
     	this.injector = injector;
         this.view = view;
         this.placeController = placeController;
         this.configurationService = configurationService;
+        this.authenticationManager = authenticationManager;
         
         view.setPresenter(this);
         // Init selection model
@@ -217,4 +221,22 @@ public class TestbedListActivity  extends AbstractActivity implements Presenter,
 	public void onRefreshTestbedList(RefreshTestbedListEvent event) {
 		loadTestbedConfigurations();
 	}
+
+    /**
+     * Very simple mechanism to determine, whether the user connected to the current testbed.
+     * TODO: Do this per URN prefix and reduce computational time!
+     * @param testbedConfiguration The {@link TestbedConfiguration} to be checked.
+     * @return Whether the user is connected to the current testbed or not.
+     */
+    @Override
+    public boolean isAuthenticated(TestbedConfiguration testbedConfiguration) {
+        for (String authenticatedUrnPrefix : authenticationManager.getKeyHash().keySet()) {
+            for (String configurationUrnPrefix : testbedConfiguration.getUrnPrefixList()) {
+                if (authenticatedUrnPrefix.equals(configurationUrnPrefix)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 }
