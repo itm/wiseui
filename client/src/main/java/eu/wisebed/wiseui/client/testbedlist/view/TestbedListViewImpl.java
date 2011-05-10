@@ -72,12 +72,13 @@ public class TestbedListViewImpl extends Composite implements TestbedListView {
             if (configuration != null) {
                 builder.appendHtmlConstant("<div class=\"celllist-entry\">");
                 builder.appendEscaped(configuration.getName()).appendEscaped(" ");
+                builder.appendHtmlConstant("<div style=\"float:right\">");
                 if (presenter.isAuthenticated(configuration)) {
                     builder.appendHtmlConstant(connectedHtml).appendEscaped(" ");
                 } else {
                     builder.appendHtmlConstant(disconnectedHtml).appendEscaped(" ");
                 }
-                builder.appendHtmlConstant("</div>");
+                builder.appendHtmlConstant("</div></div>");
             }
         }
     }
