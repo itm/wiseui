@@ -72,7 +72,7 @@ public class GrahamScan {
 		for (final Coordinate p : points) {
 			if (p.getY() < minY.getY()) {
 				minY = p;
-			} else if (p.getY() == minY.getY()) {
+			} else if (p.getY().equals(minY.getY())) {
 				if (p.getX() < minY.getX()) {
 					minY = p;
 				}

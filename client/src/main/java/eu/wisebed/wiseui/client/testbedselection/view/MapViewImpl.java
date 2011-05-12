@@ -162,7 +162,7 @@ public class MapViewImpl extends Composite implements MapView {
     	final List<LatLng> polyPoints = new ArrayList<LatLng>(latLngs.size() + 1);
     	polyPoints.addAll(latLngs);
     	polyPoints.add(polyPoints.get(0));
-    	testbedShape = new Polygon(polyPoints.toArray(new LatLng[0]));
+    	testbedShape = new Polygon(polyPoints.toArray(new LatLng[polyPoints.size()]));
     	mapWidget.addOverlay(testbedShape);
     }
 

@@ -71,7 +71,7 @@ Loading Initial Testbed Configurations
     
 If you want to have an initial set of testbed configurations, you can load this dump into your local MySQL database.
 
-    $ mysql -u dbuser -p dbpass somedb < wiseui/persistence/src/main/resources/wiseuidb.sql    
+    $ mysql -u dbuser -p dbpass somedb < wiseui/persistence/src/main/resources/initial_testbed_configs.sql   
 
 This will create a table called `testbed_config` in the database `somedb` containing the intial [WISEBED][wisebed] testbed configurations.
 

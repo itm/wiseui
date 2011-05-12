@@ -73,10 +73,8 @@ public class ImageUploadWidget extends Composite implements ImageUpload{
 	 * Check if user selected an image to be flashed
 	 */
 	public boolean checkImageSelected() {
-		if (this.imagePicker.getStatus()==Status.DONE)
-			return true;
-		return false;
-	}
+        return this.imagePicker.getStatus() == Status.DONE;
+    }
 
 	public void setListener(Presenter listener) {
 		this.presenter = listener;

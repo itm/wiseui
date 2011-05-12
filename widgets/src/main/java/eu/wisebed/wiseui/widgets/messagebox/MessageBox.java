@@ -95,7 +95,7 @@ public class MessageBox implements Presenter {
         final MessageBox messageBox = INJECTOR.getMessageBox();
         messageBox.setTitle(title);
         messageBox.setMessage(message);
-        messageBox.setMessageType(Type.SUCCESS);
+        messageBox.setMessageType(Type.INFO);
         messageBox.setButtons(Button.OK);
         messageBox.setCallback(callback);
         messageBox.show();

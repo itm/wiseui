@@ -120,7 +120,7 @@ public class ExperimentPresenter implements Presenter {
         determineExperimentState(this.startDate,this.stopDate);
 
         // setup view
-		this.view.setReservationID(new Integer(this.reservationID).toString());
+		this.view.setReservationID(Integer.toString(this.reservationID));
 		this.view.setStartDate(this.startDate.toLocaleString());
 		this.view.setStopDate(this.stopDate.toLocaleString());
 		this.view.setImageFilename(this.imageFileName);

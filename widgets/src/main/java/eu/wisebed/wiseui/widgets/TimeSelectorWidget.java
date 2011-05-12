@@ -109,7 +109,7 @@ public class TimeSelectorWidget extends Composite implements TimeSelector{
 	private boolean validTimeFormat(String time){
 		RegExp timeRegex = RegExp.compile(
 				"^([1-9]|[0-1][0-9]|2[0-3]){1}(:[0-5][0-9]){1}$");
-		return timeRegex.test(time) ? true: false; 		
+		return timeRegex.test(time);
 	}
 	
 }

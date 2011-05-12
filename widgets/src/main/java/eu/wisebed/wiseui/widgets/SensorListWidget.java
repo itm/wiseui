@@ -100,7 +100,7 @@ public class SensorListWidget extends Composite implements SensorList{
 				int length = range.getLength();
 				List<SensorDetails> toSet = new ArrayList<SensorDetails>(length);
 				for (int i=start; i< start + length && i < sensors.size(); i++){
-					toSet.add((SensorDetails) sensors.get(i));
+					toSet.add(sensors.get(i));
 				}
 				sensorTable.setRowData(start, toSet);
 			}
