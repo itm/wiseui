@@ -16,17 +16,19 @@
  */
 package eu.wisebed.wiseui.client.reservation.presenter;
 
+import java.util.Set;
+
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.place.shared.PlaceChangeEvent;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.view.client.MultiSelectionModel;
 import com.google.gwt.view.client.SelectionChangeEvent;
-import com.google.gwt.view.client.SingleSelectionModel;
 import com.google.inject.Inject;
 import eu.wisebed.wiseui.api.SessionManagementServiceAsync;
+import eu.wisebed.wiseui.client.reservation.common.NodeTreeViewModel;
 import eu.wisebed.wiseui.client.reservation.view.NodeSelectionView;
 import eu.wisebed.wiseui.client.testbedlist.event.TestbedSelectedEvent;
-import eu.wisebed.wiseui.client.testbedselection.common.TestbedTreeViewModel;
 import eu.wisebed.wiseui.client.testbedselection.event.ThrowableEvent;
 import eu.wisebed.wiseui.client.testbedselection.event.WisemlLoadedEvent;
 import eu.wisebed.wiseui.client.util.DefaultsHelper;
@@ -49,7 +51,7 @@ public class NodeSelectionPresenter implements NodeSelectionView.Presenter,
     private final NodeSelectionView view;
     private final SessionManagementServiceAsync service;
     private TestbedConfiguration testbedConfiguration;
-    private SingleSelectionModel<Node> nodeSelectionModel = new SingleSelectionModel<Node>();
+    private MultiSelectionModel<Node> nodeSelectionModel = new MultiSelectionModel<Node>();
 
     @Inject
     public NodeSelectionPresenter(final EventBus eventBus,
@@ -70,13 +72,13 @@ public class NodeSelectionPresenter implements NodeSelectionView.Presenter,
 
             @Override
             public void onSelectionChange(final SelectionChangeEvent event) {
-                final Node node = nodeSelectionModel.getSelectedObject();
-                onNodeSelection(node);
+                final Set<Node> nodes = nodeSelectionModel.getSelectedSet();
+                onNodeSelection(nodes);
             }
         });
     }
 
-    private void onNodeSelection(final Node node) {
+    private void onNodeSelection(final Set<Node> nodes) {
         // TODO
     }
 
@@ -112,7 +114,7 @@ public class NodeSelectionPresenter implements NodeSelectionView.Presenter,
     public void onWisemlLoaded(final WisemlLoadedEvent event) {
         final Setup setup = event.getWiseml().getSetup();
         if (setup != null) {
-            view.setTreeViewModel(new TestbedTreeViewModel(testbedConfiguration, setup.getNode(), nodeSelectionModel));
+            view.setTreeViewModel(new NodeTreeViewModel(testbedConfiguration, setup.getNode(), nodeSelectionModel));
         }
         view.getLoadingIndicator().hideLoading();
     }

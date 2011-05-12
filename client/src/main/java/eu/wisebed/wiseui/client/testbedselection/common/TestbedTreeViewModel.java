@@ -41,7 +41,7 @@ public class TestbedTreeViewModel implements TreeViewModel {
 
     private final List<NodeGroup> groups;
 
-    private final SelectionModel<Node> nodeSelectionModel;
+    public final SelectionModel<Node> nodeSelectionModel;
 
     private final int nodeCount;
 
@@ -52,7 +52,7 @@ public class TestbedTreeViewModel implements TreeViewModel {
         this.nodeCount = nodes.size();
     }
 
-    private static List<NodeGroup> initGroups(final List<Node> nodes) {
+    public static List<NodeGroup> initGroups(final List<Node> nodes) {
         final Map<String, NodeGroup> groups = new HashMap<String, NodeGroup>();
         for (final Node node : nodes) {
             String nodeType = node.getNodeType();
@@ -68,7 +68,7 @@ public class TestbedTreeViewModel implements TreeViewModel {
         return new ArrayList<NodeGroup>(groups.values());
     }
 
-    private NodeInfo<TestbedConfiguration> getTestbedConfiguration() {
+    public NodeInfo<TestbedConfiguration> getTestbedConfiguration() {
         final ListDataProvider<TestbedConfiguration> provider = new ListDataProvider<TestbedConfiguration>(Arrays.asList(configuration));
         final Cell<TestbedConfiguration> cell = new AbstractCell<TestbedConfiguration>() {
             @Override
@@ -82,7 +82,7 @@ public class TestbedTreeViewModel implements TreeViewModel {
         return new DefaultNodeInfo<TestbedConfiguration>(provider, cell);
     }
 
-    private NodeInfo<NodeGroup> getNodeGroups() {
+    public NodeInfo<NodeGroup> getNodeGroups() {
         final ListDataProvider<NodeGroup> dataProvider = new ListDataProvider<NodeGroup>(groups);
         final Cell<NodeGroup> cell = new AbstractCell<NodeGroup>() {
             @Override
@@ -109,7 +109,7 @@ public class TestbedTreeViewModel implements TreeViewModel {
         return new DefaultNodeInfo<Node>(dataProvider, cell, nodeSelectionModel, null);
     }
 
-    private NodeInfo<?> getCapabilities(final Node value) {
+    public NodeInfo<?> getCapabilities(final Node value) {
         final ListDataProvider<Capability> dataProvider = new ListDataProvider<Capability>(value.getCapability());
         final Cell<Capability> cell = new AbstractCell<Capability>() {
             @Override
