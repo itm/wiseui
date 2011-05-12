@@ -13,7 +13,6 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.MultiSelectionModel;
-import com.google.gwt.view.client.SelectionModel;
 
 import eu.wisebed.wiseui.client.testbedselection.common.NodeGroup;
 import eu.wisebed.wiseui.client.testbedselection.common.TestbedTreeViewModel;
@@ -32,7 +31,9 @@ public class NodeTreeViewModel extends TestbedTreeViewModel{
     }
     
     private static class NodeCell extends AbstractCell<Node>{
-    	
+    	/*
+    	 * A simple cell used for rendering node information. 
+    	 */
     	private NodeCell(){}
     	
     	@Override
@@ -47,6 +48,9 @@ public class NodeTreeViewModel extends TestbedTreeViewModel{
         final ListDataProvider<Node> dataProvider = new ListDataProvider<Node>(group.getNodes());
         List<HasCell<Node, ?>> hasCells = new ArrayList<HasCell<Node, ?>>();
         hasCells.add(new HasCell<Node, Boolean>(){
+        	/*
+        	 * Add a checkbox to select indicate a node is selected.
+        	 */
         	private CheckboxCell checkbox = new CheckboxCell(true, false);
         	
         	public Cell<Boolean> getCell(){
@@ -63,6 +67,9 @@ public class NodeTreeViewModel extends TestbedTreeViewModel{
         });
         hasCells.add(new HasCell<Node, Node>(){
 
+        	/*
+        	 * Add node information.
+        	 */
         	private NodeCell cell  = new NodeCell();
         	
             public Cell<Node> getCell(){
@@ -78,6 +85,9 @@ public class NodeTreeViewModel extends TestbedTreeViewModel{
             }
         });
         nodeCell = new CompositeCell<Node>(hasCells) {
+        	/*
+        	 * Create a composite cell which consist of a checkbox and a regular cell.
+        	 */
     		@Override
     		public void render(Context context, Node value, SafeHtmlBuilder sb) {
     			sb.appendHtmlConstant("<table><tbody><tr>");
