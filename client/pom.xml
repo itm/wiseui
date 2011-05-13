@@ -116,7 +116,7 @@
                         <goals>
                             <goal>generateAsync</goal>
                             <goal>compile</goal>
-                            <!--goal>test</goal-->
+                            <goal>test</goal>
                             <!--goal>i18n</goal-->
                             <goal>resources</goal>
                         </goals>
@@ -126,6 +126,7 @@
                     <runTarget>WiseUi.html</runTarget>
                     <hostedWebapp>${webappDirectory}</hostedWebapp>
                     <debugSuspend>false</debugSuspend>
+                    <includes>**/*GwtTest.java</includes>
                 </configuration>
             </plugin>
             <!-- Copy static web files before executing gwt:run -->

@@ -114,7 +114,7 @@ public class ReservationPresenter implements Presenter, MissingReservationParame
         final String rsEndpointUrl = bed.getRsEndpointUrl();
         final String urnPrefix = bed.getUrnPrefixList().get(0);
         final AuthenticationManager auth = injector.getAuthenticationManager();
-        SecretAuthenticationKey secretAuthKey = auth.getKeyHash().get(urnPrefix);
+        SecretAuthenticationKey secretAuthKey = auth.getMap().get(urnPrefix);
         // FIXME: Retrieve reservation details from google cal;
         final ReservationDetails data = null;
 //        reservationService.makeReservation(secretAuthKey, rsEndpointUrl, data, new AsyncCallback<SecretReservationKey>() {

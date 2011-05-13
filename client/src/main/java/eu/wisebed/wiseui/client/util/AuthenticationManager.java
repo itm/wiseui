@@ -39,7 +39,8 @@ public class AuthenticationManager {
 
 	private final List<SecretAuthenticationKey> secretAuthenticationKeys = Lists.newLinkedList();
 
-	private final HashMap<String, SecretAuthenticationKey> map = new HashMap<String, SecretAuthenticationKey>();
+	private final HashMap<String, SecretAuthenticationKey> map 
+		= new HashMap<String, SecretAuthenticationKey>();
 	
 	/**
 	 * Load all authentication keys from the cookie.
@@ -72,16 +73,22 @@ public class AuthenticationManager {
 	}
 
 	private SecretAuthenticationKey deserialize(final String token) {
-		final String[] tokens = token.split(SEPARATOR, 4);
+		final String[] tokens = token.split(SEPARATOR, 5);
 		final SecretAuthenticationKey key = new SecretAuthenticationKey();
 		key.setUrnPrefix(tokens[1]);
 		key.setUsername(tokens[2]);
 		key.setSecretAuthenticationKey(tokens[3]);
+		key.setSecretAuthenticationKeyID((new Integer(tokens[4])).intValue());
 		return key;
 	}
 
 	private String serialize(final SecretAuthenticationKey key) {
-		return Joiner.on(SEPARATOR).join(NAME, key.getUrnPrefix(), key.getUsername(), key.getSecretAuthenticationKey());
+		return Joiner.on(SEPARATOR).join(NAME,
+				key.getUrnPrefix(),
+				key.getUsername(),
+				key.getSecretAuthenticationKey(),
+				key.getSecretAuthenticationKeyID()
+		);
 	}
 
 	private String toCookieName(final SecretAuthenticationKey key) {
@@ -101,7 +108,7 @@ public class AuthenticationManager {
 		return secretAuthenticationKeys;
 	}
 
-	public HashMap<String, SecretAuthenticationKey> getKeyHash(){
+	public HashMap<String, SecretAuthenticationKey> getMap(){
 		return map;
 	}
 	

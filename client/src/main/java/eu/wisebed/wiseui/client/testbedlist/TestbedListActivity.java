@@ -230,7 +230,7 @@ public class TestbedListActivity  extends AbstractActivity implements Presenter,
      */
     @Override
     public boolean isAuthenticated(TestbedConfiguration testbedConfiguration) {
-        for (String authenticatedUrnPrefix : authenticationManager.getKeyHash().keySet()) {
+        for (String authenticatedUrnPrefix : authenticationManager.getMap().keySet()) {
             for (String configurationUrnPrefix : testbedConfiguration.getUrnPrefixList()) {
                 if (authenticatedUrnPrefix.equals(configurationUrnPrefix)) {
                     return true;
