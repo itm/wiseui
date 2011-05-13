@@ -16,9 +16,6 @@
  */
 package eu.wisebed.wiseui.client.reservation.presenter;
 
-import java.util.Date;
-import java.util.List;
-
 import com.bradrydzewski.gwt.calendar.client.Appointment;
 import com.bradrydzewski.gwt.calendar.client.event.DeleteEvent;
 import com.bradrydzewski.gwt.calendar.client.event.DeleteHandler;
@@ -36,10 +33,9 @@ import com.google.gwt.place.shared.PlaceChangeEvent;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
-
+import eu.wisebed.wiseui.api.CalendarServiceAsync;
 import eu.wisebed.wiseui.api.ReservationService;
 import eu.wisebed.wiseui.api.ReservationServiceAsync;
-import eu.wisebed.wiseui.api.CalendarServiceAsync;
 import eu.wisebed.wiseui.client.reservation.view.PublicReservationsView;
 import eu.wisebed.wiseui.client.testbedlist.event.TestbedSelectedEvent;
 import eu.wisebed.wiseui.client.testbedselection.event.ThrowableEvent;
@@ -47,6 +43,9 @@ import eu.wisebed.wiseui.client.util.EventBusManager;
 import eu.wisebed.wiseui.shared.dto.PublicReservationData;
 import eu.wisebed.wiseui.shared.dto.TestbedConfiguration;
 import eu.wisebed.wiseui.widgets.messagebox.MessageBox;
+
+import java.util.Date;
+import java.util.List;
 
 /**
  * @author John I. Gakos
@@ -169,9 +168,12 @@ public class PublicReservationsPresenter implements PublicReservationsView.Prese
         view.getLoadingIndicator().showLoading("Reservations");
 
         // Logging
-        String testbedName = "<unknown>";
-        if (testbedConfiguration != null) testbedName = testbedConfiguration.getName();
+        String testbedName = "<Unknown testbed>";
+        if (testbedConfiguration != null) {
+            testbedName = testbedConfiguration.getName();
+        }
         GWT.log("Loading public reservations for Testbed '" + testbedName + "'");
+
         if (testbedConfiguration == null) {
             final String errorMessage = "Reservation URL not found for Testbed '" + testbedName + "'";
             GWT.log(errorMessage);
@@ -181,15 +183,19 @@ public class PublicReservationsPresenter implements PublicReservationsView.Prese
         }
 
         // Remove all current calendar entries
-        view.removeAllReservations();
+        view.removeAllAppointments();
 
+        // Determine the date range, which shall be passed to the remote call
         ReservationService.Range range;
-        if (view.getCalendar().getDays() == ONE_DAY) {
-            range = ReservationService.Range.ONE_DAY;
-        } else if (view.getCalendar().getDays() == WEEK) {
-            range = ReservationService.Range.WEEK;
-        } else {
-            range = ReservationService.Range.MONTH;
+        switch (view.getCalendar().getDays()) {
+            case ONE_DAY:
+                range = ReservationService.Range.ONE_DAY;
+                break;
+            case WEEK:
+                range = ReservationService.Range.WEEK;
+                break;
+            default:
+                range = ReservationService.Range.MONTH;
         }
 
         // Make the service call
@@ -203,9 +209,7 @@ public class PublicReservationsPresenter implements PublicReservationsView.Prese
 
                     public void onSuccess(final List<PublicReservationData> publicReservations) {
                         if (publicReservations == null || publicReservations.isEmpty()) {
-                            final String errorMessage = "No public reservation data found.";
-                            GWT.log(errorMessage);
-                            MessageBox.warning("Error fetching reservation data!", errorMessage, null);
+                            GWT.log("No public reservation data found.");
                         } else {
                             // Render the {@link eu.wisebed.wiseui.shared.dto.ReservationDetails}
                             view.renderPublicReservations(publicReservations);
@@ -218,23 +222,29 @@ public class PublicReservationsPresenter implements PublicReservationsView.Prese
 
     public void handleBackClicked() {
         final Date current = view.getCalendar().getDate();
-        if (view.getCalendar().getDays() == ONE_DAY) {
-            subtractDays(current, ONE_DAY);
-        } else if (view.getCalendar().getDays() == WEEK) {
-            subtractDays(current, WEEK);
-        } else {
-            subtractMonth(current);
+        switch (view.getCalendar().getDays()) {
+            case ONE_DAY:
+                subtractDays(current, ONE_DAY);
+                break;
+            case WEEK:
+                subtractDays(current, WEEK);
+                break;
+            default:
+                subtractMonth(current);
         }
     }
 
     public void handleForwardClicked() {
         final Date current = view.getCalendar().getDate();
-        if (view.getCalendar().getDays() == ONE_DAY) {
-            addDays(current, ONE_DAY);
-        } else if (view.getCalendar().getDays() == WEEK) {
-            addDays(current, WEEK);
-        } else {
-            addMonth(current);
+        switch (view.getCalendar().getDays()) {
+            case ONE_DAY:
+                addDays(current, ONE_DAY);
+                break;
+            case WEEK:
+                addDays(current, WEEK);
+                break;
+            default:
+                addMonth(current);
         }
     }
 

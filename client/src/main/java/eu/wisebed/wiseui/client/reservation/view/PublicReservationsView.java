@@ -47,7 +47,7 @@ public interface PublicReservationsView extends IsWidget {
 
     void addReservation(PublicReservationData reservationData);
 
-    void removeAllReservations();
+    void removeAllAppointments();
 
     Calendar getCalendar();
 

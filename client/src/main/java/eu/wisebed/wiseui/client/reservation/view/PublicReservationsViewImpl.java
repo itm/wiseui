@@ -130,7 +130,7 @@ public class PublicReservationsViewImpl extends Composite implements PublicReser
     }
 
     @Override
-    public void removeAllReservations() {
+    public void removeAllAppointments() {
         calendarPanel.clearAppointments();
     }
 
