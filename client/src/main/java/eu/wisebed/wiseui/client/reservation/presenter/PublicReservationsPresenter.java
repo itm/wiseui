@@ -36,6 +36,7 @@ import com.google.inject.Inject;
 import eu.wisebed.wiseui.api.CalendarServiceAsync;
 import eu.wisebed.wiseui.api.ReservationService;
 import eu.wisebed.wiseui.api.ReservationServiceAsync;
+import eu.wisebed.wiseui.client.WiseUiGinjector;
 import eu.wisebed.wiseui.client.reservation.view.PublicReservationsView;
 import eu.wisebed.wiseui.client.testbedlist.event.TestbedSelectedEvent;
 import eu.wisebed.wiseui.client.testbedselection.event.ThrowableEvent;
@@ -55,6 +56,7 @@ public class PublicReservationsPresenter implements PublicReservationsView.Prese
         TestbedSelectedEvent.ConfigurationSelectedHandler,
         ThrowableEvent.ThrowableHandler, PlaceChangeEvent.Handler {
 
+	private WiseUiGinjector injector;
     private final EventBusManager eventBus;
     private final PublicReservationsView view;
     private final ReservationServiceAsync service;
@@ -62,10 +64,12 @@ public class PublicReservationsPresenter implements PublicReservationsView.Prese
     private TestbedConfiguration testbedConfiguration;
 
     @Inject
-    public PublicReservationsPresenter(final EventBus eventBus,
+    public PublicReservationsPresenter(final WiseUiGinjector injector,
+    								   final EventBus eventBus,
                                        final PublicReservationsView view,
                                        final ReservationServiceAsync service,
                                        final CalendarServiceAsync calendarService) {
+    	this.injector = injector;
         this.eventBus = new EventBusManager(eventBus);
         this.view = view;
         this.service = service;
@@ -111,12 +115,14 @@ public class PublicReservationsPresenter implements PublicReservationsView.Prese
                 }
             }
         });
+        // TODO Check for authorization, apply changes in reservation system
         view.getCalendar().addTimeBlockClickHandler(new TimeBlockClickHandler<Date>() {
             @Override
             public void onTimeBlockClick(TimeBlockClickEvent<Date> event) {
-                Date startDate = event.getTarget();
+                injector.getReservationPresenter().showEditReservationDialog();
                 // TODO Show popup to create a new reservation an add to the calendar.
                 // This new reservation has to be sent back to the reservation system.
+                
                 GWT.log("Time block clicked");
             }
         });

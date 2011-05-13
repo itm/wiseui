@@ -34,8 +34,6 @@ public class NodeTreeViewModel extends TestbedTreeViewModel{
     	/*
     	 * A simple cell used for rendering node information. 
     	 */
-    	private NodeCell(){}
-    	
     	@Override
         public void render(final Context context, final Node value, final SafeHtmlBuilder sb) {
             if (value != null) {

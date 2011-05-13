@@ -2,7 +2,6 @@ package eu.wisebed.wiseui.client.reservation.view;
 
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.SplitLayoutPanel;
 import com.google.inject.ImplementedBy;
 
 @ImplementedBy(ReservationViewImpl.class)
@@ -15,5 +14,8 @@ public interface ReservationView extends IsWidget {
     AcceptsOneWidget getNodeSelectionPanel();
 
     public interface Presenter {
+    	
+    	void showEditReservationDialog();
+    	
     }
 }

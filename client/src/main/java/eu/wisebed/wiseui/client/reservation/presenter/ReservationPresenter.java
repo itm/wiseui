@@ -24,6 +24,7 @@ import com.google.inject.Inject;
 import eu.wisebed.wiseui.api.ReservationServiceAsync;
 import eu.wisebed.wiseui.client.WiseUiGinjector;
 import eu.wisebed.wiseui.client.main.WiseUiPlace;
+import eu.wisebed.wiseui.client.reservation.event.EditReservationEvent;
 import eu.wisebed.wiseui.client.reservation.event.MissingReservationParametersEvent;
 import eu.wisebed.wiseui.client.reservation.event.MissingReservationParametersEventHandler;
 import eu.wisebed.wiseui.client.reservation.event.ReservationFailedEvent;
@@ -149,5 +150,10 @@ public class ReservationPresenter implements Presenter, MissingReservationParame
 
     public void onReservationFailed(final ReservationFailedEvent event) {
         MessageBox.error(messages.reservationFailedTitle(), messages.reservationFailed(), null, null);
+    }
+    
+    public void showEditReservationDialog(){
+    	GWT.log("Fire event to show edit reservation dialog...");
+    	eventBus.fireEventFromSource(new EditReservationEvent(), this);
     }
 }

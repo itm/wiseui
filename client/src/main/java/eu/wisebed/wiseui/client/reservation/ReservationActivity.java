@@ -26,9 +26,11 @@ import eu.wisebed.wiseui.client.WiseUiGinjector;
 import eu.wisebed.wiseui.client.main.WiseUiPlace;
 import eu.wisebed.wiseui.client.reservation.presenter.NodeSelectionPresenter;
 import eu.wisebed.wiseui.client.reservation.presenter.PublicReservationsPresenter;
+import eu.wisebed.wiseui.client.reservation.presenter.ReservationEditPresenter;
 import eu.wisebed.wiseui.client.reservation.presenter.ReservationPresenter;
 import eu.wisebed.wiseui.client.reservation.view.NodeSelectionView;
 import eu.wisebed.wiseui.client.reservation.view.PublicReservationsView;
+import eu.wisebed.wiseui.client.reservation.view.ReservationEditView;
 import eu.wisebed.wiseui.client.reservation.view.ReservationView;
 
 /**
@@ -63,6 +65,8 @@ public class ReservationActivity extends AbstractActivity {
 
         initPublicReservationsPanel(reservationView);
 
+        initReservationEdit();
+        
         reservationPresenter.bindEnabledViewEvents();
     }
 
@@ -80,6 +84,12 @@ public class ReservationActivity extends AbstractActivity {
         final PublicReservationsView publicReservationsView = injector.getPublicReservationsView();
         publicReservationsView.setPresenter(publicReservationsPresenter);
         reservationView.getReservationPanel().setWidget(publicReservationsView.asWidget());
+    }
+    
+    private void initReservationEdit(){
+    	final ReservationEditPresenter reservationEditPresenter = injector.getReservationEditPresenter();
+    	final ReservationEditView reservationEditView = injector.getReservationEditView();
+    	reservationEditView.setPresenter(reservationEditPresenter);
     }
 
     public void setPlace(final WiseUiPlace place) {

@@ -1,27 +1,19 @@
 package eu.wisebed.wiseui.client.reservation.presenter;
 
 import com.bradrydzewski.gwt.calendar.client.Appointment;
-import com.google.common.base.Objects;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
 import com.google.inject.Inject;
 import eu.wisebed.wiseui.api.TestbedConfigurationServiceAsync;
 import eu.wisebed.wiseui.client.reservation.event.EditReservationEvent;
 import eu.wisebed.wiseui.client.reservation.view.ReservationEditView;
-import eu.wisebed.wiseui.client.testbedlist.event.EditTestbedEvent;
-import eu.wisebed.wiseui.client.testbedlist.event.RefreshTestbedListEvent;
-import eu.wisebed.wiseui.client.testbedlist.view.TestbedEditView;
-import eu.wisebed.wiseui.client.testbedlist.view.TestbedEditView.Presenter;
+import eu.wisebed.wiseui.client.reservation.view.ReservationEditView.Presenter;
 import eu.wisebed.wiseui.client.util.EventBusManager;
 import eu.wisebed.wiseui.shared.dto.TestbedConfiguration;
 import eu.wisebed.wiseui.widgets.messagebox.MessageBox;
 import eu.wisebed.wiseui.widgets.messagebox.MessageBox.Button;
-
-import java.util.ArrayList;
-import java.util.Arrays;
 
 /**
  * @author Soenke Nommensen
@@ -95,6 +87,8 @@ public class ReservationEditPresenter implements Presenter, EditReservationEvent
 
     @Override
     public void onEditReservation(final EditReservationEvent event) {
+    	GWT.log("Pop up for editing reservation...");
+    	view.show("New Reservation");
 //        configuration = Objects.firstNonNull(event.getAppointment(), new TestbedConfiguration());
 //        title = Objects.firstNonNull(configuration.getName(), DEFAULT_NEW_TITLE);
 //        view.show(title);
