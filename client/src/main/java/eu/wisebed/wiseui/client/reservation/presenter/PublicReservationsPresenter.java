@@ -119,7 +119,10 @@ public class PublicReservationsPresenter implements PublicReservationsView.Prese
         view.getCalendar().addTimeBlockClickHandler(new TimeBlockClickHandler<Date>() {
             @Override
             public void onTimeBlockClick(TimeBlockClickEvent<Date> event) {
-                injector.getReservationPresenter().showEditReservationDialog();
+            	Date startDate = event.getTarget();
+            	Appointment reservation = new Appointment();
+            	reservation.setStart(startDate);
+                injector.getReservationPresenter().showEditReservationDialog(reservation);
                 // TODO Show popup to create a new reservation an add to the calendar.
                 // This new reservation has to be sent back to the reservation system.
                 

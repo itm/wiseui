@@ -89,6 +89,7 @@ public class ReservationEditPresenter implements Presenter, EditReservationEvent
     public void onEditReservation(final EditReservationEvent event) {
     	GWT.log("Pop up for editing reservation...");
     	view.show("New Reservation");
+    	view.getStartDateBox().setValue(event.getAppointment().getStart());
 //        configuration = Objects.firstNonNull(event.getAppointment(), new TestbedConfiguration());
 //        title = Objects.firstNonNull(configuration.getName(), DEFAULT_NEW_TITLE);
 //        view.show(title);

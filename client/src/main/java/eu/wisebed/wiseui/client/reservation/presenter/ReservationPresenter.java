@@ -16,6 +16,7 @@
  */
 package eu.wisebed.wiseui.client.reservation.presenter;
 
+import com.bradrydzewski.gwt.calendar.client.Appointment;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.place.shared.PlaceController;
@@ -45,6 +46,7 @@ import eu.wisebed.wiseui.shared.exception.ReservationConflictException;
 import eu.wisebed.wiseui.shared.exception.ReservationException;
 import eu.wisebed.wiseui.widgets.messagebox.MessageBox;
 
+import java.util.Date;
 import java.util.List;
 
 public class ReservationPresenter implements Presenter, MissingReservationParametersEventHandler,
@@ -152,8 +154,8 @@ public class ReservationPresenter implements Presenter, MissingReservationParame
         MessageBox.error(messages.reservationFailedTitle(), messages.reservationFailed(), null, null);
     }
     
-    public void showEditReservationDialog(){
+    public void showEditReservationDialog(final Appointment reservation){
     	GWT.log("Fire event to show edit reservation dialog...");
-    	eventBus.fireEventFromSource(new EditReservationEvent(), this);
+    	eventBus.fireEventFromSource(new EditReservationEvent(reservation), this);
     }
 }

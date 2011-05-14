@@ -32,18 +32,14 @@ public class EditReservationEvent extends GwtEvent<EditReservationEvent.Handler>
 
 	public static final Type<Handler> TYPE = new Type<Handler>();
 
-	private final Appointment appointment;
+	private final Appointment reservation;
 
-	public EditReservationEvent() {
-		appointment = null;
-	}
-
-	public EditReservationEvent(final Appointment configuration) {
-		this.appointment = configuration;
+	public EditReservationEvent(final Appointment reservation) {
+		this.reservation = reservation;
 	}
 
 	public Appointment getAppointment() {
-		return appointment;
+		return this.reservation;
 	}
 
 	@Override

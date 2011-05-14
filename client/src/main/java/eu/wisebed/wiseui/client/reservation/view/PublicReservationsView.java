@@ -23,7 +23,6 @@ import com.bradrydzewski.gwt.calendar.client.Appointment;
 import com.bradrydzewski.gwt.calendar.client.Calendar;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.datepicker.client.DateBox;
-import com.google.gwt.user.datepicker.client.DatePicker;
 import com.google.inject.ImplementedBy;
 
 import eu.wisebed.wiseui.shared.dto.PublicReservationData;
