@@ -18,7 +18,6 @@ import com.google.inject.Inject;
 import eu.wisebed.wiseui.api.TestbedConfigurationServiceAsync;
 import eu.wisebed.wiseui.client.WiseUiGinjector;
 import eu.wisebed.wiseui.client.main.WiseUiPlace;
-import eu.wisebed.wiseui.client.testbedlist.event.DeleteTestbedEvent;
 import eu.wisebed.wiseui.client.testbedlist.event.EditTestbedEvent;
 import eu.wisebed.wiseui.client.testbedlist.event.RefreshTestbedListEvent;
 import eu.wisebed.wiseui.client.testbedlist.event.ShowLoginDialogEvent;

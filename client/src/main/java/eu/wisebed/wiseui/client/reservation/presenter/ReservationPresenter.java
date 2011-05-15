@@ -155,7 +155,6 @@ public class ReservationPresenter implements Presenter, MissingReservationParame
     }
     
     public void showEditReservationDialog(final Appointment reservation){
-    	GWT.log("Fire event to show edit reservation dialog...");
     	eventBus.fireEventFromSource(new EditReservationEvent(reservation), this);
     }
 }

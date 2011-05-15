@@ -35,7 +35,6 @@ import com.google.gwt.view.client.HasData;
 import com.google.gwt.view.client.SelectionModel;
 import com.google.inject.Singleton;
 import eu.wisebed.wiseui.widgets.HasWidgetsDialogBox;
-import eu.wisebed.wiseui.widgets.ImageUploadWidget;
 
 import java.util.Date;
 
@@ -49,8 +48,6 @@ public class ReservationEditViewImpl extends HasWidgetsDialogBox implements Rese
 
     interface ReservationEditViewImplUiBinder extends UiBinder<Widget, ReservationEditViewImpl> {
     }
-
-    private ImageUploadWidget imageWidget = new ImageUploadWidget();
     
     @UiField
     TextBox whoTextBox;
