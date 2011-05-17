@@ -32,6 +32,7 @@ import eu.wisebed.wiseui.client.reservation.gin.ReservationGinjector;
 import eu.wisebed.wiseui.client.testbedlist.TestbedListGinjector;
 import eu.wisebed.wiseui.client.testbedselection.gin.TestbedSelectionGinjector;
 import eu.wisebed.wiseui.client.util.AuthenticationManager;
+import eu.wisebed.wiseui.client.util.ReservationManager;
 
 
 /**
@@ -45,6 +46,8 @@ import eu.wisebed.wiseui.client.util.AuthenticationManager;
 public interface WiseUiGinjector extends Ginjector, NavigationGinjector, TestbedListGinjector, TestbedSelectionGinjector, ReservationGinjector, ExperimentationGinjector {
 
     AuthenticationManager getAuthenticationManager();
+    
+    ReservationManager getReservationManager();
 
     EventBus getEventBus();
 

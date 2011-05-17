@@ -29,5 +29,4 @@ public class SecretReservationKey implements Serializable {
 	public String getSecretReservationKey() {
 		return secretReservationKey;
 	}
-
 }

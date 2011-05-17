@@ -3,9 +3,12 @@ package eu.wisebed.wiseui.client.experimentation.presenter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.place.shared.PlaceChangeEvent;
+import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 
@@ -13,124 +16,92 @@ import eu.wisebed.wiseui.api.ReservationServiceAsync;
 import eu.wisebed.wiseui.client.WiseUiGinjector;
 import eu.wisebed.wiseui.client.experimentation.view.ExperimentView;
 import eu.wisebed.wiseui.client.experimentation.view.ExperimentationView;
-import eu.wisebed.wiseui.client.experimentation.view.ExperimentationView.Presenter;
+import eu.wisebed.wiseui.client.main.WiseUiPlace;
+import eu.wisebed.wiseui.client.testbedlist.event.TestbedSelectedEvent;
+import eu.wisebed.wiseui.client.testbedselection.event.ThrowableEvent;
+import eu.wisebed.wiseui.client.util.EventBusManager;
 import eu.wisebed.wiseui.shared.dto.ReservationDetails;
+import eu.wisebed.wiseui.shared.dto.SecretReservationKey;
+import eu.wisebed.wiseui.shared.dto.TestbedConfiguration;
 import eu.wisebed.wiseui.shared.exception.ExperimentationException;
 import eu.wisebed.wiseui.shared.dto.SecretAuthenticationKey;
 import eu.wisebed.wiseui.widgets.messagebox.MessageBox;
 
 
-public class ExperimentationPresenter implements Presenter{
+public class ExperimentationPresenter implements ExperimentationView.Presenter,
+	TestbedSelectedEvent.ConfigurationSelectedHandler,
+	ThrowableEvent.ThrowableHandler, PlaceChangeEvent.Handler {
 
 	private final WiseUiGinjector injector;
 	private ExperimentationView view;
+    private WiseUiPlace place;
 	private ReservationServiceAsync service;
-
+	private EventBusManager eventBus;
+    private TestbedConfiguration testbedConfiguration;
 
 	@Inject
 	public ExperimentationPresenter(final WiseUiGinjector injector,
-			final ExperimentationView view,final EventBus eventBus,
-			final ReservationServiceAsync service){
+									final ReservationServiceAsync service,
+									final ExperimentationView view,
+	                                final PlaceController placeController,
+									final EventBus eventBus){
 		this.injector = injector;
-		
-		this.view = view;
-		view.setPresenter(this);
-
 		this.service = service;
+		this.view = view;
+		this.placeController = placeController;
+		this.eventBus = new EventBusManager(eventBus);
+		bind();
 	}
 
 	public void setView(final ExperimentationView view) {
 		this.view = view;
 	}
-
-	public ExperimentationView getView() {
-		return view;
+	
+	public void setPlace(WiseUiPlace place) {
+		this.place = place;
 	}
+	
+	public void bind(){
+		eventBus.addHandler(PlaceChangeEvent.TYPE, this);
+        eventBus.addHandler(TestbedSelectedEvent.TYPE, this);
+        eventBus.addHandler(ThrowableEvent.TYPE, this);
+	}
+	
+	@Override
+    public void onTestbedSelected(final TestbedSelectedEvent event) {
+		getUserReservations();
+    }
+
+    @Override
+    public void onPlaceChange(final PlaceChangeEvent event) {
+    	eventBus.removeAll();
+    }
 
 	@SuppressWarnings("deprecation")
 	@Override
 	public void getUserReservations() {
 		
-		// Let's see ...
-		// 
-		// Let the user being authenticated in N testbeds and has already made M reservations
-		// 
-		// 1. Retrieve testbed credentials of user that includes both N s.a.k and M s.r.k
-		// 	  (Retrieved from local storage)
-		// 2. With those credentials retrieve users reservations
-		// 	  (Look up on the remote services)
-		// 3. Bring them back and print them on the views
+        // retrieve configured testbed
+        String testbedName = "<Unknown testbed>";
+        if (testbedConfiguration != null) {
+            testbedName = testbedConfiguration.getName();
+        }
+        GWT.log("Loading reservations for Testbed '" + testbedName + "'");
+
+        if (testbedConfiguration == null) {
+            final String errorMessage = "rs endpoint URL not found for Testbed '" + testbedName + "'";
+            GWT.log(errorMessage);
+            MessageBox.warning("Configuration could not be loaded!",
+            		errorMessage,
+                    null);
+        }
 		
-		final List<ExperimentView> experimentViews = 
-			new ArrayList<ExperimentView>();
+		// retrieve secret reservation keys stored in cookies
+        // assuming one urn prefix
+		List<SecretReservationKey> filteredKeys = 
+			injector.getReservationManager().getFilteredSecretReservationKeys(
+					testbedConfiguration.getUrnPrefixList().get(0));
 		
-//		// TODO this multikey multilogin issue should be rediscussed in my opinion as far as experimentation is concerned
-//		@SuppressWarnings("unchecked")
-//		Collection<SecretAuthenticationKey> keys =  injector.getAuthenticationManager().getKeyHash().values();
-//		SecretAuthenticationKey key = keys.iterator().next();
-//		if(key == null){
-//			GWT.log("ExperimentPresenter.getUserReservations : key is null");
-//			return;
-//		}
-//		// dont like it one bit...
-
-		
-		// setup rpc callback
-		AsyncCallback<List<ReservationDetails>> callback = 
-			new AsyncCallback<List<ReservationDetails>>(){
-
-			@Override
-			public void onFailure(Throwable caught) {
-				if(caught instanceof ExperimentationException) {
-					GWT.log(caught.getMessage());
-				}				
-			}
-
-			@Override
-			public void onSuccess(List<ReservationDetails> result) {
-
-				if(result == null) {
-					MessageBox.info("No reservations found", "No reservations found", null);
-					return;
-				}
-
-				for(ReservationDetails reservation : result) {
-					final ExperimentPresenter experiment = injector.getExperimentPresenter();
-
-                    // TODO FIXME
-//					experiment.initialize(reservation.getReservationid(),
-//							reservation.getStartTime(), reservation.getStopTime(),
-//							reservation.getSensors(),
-//							reservation.getImageFileName(),
-//							reservation.getUrnPrefix(),new Callback() { // TODO GINject callback to experiment presenter
-//
-//						@Override
-//						public void onButtonClicked(Button button) {
-//							switch(button){
-//							case START:
-//								experiment.setAsRunningExperiment();
-//								break;
-//							case STOP:
-//								experiment.setAsTerminatedExperiment();
-//								break;
-//							case SHOWHIDE:
-//								experiment.getView().showHideNodeOutput();
-//								break;
-//							case CANCEL:
-//								experiment.setAsCancelledExperiment();
-//								break;
-//							}
-//						}
-//					});
-					experimentViews.add(experiment.getView());
-					
-					// fist clear the experiment container and then add the new panels
-					view.resetExperimentContainer();
-					view.initView(experimentViews);
-				}
-			}
-		};
-
 		// make the rpc
 //		service.getUserReservations(key, callback);
 	}

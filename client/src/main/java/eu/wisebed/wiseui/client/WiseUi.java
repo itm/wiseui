@@ -51,8 +51,9 @@ public class WiseUi implements EntryPoint {
         // Goes to place represented on URL or default place
         injector.getPlaceHistoryHandler().handleCurrentHistory();
 
-        // Init session.
+        // Init authentication & reservation manager.
         injector.getAuthenticationManager().init();
+        injector.getReservationManager().init();
 
         hideLoadingIndicator();
     }

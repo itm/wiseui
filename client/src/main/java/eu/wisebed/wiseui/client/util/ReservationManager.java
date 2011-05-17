@@ -1,5 +1,6 @@
 package eu.wisebed.wiseui.client.util;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -125,10 +126,25 @@ public class ReservationManager {
 	}
 
 	/**
-	 * Return
-	 * @return SecretAuthenticationKey-to-SecretReservationKey map
+	 * Return the map
+	 * @return SecretReservationKey-to-SecretAuthenticationKey map
 	 */
 	public HashMap<SecretReservationKey,SecretAuthenticationKey> getMap(){
 		return map;
+	}
+	
+	/**
+	 * Return set of filter secret reservation keys according to urn prefix of keys
+	 */
+	public List<SecretReservationKey> getFilteredSecretReservationKeys(final String urnPrefix)
+	{
+		List<SecretReservationKey> filteredKeys = 
+			new ArrayList<SecretReservationKey>();
+		for(SecretReservationKey key : map.keySet()) {
+			if(key.getUrnPrefix() == urnPrefix){
+				filteredKeys.add(key);
+			}
+		}
+		return filteredKeys;
 	}
 }
