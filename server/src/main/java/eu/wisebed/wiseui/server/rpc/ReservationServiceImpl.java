@@ -48,6 +48,7 @@ import eu.wisebed.testbed.api.wsn.WSNServiceHelper;
 //import eu.wisebed.testbed.api.wsn.v22.SecretReservationKey;
 import eu.wisebed.testbed.api.wsn.v22.SessionManagement;
 import eu.wisebed.wiseui.api.ReservationService;
+import eu.wisebed.wiseui.shared.common.Checks;
 import eu.wisebed.wiseui.shared.dto.Node;
 import eu.wisebed.wiseui.shared.dto.PublicReservationData;
 import eu.wisebed.wiseui.shared.dto.ReservationDetails;
@@ -116,18 +117,6 @@ public class ReservationServiceImpl extends RemoteServiceServlet implements Rese
      */
     public String cancelReservation(final String sessionId,
                                     final int reservationId) throws ReservationException {
-        // TODO: Add functionality while integrating
-        return null;
-    }
-
-    /**
-     * Get all reservations made by a user.
-     *
-     * @return an <code>ArrayList</code> of <code>ReservationDetails</code>.
-     *         objects that are the reservations madey by a user.
-     */
-    public final List<ReservationDetails> getUserReservations(
-            final SecretAuthenticationKey key) throws ReservationException {
         // TODO: Add functionality while integrating
         return null;
     }
@@ -338,4 +327,34 @@ public class ReservationServiceImpl extends RemoteServiceServlet implements Rese
         return xmlGregorianCalendar;
     }
 
-}
+	
+    /**
+     * Get all reservations made by a user.
+     *
+     * @return an <code>ArrayList</code> of <code>ReservationDetails</code>.
+     *         objects that are the reservations made by a user's 
+     *         respected <code>SecretAuthenticationKey</code> keys 
+     */
+    @Override
+	public List<ReservationDetails> getUserReservations(
+			List<SecretReservationKey> keys, String rsEndpointUrl)
+			throws ReservationException {
+    	
+    	// testbed rsEndpointUrl
+    	LOGGER.info("rsEndpointUrl : " + rsEndpointUrl);
+    	
+    	// check reservation keys if empty
+    	try{
+    		Checks.ifNullOrEmpty(keys, "Keys sent are either null or empty");
+    	}catch(Exception e){
+    		throw new ReservationException("SecretReservationKeys are either null or empty");
+    	}
+    	
+    	// sent reservation keys are valid retrieve reservations
+    	if(true){
+    		throw new ReservationException("No reservations found");
+    	}
+    	
+    	return null;
+	}
+ }

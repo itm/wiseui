@@ -76,7 +76,8 @@ public class Checks {
      * @param message    Error message
      * @throws RuntimeException
      */
-    public static void ifNullOrEmpty(final Collection collection, final String message) {
+    @SuppressWarnings("rawtypes")
+    public static void ifNullOrEmpty( final Collection collection, final String message) {
         check(collection != null && !collection.isEmpty(), message);
     }
 }

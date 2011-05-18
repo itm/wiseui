@@ -38,7 +38,8 @@ public interface ReservationService extends RemoteService {
     		Range range);
 
     List<ReservationDetails> getUserReservations(
-    		SecretAuthenticationKey key) 
+    		List<SecretReservationKey> keys,
+    		String rsEndpointUrl) 
     		throws
     		ReservationException;
 

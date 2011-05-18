@@ -1,16 +1,15 @@
 package eu.wisebed.wiseui.client.experimentation.view;
 
-import java.util.List;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Singleton;
 
-import eu.wisebed.wiseui.client.experimentation.view.ExperimentView;
+import eu.wisebed.wiseui.widgets.CaptionPanel;
+import eu.wisebed.wiseui.widgets.loading.HasLoadingIndicator;
 
 @Singleton
 public class ExperimentationViewImpl extends Composite implements
@@ -26,13 +25,16 @@ public class ExperimentationViewImpl extends Composite implements
     private Presenter presenter;
         
     @UiField
-    FlowPanel experimentContainer;
+    CaptionPanel container;
+    @UiField
+    SimplePanel experimentContainer;
     
     public ExperimentationViewImpl() {
         initWidget(uiBinder.createAndBindUi(this));
     }
 
     public void setPresenter(final Presenter presenter) {
+        GWT.log("setPresenter( " + presenter.toString() + " )");
     	this.presenter = presenter;
     }
 
@@ -42,14 +44,13 @@ public class ExperimentationViewImpl extends Composite implements
 	}
 
 	@Override
-	public void initView(List<ExperimentView> experimentViews) {
-		for(ExperimentView view : experimentViews){
-			experimentContainer.add(view);
-		}
+	public HasLoadingIndicator getLoadingIndicator() {
+		return container;
 	}
-	
+
 	@Override
-	public void resetExperimentContainer(){ // TODO temporary fix
-		experimentContainer.clear();
+	public void renderUserReservations() {
+		container.showLoading("Loading Experiments");		
+		container.hideLoading();
 	}
 }
