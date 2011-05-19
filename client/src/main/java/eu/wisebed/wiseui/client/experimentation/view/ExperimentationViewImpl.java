@@ -1,13 +1,19 @@
 package eu.wisebed.wiseui.client.experimentation.view;
 
+import java.util.List;
+
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.ui.PushButton;
+import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Singleton;
 
+import eu.wisebed.wiseui.shared.dto.ReservationDetails;
 import eu.wisebed.wiseui.widgets.CaptionPanel;
 import eu.wisebed.wiseui.widgets.loading.HasLoadingIndicator;
 
@@ -26,15 +32,19 @@ public class ExperimentationViewImpl extends Composite implements
         
     @UiField
     CaptionPanel container;
+    
     @UiField
-    SimplePanel experimentContainer;
+    VerticalPanel experimentContainer;
+ 
+    @UiField
+    PushButton refreshExperimentsButton;
+
     
     public ExperimentationViewImpl() {
         initWidget(uiBinder.createAndBindUi(this));
     }
 
     public void setPresenter(final Presenter presenter) {
-        GWT.log("setPresenter( " + presenter.toString() + " )");
     	this.presenter = presenter;
     }
 
@@ -49,8 +59,12 @@ public class ExperimentationViewImpl extends Composite implements
 	}
 
 	@Override
-	public void renderUserReservations() {
-		container.showLoading("Loading Experiments");		
-		container.hideLoading();
+	public void renderUserReservations(List<ReservationDetails> reservations){
 	}
+	
+    @UiHandler("refreshExperimentsButton")
+    public void handleRefreshClick(final ClickEvent event) {
+        presenter.refreshUserExperiments();
+    }
+
 }

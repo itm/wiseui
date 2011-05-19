@@ -21,22 +21,17 @@ public class ExperimentationActivity extends AbstractActivity {
     }
 
     public void start(final AcceptsOneWidget panel, final EventBus eventBus) {
-    	    	
-    	// initialize experimentation panel 
     	initExperimentationPanel(panel);
-        
     }
     
     private void initExperimentationPanel(final AcceptsOneWidget panel) {
-    	GWT.log("Init Experimentation Panel");
-    	
+    	GWT.log("Intializing Experimentation Panel");
     	final ExperimentationPresenter presenter = injector.getExperimentationPresenter();
     	final ExperimentationView view = injector.getExperimentationView();
     	
     	presenter.setPlace(place);
     	view.setPresenter(presenter);
-    	panel.setWidget(view);
-    	
+    	panel.setWidget(view.asWidget());
     }
     
     public void setPlace(final WiseUiPlace place) {

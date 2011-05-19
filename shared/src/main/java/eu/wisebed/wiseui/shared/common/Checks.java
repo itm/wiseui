@@ -47,7 +47,7 @@ public class Checks {
      * @param message    Error message
      * @throws RuntimeException
      */
-    public static void check(final boolean expression, final String message) {
+    public static void check(final boolean expression, final String message) throws RuntimeException {
         if (!expression) {
             throw new RuntimeException(message);
         }
