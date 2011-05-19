@@ -35,9 +35,9 @@ public interface ReservationMessages extends Constants {
 
 	String testbedsIdentified();
 
-	String missingReservationParametersTitle();
+	String faultyReservationParametersTitle();
 
-	String missingReservationParameters();
+	String faultyReservationParameters();
 
 	String reservationSuccessTitle();
 
@@ -46,4 +46,16 @@ public interface ReservationMessages extends Constants {
 	String reservationFailedTitle();
 
 	String reservationFailed();
+	
+	String authenticationKeysExpiredTitle();
+
+	String authenticationKeysExpired();
+
+	String reservationConflictTitle();
+
+	String reservationConflict();
+
+	String rsServiceErrorTitle();
+
+	String rsServiceError();
 }

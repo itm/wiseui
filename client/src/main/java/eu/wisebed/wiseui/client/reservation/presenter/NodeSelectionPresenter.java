@@ -25,8 +25,10 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.view.client.MultiSelectionModel;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.inject.Inject;
+
 import eu.wisebed.wiseui.api.SessionManagementServiceAsync;
 import eu.wisebed.wiseui.client.reservation.common.NodeTreeViewModel;
+import eu.wisebed.wiseui.client.reservation.event.UpdateNodesSelectedEvent;
 import eu.wisebed.wiseui.client.reservation.view.NodeSelectionView;
 import eu.wisebed.wiseui.client.testbedlist.event.TestbedSelectedEvent;
 import eu.wisebed.wiseui.client.testbedselection.event.ThrowableEvent;
@@ -52,7 +54,7 @@ public class NodeSelectionPresenter implements NodeSelectionView.Presenter,
     private final SessionManagementServiceAsync service;
     private TestbedConfiguration testbedConfiguration;
     private MultiSelectionModel<Node> nodeSelectionModel = new MultiSelectionModel<Node>();
-
+    
     @Inject
     public NodeSelectionPresenter(final EventBus eventBus,
                                   final NodeSelectionView view,
@@ -68,6 +70,7 @@ public class NodeSelectionPresenter implements NodeSelectionView.Presenter,
         eventBus.addHandler(TestbedSelectedEvent.TYPE, this);
         eventBus.addHandler(ThrowableEvent.TYPE, this);
         eventBus.addHandler(WisemlLoadedEvent.TYPE, this);
+
         nodeSelectionModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
 
             @Override
@@ -79,7 +82,7 @@ public class NodeSelectionPresenter implements NodeSelectionView.Presenter,
     }
 
     private void onNodeSelection(final Set<Node> nodes) {
-        // TODO
+        eventBus.fireEvent(new UpdateNodesSelectedEvent(nodes));
     }
 
     @Override

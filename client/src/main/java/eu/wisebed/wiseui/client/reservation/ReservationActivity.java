@@ -66,8 +66,6 @@ public class ReservationActivity extends AbstractActivity {
         initPublicReservationsPanel(reservationView);
 
         initReservationEdit();
-        
-        reservationPresenter.bindEnabledViewEvents();
     }
 
     private void initNodeSelectionPanel(final ReservationView reservationView) {
@@ -87,6 +85,7 @@ public class ReservationActivity extends AbstractActivity {
     }
     
     private void initReservationEdit(){
+    	GWT.log("Init Edit Reservation Panel");
     	final ReservationEditPresenter reservationEditPresenter = injector.getReservationEditPresenter();
     	final ReservationEditView reservationEditView = injector.getReservationEditView();
     	reservationEditView.setPresenter(reservationEditPresenter);

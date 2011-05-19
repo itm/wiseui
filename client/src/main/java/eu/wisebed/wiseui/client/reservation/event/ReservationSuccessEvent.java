@@ -13,6 +13,6 @@ public class ReservationSuccessEvent extends GwtEvent<ReservationSuccessEventHan
 	
 	@Override
 	protected void dispatch(ReservationSuccessEventHandler handler){
-		handler.onReservationSuccess(this);
+		handler.onReservationSuccess();
 	}
 }

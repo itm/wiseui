@@ -16,9 +16,13 @@
  */
 package eu.wisebed.wiseui.client.reservation.event;
 
+import java.util.Set;
+
 import com.bradrydzewski.gwt.calendar.client.Appointment;
 import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;
+
+import eu.wisebed.wiseui.shared.dto.Node;
 
 /**
  * @author Soenke Nommensen
@@ -33,13 +37,19 @@ public class EditReservationEvent extends GwtEvent<EditReservationEvent.Handler>
 	public static final Type<Handler> TYPE = new Type<Handler>();
 
 	private final Appointment reservation;
+	private final Set<Node> nodes;
 
-	public EditReservationEvent(final Appointment reservation) {
+	public EditReservationEvent(final Appointment reservation, final Set<Node> nodes) {
 		this.reservation = reservation;
+		this.nodes = nodes;
 	}
 
 	public Appointment getAppointment() {
 		return this.reservation;
+	}
+
+	public Set<Node> getNodes(){
+		return this.nodes;
 	}
 
 	@Override
