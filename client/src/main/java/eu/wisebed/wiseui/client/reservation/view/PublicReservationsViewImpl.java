@@ -142,9 +142,9 @@ public class PublicReservationsViewImpl extends Composite implements PublicReser
     @Override
     public void showReservationDetails(final Appointment appointment) {
     	final DecoratedPopupPanel popUp = reservationDetailsWidget.getPopUp();
-    	reservationDetailsWidget.setReservedBy(appointment.getCreatedBy());
-    	reservationDetailsWidget.setStart(appointment.getStart().toString());
-    	reservationDetailsWidget.setEnd(appointment.getEnd().toString());
+    	reservationDetailsWidget.setReservedBy("Reserved by: " + appointment.getCreatedBy());
+    	reservationDetailsWidget.setStart("Start: " + appointment.getStart().toString());
+    	reservationDetailsWidget.setEnd("End: " + appointment.getEnd().toString());
     	reservationDetailsWidget.setDescription(appointment.getDescription());
         popUp.center();
         popUp.show();

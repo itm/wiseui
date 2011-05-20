@@ -34,7 +34,6 @@ public class ReservationDetailsWidget extends Composite{
 	@UiField
 	TextArea textArea;
 	
-	
 	private static CalendarImplUiBinder uiBinder = 
 		GWT.create(CalendarImplUiBinder.class);
 	

@@ -11,10 +11,10 @@
 	<g:HTMLPanel styleName='{style.container}' ui:field="container">
 		<g:DecoratedPopupPanel ui:field="popUp">
 			<g:VerticalPanel ui:field="panel">
-				<g:Label ui:field="reservedBy">Reserved by: </g:Label>
-				<g:Label ui:field="start">Start: </g:Label>
-				<g:Label ui:field="end">End: </g:Label>
-				<g:TextArea styleName='{style.textarea}' ui:field="textArea"></g:TextArea>
+				<g:Label ui:field="reservedBy"/>
+				<g:Label ui:field="start"/>
+				<g:Label ui:field="end"/>
+				<g:TextArea styleName='{style.textarea}' ui:field="textArea"/>
 			</g:VerticalPanel>
 		</g:DecoratedPopupPanel>
 	</g:HTMLPanel>
