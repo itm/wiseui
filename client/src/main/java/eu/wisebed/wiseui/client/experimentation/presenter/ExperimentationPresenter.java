@@ -1,5 +1,7 @@
 package eu.wisebed.wiseui.client.experimentation.presenter;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import com.google.gwt.core.client.GWT;
@@ -11,6 +13,7 @@ import com.google.inject.Inject;
 
 import eu.wisebed.wiseui.api.ReservationServiceAsync;
 import eu.wisebed.wiseui.client.WiseUiGinjector;
+import eu.wisebed.wiseui.client.experimentation.view.ExperimentView;
 import eu.wisebed.wiseui.client.experimentation.view.ExperimentationView;
 import eu.wisebed.wiseui.client.main.WiseUiPlace;
 import eu.wisebed.wiseui.client.testbedlist.event.TestbedSelectedEvent;
@@ -36,6 +39,8 @@ RefreshUserExperimentsEvent.Handler {
 	private WiseUiPlace place;
 	private EventBusManager eventBus;
 	private TestbedConfiguration testbedConfiguration;
+	private HashMap<String,List<ExperimentPresenter>> presenterMap;
+	private HashMap<String,List<ExperimentView>> viewMap;
 
 	@Inject
 	public ExperimentationPresenter(final WiseUiGinjector injector,
@@ -48,6 +53,8 @@ RefreshUserExperimentsEvent.Handler {
 		this.service = service;
 		this.view = view;
 		this.eventBus = new EventBusManager(eventBus);
+		this.presenterMap = new HashMap<String,List<ExperimentPresenter>>();
+		this.viewMap = new HashMap<String,List<ExperimentView>>();
 		bind();
 		GWT.log("Initializing Experimentation Presenter");
 	}
@@ -143,7 +150,7 @@ RefreshUserExperimentsEvent.Handler {
 		view.getLoadingIndicator().showLoading("Loading reservations");
 
 		// retrieve the respected secret reservation keys stored in cookies		
-		String firstUrnPrefix = urnPrefixList.get(0);
+		final String firstUrnPrefix = urnPrefixList.get(0);
 		List<SecretReservationKey> keys = 
 			injector.getReservationManager().getFilteredSecretReservationKeys(
 					firstUrnPrefix);
@@ -163,6 +170,29 @@ RefreshUserExperimentsEvent.Handler {
 
 			@Override
 			public void onSuccess(List<ReservationDetails> results) {
+				
+				// if testbed is not a key in the presenterMap add it
+				if(presenterMap.containsKey(firstUrnPrefix) == false) {
+					presenterMap.put(firstUrnPrefix, new ArrayList<ExperimentPresenter>());
+				}
+				
+				// if testbed is not a key in the viewMap add it
+				if(viewMap.containsKey(firstUrnPrefix) == false) {
+					viewMap.put(firstUrnPrefix, new ArrayList<ExperimentView>());
+				}
+				
+				// get both maps 
+				List<ExperimentPresenter> presenterList =
+					presenterMap.get(firstUrnPrefix);
+				List<ExperimentView> viewList = viewMap.get(firstUrnPrefix);
+				
+				
+				for(ReservationDetails result : results) {
+					ExperimentPresenter presenter =
+						injector.getExperimentPresenter();
+					ExperimentView view = presenter.getView();
+					view.setPresenter(presenter);
+				}
 				view.getLoadingIndicator().hideLoading();
 			}
 		};
