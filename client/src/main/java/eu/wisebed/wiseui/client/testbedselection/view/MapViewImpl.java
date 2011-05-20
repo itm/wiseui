@@ -30,7 +30,6 @@ import eu.wisebed.wiseui.client.util.MapApiLoader;
 import eu.wisebed.wiseui.shared.dto.Coordinate;
 import eu.wisebed.wiseui.widgets.CaptionPanel;
 import eu.wisebed.wiseui.widgets.loading.HasLoadingIndicator;
-import eu.wisebed.wiseui.widgets.loading.LoadingIndicator;
 
 @Singleton
 public class MapViewImpl extends Composite implements MapView {
@@ -48,8 +47,6 @@ public class MapViewImpl extends Composite implements MapView {
 	CaptionPanel container;
 
 	private MapWidget mapWidget;
-	
-	private LoadingIndicator loadingIndicator;
 
     private Marker testbedMarker;
     private Polygon testbedShape;

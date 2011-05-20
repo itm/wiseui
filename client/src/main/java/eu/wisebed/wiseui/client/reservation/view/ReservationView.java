@@ -1,6 +1,5 @@
 package eu.wisebed.wiseui.client.reservation.view;
 
-import com.bradrydzewski.gwt.calendar.client.Appointment;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.inject.ImplementedBy;
@@ -15,8 +14,6 @@ public interface ReservationView extends IsWidget {
     AcceptsOneWidget getNodeSelectionPanel();
 
     public interface Presenter {
-    	
-    	void showEditReservationDialog(Appointment reservation);
 
     }
 }

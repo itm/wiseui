@@ -19,6 +19,8 @@ package eu.wisebed.wiseui.client.reservation.presenter;
 import com.bradrydzewski.gwt.calendar.client.Appointment;
 import com.bradrydzewski.gwt.calendar.client.event.DeleteEvent;
 import com.bradrydzewski.gwt.calendar.client.event.DeleteHandler;
+import com.bradrydzewski.gwt.calendar.client.event.MouseOverEvent;
+import com.bradrydzewski.gwt.calendar.client.event.MouseOverHandler;
 import com.bradrydzewski.gwt.calendar.client.event.TimeBlockClickEvent;
 import com.bradrydzewski.gwt.calendar.client.event.TimeBlockClickHandler;
 import com.bradrydzewski.gwt.calendar.client.event.UpdateEvent;
@@ -36,61 +38,67 @@ import com.google.inject.Inject;
 import eu.wisebed.wiseui.api.CalendarServiceAsync;
 import eu.wisebed.wiseui.api.ReservationService;
 import eu.wisebed.wiseui.api.ReservationServiceAsync;
-import eu.wisebed.wiseui.client.WiseUiGinjector;
+import eu.wisebed.wiseui.client.reservation.event.EditReservationEvent;
+import eu.wisebed.wiseui.client.reservation.event.ReservationSuccessEvent;
+import eu.wisebed.wiseui.client.reservation.event.ReservationSuccessEventHandler;
+import eu.wisebed.wiseui.client.reservation.event.UpdateNodesSelectedEvent;
 import eu.wisebed.wiseui.client.reservation.view.PublicReservationsView;
 import eu.wisebed.wiseui.client.testbedlist.event.TestbedSelectedEvent;
 import eu.wisebed.wiseui.client.testbedselection.event.ThrowableEvent;
 import eu.wisebed.wiseui.client.util.EventBusManager;
+import eu.wisebed.wiseui.shared.dto.Node;
 import eu.wisebed.wiseui.shared.dto.PublicReservationData;
 import eu.wisebed.wiseui.shared.dto.TestbedConfiguration;
 import eu.wisebed.wiseui.widgets.messagebox.MessageBox;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author John I. Gakos
  * @author Soenke Nommensen
  */
 public class PublicReservationsPresenter implements PublicReservationsView.Presenter,
-        TestbedSelectedEvent.ConfigurationSelectedHandler,
-        ThrowableEvent.ThrowableHandler, PlaceChangeEvent.Handler {
+        TestbedSelectedEvent.ConfigurationSelectedHandler, UpdateNodesSelectedEvent.Handler,
+        ReservationSuccessEventHandler, ThrowableEvent.ThrowableHandler, PlaceChangeEvent.Handler {
 
-	private WiseUiGinjector injector;
     private final EventBusManager eventBus;
     private final PublicReservationsView view;
-    private final ReservationServiceAsync service;
+    private final ReservationServiceAsync reservationService;
     private final CalendarServiceAsync calendarService;
     private TestbedConfiguration testbedConfiguration;
+    private Set<Node> nodes;
 
     @Inject
-    public PublicReservationsPresenter(final WiseUiGinjector injector,
-    								   final EventBus eventBus,
+    public PublicReservationsPresenter(final EventBus eventBus,
                                        final PublicReservationsView view,
                                        final ReservationServiceAsync service,
                                        final CalendarServiceAsync calendarService) {
-    	this.injector = injector;
         this.eventBus = new EventBusManager(eventBus);
         this.view = view;
-        this.service = service;
+        this.reservationService = service;
         this.calendarService = calendarService;
         bind();
     }
 
-    public void bind() {
+    private void bind() {
         eventBus.addHandler(PlaceChangeEvent.TYPE, this);
         eventBus.addHandler(TestbedSelectedEvent.TYPE, this);
         eventBus.addHandler(ThrowableEvent.TYPE, this);
+        eventBus.addHandler(UpdateNodesSelectedEvent.TYPE, this);
+        eventBus.addHandler(ReservationSuccessEvent.TYPE, this);
+        
         view.getCalendar().addOpenHandler(new OpenHandler<Appointment>() {
             @Override
-            public void onOpen(OpenEvent<Appointment> event) {
+            public void onOpen(final OpenEvent<Appointment> event) {
                 view.showReservationDetails(event.getTarget());
             }
         });
         // TODO Check for authorization, apply changes in reservation system
         view.getCalendar().addDeleteHandler(new DeleteHandler<Appointment>() {
             @Override
-            public void onDelete(DeleteEvent<Appointment> event) {
+            public void onDelete(final DeleteEvent<Appointment> event) {
                 boolean commit = Window
                         .confirm(
                                 "Are you sure you want to delete appointment \""
@@ -104,7 +112,7 @@ public class PublicReservationsPresenter implements PublicReservationsView.Prese
         // TODO Check for authorization, apply changes in reservation system
         view.getCalendar().addUpdateHandler(new UpdateHandler<Appointment>() {
             @Override
-            public void onUpdate(UpdateEvent<Appointment> event) {
+            public void onUpdate(final UpdateEvent<Appointment> event) {
                 boolean commit = Window
                         .confirm(
                                 "Are you sure you want to update the appointment \""
@@ -118,20 +126,17 @@ public class PublicReservationsPresenter implements PublicReservationsView.Prese
         // TODO Check for authorization, apply changes in reservation system
         view.getCalendar().addTimeBlockClickHandler(new TimeBlockClickHandler<Date>() {
             @Override
-            public void onTimeBlockClick(TimeBlockClickEvent<Date> event) {
-            	Date startDate = event.getTarget();
+            public void onTimeBlockClick(final TimeBlockClickEvent<Date> event) {
+            	final Date startDate = event.getTarget();
             	Appointment reservation = new Appointment();
             	reservation.setStart(startDate);
-                injector.getReservationPresenter().showEditReservationDialog(reservation);
-                // TODO Show popup to create a new reservation an add to the calendar.
-                // This new reservation has to be sent back to the reservation system.
-                
-                GWT.log("Time block clicked");
+                showEditReservationDialog(reservation, nodes);
             }
         });
+        // TODO Check for authorization, apply changes in reservation system
         view.getDatePicker().addValueChangeHandler(new ValueChangeHandler<Date>() {
             @Override
-            public void onValueChange(ValueChangeEvent<Date> event) {
+            public void onValueChange(final ValueChangeEvent<Date> event) {
                 view.getCalendar().setDate(event.getValue());
                 GWT.log("onValueChange() => loadPublicReservations()");
                 loadPublicReservations(view.getCalendar().getDate());
@@ -208,7 +213,7 @@ public class PublicReservationsPresenter implements PublicReservationsView.Prese
         }
 
         // Make the service call
-        service.getPublicReservations(testbedConfiguration.getRsEndpointUrl(),
+        reservationService.getPublicReservations(testbedConfiguration.getRsEndpointUrl(),
                 current, range, new AsyncCallback<List<PublicReservationData>>() {
 
                     public void onFailure(Throwable caught) {
@@ -326,5 +331,17 @@ public class PublicReservationsPresenter implements PublicReservationsView.Prese
                 loadPublicReservations(result);
             }
         });
+    }
+    
+    public void onUpdateNodesSelected(final UpdateNodesSelectedEvent event){
+    	this.nodes = event.getNodes();
+    }
+
+    public void onReservationSuccess(){
+    	loadPublicReservations(view.getCalendar().getDate());
+    }
+
+    public void showEditReservationDialog(final Appointment reservation, final Set<Node> nodes){
+        eventBus.fireEventFromSource(new EditReservationEvent(reservation, nodes), this);
     }
 }

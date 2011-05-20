@@ -15,4 +15,14 @@ public class ReservationFailedEvent extends GwtEvent<ReservationFailedEventHandl
 	protected void dispatch(ReservationFailedEventHandler handler){
 		handler.onReservationFailed(this);
 	}
+	
+	private Throwable caught;
+	
+	public ReservationFailedEvent(final Throwable caught){
+		this.caught = caught;
+	}
+	
+	public Throwable getThrowable(){
+		return caught;
+	}
 }

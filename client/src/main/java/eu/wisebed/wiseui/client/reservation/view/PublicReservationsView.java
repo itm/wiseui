@@ -18,6 +18,7 @@ package eu.wisebed.wiseui.client.reservation.view;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import com.bradrydzewski.gwt.calendar.client.Appointment;
 import com.bradrydzewski.gwt.calendar.client.Calendar;
@@ -25,6 +26,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.datepicker.client.DateBox;
 import com.google.inject.ImplementedBy;
 
+import eu.wisebed.wiseui.shared.dto.Node;
 import eu.wisebed.wiseui.shared.dto.PublicReservationData;
 import eu.wisebed.wiseui.widgets.loading.HasLoadingIndicator;
 
@@ -68,5 +70,7 @@ public interface PublicReservationsView extends IsWidget {
         void handleForwardClicked();
 
         void handleTodayClicked();
+        
+    	void showEditReservationDialog(Appointment reservation, Set<Node> nodes);
     }
 }

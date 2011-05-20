@@ -30,17 +30,15 @@ import com.google.gwt.uibinder.client.UiTemplate;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DecoratedPopupPanel;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.SimplePanel;
-import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.ToggleButton;
-import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.datepicker.client.DateBox;
 import com.google.inject.Singleton;
 import eu.wisebed.wiseui.shared.dto.PublicReservationData;
 import eu.wisebed.wiseui.widgets.CaptionPanel;
+import eu.wisebed.wiseui.widgets.ReservationDetailsWidget;
 import eu.wisebed.wiseui.widgets.loading.HasLoadingIndicator;
 
 import java.util.Date;
@@ -61,6 +59,8 @@ public class PublicReservationsViewImpl extends Composite implements PublicReser
 
     private Presenter presenter;
 
+    private ReservationDetailsWidget reservationDetailsWidget = new ReservationDetailsWidget();
+    
     @UiField
     CaptionPanel container;
     @UiField
@@ -83,7 +83,7 @@ public class PublicReservationsViewImpl extends Composite implements PublicReser
     Button todayButton;
 
     public PublicReservationsViewImpl() {
-        initWidget(uiBinder.createAndBindUi(this));
+    	initWidget(uiBinder.createAndBindUi(this));
         initCalendar();
         dateBox.setValue(new Date());
     }
@@ -139,34 +139,13 @@ public class PublicReservationsViewImpl extends Composite implements PublicReser
         return container;
     }
 
-    // TODO Better display and UI binding. An extra ReservationDetails widget would be nice,
-    // which can be used for viewing and editing reservation details.
     @Override
     public void showReservationDetails(final Appointment appointment) {
-        DecoratedPopupPanel popUp = new DecoratedPopupPanel(true);
-        popUp.setAnimationEnabled(true);
-        popUp.setAutoHideEnabled(true);
-        popUp.setModal(false);
-
-        VerticalPanel panel = new VerticalPanel();
-        panel.setPixelSize(275, 400);
-
-        Label reservedBy = new Label("Reserved by: " + appointment.getCreatedBy());
-        Label startLabel = new Label("Start: " + appointment.getStart().toString());
-        Label endLabel = new Label("End: " + appointment.getEnd().toString());
-
-        TextArea textArea = new TextArea();
-        textArea.setEnabled(false);
-        textArea.setHeight("375px");
-        textArea.setWidth("100%");
-        textArea.setText(appointment.getDescription());
-
-        panel.add(reservedBy);
-        panel.add(startLabel);
-        panel.add(endLabel);
-        panel.add(textArea);
-
-        popUp.add(panel);
+    	final DecoratedPopupPanel popUp = reservationDetailsWidget.getPopUp();
+    	reservationDetailsWidget.setReservedBy("Reserved by: " + appointment.getCreatedBy());
+    	reservationDetailsWidget.setStart("Start: " + appointment.getStart().toString());
+    	reservationDetailsWidget.setEnd("End: " + appointment.getEnd().toString());
+    	reservationDetailsWidget.setDescription(appointment.getDescription());
         popUp.center();
         popUp.show();
     }

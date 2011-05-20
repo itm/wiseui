@@ -1,9 +1,7 @@
 package eu.wisebed.wiseui.api;
 
-
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
-import eu.wisebed.wiseui.shared.dto.Node;
 import eu.wisebed.wiseui.shared.dto.PublicReservationData;
 import eu.wisebed.wiseui.shared.dto.ReservationDetails;
 import eu.wisebed.wiseui.shared.dto.SecretReservationKey;
@@ -21,13 +19,10 @@ import java.util.List;
 @RemoteServiceRelativePath("reservation.rpc")
 public interface ReservationService extends RemoteService {
 
-    List<Node> getNodeList(String sessionManagementEndpointUrl) 
-    		throws 
-    		IllegalArgumentException;
-
     SecretReservationKey makeReservation(
-    		SecretAuthenticationKey secretAuthenticationKey,
-            String rsEndpointUrl, ReservationDetails data) 
+    		SecretAuthenticationKey key,
+            String rsEndpointUrl,
+            ReservationDetails data) 
     		throws 
             AuthenticationException, ReservationException,
             ReservationConflictException;
@@ -43,9 +38,9 @@ public interface ReservationService extends RemoteService {
     		throws
     		ReservationException;
 
-    String cancelReservation(
+    String deletReservation(
     		String sessionId, 
-    		int reservationId)
+    		String rsEndpointUrl)
     		throws 
     		ReservationException;
 
