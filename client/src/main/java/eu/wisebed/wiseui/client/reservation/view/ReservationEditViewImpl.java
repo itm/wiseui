@@ -67,7 +67,7 @@ public class ReservationEditViewImpl extends HasWidgetsDialogBox implements Rese
     Button submitButton;
     @UiField
     Button cancelButton;
-
+    
     private Presenter presenter;
 
     public ReservationEditViewImpl() {
