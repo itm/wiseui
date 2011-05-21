@@ -4,6 +4,10 @@
 	xmlns:g="urn:import:com.google.gwt.user.client.ui">
 
 	<ui:style>
+		.fullLayout {
+			height: 100%;
+			width: 100%;
+		}
 		.experimentPanel {
 			border: 2px solid lightblue;
 			margin: 5px;
@@ -19,39 +23,18 @@
 			widgth: auto;
 		}
 	</ui:style>
-	<g:FlowPanel addStyleNames="{style.experimentPanel}">
+	<g:FlowPanel addStyleNames="{style.fullLayout} {style.experimentPanel}">
 		<g:HorizontalPanel>
-			<g:Label text="Experiment id :"/>
-			<g:Label addStyleNames="{style.important}" ui:field="reservationID"/>
+			<g:Label text="Secret Reservation Key:"/>
+			<g:Label styleName="{style.important}" ui:field="secretReservationKey"/>
 		</g:HorizontalPanel>
 		<g:HorizontalPanel>
 			<g:Label text="Starts at :"/>
-			<g:Label addStyleNames="{style.important}" ui:field="startDate"/>
+			<g:Label styleName="{style.important}" ui:field="startDate"/>
 		</g:HorizontalPanel>
 		<g:HorizontalPanel>
 			<g:Label text="Stops at :"/>
-			<g:Label addStyleNames="{style.important}" ui:field="stopDate"/>
+			<g:Label styleName="{style.important}" ui:field="stopDate"/>
 		</g:HorizontalPanel>
-		<g:HorizontalPanel>
-			<g:Label text="Current Status :"/>
-			<g:Label addStyleNames="{style.important}" ui:field="status"/>
-		</g:HorizontalPanel>
-		<g:HorizontalPanel>
-			<g:Label text="Experiment Image Filename :"/>
-			<g:Label addStyleNames="{style.important}" ui:field="imageFilename"/>
-		</g:HorizontalPanel>
-		<g:HorizontalPanel>
-			<g:Label text="urnPrefix of testbed :"/>
-			<g:Label addStyleNames="{style.important}" ui:field="urnPrefix"/>
-		</g:HorizontalPanel>
-		<g:HorizontalPanel>
-			<g:Label text="Reservation time :"/>
-			<g:Label addStyleNames="{style.important}" ui:field="reservationTime"/>
-		</g:HorizontalPanel>
-		<g:HorizontalPanel>
-			<g:FlexTable ui:field="buttonTable"/>
-		</g:HorizontalPanel>
-		<g:TabLayoutPanel addStyleNames="{style.tabpanel}"
-			barUnit='EM' barHeight='3' ui:field="nodeTabPanel"/>
 	</g:FlowPanel>
 </ui:UiBinder>

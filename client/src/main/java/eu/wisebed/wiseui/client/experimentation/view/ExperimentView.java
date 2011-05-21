@@ -8,9 +8,9 @@ public interface ExperimentView extends IsWidget {
 	
 	void setPresenter(Presenter presenter);
 	    
-	String getReservationKey();
+	String getSecretReservationKey();
 	
-	void setReservationKey(String key);
+	void setSecretReservationKey(String key);
 	
 	String getStartDate();
 	
@@ -20,15 +20,6 @@ public interface ExperimentView extends IsWidget {
 	
 	void setStopDate(String date);
 	
-	String getStatus();
-	
-	void setStatus(String status);
-	
-	String getReservationTime();
-	
-	void setReservationTime(String time);
-				
 	public interface Presenter {
 	}
-
 }

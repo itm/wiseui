@@ -5,7 +5,6 @@ import java.util.List;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.inject.ImplementedBy;
 
-import eu.wisebed.wiseui.shared.dto.ReservationDetails;
 import eu.wisebed.wiseui.widgets.loading.HasLoadingIndicator;
 
 @ImplementedBy(ExperimentationViewImpl.class)
@@ -17,7 +16,7 @@ public interface ExperimentationView extends IsWidget {
 	
     HasLoadingIndicator getLoadingIndicator();
     
-    void renderUserReservations(List<ReservationDetails> reservations);
+    void addExperimentPanel(ExperimentView experiment);
 
 	public interface Presenter {
 		void getUserReservations(List<String> urnPrefixList,String rsEndpointUrl);

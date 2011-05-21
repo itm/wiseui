@@ -1,7 +1,5 @@
 package eu.wisebed.wiseui.client.experimentation.view;
 
-import java.util.List;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -13,7 +11,6 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Singleton;
 
-import eu.wisebed.wiseui.shared.dto.ReservationDetails;
 import eu.wisebed.wiseui.widgets.CaptionPanel;
 import eu.wisebed.wiseui.widgets.loading.HasLoadingIndicator;
 
@@ -59,12 +56,12 @@ public class ExperimentationViewImpl extends Composite implements
 	}
 
 	@Override
-	public void renderUserReservations(List<ReservationDetails> reservations){
+	public void addExperimentPanel(final ExperimentView experiment){
+		experimentContainer.add(experiment);
 	}
 	
     @UiHandler("refreshExperimentsButton")
     public void handleRefreshClick(final ClickEvent event) {
         presenter.refreshUserExperiments();
     }
-
 }

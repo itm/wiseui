@@ -1,6 +1,9 @@
 package eu.wisebed.wiseui.client.experimentation.presenter;
 
 
+import java.util.Date;
+import java.util.List;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.place.shared.PlaceController;
@@ -12,9 +15,10 @@ import eu.wisebed.wiseui.client.WiseUiGinjector;
 import eu.wisebed.wiseui.client.experimentation.view.ExperimentView;
 import eu.wisebed.wiseui.client.experimentation.view.ExperimentView.Presenter;
 import eu.wisebed.wiseui.client.util.EventBusManager;
+import eu.wisebed.wiseui.shared.dto.ReservationDetails;
 
 public class ExperimentPresenter implements Presenter {
-//
+
 //	// TODO those enums GINject them
 //	public enum ExperimentStatus {
 //		PENDING			("Pending"),
@@ -64,25 +68,20 @@ public class ExperimentPresenter implements Presenter {
 //    	void onButtonClicked(final Button button);
 //    }
 //        
-//    private final ExperimentView view;
-//    private Callback callback;
-//	private int reservationID;
-//	private Date startDate;
-//	private Date stopDate;
-//	private Set<Node> sensors;
-//	private List<String> urns;
-//	private Timer reservationStartTimer = null;	// TODO GINject those two timers
-//	private Timer reservationStopTimer = null;		// TODO GINject all those fuc..
-//	private Timer messageCollectionTimer = null;
 //	private ExperimentStatus status;
-//	private String imageFileName;
-//	private String urnPrefix;
-//	private final ExperimentationServiceAsync service; // TODO GINject service instead of GWT.create
-//
+
 	private final WiseUiGinjector injector;
 	private ExperimentView view;
 	private ExperimentationServiceAsync service;
 	private EventBusManager eventBus;
+	private String key;
+	private Date startDate;
+	private Date stopDate;
+	private List<String> nodeUrns;
+//	private Set<Node> nodes;
+//	private Timer reservationStartTimer;
+//	private Timer reservationStopTimer;
+//	private Timer messageCollectionTimer;
 	
     @Inject
     public ExperimentPresenter(final WiseUiGinjector injector,
@@ -93,42 +92,34 @@ public class ExperimentPresenter implements Presenter {
     	
     	this.injector = injector;
     	this.view = view;
+    	this.view.setPresenter(this);
         this.service = service;
         this.eventBus = new EventBusManager(eventBus);
 		GWT.log("Initializing experiment presenter");
     } 
 
-//    
-//    public void initialize(final int reservationID,
-//    		final Date startDate,final Date stopDate,final Set<Node> sensors,
-//    		final String imageFileName,final String urnPrefix,
-//    		final Callback callback) {
-//    	
-//    	// init attributes
-//    	this.reservationID = reservationID;
-//    	this.startDate = startDate;
-//    	this.stopDate = stopDate;
-//    	this.sensors = sensors;
-//		this.urns = new ArrayList<String>();
-//		for(Node s : sensors) {
-//			urns.add(s.getId());
-//		}
-//    	this.imageFileName = imageFileName;
-//    	this.urnPrefix = urnPrefix;
-//    	this.callback = callback;
-//    	
-//        // determine experiment state at construction
-//        determineExperimentState(this.startDate,this.stopDate);
-//
-//        // setup view
-//		this.view.setReservationKey(Integer.toString(this.reservationID));
-//		this.view.setStartDate(this.startDate.toLocaleString());
-//		this.view.setStopDate(this.stopDate.toLocaleString());
-//		this.view.setImageFilename(this.imageFileName);
-//		this.view.fillNodeTabPanel(urns);
-//		this.view.setStatus(this.status.getStatusText());
-//		this.view.setUrnPrefix(this.urnPrefix);
-//    }
+    public void initialize(final ReservationDetails reservation) {
+    	
+    	// init attributes
+    	this.key = reservation.getSecretReservationKey();
+    	this.startDate = reservation.getStartTime();
+    	this.stopDate = reservation.getStopTime();
+    	this.nodeUrns = reservation.getNodes();
+    	
+    	// init view
+    	this.view.setSecretReservationKey(key);
+    	this.view.setStartDate(this.startDate.toLocaleString());
+    	this.view.setStopDate(this.stopDate.toLocaleString()); 	
+    }
+    
+    public ExperimentView getView() {
+    	return view;
+    }
+    
+    public void setView(final ExperimentView view) {
+    	this.view = view;
+    }
+
 //    
 //    @SuppressWarnings("deprecation")
 //	private void determineExperimentState(final Date startDate, final Date stopDate) {
@@ -504,12 +495,4 @@ public class ExperimentPresenter implements Presenter {
 //	public String getUrnPrefix() {
 //		return urnPrefix;
 //	}
-    
-    public ExperimentView getView() {
-    	return view;
-    }
-    
-    public void setView(final ExperimentView view) {
-    	this.view = view;
-    }
 }
