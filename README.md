@@ -106,7 +106,7 @@ Your `~/.m2/settings.xml` should include a server configuration:
         ...
     </settings>
 
-This requires a user `tomcat` with the role `manager` in your Tomcat installation for the configure URL `${tomcat.manager.url}`. ([more info][tomcatmanager])! Furthermore, it is important that you use the id `tomcat6`, because this is used in the WiseUI master POM.
+This requires a user `tomcat` with the role `manager` in your Tomcat installation for the configure URL `${tomcat.manager.url}` ([click here for more][tomcatmanager])! Furthermore, it is important that you use the id `tomcat6`, because this is used in the WiseUI master POM.
 
 You can deploy the WiseUI web application with the Tomcat Maven plugin:
 
