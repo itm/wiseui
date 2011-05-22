@@ -20,7 +20,7 @@ All library dependencies are downloaded by Maven.
 Configure Hibernate
 -------------------
 
-In order to have Hibernate properly configured, make sure you declare the following required properties in your local Maven settings file (~/.m2/settings.xml):
+In order to have Hibernate properly configured, make sure you declare the following required properties in your local Maven settings file `~/.m2/settings.xml`:
 
 	<settings>
 	    ...
@@ -47,7 +47,7 @@ In order to have Hibernate properly configured, make sure you declare the follow
 Build and Start the WiseUI
 --------------------------
 
-On the command-line go to the WiseUI directory. Perform a clean build on the project to make sure, that all Maven artifacts are installed in your local Maven repository (~/.m2/repository). If you are running Maven for the first time, it will take some time as Maven downloads all project dependencies from the internet.
+On the command-line go to the WiseUI directory. Perform a clean build on the project to make sure, that all Maven artifacts are installed in your local Maven repository `~/.m2/repository`. If you are running Maven for the first time, it will take some time as Maven downloads all project dependencies from the internet.
 
     $ cd wiseui
     $ mvn clean install
@@ -106,7 +106,7 @@ Your `~/.m2/settings.xml` should include a server configuration:
         ...
     </settings>
 
-This requires a user `tomcat` with the role `manager` in your Tomcat installation for the configure URL `${tomcat.manager.url}`. ([more info][tomcatmanager])! Furthermore, it is important that you use the id `tomcat6`, because this is used in the WiseUI master POM.
+This requires a user `tomcat` with the role `manager` in your Tomcat installation for the configure URL `${tomcat.manager.url}` ([click here for more][tomcatmanager]). Furthermore, it is important that you use the id `tomcat6` for the server, because this is how it is referenced in the WiseUI master POM.
 
 You can deploy the WiseUI web application with the Tomcat Maven plugin:
 
