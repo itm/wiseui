@@ -1,7 +1,6 @@
 package eu.wisebed.wiseui.client.experimentation.presenter;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Date;
 import java.util.List;
 
 import com.google.gwt.core.client.GWT;
@@ -20,8 +19,8 @@ import eu.wisebed.wiseui.client.testbedselection.event.ThrowableEvent;
 import eu.wisebed.wiseui.client.experimentation.event.RefreshUserExperimentsEvent;
 import eu.wisebed.wiseui.client.util.EventBusManager;
 import eu.wisebed.wiseui.shared.common.Checks;
-import eu.wisebed.wiseui.shared.dto.ReservationDetails;
-import eu.wisebed.wiseui.shared.dto.SecretReservationKey;
+import eu.wisebed.wiseui.shared.dto.ConfidentialReservationData;
+import eu.wisebed.wiseui.shared.dto.SecretAuthenticationKey;
 import eu.wisebed.wiseui.shared.dto.TestbedConfiguration;
 import eu.wisebed.wiseui.shared.exception.ReservationException;
 import eu.wisebed.wiseui.widgets.messagebox.MessageBox;
@@ -86,8 +85,7 @@ RefreshUserExperimentsEvent.Handler {
 			return;
 		}
 
-		getUserReservations(testbedConfiguration.getUrnPrefixList(),
-				testbedConfiguration.getRsEndpointUrl());
+		getUserReservations();
 	}
 	
 	@Override
@@ -108,8 +106,7 @@ RefreshUserExperimentsEvent.Handler {
 			return;
 		}
 
-		getUserReservations(testbedConfiguration.getUrnPrefixList(),
-				testbedConfiguration.getRsEndpointUrl());
+		getUserReservations();
 	} 
 
 	@Override
@@ -139,20 +136,40 @@ RefreshUserExperimentsEvent.Handler {
 	}
 
 	@Override
-	public void getUserReservations(final List<String> urnPrefixList,
-			final String rsEndpointUrl) {
+	public void getUserReservations() {
 
+		// get testbedconfiguration
+		List<String> urnPrefixList = testbedConfiguration.getUrnPrefixList();
+		String rsEndpointUrl = testbedConfiguration.getRsEndpointUrl();
+		try{
+			Checks.ifNull(urnPrefixList, "No testbed selected");
+			Checks.ifNull(rsEndpointUrl, "No testbed selected");
+		}catch(RuntimeException cause){
+			MessageBox.error("Error", cause.getMessage(), cause, null);
+			return;
+		}
+		
+		
+		// the secret authentication key is required here
+		String urnPrefix = urnPrefixList.get(0);
+        final SecretAuthenticationKey key =
+        	injector.getAuthenticationManager().getMap().get(urnPrefix);
+        try{
+        	Checks.ifNull(key, "You must be authenticated to a testbed in order to retrieve your reservations");
+       }catch(RuntimeException cause){
+			MessageBox.error("Error", cause.getMessage(), cause, null);
+			return;
+       }
+		
+		// loading
 		view.getLoadingIndicator().showLoading("Loading reservations");
-
-		// retrieve the respected secret reservation keys stored in cookies		
-		final String firstUrnPrefix = urnPrefixList.get(0);
-		final List<SecretReservationKey> keys = 
-			injector.getReservationManager().getFilteredSecretReservationKeys(
-					firstUrnPrefix);
+		
+		// clear experimentation panel
+		view.clearExperimentationPanel();
 
 		// setup RPC callback
-		AsyncCallback<List<ReservationDetails>> callback = new 
-		AsyncCallback<List<ReservationDetails>>(){
+		AsyncCallback<List<ConfidentialReservationData>> callback = new 
+			AsyncCallback<List<ConfidentialReservationData>>(){
 
 			@Override
 			public void onFailure(Throwable caught) {
@@ -164,28 +181,38 @@ RefreshUserExperimentsEvent.Handler {
 			}
 
 			@Override
-			public void onSuccess(List<ReservationDetails> results) {
+			public void onSuccess(List<ConfidentialReservationData> dataList) {
 				
-				// if results
+				// if results are null
 				try{
-					Checks.ifNull(results, "Null or empty reservations returned");
+					Checks.ifNull(dataList, "Null reservations returned");
 				}catch(RuntimeException cause){
 					MessageBox.error("Error", cause.getMessage(), cause, null);
 					return;
 				}
 				
+				try{
+					Checks.ifNullOrEmpty(dataList, "There are no pending reservations for you");
+				}catch(RuntimeException cause){
+					MessageBox.info("Reservation Service", cause.getMessage(),null);
+					return;
+				}
+				
 				// initialize presenter and add it to the list also add the respected view in the container 
-				for(ReservationDetails reservation : results) {
+				for(ConfidentialReservationData data : dataList) {
+					GWT.log(data.toString());
 					ExperimentPresenter experiment =
 						injector.getExperimentPresenter();
-					experiment.initialize(reservation);
+					experiment.initialize(data);
 					view.addExperimentPanel(experiment.getView());
 				}
+				
+				// stop loading
 				view.getLoadingIndicator().hideLoading();
 			}
 		};
 
 		// make the RPC
-		service.getUserReservations(keys, rsEndpointUrl, callback);
+		service.getPrivateReservations(key, rsEndpointUrl,new Date(),new Date(),callback);
 	}
 }

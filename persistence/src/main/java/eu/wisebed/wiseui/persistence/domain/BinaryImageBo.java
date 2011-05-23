@@ -31,7 +31,9 @@ import javax.persistence.Table;
 @Table(name = "binary_image")
 public class BinaryImageBo implements Bo {
 
-    @Id
+	private static final long serialVersionUID = 7836493821143856623L;
+	
+	@Id
     @GeneratedValue
     private Integer id;
     private String fileName;

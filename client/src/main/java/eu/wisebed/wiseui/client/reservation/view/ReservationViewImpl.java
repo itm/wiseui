@@ -42,5 +42,8 @@ public class ReservationViewImpl extends Composite implements ReservationView {
     public void setPresenter(final Presenter presenter) {
 		this.presenter = presenter;
 	}
-
+    
+    public Presenter getPresenter() {
+    	return presenter;
+    }
 }

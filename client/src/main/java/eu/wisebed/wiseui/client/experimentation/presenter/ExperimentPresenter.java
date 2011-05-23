@@ -2,7 +2,6 @@ package eu.wisebed.wiseui.client.experimentation.presenter;
 
 
 import java.util.Date;
-import java.util.List;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
@@ -15,7 +14,7 @@ import eu.wisebed.wiseui.client.WiseUiGinjector;
 import eu.wisebed.wiseui.client.experimentation.view.ExperimentView;
 import eu.wisebed.wiseui.client.experimentation.view.ExperimentView.Presenter;
 import eu.wisebed.wiseui.client.util.EventBusManager;
-import eu.wisebed.wiseui.shared.dto.ReservationDetails;
+import eu.wisebed.wiseui.shared.dto.ConfidentialReservationData;
 
 public class ExperimentPresenter implements Presenter {
 
@@ -77,7 +76,7 @@ public class ExperimentPresenter implements Presenter {
 	private String key;
 	private Date startDate;
 	private Date stopDate;
-	private List<String> nodeUrns;
+//	private List<String> nodeUrns;
 //	private Set<Node> nodes;
 //	private Timer reservationStartTimer;
 //	private Timer reservationStopTimer;
@@ -98,13 +97,13 @@ public class ExperimentPresenter implements Presenter {
 		GWT.log("Initializing experiment presenter");
     } 
 
-    public void initialize(final ReservationDetails reservation) {
+    @SuppressWarnings("deprecation")
+	public void initialize(final ConfidentialReservationData data) {
     	
-    	// init attributes
-    	this.key = reservation.getSecretReservationKey();
-    	this.startDate = reservation.getStartTime();
-    	this.stopDate = reservation.getStopTime();
-    	this.nodeUrns = reservation.getNodes();
+    	// init attributes (assuming data has 1 element)
+    	this.key = data.getData().get(0).getSecretReservationKey();
+    	this.startDate = data.getFrom();
+    	this.stopDate = data.getTo();
     	
     	// init view
     	this.view.setSecretReservationKey(key);

@@ -21,7 +21,6 @@ import com.google.gwt.view.client.SelectionChangeEvent;
 
 import eu.wisebed.wiseui.shared.dto.Node;
 import eu.wisebed.wiseui.shared.dto.SensorDetails;
-import eu.wisebed.wiseui.shared.dto.SensorDetails;
 
 
 public class SensorListWidget extends Composite implements SensorList{

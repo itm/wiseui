@@ -38,5 +38,8 @@ public class ReservationPresenter implements Presenter{
     public void setPlace(final WiseUiPlace place) {
         this.place = place;
     }
-
+    
+    public WiseUiPlace getPlace(){
+    	return place;
+	}
 }

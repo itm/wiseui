@@ -33,7 +33,9 @@ import java.util.Date;
 @Singleton
 public class CalendarServiceImpl extends RemoteServiceServlet implements CalendarService {
 
-    private static final Logger LOG = LoggerFactory.getLogger(CalendarServiceImpl.class);
+	private static final long serialVersionUID = -5507469730313618472L;
+
+	private static final Logger LOG = LoggerFactory.getLogger(CalendarServiceImpl.class);
 
     private static final Calendar CALENDAR = Calendar.getInstance();
 

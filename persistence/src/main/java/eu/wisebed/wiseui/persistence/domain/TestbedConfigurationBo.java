@@ -34,7 +34,10 @@ import java.util.List;
 @Table(name = "testbed_config")
 public class TestbedConfigurationBo implements Bo {
 
-    @Id
+
+	private static final long serialVersionUID = -820028455524205112L;
+	
+	@Id
     @GeneratedValue
     private Integer id;
     private String name;

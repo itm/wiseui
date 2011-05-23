@@ -1,7 +1,5 @@
 package eu.wisebed.wiseui.client.experimentation.view;
 
-import java.util.List;
-
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.inject.ImplementedBy;
 
@@ -17,9 +15,11 @@ public interface ExperimentationView extends IsWidget {
     HasLoadingIndicator getLoadingIndicator();
     
     void addExperimentPanel(ExperimentView experiment);
+    
+	void clearExperimentationPanel();
 
 	public interface Presenter {
-		void getUserReservations(List<String> urnPrefixList,String rsEndpointUrl);
+		void getUserReservations();
 		void refreshUserExperiments();
 	}
 }

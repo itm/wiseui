@@ -5,19 +5,23 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.fileupload.FileItem;
-import org.apache.log4j.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.inject.Singleton;
 
 import gwtupload.server.UploadAction;
 import gwtupload.server.exceptions.UploadActionException;
 
-@SuppressWarnings("serial")
 @Singleton
 public class ImageUploadServiceImpl extends UploadAction{
 
+
+	private static final long serialVersionUID = 8765045952525138205L;
+
 	private final Logger LOGGER = 
-		Logger.getLogger(ImageUploadServiceImpl.class.getName());
+		LoggerFactory.getLogger(ImageUploadServiceImpl.class.getName());
 	
 	/**
 	 * Override executeAction to save the received files in a custom place

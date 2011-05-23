@@ -2,6 +2,8 @@ package eu.wisebed.wiseui.api;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
+
+import eu.wisebed.wiseui.shared.dto.ConfidentialReservationData;
 import eu.wisebed.wiseui.shared.dto.PublicReservationData;
 import eu.wisebed.wiseui.shared.dto.ReservationDetails;
 import eu.wisebed.wiseui.shared.dto.SecretReservationKey;
@@ -30,16 +32,30 @@ public interface ReservationService extends RemoteService {
     List<PublicReservationData> getPublicReservations(
     		String rsEndpointUrl, 
     		Date current, 
-    		Range range);
-
-    List<ReservationDetails> getUserReservations(
-    		List<SecretReservationKey> keys,
-    		String rsEndpointUrl) 
+    		Range range)
     		throws
     		ReservationException;
-
-    String deletReservation(
-    		String sessionId, 
+    
+    List<ConfidentialReservationData> getPrivateReservations(
+    		SecretAuthenticationKey key,
+    		String rsEndpountUrl,
+    		Date current,
+    		Range range
+    		)
+    		throws
+    		AuthenticationException, ReservationException;
+   
+    List<ConfidentialReservationData> getPrivateReservations(
+    		SecretAuthenticationKey key,
+    		String rsEndpountUrl,
+    		Date from,
+    		Date to
+    		)
+    		throws
+    		AuthenticationException, ReservationException;
+    
+    String deleteReservation(
+    		SecretReservationKey key, 
     		String rsEndpointUrl)
     		throws 
     		ReservationException;

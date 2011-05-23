@@ -8,33 +8,59 @@
 			height: 100%;
 			width: 100%;
 		}
+		
 		.experimentPanel {
-			border: 2px solid lightblue;
-			margin: 5px;
-			padding: 1px;
+			height: auto;
+			width: auto;
+			border: 2px solid #d0e4f6;
 		}
 		
 		.important {
 			font-weight: bold;
 		}
 		
-		.tabpanel {
-			height: 200px;
-			widgth: auto;
+		.buttonPanel {
+			width: 100%;
+			background-color: #d0e4f6;
+		}
+		
+		.buttonTable {
+			margin-left: 0px;
+			margin-right: auto;
+			padding: 2px;		
 		}
 	</ui:style>
-	<g:FlowPanel addStyleNames="{style.fullLayout} {style.experimentPanel}">
-		<g:HorizontalPanel>
-			<g:Label text="Secret Reservation Key:"/>
-			<g:Label styleName="{style.important}" ui:field="secretReservationKey"/>
-		</g:HorizontalPanel>
-		<g:HorizontalPanel>
-			<g:Label text="Starts at :"/>
-			<g:Label styleName="{style.important}" ui:field="startDate"/>
-		</g:HorizontalPanel>
-		<g:HorizontalPanel>
-			<g:Label text="Stops at :"/>
-			<g:Label styleName="{style.important}" ui:field="stopDate"/>
-		</g:HorizontalPanel>
-	</g:FlowPanel>
+	
+	<g:DockLayoutPanel styleName="{style.fullLayout}">
+		<g:center>
+			<g:FlowPanel addStyleNames="{style.experimentPanel}">
+				<g:HorizontalPanel>
+					<g:Label text="Secret Reservation Key:" />
+					<g:Label styleName="{style.important}" ui:field="secretReservationKey" />
+				</g:HorizontalPanel>
+				<g:HorizontalPanel>
+					<g:Label text="Starts at :" />
+					<g:Label styleName="{style.important}" ui:field="startDate" />
+				</g:HorizontalPanel>
+				<g:HorizontalPanel>
+					<g:Label text="Stops at :" />
+					<g:Label styleName="{style.important}" ui:field="stopDate" />
+				</g:HorizontalPanel>
+			</g:FlowPanel>
+		</g:center>
+		<g:south size="35">
+			<g:HTMLPanel styleName="{style.buttonPanel}">
+				<table class="{style.buttonTable}">
+					<tr>
+						<td>
+							<g:Button text="Foo"/>
+						</td>
+						<td>
+							<g:Button text="bar"/>
+						</td>
+					</tr>
+				</table>
+			</g:HTMLPanel>
+		</g:south>
+	</g:DockLayoutPanel>
 </ui:UiBinder>

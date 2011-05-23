@@ -6,8 +6,8 @@ import java.util.concurrent.TimeUnit;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import eu.wisebed.wiseui.shared.dto.ExperimentMessage;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -25,10 +25,12 @@ public class ExperimentationServiceImpl extends RemoteServiceServlet
 	implements ExperimentationService {
 
 	private static final long serialVersionUID = -6301493806193636782L;
+	
 	private static final Logger LOGGER = 
-		Logger.getLogger(ExperimentationServiceImpl.class.getName());
+		LoggerFactory.getLogger(ExperimentationServiceImpl.class.getName());
 	private List<ExperimentController> experimentControllers = 
 		new ArrayList<ExperimentController>();
+	
 	private AsyncJobObserver jobs = new AsyncJobObserver(1, TimeUnit.MINUTES);
 	private SessionManagement sessionManagement;
 
@@ -48,7 +50,7 @@ public class ExperimentationServiceImpl extends RemoteServiceServlet
 	public void bindAndStartExperimentController(final int reservationID) 
 		throws ReservationException,ExperimentationException {
 		
-		LOGGER.log(Level.INFO,"Binding controller with id = " + reservationID);
+		LOGGER.info("Binding controller with id = " + reservationID);
 		
 
 //		// format local endpoint url (standard way)
@@ -107,12 +109,11 @@ public class ExperimentationServiceImpl extends RemoteServiceServlet
 	 *  This method loads an experiment image on the web services.
 	 *  @param <code>reservationID</code>, a reservation ID.
 	 */
-	@SuppressWarnings("unchecked")
 	@Override
 	public void flashExperimentImage(final int reservationID)
 			throws ReservationException, ExperimentationException {
 		
-		LOGGER.log(Level.INFO,"Flashing image for controller with id = " + reservationID);
+		LOGGER.info("Flashing image for controller with id = " + reservationID);
 
 //		// get reservation
 //		ReservationDetails reservation =
@@ -172,7 +173,7 @@ public class ExperimentationServiceImpl extends RemoteServiceServlet
 	public void terminateExperiment(final int reservationID)
 			throws ExperimentationException {
 		
-		LOGGER.log(Level.INFO,"Terminating controller with id = " + reservationID);
+		LOGGER.info("Terminating controller with id = " + reservationID);
 
 		// find output controller
 		ExperimentController controller 

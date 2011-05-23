@@ -18,7 +18,6 @@ public class ReservationDetails implements Serializable {
     private String imageFileNameField;
     private String secretReservationKey;
     private String urnPrefix;
-    //private AuthenticationDetails user;
     private Set<SensorDetails> sensors;
 
     public ReservationDetails() {
@@ -82,14 +81,6 @@ public class ReservationDetails implements Serializable {
     public String getImageFileNameField() {
         return imageFileNameField;
     }
-
-//    public void setUser(AuthenticationDetails user) {
-//        this.user = user;
-//    }
-//
-//    public AuthenticationDetails getUser() {
-//        return this.user;
-//    }
 
     public void setSensors(final Set<SensorDetails> sensors) {
         this.sensors = sensors;
