@@ -20,7 +20,6 @@ public class TestbedConfiguration implements Dto {
     private String sessionmanagementEndpointUrl;
     private List<String> urnPrefixList = new ArrayList<String>();
     private boolean isFederated;
-    private int testbedId;
 
     public TestbedConfiguration() {
     }
@@ -71,10 +70,6 @@ public class TestbedConfiguration implements Dto {
         return isFederated;
     }
 
-    public int getTestbedId() {
-        return testbedId;
-    }
-
     public void setId(Integer id) {
         this.id = id;
     }
@@ -107,10 +102,6 @@ public class TestbedConfiguration implements Dto {
         this.isFederated = isFederated;
     }
 
-    public void setTestbedId(final int testbedId) {
-        this.testbedId = testbedId;
-    }
-
     @Override
     public String toString() {
         return "TestbedConfiguration{"
@@ -122,7 +113,6 @@ public class TestbedConfiguration implements Dto {
                 + ", sessionmanagementEndpointUrl='" + sessionmanagementEndpointUrl + '\''
 //                + ", urnPrefixList=" + urnPrefixList
                 + ", isFederated=" + isFederated
-                + ", testbedId=" + testbedId
                 + '}';
     }
 

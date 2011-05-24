@@ -6,7 +6,7 @@
     <persistence-unit name="wiseuiPersistenceUnit" transaction-type="RESOURCE_LOCAL">
         <provider>org.hibernate.ejb.HibernatePersistence</provider>
         <!-- Classes to persist -->
-        <class>eu.wisebed.wiseui.persistence.domain.TestbedConfigurationBo</class>
+        <!--class>eu.wisebed.wiseui.persistence.domain.TestbedConfigurationBo</class-->
         <class>eu.wisebed.wiseui.persistence.domain.BinaryImageBo</class>
         <!-- The variables jdbc.connection.userName, etc. are configured in the file ~/.m2/settings.xml -->
         <properties>

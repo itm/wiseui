@@ -2,21 +2,26 @@
 <configurations>
     <configuration isFederated="true">
         <name>WISEBED Federator</name>
+        <testbedId>1</testbedId>
         <testbedUrl>http://www.wisebed.eu</testbedUrl>
         <snaaEndpointUrl>http://wisebed.itm.uni-luebeck.de:8883/snaa?wsdl</snaaEndpointUrl>
-        <sessionmanagementEndpointUrl>http://wisebed.itm.uni-luebeck.de:8881/sessions?wsdl</sessionmanagementEndpointUrl>
+        <sessionmanagementEndpointUrl>http://wisebed.itm.uni-luebeck.de:8881/sessions?wsdl
+        </sessionmanagementEndpointUrl>
         <urnPrefix>urn:wisebed:uzl1:</urnPrefix>
     </configuration>
     <configuration isFederated="false">
         <name>WISEBED UZL Testbed</name>
+        <testbedId>2</testbedId>
         <testbedUrl>http://www.wisebed.eu</testbedUrl>
         <snaaEndpointUrl>http://wisebed.itm.uni-luebeck.de:8890/snaa?wsdl</snaaEndpointUrl>
-        <sessionmanagementEndpointUrl>http://wisebed.itm.uni-luebeck.de:8888/sessions?wsdl</sessionmanagementEndpointUrl>
-       	<rsEndpointUrl>http://wisebed.itm.uni-luebeck.de:8889/rs</rsEndpointUrl> 
+        <sessionmanagementEndpointUrl>http://wisebed.itm.uni-luebeck.de:8888/sessions?wsdl
+        </sessionmanagementEndpointUrl>
+        <rsEndpointUrl>http://wisebed.itm.uni-luebeck.de:8889/rs</rsEndpointUrl>
         <urnPrefix>urn:wisebed:uzl1:</urnPrefix>
     </configuration>
     <configuration isFederated="false">
         <name>WISEBED ULANC Testbed</name>
+        <testbedId>3</testbedId>
         <testbedUrl>http://www.wisebed.eu</testbedUrl>
         <snaaEndpointUrl>http://wisebed-portal.lancs.ac.uk:3200/snaa</snaaEndpointUrl>
         <sessionmanagementEndpointUrl>http://wisebed-portal.lancs.ac.uk:3000</sessionmanagementEndpointUrl>
@@ -25,6 +30,7 @@
     </configuration>
     <configuration isFederated="false">
         <name>WISEBED CTI Testbed</name>
+        <testbedId>4</testbedId>
         <testbedUrl>http://www.wisebed.eu</testbedUrl>
         <snaaEndpointUrl>http://hercules.cti.gr:8890/snaa</snaaEndpointUrl>
         <rsEndpointUrl>http://hercules.cti.gr:8889/rs</rsEndpointUrl>
@@ -33,6 +39,7 @@
     </configuration>
     <configuration isFederated="false">
         <name>WISEBED TUBS Testbed</name>
+        <testbedId>5</testbedId>
         <testbedUrl>http://www.wisebed.eu</testbedUrl>
         <snaaEndpointUrl>http://wbportal.ibr.cs.tu-bs.de:8083/snaa</snaaEndpointUrl>
         <sessionmanagementEndpointUrl>http://wbportal.ibr.cs.tu-bs.de:8080/sessions</sessionmanagementEndpointUrl>
@@ -41,6 +48,7 @@
     </configuration>
     <configuration isFederated="false">
         <name>WISEBED UBERN Testbed</name>
+        <testbedId>6</testbedId>
         <testbedUrl>http://www.wisebed.eu</testbedUrl>
         <snaaEndpointUrl>http://gridlab23.unibe.ch:3001/</snaaEndpointUrl>
         <sessionmanagementEndpointUrl>http://gridlab23.unibe.ch:3001/</sessionmanagementEndpointUrl>
@@ -49,6 +57,7 @@
     </configuration>
     <configuration isFederated="false">
         <name>WISEBED TUD Testbed</name>
+        <testbedId>7</testbedId>
         <testbedUrl>http://www.wisebed.eu</testbedUrl>
         <snaaEndpointUrl>http://dutigw.st.ewi.tudelft.nl:3200/snaa</snaaEndpointUrl>
         <sessionmanagementEndpointUrl>http://dutigw.st.ewi.tudelft.nl:3000</sessionmanagementEndpointUrl>
@@ -57,6 +66,7 @@
     </configuration>
     <configuration isFederated="false">
         <name>WISEBED UPC Testbed</name>
+        <testbedId>8</testbedId>
         <testbedUrl>http://www.wisebed.eu</testbedUrl>
         <snaaEndpointUrl>http://wisebed2.lsi.upc.edu:8890/snaa</snaaEndpointUrl>
         <sessionmanagementEndpointUrl>http://wisebed2.lsi.upc.edu:8888/sessions</sessionmanagementEndpointUrl>
@@ -65,6 +75,7 @@
     </configuration>
     <configuration isFederated="false">
         <name>WISEBED FUB Testbed</name>
+        <testbedId>9</testbedId>
         <testbedUrl>http://www.wisebed.eu</testbedUrl>
         <snaaEndpointUrl>http://wiseportal.mi.fu-berlin.de:3000/snaa</snaaEndpointUrl>
         <sessionmanagementEndpointUrl>http://wiseportal.mi.fu-berlin.de:3000</sessionmanagementEndpointUrl>
@@ -73,6 +84,7 @@
     </configuration>
     <configuration isFederated="false">
         <name>WISEBED UNIGE Testbed</name>
+        <testbedId>10</testbedId>
         <testbedUrl>http://www.wisebed.eu</testbedUrl>
         <snaaEndpointUrl>http://testbed.tcs.unige.ch:8890/snaa</snaaEndpointUrl>
         <sessionmanagementEndpointUrl>http://testbed.tcs.unige.ch:8888/sessions</sessionmanagementEndpointUrl>
