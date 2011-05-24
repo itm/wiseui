@@ -43,7 +43,7 @@ import com.google.inject.Singleton;
 
 import eu.wisebed.testbed.api.rs.RSServiceHelper;
 import eu.wisebed.testbed.api.rs.v1.AuthorizationExceptionException;
-import eu.wisebed.testbed.api.rs.v1.Data;
+import eu.wisebed.wiseui.shared.dto.Data;
 import eu.wisebed.testbed.api.rs.v1.RS;
 import eu.wisebed.testbed.api.rs.v1.RSExceptionException;
 import eu.wisebed.testbed.api.rs.v1.ReservervationConflictExceptionException;
@@ -106,7 +106,7 @@ public class ReservationServiceImpl extends RemoteServiceServlet implements Rese
 		// generate confidential reservation data
 		eu.wisebed.testbed.api.rs.v1.ConfidentialReservationData reservationData 
 		= new eu.wisebed.testbed.api.rs.v1.ConfidentialReservationData();
-		Data data = new Data();
+		eu.wisebed.testbed.api.rs.v1.Data data = new eu.wisebed.testbed.api.rs.v1.Data();
 		data.setUrnPrefix(snaaKey.getUrnPrefix());
 		data.setUsername(secretAuthenticationKey.getUsername());
 		reservationData.getData().add(data);
@@ -277,15 +277,24 @@ public class ReservationServiceImpl extends RemoteServiceServlet implements Rese
 			reservation.setTo(convertDate2XmlGregorianCalendar(end));
 			resultList = rs.getConfidentialReservations(snaaKeys,reservation);
 		} catch (RSExceptionException cause) {
-			throw new ReservationException("RS Exception");
+			throw new ReservationException(cause.getMessage());
 		}
 
 		return new ArrayList<ConfidentialReservationData>(Lists.transform(resultList,
 				new Function<eu.wisebed.testbed.api.rs.v1.ConfidentialReservationData, ConfidentialReservationData>() {
 			@Override
 			public ConfidentialReservationData apply(final eu.wisebed.testbed.api.rs.v1.ConfidentialReservationData r) {
-				final ConfidentialReservationData confidentialReservationData;
-				confidentialReservationData = mapper.map(r, ConfidentialReservationData.class);
+				
+				// use mapper to copy the confidential reservation data
+				final ConfidentialReservationData confidentialReservationData 
+					= mapper.map(r, ConfidentialReservationData.class);
+				
+				// iterate the data list and copy it
+				for(eu.wisebed.testbed.api.rs.v1.Data d : r.getData()) {
+					final Data data = mapper.map(d, Data.class);
+					confidentialReservationData.getData().add(data);
+				}
+				
 				return confidentialReservationData;
 			}
 		}));
@@ -336,15 +345,24 @@ public class ReservationServiceImpl extends RemoteServiceServlet implements Rese
 			reservation.setTo(convertDate2XmlGregorianCalendar(end));
 			resultList = rs.getConfidentialReservations(snaaKeys,reservation);
 		} catch (RSExceptionException cause) {
-			throw new ReservationException("RS Exception");
+			throw new ReservationException(cause.getMessage());
 		}
 
 		return new ArrayList<ConfidentialReservationData>(Lists.transform(resultList,
 				new Function<eu.wisebed.testbed.api.rs.v1.ConfidentialReservationData, ConfidentialReservationData>() {
 			@Override
 			public ConfidentialReservationData apply(final eu.wisebed.testbed.api.rs.v1.ConfidentialReservationData r) {
-				final ConfidentialReservationData confidentialReservationData;
-				confidentialReservationData = mapper.map(r, ConfidentialReservationData.class);
+				
+				// use mapper to copy the confidential reservation data
+				final ConfidentialReservationData confidentialReservationData 
+					= mapper.map(r, ConfidentialReservationData.class);
+				
+				// iterate the data list and copy it
+				for(eu.wisebed.testbed.api.rs.v1.Data d : r.getData()) {
+					final Data data = mapper.map(d, Data.class);
+					confidentialReservationData.getData().add(data);
+				}
+				
 				return confidentialReservationData;
 			}
 		}));

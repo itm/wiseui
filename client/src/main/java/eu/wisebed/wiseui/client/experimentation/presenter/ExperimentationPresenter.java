@@ -69,7 +69,7 @@ RefreshUserExperimentsEvent.Handler {
 		eventBus.addHandler(PlaceChangeEvent.TYPE, this);
 		eventBus.addHandler(TestbedSelectedEvent.TYPE, this);
 		eventBus.addHandler(ThrowableEvent.TYPE, this);
-    	eventBus.addHandler(RefreshUserExperimentsEvent.TYPE, this);
+		eventBus.addHandler(RefreshUserExperimentsEvent.TYPE, this);
 	}
 
 	@Override
@@ -87,17 +87,17 @@ RefreshUserExperimentsEvent.Handler {
 
 		getUserReservations();
 	}
-	
+
 	@Override
 	public void onRefreshUserExperiments(RefreshUserExperimentsEvent event) {
-		
+
 		try{
 			Checks.ifNull(testbedConfiguration, "No testbed selected");
 		}catch(RuntimeException cause){
 			MessageBox.error("Error", cause.getMessage(), cause, null);
 			return;
 		}
-		
+
 		try{
 			Checks.ifNullOrEmpty(testbedConfiguration.getUrnPrefixList(),
 			"Null or empty URN prefix list for selected testbed");
@@ -129,7 +129,7 @@ RefreshUserExperimentsEvent.Handler {
 					event.getThrowable(), null);
 		}
 	}
-	
+
 	@Override
 	public void refreshUserExperiments() {
 		eventBus.fireEventFromSource(new RefreshUserExperimentsEvent(), this);
@@ -148,28 +148,39 @@ RefreshUserExperimentsEvent.Handler {
 			MessageBox.error("Error", cause.getMessage(), cause, null);
 			return;
 		}
-		
-		
-		// the secret authentication key is required here
+
+
+		// the secret authentication key & two dates are required 
 		String urnPrefix = urnPrefixList.get(0);
-        final SecretAuthenticationKey key =
-        	injector.getAuthenticationManager().getMap().get(urnPrefix);
-        try{
-        	Checks.ifNull(key, "You must be authenticated to a testbed in order to retrieve your reservations");
-       }catch(RuntimeException cause){
+		final SecretAuthenticationKey key =
+			injector.getAuthenticationManager().getMap().get(urnPrefix);
+		final Date fromDate = view.getFromDate();
+		final Date toDate = view.getToDate();
+		try{
+			Checks.ifNull(key, "You must be authenticated to a testbed in order to retrieve your reservations");
+			Checks.ifNull(fromDate, "You must specify the starting date");
+			Checks.ifNull(toDate, "You must specify the ending date");
+		}catch(RuntimeException cause){
 			MessageBox.error("Error", cause.getMessage(), cause, null);
 			return;
-       }
+		}
 		
+		// sanity test for the dates
+		if(fromDate.after(toDate)){
+			MessageBox.error("Error", "Starting date cannot be after ending date", null,null);
+			return;
+		}
+			
+
 		// loading
 		view.getLoadingIndicator().showLoading("Loading reservations");
-		
+
 		// clear experimentation panel
 		view.clearExperimentationPanel();
 
 		// setup RPC callback
 		AsyncCallback<List<ConfidentialReservationData>> callback = new 
-			AsyncCallback<List<ConfidentialReservationData>>(){
+		AsyncCallback<List<ConfidentialReservationData>>(){
 
 			@Override
 			public void onFailure(Throwable caught) {
@@ -182,7 +193,7 @@ RefreshUserExperimentsEvent.Handler {
 
 			@Override
 			public void onSuccess(List<ConfidentialReservationData> dataList) {
-				
+
 				// if results are null
 				try{
 					Checks.ifNull(dataList, "Null reservations returned");
@@ -191,15 +202,15 @@ RefreshUserExperimentsEvent.Handler {
 					view.getLoadingIndicator().hideLoading();
 					return;
 				}
-				
+
 				try{
-					Checks.ifNullOrEmpty(dataList, "There are no pending reservations for you");
+					Checks.ifNullOrEmpty(dataList, "There are no reservations for you");
 				}catch(RuntimeException cause){
 					MessageBox.info("Reservation Service", cause.getMessage(),null);
 					view.getLoadingIndicator().hideLoading();
 					return;
 				}
-				
+
 				// initialize presenter and add it to the list also add the respected view in the container 
 				for(ConfidentialReservationData data : dataList) {
 					GWT.log(data.toString());
@@ -208,13 +219,13 @@ RefreshUserExperimentsEvent.Handler {
 					experiment.setupExperimentPresenter(data);
 					view.addExperimentPanel(experiment.getView());
 				}
-				
+
 				// stop loading
 				view.getLoadingIndicator().hideLoading();
 			}
 		};
 
 		// make the RPC
-		service.getPrivateReservations(key, rsEndpointUrl,new Date(),new Date(),callback);
+		service.getPrivateReservations(key, rsEndpointUrl,fromDate,toDate,callback);
 	}
 }

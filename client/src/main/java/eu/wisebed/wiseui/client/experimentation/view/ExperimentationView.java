@@ -1,5 +1,7 @@
 package eu.wisebed.wiseui.client.experimentation.view;
 
+import java.util.Date;
+
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.inject.ImplementedBy;
 
@@ -17,6 +19,10 @@ public interface ExperimentationView extends IsWidget {
     void addExperimentPanel(ExperimentView experiment);
     
 	void clearExperimentationPanel();
+	
+	Date getFromDate();
+	
+	Date getToDate();
 
 	public interface Presenter {
 		void getUserReservations();

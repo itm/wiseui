@@ -91,6 +91,16 @@ public class ExperimentationViewImpl extends Composite implements
 		experimentContainer.clear();		
 	}
 	
+	@Override
+	public Date getFromDate() {
+		return fromDateBox.getValue();
+	}
+
+	@Override
+	public Date getToDate() {
+		return toDateBox.getValue();
+	}
+	
     @UiHandler("refreshExperimentsButton")
     public void handleRefreshClick(final ClickEvent event) {
         presenter.refreshUserExperiments();
