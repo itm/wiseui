@@ -150,7 +150,7 @@ public class PersistenceServiceImpl implements PersistenceService {
 
         LOGGER.info("storeBinaryImage( " + dto + " )");
 
-        final BinaryImageBo bo;
+        BinaryImageBo bo;
         if (dto.getId() == null) {
             // Create and persist new persistent object
             bo = dozerBeanMapper.map(dto, BinaryImageBo.class);
@@ -159,6 +159,7 @@ public class PersistenceServiceImpl implements PersistenceService {
             // Update existing persistent object
             bo = binaryImageDao.findById(dto.getId());
             if (bo != null) {
+                bo = dozerBeanMapper.map(dto, BinaryImageBo.class);
                 binaryImageDao.update(bo);
             } else {
                 LOGGER.error("BinaryImage with id #" + dto.getId()

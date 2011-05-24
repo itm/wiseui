@@ -4,12 +4,12 @@
     <parent>
         <groupId>eu.wisebed</groupId>
         <artifactId>wiseui</artifactId>
-        <version>0.3</version>
+        <version>0.5</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <groupId>eu.wisebed.wiseui</groupId>
     <artifactId>widgets</artifactId>
-    <version>0.3</version>
+    <version>0.5</version>
     <name>WiseUI - Widgets</name>
     <packaging>jar</packaging>
     <dependencyManagement>
