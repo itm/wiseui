@@ -3,14 +3,14 @@ package eu.wisebed.wiseui.client.experimentation.event;
 import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;
 
-public class RefreshUserExperimentsEvent extends GwtEvent<RefreshUserExperimentsEvent.Handler> {
+
+public class ReservationTimeStartedEvent extends GwtEvent<ReservationTimeStartedEvent.Handler>{
 
 	public interface Handler extends EventHandler {
-		void onRefreshUserExperiments(RefreshUserExperimentsEvent event);
+		void onReservationTimeStarted(ReservationTimeStartedEvent event);
 	}
 	
-	public static final Type<RefreshUserExperimentsEvent.Handler> TYPE = new Type<RefreshUserExperimentsEvent.Handler>();
-
+	public static final Type<ReservationTimeStartedEvent.Handler> TYPE = new Type<ReservationTimeStartedEvent.Handler>();
 
 	@Override
 	public Type<Handler> getAssociatedType() {
@@ -19,6 +19,6 @@ public class RefreshUserExperimentsEvent extends GwtEvent<RefreshUserExperiments
 
 	@Override
 	protected void dispatch(Handler handler) {
-		handler.onRefreshUserExperiments(this);
+		handler.onReservationTimeStarted(this);
 	}
 }

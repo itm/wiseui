@@ -2,85 +2,62 @@ package eu.wisebed.wiseui.client.experimentation.presenter;
 
 
 import java.util.Date;
+import java.util.List;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.place.shared.PlaceChangeEvent;
 import com.google.gwt.place.shared.PlaceController;
+import com.google.gwt.user.client.Timer;
 
 import com.google.inject.Inject;
 
 import eu.wisebed.wiseui.api.ExperimentationServiceAsync;
 import eu.wisebed.wiseui.client.WiseUiGinjector;
+import eu.wisebed.wiseui.client.experimentation.event.ReservationTimeStartedEvent;
+import eu.wisebed.wiseui.client.experimentation.event.ReservationTimeEndedEvent;
+import eu.wisebed.wiseui.client.experimentation.util.StringTimer;
 import eu.wisebed.wiseui.client.experimentation.view.ExperimentView;
-import eu.wisebed.wiseui.client.experimentation.view.ExperimentView.Presenter;
+import eu.wisebed.wiseui.client.testbedselection.event.ThrowableEvent;
 import eu.wisebed.wiseui.client.util.EventBusManager;
+import eu.wisebed.wiseui.shared.common.Checks;
 import eu.wisebed.wiseui.shared.dto.ConfidentialReservationData;
+import eu.wisebed.wiseui.widgets.messagebox.MessageBox;
 
-public class ExperimentPresenter implements Presenter {
+public class ExperimentPresenter implements ExperimentView.Presenter,
+ReservationTimeStartedEvent.Handler,ReservationTimeEndedEvent.Handler,
+PlaceChangeEvent.Handler{
+	
+	public enum ExperimentStatus {
+		PENDING			("Pending"),
+		READY			("Ready"),
+		RUNNING			("Running"),
+		CANCELED		("Reservation was cancelled"),
+		TERMINATED		("Terminated by user"),
+		TIMEDOUT    	("Reservation time out");
 
-//	// TODO those enums GINject them
-//	public enum ExperimentStatus {
-//		PENDING			("Pending"),
-//		READY			("Ready"),
-//		RUNNING			("Running"),
-//		CANCELED		("Reservation was cancelled"),
-//		TERMINATED		("Terminated by user"),
-//		TIMEDOUT    	("Reservation time out");
-//		
-//		private String text;
-//		ExperimentStatus(String text) {
-//			this.text = text;
-//		}
-//		
-//		public String getStatusText() {
-//			return text;
-//		}
-//	}
-//	
-//	public enum Button {
-//		START	 ("Start Experiment"),
-//		STOP	 ("Stop Experiment"),
-//		SHOWHIDE ("Show/Hide Output"),
-//		CANCEL	 ("Cancel Reservation");
-//        private final String value;
-//
-//        private Button(final String value) {
-//            this.value = value;
-//        }
-//
-//        public String getValue() {
-//            return value;
-//        }
-//
-//        public static Button fromValue(final String value) {
-//            for (Button button : Button.values()) {
-//                if (button.getValue().equals(value)) {
-//                    return button;
-//                }
-//            }
-//            throw new IllegalArgumentException("Unknown Button value: " + value);
-//        }
-//	}
-//	
-//	// button Callback interface want to GINject it to!
-//    public interface Callback { // TODO GINject this callback
-//    	void onButtonClicked(final Button button);
-//    }
-//        
-//	private ExperimentStatus status;
+		private String text;
+		ExperimentStatus(String text) {
+			this.text = text;
+		}
+
+		public String getStatusText() {
+			return text;
+		}
+	}
 
 	private final WiseUiGinjector injector;
 	private ExperimentView view;
 	private ExperimentationServiceAsync service;
 	private EventBusManager eventBus;
 	private String key;
-	private Date startDate;
-	private Date stopDate;
-//	private List<String> nodeUrns;
-//	private Set<Node> nodes;
-//	private Timer reservationStartTimer;
-//	private Timer reservationStopTimer;
-//	private Timer messageCollectionTimer;
+	private Date fromDate;
+	private Date toDate;
+	private List<String> nodeUrns;
+	private String experimentTiming;
+	private Timer reservationStartTimer;
+	private Timer reservationStopTimer;
+	private ExperimentStatus status;
 	
     @Inject
     public ExperimentPresenter(final WiseUiGinjector injector,
@@ -94,404 +71,122 @@ public class ExperimentPresenter implements Presenter {
     	this.view.setPresenter(this);
         this.service = service;
         this.eventBus = new EventBusManager(eventBus);
-		GWT.log("Initializing experiment presenter");
+        bind();
     } 
 
-    @SuppressWarnings("deprecation")
-	public void initialize(final ConfidentialReservationData data) {
-    	
-    	// init attributes (assuming data has 1 element)
-    	this.key = data.getData().get(0).getSecretReservationKey();
-    	this.startDate = data.getFrom();
-    	this.stopDate = data.getTo();
-    	
-    	// init view
-    	this.view.setSecretReservationKey(key);
-    	this.view.setStartDate(this.startDate.toLocaleString());
-    	this.view.setStopDate(this.stopDate.toLocaleString()); 	
-    }
-    
+
     public ExperimentView getView() {
     	return view;
     }
+        
+    public void setupExperimentPresenter(final ConfidentialReservationData data) {
+    	setExperimentData(data);
+    	initView();
+    	setStartTimer();
+    }
     
-    public void setView(final ExperimentView view) {
-    	this.view = view;
+    public void bind() {
+		eventBus.addHandler(ReservationTimeStartedEvent.TYPE, this);
+		eventBus.addHandler(ReservationTimeEndedEvent.TYPE, this);
+		eventBus.addHandler(PlaceChangeEvent.TYPE, this);
     }
 
-//    
-//    @SuppressWarnings("deprecation")
-//	private void determineExperimentState(final Date startDate, final Date stopDate) {
-//    	// check for date validity (start date cannot be after stop date)
-//    	if(startDate.after(stopDate)) {
-//    		GWT.log("Invalid Dates involved in experiment (ID : "
-//    				+ getReservationID() +").");
-//    		throw new IllegalArgumentException("Invalid start date value ." +
-//    				"Start date cannot be " +
-//    				"after stop date of an experiment : " +
-//    				" startDate:(" + startDate.toLocaleString() +")" +
-//    				" stopDate:(" + stopDate.toLocaleString() +")");
-//    	}
-//    	
-//    	// check if status is terminated, cancelled or timedout then cancel timers
-//    	if(status == ExperimentStatus.TERMINATED || 
-//    	   status == ExperimentStatus.CANCELED   ||
-//    	   status == ExperimentStatus.TIMEDOUT) {
-//    		return;
-//    	}
-//    	
-//    	// get the present date
-//    	Date now = new Date();
-//    	
-//    	if(now.before(startDate)) {
-//    		// pending experiment
-//    		setAsPendingExperiment();
-//    		countDownUntilStartDate();
-//		}
-//    	else if(now.after(startDate) && now.before(stopDate)) {
-//    		// ready experiment
-//    		setAsReadyExperiment();
-//    		countDownUntilStopDate();
-//    	}
-//    	else if(now.after(stopDate)) {
-//    		// timed out experiment
-//    		setAsTimedOutExperiment();
-//        	view.setReservationTime("-");
-//    	}
-//    }
-//    
-//    private void countDownUntilStartDate() {
-//    	// setup timer
-//    	Timer timer = new Timer() {
-//			@Override
-//			public void run() {
-//				long diffInMillis = 
-//					getStartDate().getTime() - (new Date()).getTime();
-//				if(diffInMillis <= 0) {
-//					determineExperimentState(getStartDate(),getStopDate());
-//					this.cancel();
-//				}else{
-//					view.setReservationTime(
-//							"Starting in " +
-//							StringTimer.elapsedTimeToString(diffInMillis));
-//				}
-//			}
-//		};
-//    	
-//		// set as reservation start timer
-//    	this.reservationStartTimer = timer;
-//    	
-//    	// start reservation start timer
-//    	getReservationStartTimer().scheduleRepeating(1000);
-//    }
-//
-//    private void countDownUntilStopDate() {
-//    	// setup timer
-//    	Timer timer = new Timer() {
-//    		@Override
-//    		public void run() {
-//    			long diffInMillis = 
-//    				getStopDate().getTime() - (new Date()).getTime();
-//    			if(diffInMillis <= 0) {
-//    				determineExperimentState(getStartDate(),getStopDate());
-//    				this.cancel();
-//    			}else{
-//    				view.setReservationTime(
-//    						"Finishing in " +
-//    						StringTimer.elapsedTimeToString(diffInMillis));
-//    			}
-//    		}
-//    	};
-//    	// set as reservation stop timer
-//    	reservationStopTimer = timer;
-//
-//    	// start reservation stop timer
-//    	getReservationStopTimer().scheduleRepeating(1000);
-//    }
-//
-//    private void collectExperimentMessages(){
-//    	// setup timer
-//    	Timer timer = new Timer() {
-//
-//    		@Override
-//    		public void run() {
-//    			getExperimentMessage();	
-//    		}
-//    	};
-//
-//    	// set as message timer
-//    	messageCollectionTimer = timer;
-//
-//    	// start message timer
-//    	getMessageCollectionTimer().scheduleRepeating(500);
-//    }
-//    
-//    public void setAsPendingExperiment(){
-//    	setStatus(ExperimentStatus.PENDING);
-//    	setButtons(Button.CANCEL);
-//    }
-//    
-//    public void setAsReadyExperiment(){
-//    	// arrange status and view
-//    	setStatus(ExperimentStatus.READY);
-//    	setButtons(Button.START,Button.STOP,Button.CANCEL);
-//    }
-//
-//    public void setAsRunningExperiment(){
-//    	// arrange status and view
-//    	setStatus(ExperimentStatus.RUNNING);
-//    	setButtons(Button.SHOWHIDE,Button.STOP,Button.CANCEL);
-//    	
-//    	// setup experiment controller on server via RPC
-//    	setupExperimentController();
-//    }
-//    
-//    public void setAsCancelledExperiment() {
-//    	// arrange status and view
-//    	if(status == ExperimentStatus.RUNNING) // in case the experiment was running before canceling
-//    		setButtons(Button.SHOWHIDE);
-//    	else
-//    		setButtons();
-//    	setStatus(ExperimentStatus.CANCELED);
-//    	view.setReservationTime("-");
-//    	
-//    	// stop all timers
-//    	stopAllTimers();
-//    	
-//    	// cancel experiment and reservation on server via RPC
-//    	cancelExperiment();
-//    }
-//    
-//    public void setAsTerminatedExperiment() {
-//    	// arrange status and view
-//    	setStatus(ExperimentStatus.TERMINATED);
-//    	setButtons(Button.SHOWHIDE);
-//    	
-//    	// stop all timers
-//    	stopAllTimers();
-//    	
-//    	// stop experiment on server via RPC
-//    	stopExperimentController();
-//    }
-//    
-//    public void setAsTimedOutExperiment() {
-//    	// arrange status and view
-//    	if(status == ExperimentStatus.RUNNING) // in case the experiment was running before canceling
-//    		setButtons(Button.SHOWHIDE);
-//    	else
-//    		setButtons();
-//    	setStatus(ExperimentStatus.TIMEDOUT);
-//    	
-//    	//logging this action
-//    	GWT.log("Stoping all timers at experiment presenter : " + reservationID);
-//    	
-//    	// stop all timers
-//    	stopAllTimers();
-//    }
-//    
-//    private void setButtons(final Button ... buttons) {
-//        final String[] strings = new String[buttons.length];
-//        int i = 0;
-//        for (final Button button : buttons) {
-//            strings[i++] = button.getValue();
-//        }
-//        view.setButtons(strings);
-//	}
-//    
-//	@Override
-//	public void buttonClicked(String button) {
-//        if (callback != null) {
-//            callback.onButtonClicked(Button.fromValue(button));
-//        }
-//    }
-//	
-//	private void stopAllTimers(){
-//		if(reservationStartTimer != null) reservationStartTimer.cancel();
-//		if(reservationStopTimer != null) reservationStopTimer.cancel();
-//		if(messageCollectionTimer != null) messageCollectionTimer.cancel();
-//	}
-//	
-//	private final void setupExperimentController() {
-//		// setup callback
-//		final AsyncCallback callback = new AsyncCallback() {
-//
-//			@Override
-//			public void onFailure(Throwable caught) {
-//				if(caught instanceof ExperimentationException) {
-//					GWT.log(caught.getMessage());
-//				}
-//			}
-//
-//			@Override
-//			public void onSuccess(final Object result) {
-//				GWT.log("Experiment Controller is setup");
-//				startExperimentController();
-//			}
-//			
-//		};
-//		
-//		// make the rpc
-//		service.bindAndStartExperimentController(reservationID,callback);
-//	}
-//	
-//	private final void startExperimentController() {
-//		// setup callback
-//		final AsyncCallback callback = new AsyncCallback() {
-//
-//			@Override
-//			public void onFailure(Throwable caught) {
-//				if(caught instanceof ExperimentationException) {
-//					GWT.log(caught.getMessage());
-//				}				
-//			}
-//
-//			@Override
-//			public void onSuccess(final Object result) {
-//				GWT.log("Experiment controller is now running");
-//				collectExperimentMessages();
-//			}
-//		};
-//
-//		// make the rpc
-//		service.flashExperimentImage(reservationID,callback);
-//	}
-//	
-//	private final void getExperimentMessage() {
-//		// setup callback
-//		final AsyncCallback<ExperimentMessage> callback
-//			= new AsyncCallback<ExperimentMessage>(){
-//
-//				@Override
-//				public void onFailure(Throwable caught) {
-//					if(caught instanceof ExperimentationException) {
-//						GWT.log(caught.getMessage());
-//					}				
-//				}
-//
-//				@Override
-//				public void onSuccess(final ExperimentMessage result) {
-//					if(result == null) // case there is no message to deliver 
-//						return;
-//					
-//					GWT.log("ExperimentMessage arrived! reservation ID : " 
-//							+ result.getReservationID());
-//					ExperimentMessageType type = 
-//						result.getExperimentMessageType();
-//					GWT.log("ExperimentMessageType : " + type.getType());
-//					switch(type){
-//					case MESSAGE:
-//						GWT.log("Source :" + result.getSourceNodeID());
-//						GWT.log("Level : " + result.getLevel());
-//						GWT.log("Data : " + result.getData());
-//						GWT.log("TimeStamp :" + result.getTimeStamp());
-//						view.printExperimentMessage(
-//								result.getSourceNodeID(),
-//								result.getLevel(),
-//								result.getData(),
-//								result.getTimeStamp());
-//						break;
-//					case NOTIFICATION:
-//						GWT.log("Notification :" + result.getNotificationText());
-//						break;
-//					case STATUS:
-//						GWT.log("Request status ID :" + result.getRequestStatusID());
-//						GWT.log("Request status node :" + result.getNodeID());
-//						GWT.log("Request status msg :" + result.getRequestStatusMsg());
-//						GWT.log("Request status value:" + result.getValue());
-//						view.printRequestStatus(
-//								result.getNodeID(),
-//								result.getRequestStatusMsg(),
-//								result.getValue());
-//						break;
-//					}
-//				}
-//			
-//		};
-//		
-//		// make the rpc
-//		service.getNextUndeliveredMessage(reservationID,callback);
-//	}
-//	
-//	private final void stopExperimentController() {
-//		// setup callback
-//		final AsyncCallback callback
-//			= new AsyncCallback(){
-//
-//				@Override
-//				public void onFailure(Throwable caught) {
-//					if(caught instanceof ExperimentationException) {
-//						GWT.log(caught.getMessage());
-//					}								
-//				}
-//
-//				@Override
-//				public void onSuccess(Object result) {
-//					GWT.log("Experiment stopped on the server");
-//				}
-//			
-//		};
-//		
-//		// make the rpc
-//		service.terminateExperiment(reservationID,callback);
-//		//service.cancelReservation();
-//	}
-//	
-//	private final void cancelExperiment() {
-//		stopExperimentController();
-//		//service.cancelReservation() THIS IS AN RPC ;
-//	}
-//
-//	public int getReservationID() {
-//		return reservationID;
-//	}
-//
-//	public Date getStartDate() {
-//		return startDate;
-//	}
-//
-//	public Date getStopDate() {
-//		return stopDate;
-//	}
-//
-//	public Set<Node> getSensors() {
-//		return sensors;
-//	}
-//	
-//	public List<String> getUrns(){
-//		return urns;
-//	}
-//
-//	public Timer getReservationStartTimer() {
-//		return reservationStartTimer;
-//	}
-//
-//	public Timer getReservationStopTimer() {
-//		return reservationStopTimer;
-//	}
-//
-//	public String getImageFileName() {
-//		return imageFileName;
-//	}
-//
-//	public void setStatus(final ExperimentStatus status) {
-//		this.status = status;
-//		view.setStatus(status.getStatusText());
-//	}
-//
-//
-//	public ExperimentStatus getStatus() {
-//		return status;
-//	}
-//	
-//	public ExperimentView getView() {
-//		return view;
-//	}
-//	
-//	public Timer getMessageCollectionTimer() {
-//		return messageCollectionTimer;
-//	}
-//	
-//	public String getUrnPrefix() {
-//		return urnPrefix;
-//	}
+	
+    @Override
+	public void onReservationTimeStarted(ReservationTimeStartedEvent event) {
+    	GWT.log("onReservationTimeStarted() : presenter with SRK : " + key);
+    	GWT.log("onReservationTimeStarted() : Previous status : " + status.getStatusText() );
+    	status = ExperimentStatus.READY;
+    	view.setStatus(status.getStatusText());
+    	GWT.log("onReservationTimeStarted() : Current status : " + status.getStatusText() );
+    	setStopTimer();
+	}
+    
+	@Override
+	public void onReservationTimeEnded(ReservationTimeEndedEvent event) {
+    	GWT.log("onReservationTimeEnded() : presenter with SRK : " + key);
+    	GWT.log("onReservationTimeEnded() : Previous status : " + status.getStatusText() );
+    	status = ExperimentStatus.TIMEDOUT;
+    	view.setStatus(status.getStatusText());
+    	GWT.log("onReservationTimeEnded() : Current status" + status.getStatusText() );
+    }
+	
+	@Override
+	public void onPlaceChange(PlaceChangeEvent event) {
+		eventBus.removeAll();
+	}
+    
+	private void setExperimentData(final ConfidentialReservationData data) {
+    	
+		fromDate = data.getFrom();
+    	toDate = data.getTo();
+    	nodeUrns = data.getNodeURNs();
+    	key = data.getData().get(0).getSecretReservationKey();
+    	experimentTiming = "-";
+        status = ExperimentStatus.PENDING;
+    }
+	
+    @SuppressWarnings("deprecation")
+    private void initView() {
+    	try{
+    		Checks.ifNull(key, "Experiment key is null");
+    		Checks.ifNull(fromDate, "Experiment start date is null");
+    		Checks.ifNull(toDate, "Experiment start date is null");
+    	}catch(RuntimeException cause){
+    		MessageBox.error("Error",cause.getMessage(),cause,null);
+    	}
+    	
+    	// initialize view
+    	view.setSecretReservationKey(key);
+    	view.setStartDate(fromDate.toLocaleString());
+    	view.setStopDate(toDate.toLocaleString());
+    	view.setExperimentTiming(experimentTiming);
+    	view.setStatus(status.getStatusText());
+    	view.setNodeUrns(nodeUrns);
+    }
+    
+    private void setStartTimer() {
+    	
+    	// reservation start timer counts till the reservation starts
+    	reservationStartTimer = new Timer() {
+			@Override
+			public void run() {
+				long diffInMillis = 
+					fromDate.getTime() - (new Date()).getTime();
+				if(diffInMillis <= 0) {
+					this.cancel();
+				}else{
+					experimentTiming = "Starting in " + StringTimer.elapsedTimeToString(diffInMillis);
+					view.setExperimentTiming(experimentTiming);
+					eventBus.fireEventFromSource(new ReservationTimeStartedEvent(),this);
+				}
+			}
+		};
+        	
+    	// start reservation start timer
+		reservationStartTimer.scheduleRepeating(1000);
+    }
+    
+    private void setStopTimer() {
+    	
+    	// reservation stop timer counts till the reservation ends
+    	reservationStopTimer = new Timer() {
+    		@Override
+    		public void run() {
+    			long diffInMillis = 
+    				toDate.getTime() - (new Date()).getTime();
+    			if(diffInMillis <= 0) {
+    				this.cancel();
+    			}else{
+    				experimentTiming = "Finishing in " +
+    						StringTimer.elapsedTimeToString(diffInMillis);
+    				view.setExperimentTiming(experimentTiming);
+					eventBus.fireEventFromSource(new ReservationTimeEndedEvent(),this);
+    			}
+    		}
+    	};
+    	
+    	// start reservation stop timer
+    	reservationStopTimer.scheduleRepeating(1000);
+    }
 }

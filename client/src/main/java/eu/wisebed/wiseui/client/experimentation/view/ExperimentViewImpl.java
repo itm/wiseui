@@ -1,5 +1,7 @@
 package eu.wisebed.wiseui.client.experimentation.view;
 
+import java.util.List;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -24,6 +26,11 @@ public class ExperimentViewImpl extends Composite implements ExperimentView {
 	Label startDate;
 	@UiField 
 	Label stopDate;
+	@UiField
+	Label experimentTiming;
+	@UiField
+	Label status; 
+	
 	
 	public ExperimentViewImpl() {
 		initWidget(uiBinder.createAndBindUi(this));
@@ -66,5 +73,37 @@ public class ExperimentViewImpl extends Composite implements ExperimentView {
 	@Override
 	public void setStopDate(final String text) {
 		stopDate.setText(text);
+	}
+
+	@Override
+	public void setExperimentTiming(String timing) {
+		experimentTiming.setText(timing);
+	}
+
+	@Override
+	public String getExperimentTiming() {
+		return experimentTiming.getText();
+	}
+
+	@Override
+	public void setStatus(String value) {
+		status.setText(value);
+	}
+
+	@Override
+	public String getStatus() {
+		return status.getText();
+	}
+
+	@Override
+	public void setNodeUrns(List<String> nodeUrns) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public List<String> getNodeUrns() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

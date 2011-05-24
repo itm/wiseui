@@ -1,5 +1,7 @@
 package eu.wisebed.wiseui.client.experimentation.view;
 
+import java.util.List;
+
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.inject.ImplementedBy;
 
@@ -19,6 +21,18 @@ public interface ExperimentView extends IsWidget {
 	String getStopDate();
 	
 	void setStopDate(String date);
+	
+	void setExperimentTiming(String timing);
+	
+	String getExperimentTiming();
+	
+	void setStatus(String value);
+	
+	String getStatus();
+	
+	void setNodeUrns(List<String> nodeUrns);
+	
+	List<String> getNodeUrns();
 	
 	public interface Presenter {
 	}

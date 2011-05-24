@@ -188,6 +188,7 @@ RefreshUserExperimentsEvent.Handler {
 					Checks.ifNull(dataList, "Null reservations returned");
 				}catch(RuntimeException cause){
 					MessageBox.error("Error", cause.getMessage(), cause, null);
+					view.getLoadingIndicator().hideLoading();
 					return;
 				}
 				
@@ -195,6 +196,7 @@ RefreshUserExperimentsEvent.Handler {
 					Checks.ifNullOrEmpty(dataList, "There are no pending reservations for you");
 				}catch(RuntimeException cause){
 					MessageBox.info("Reservation Service", cause.getMessage(),null);
+					view.getLoadingIndicator().hideLoading();
 					return;
 				}
 				
@@ -203,7 +205,7 @@ RefreshUserExperimentsEvent.Handler {
 					GWT.log(data.toString());
 					ExperimentPresenter experiment =
 						injector.getExperimentPresenter();
-					experiment.initialize(data);
+					experiment.setupExperimentPresenter(data);
 					view.addExperimentPanel(experiment.getView());
 				}
 				

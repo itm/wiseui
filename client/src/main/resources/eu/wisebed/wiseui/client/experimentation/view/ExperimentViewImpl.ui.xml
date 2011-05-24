@@ -46,6 +46,11 @@
 					<g:Label text="Stops at :" />
 					<g:Label styleName="{style.important}" ui:field="stopDate" />
 				</g:HorizontalPanel>
+				<g:Label styleName="{style.important}" ui:field="experimentTiming" />
+				<g:HorizontalPanel>
+					<g:Label text="Status :" />
+					<g:Label styleName="{style.important}" ui:field="status" />
+				</g:HorizontalPanel>
 			</g:FlowPanel>
 		</g:center>
 		<g:south size="35">
