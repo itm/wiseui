@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configurations>
+    <configuration isFederated="true">
+        <name>alice</name>
+        <testbedId>23</testbedId>
+        <testbedUrl>http://alice.eu</testbedUrl>
+        <snaaEndpointUrl>http://alice.eu/snaa</snaaEndpointUrl>
+        <sessionmanagementEndpointUrl>http://alice.eu/session</sessionmanagementEndpointUrl>
+        <rsEndpointUrl>http://alice.eu/rs</rsEndpointUrl>
+        <urnPrefix>urn:alice1</urnPrefix>
+        <urnPrefix>urn:alice2</urnPrefix>
+    </configuration>
+</configurations>

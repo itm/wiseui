@@ -6,13 +6,13 @@
     <parent>
         <groupId>eu.wisebed</groupId>
         <artifactId>wiseui</artifactId>
-        <version>0.3</version>
+        <version>0.5</version>
     </parent>
 
     <groupId>eu.wisebed.wiseui</groupId>
     <artifactId>client</artifactId>
     <packaging>war</packaging>
-    <version>0.3</version>
+    <version>0.5</version>
     <name>WiseUI - Client</name>
 
     <properties>
@@ -116,7 +116,7 @@
                         <goals>
                             <goal>generateAsync</goal>
                             <goal>compile</goal>
-                            <goal>test</goal>
+                            <!--goal>test</goal-->
                             <!--goal>i18n</goal-->
                             <goal>resources</goal>
                         </goals>
@@ -159,7 +159,7 @@
                 <version>1.1</version>
                 <configuration>
                     <server>tomcat6</server>
-                    <path>/wiseui-beta</path>
+                    <path>/${project.finalName}</path>
                     <url>${tomcat.manager.url}</url>
                 </configuration>
             </plugin>
@@ -171,7 +171,47 @@
                     </excludes>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>sql-maven-plugin</artifactId>
+                <version>1.4</version>
+                <dependencies>
+                    <!-- HSQL database driver -->
+                    <dependency>
+                        <groupId>org.hsqldb</groupId>
+                        <artifactId>hsqldb</artifactId>
+                        <version>2.0.0</version>
+                    </dependency>
+                    <!-- MySQL database driver -->
+                    <dependency>
+                        <groupId>mysql</groupId>
+                        <artifactId>mysql-connector-java</artifactId>
+                        <version>5.1.14</version>
+                    </dependency>
+                </dependencies>
+                <!-- common configuration shared by all executions -->
+                <configuration>
+                    <driver>${jdbc.connection.driver_class}</driver>
+                    <url>${jdbc.connection.url}</url>
+                    <username>${jdbc.connection.username}</username>
+                    <password>${jdbc.connection.password}</password>
+                    <enableFiltering>true</enableFiltering>
+                    <!-- no transaction -->
+                    <autocommit>true</autocommit>
+                    <srcFiles>
+                        <srcFile>src/main/sql/initial_testbed_configs.sql</srcFile>
+                    </srcFiles>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>create-data</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>execute</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
-
 </project>

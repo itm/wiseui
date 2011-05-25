@@ -17,18 +17,32 @@
 package eu.wisebed.wiseui.persistence.dao;
 
 import eu.wisebed.wiseui.persistence.domain.TestbedConfigurationBo;
-import org.springframework.stereotype.Repository;
+import eu.wisebed.wiseui.persistence.domain.TestbedConfigurationBoWrapper;
+import eu.wisebed.wiseui.shared.common.Checks;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.oxm.Marshaller;
+import org.springframework.oxm.Unmarshaller;
+
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.List;
 
 /**
  * Data access object for {@link eu.wisebed.wiseui.persistence.domain.TestbedConfigurationBo} objects.
  *
  * @author Soenke Nommensen
  */
-@Repository
-public class TestbedConfigurationDaoImpl extends AbstractDaoImpl<TestbedConfigurationBo>
+public class TestbedConfigurationDaoImpl
+        extends AbstractDaoImpl<TestbedConfigurationBo>
         implements TestbedConfigurationDao {
 
-    public TestbedConfigurationDaoImpl() {
-        super(TestbedConfigurationBo.class);
+
+    public TestbedConfigurationDaoImpl(final Class<TestbedConfigurationBo> persistentClass) {
+        super(persistentClass);
     }
 }

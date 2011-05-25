@@ -49,7 +49,6 @@ public class TestbedConfigurationBo implements Bo {
     @CollectionTable(name = "urn_prefix")
     private List<String> urnPrefixList = new ArrayList<String>();
     private boolean isFederated;
-    private int testbedId;
 
     public TestbedConfigurationBo() {
     }
@@ -134,14 +133,6 @@ public class TestbedConfigurationBo implements Bo {
         isFederated = federated;
     }
 
-    public int getTestbedId() {
-        return testbedId;
-    }
-
-    public void setTestbedId(final int testbedId) {
-        this.testbedId = testbedId;
-    }
-
     @Override
     public String toString() {
         return "TestbedConfigurationBo{"
@@ -153,7 +144,6 @@ public class TestbedConfigurationBo implements Bo {
                 + ", sessionmanagementEndpointUrl='" + sessionmanagementEndpointUrl + '\''
                 + ", urnPrefixList=" + urnPrefixList
                 + ", isFederated=" + isFederated
-                + ", testbedId=" + testbedId
                 + '}';
     }
 }

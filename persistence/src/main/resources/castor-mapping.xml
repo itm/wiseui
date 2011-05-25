@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<!DOCTYPE mapping PUBLIC "-//EXOLAB/Castor Mapping DTD Version 1.0//EN" "http://castor.org/mapping.dtd">
+
+<mapping>
+    <class name="eu.wisebed.wiseui.persistence.domain.TestbedConfigurationBoWrapper">
+        <map-to xml="configurations"/>
+        <field name="testbedConfigurations" collection="arraylist"
+               type="eu.wisebed.wiseui.persistence.domain.TestbedConfigurationBo">
+            <bind-xml name="configuration"/>
+        </field>
+    </class>
+    <class name="eu.wisebed.wiseui.persistence.domain.TestbedConfigurationBo">
+        <field name="isFederated" type="boolean" get-method="isFederated" set-method="setFederated">
+            <bind-xml name="isFederated" node="attribute"/>
+        </field>
+        <field name="name" type="java.lang.String">
+            <bind-xml name="name" node="element"/>
+        </field>
+        <field name="id" type="integer">
+            <bind-xml name="testbedId" node="element"/>
+        </field>
+        <field name="testbedUrl" type="java.lang.String">
+            <bind-xml name="testbedUrl" node="element"/>
+        </field>
+        <field name="snaaEndpointUrl" type="java.lang.String" >
+            <bind-xml name="snaaEndpointUrl" node="element"/>
+        </field>
+        <field name="sessionmanagementEndpointUrl" type="java.lang.String">
+            <bind-xml name="sessionmanagementEndpointUrl" node="element"/>
+        </field>
+        <field name="rsEndpointUrl" type="java.lang.String">
+            <bind-xml name="rsEndpointUrl" node="element"/>
+        </field>
+        <field name="UrnPrefixList" collection="arraylist" type="java.lang.String">
+            <bind-xml name="urnPrefix"/>
+        </field>
+    </class>
+</mapping>

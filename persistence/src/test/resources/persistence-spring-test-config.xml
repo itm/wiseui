@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+    <!--
+      XML Marshalling configuration
+    -->
+    <bean id="castorMarshaller" class="org.springframework.oxm.castor.CastorMarshaller">
+        <property name="mappingLocation" value="classpath:castor-mapping.xml"/>
+    </bean>
+
+    <bean id="dao" class="eu.wisebed.wiseui.persistence.dao.TestbedConfigurationOxmDaoImpl">
+        <constructor-arg index="0" value="classpath:testbed-test-configurations.xml"/>
+        <property name="marshaller" ref="castorMarshaller"/>
+        <property name="unmarshaller" ref="castorMarshaller"/>
+        <property name="wrapper" ref="testbedConfigurationBoWrapper"/>
+    </bean>
+
+    <bean id="testbedConfigurationBoWrapper"
+          class="eu.wisebed.wiseui.persistence.domain.TestbedConfigurationBoWrapper"/>
+
+</beans>
