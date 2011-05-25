@@ -98,9 +98,11 @@ public class NodeSelectionPresenter implements NodeSelectionView.Presenter,
                     result.setSetup(DefaultsHelper.apply(result.getSetup()));
                 }
                 eventBus.fireEvent(new WisemlLoadedEvent(result));
+                view.getLoadingIndicator().hideLoading();
             }
 
             public void onFailure(final Throwable caught) {
+                view.getLoadingIndicator().hideLoading();
                 eventBus.fireEvent(new ThrowableEvent(caught));
             }
         };
@@ -119,7 +121,7 @@ public class NodeSelectionPresenter implements NodeSelectionView.Presenter,
         if (setup != null) {
             view.setTreeViewModel(new NodeTreeViewModel(testbedConfiguration, setup.getNode(), nodeSelectionModel));
         }
-        view.getLoadingIndicator().hideLoading();
+        //view.getLoadingIndicator().hideLoading();
     }
 
     @Override

@@ -66,7 +66,7 @@ public class TestbedConfigurationOxmDaoImpl implements TestbedConfigurationDao {
         LOGGER.info(format("persist( %s )", testbedConfigurationBo.toString()));
         ifNullArgument(testbedConfigurationBo, "testbedConfigurationBo is null");
         // Reload all testbed configurations
-        wrapper.setTestbedConfigurations(findAll());
+        readXmlFromFile();
         // Add new testbed configuration
         wrapper.addTestbedConfiguration(testbedConfigurationBo);
         // Persist in XML file
@@ -78,7 +78,7 @@ public class TestbedConfigurationOxmDaoImpl implements TestbedConfigurationDao {
         LOGGER.info(format("update( %s )", testbedConfigurationBo.toString()));
         ifNullArgument(testbedConfigurationBo, "testbedConfigurationBo is null");
         // Reload all testbed configurations
-        wrapper.setTestbedConfigurations(findAll());
+        readXmlFromFile();
         // Updates testbed configuration in wrapper object
         wrapper.addTestbedConfiguration(testbedConfigurationBo);
         // Check if update worked
@@ -94,7 +94,7 @@ public class TestbedConfigurationOxmDaoImpl implements TestbedConfigurationDao {
         LOGGER.info(format("remove( %s )", testbedConfigurationBo.toString()));
         ifNullArgument(testbedConfigurationBo, "testbedConfigurationBo is null");
         // Reload all testbed configurations
-        wrapper.setTestbedConfigurations(findAll());
+        readXmlFromFile();
         // Remove testbed configuration if it exists
         wrapper.removeTestbedConfiguration(testbedConfigurationBo);
         // Write changes back to XML file
@@ -106,7 +106,7 @@ public class TestbedConfigurationOxmDaoImpl implements TestbedConfigurationDao {
         LOGGER.info(format("findById( %s )", id));
         ifNullArgument(id, "id is null");
         // Reload all testbed configurations
-        wrapper.setTestbedConfigurations(findAll());
+        readXmlFromFile();
         // Fetch testbed configuration with corresponding id
         TestbedConfigurationBo testbedConfigurationBo = wrapper.getTestbedConfiguration(id);
         ifNull(testbedConfigurationBo, "testbedConfigurationBo is null");
