@@ -215,6 +215,7 @@ public class PublicReservationsPresenter implements PublicReservationsView.Prese
                 current, range, new AsyncCallback<List<PublicReservationData>>() {
 
                     public void onFailure(Throwable caught) {
+                        view.getLoadingIndicator().hideLoading();
                         GWT.log("Error fetching reservation data!\n" + caught.getMessage());
                         eventBus.fireEvent(new ThrowableEvent(caught));
                     }
@@ -226,10 +227,9 @@ public class PublicReservationsPresenter implements PublicReservationsView.Prese
                             // Render the {@link eu.wisebed.wiseui.shared.dto.ReservationDetails}
                             view.renderPublicReservations(publicReservations);
                         }
+                        view.getLoadingIndicator().hideLoading();
                     }
                 });
-
-        view.getLoadingIndicator().hideLoading();
     }
 
     public void handleBackClicked() {

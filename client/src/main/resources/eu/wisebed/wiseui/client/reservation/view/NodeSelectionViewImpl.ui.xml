@@ -31,7 +31,7 @@
         </g:center>
         <g:south size="35">
             <g:HTMLPanel styleName="{style.buttonPanel}">
-                <g:Label>Button Panel</g:Label>
+                <!--g:Label>Button Panel</g:Label-->
             </g:HTMLPanel>
         </g:south>
     </g:DockLayoutPanel>
