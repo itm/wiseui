@@ -28,21 +28,24 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.junit.Assert.assertNotNull;
+
 /**
- * Tests for the Xstream Dao methods.
+ * Tests for the OXM DAO methods.
  *
  * @author Soenke Nommensen
  */
-public class PersistenceServiceXstreamTest {
+public class TestbedConfigurationOxmDaoTest {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(PersistenceServiceXstreamTest.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(TestbedConfigurationOxmDaoTest.class);
     final String springConfig = "persistence-spring-test-config.xml";
     final ApplicationContext springContext = new ClassPathXmlApplicationContext(springConfig);
     private TestbedConfigurationDao dao = springContext.getBean(TestbedConfigurationDao.class);
 
     @Test(timeout = 10000)
+    @Ignore
     public void testStoreTestbedConfiguration() {
-        LOGGER.debug("testStoreTestbedConfiguration");
+        LOGGER.debug("testStoreTestbedConfiguration()");
 
         TestbedConfigurationBo bo1 = createTestbedConfigurationBo("alice", 23);
         TestbedConfigurationBo bo2 = createTestbedConfigurationBo("bob", 42);
@@ -57,12 +60,18 @@ public class PersistenceServiceXstreamTest {
     @Test(timeout = 10000)
     @Ignore
     public void testLoadTestbedConfiguration() {
-        // TODO
+        LOGGER.debug("testLoadTestbedConfiguration()");
+
+        TestbedConfigurationBo bo = dao.findById(23);
+        assertNotNull(bo);
+
+        LOGGER.debug(bo.toString());
     }
 
     @Test(timeout = 30000)
+    @Ignore
     public void testLoadAllTestbedConfigurations() {
-        LOGGER.debug("testLoadAllTestbedConfigurations");
+        LOGGER.debug("testLoadAllTestbedConfigurations()");
         List<TestbedConfigurationBo> list = dao.findAll();
         for (TestbedConfigurationBo bo : list) {
             LOGGER.info(bo.toString());
@@ -72,11 +81,22 @@ public class PersistenceServiceXstreamTest {
     @Test(timeout = 10000)
     @Ignore
     public void testRemoveTestbedConfiguration() {
-        // TODO
+        LOGGER.debug("testRemoveTestbedConfiguration()");
+
+        TestbedConfigurationBo bo = dao.findById(42);
+        assertNotNull(bo);
+
+        dao.remove(bo);
+
+        List<TestbedConfigurationBo> list = dao.findAll();
+        for (TestbedConfigurationBo t : list) {
+            LOGGER.info(t.toString());
+        }
     }
 
     private TestbedConfigurationBo createTestbedConfigurationBo(final String name, final Integer id) {
         TestbedConfigurationBo bo = new TestbedConfigurationBo();
+        bo.setId(id);
         bo.setFederated(true);
         bo.setName(name);
         bo.setRsEndpointUrl(String.format("http://%s.eu/rs", name));
@@ -89,5 +109,4 @@ public class PersistenceServiceXstreamTest {
         bo.setUrnPrefixList(urns);
         return bo;
     }
-
 }

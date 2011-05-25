@@ -16,7 +16,7 @@
         <field name="name" type="java.lang.String">
             <bind-xml name="name" node="element"/>
         </field>
-        <field name="testbedId" type="integer">
+        <field name="id" type="integer">
             <bind-xml name="testbedId" node="element"/>
         </field>
         <field name="testbedUrl" type="java.lang.String">
@@ -34,6 +34,5 @@
         <field name="UrnPrefixList" collection="arraylist" type="java.lang.String">
             <bind-xml name="urnPrefix"/>
         </field>
-        <field name="id" transient="true"/>
     </class>
 </mapping>

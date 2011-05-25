@@ -20,10 +20,14 @@
         <property name="mappingLocation" value="classpath:castor-mapping.xml"/>
     </bean>
 
-    <bean id="dao" class="eu.wisebed.wiseui.persistence.dao.TestbedConfigurationDaoImpl">
-        <constructor-arg index="0" value="/Users/soenke/Code/wiseui/persistence/src/test/resources/testbed-configurations-test.xml"/>
+    <bean id="dao" class="eu.wisebed.wiseui.persistence.dao.TestbedConfigurationOxmDaoImpl">
+        <constructor-arg index="0" value="/Users/soenke/Code/wiseui/persistence/src/test/resources/testbed-configurations.xml"/>
         <property name="marshaller" ref="castorMarshaller"/>
         <property name="unmarshaller" ref="castorMarshaller"/>
+        <property name="wrapper" ref="testbedConfigurationBoWrapper"/>
     </bean>
+
+    <bean id="testbedConfigurationBoWrapper"
+          class="eu.wisebed.wiseui.persistence.domain.TestbedConfigurationBoWrapper"/>
 
 </beans>

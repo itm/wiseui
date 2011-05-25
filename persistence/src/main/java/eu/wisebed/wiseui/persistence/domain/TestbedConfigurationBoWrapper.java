@@ -23,7 +23,10 @@ import java.util.List;
  * @author Soenke Nommensen
  */
 public class TestbedConfigurationBoWrapper {
+
     private List<TestbedConfigurationBo> testbedConfigurations = new ArrayList<TestbedConfigurationBo>();
+
+    private static int ID_GENERATOR = 0;
 
     public TestbedConfigurationBoWrapper() {
     }
@@ -32,8 +35,14 @@ public class TestbedConfigurationBoWrapper {
         return this.testbedConfigurations;
     }
 
-    public void addTestbedConfiguration(final TestbedConfigurationBo testbedConfiguration) {
-        this.testbedConfigurations.add(testbedConfiguration);
+    public void addTestbedConfiguration(final TestbedConfigurationBo testbedConfigurationBo) {
+        if (testbedConfigurationBo.getId() == null) {
+            testbedConfigurationBo.setId(ID_GENERATOR++);
+        }
+        if (containsTestbedConfiguration(testbedConfigurationBo)) {
+            removeTestbedConfiguration(testbedConfigurationBo);
+        }
+        this.testbedConfigurations.add(testbedConfigurationBo);
     }
 
     public TestbedConfigurationBo getTestbedConfiguration(final Integer id) {
@@ -45,6 +54,25 @@ public class TestbedConfigurationBoWrapper {
             }
         }
         return result;
+    }
+
+    public boolean containsTestbedConfiguration(final Integer id) {
+        for (TestbedConfigurationBo bo : testbedConfigurations) {
+            if (id.equals(bo.getId())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean containsTestbedConfiguration(final TestbedConfigurationBo bo) {
+        return containsTestbedConfiguration(bo.getId());
+    }
+
+    public void removeTestbedConfiguration(final TestbedConfigurationBo bo) {
+        if (containsTestbedConfiguration(bo.getId())) {
+            this.testbedConfigurations.remove(getTestbedConfiguration(bo.getId()));
+        }
     }
 
     public void setTestbedConfigurations(final List<TestbedConfigurationBo> testbedConfigurations) {

@@ -21,10 +21,6 @@ import eu.wisebed.wiseui.persistence.dao.BinaryImageDao;
 import eu.wisebed.wiseui.persistence.dao.TestbedConfigurationDao;
 import eu.wisebed.wiseui.persistence.domain.BinaryImageBo;
 import eu.wisebed.wiseui.persistence.domain.TestbedConfigurationBo;
-
-import static eu.wisebed.wiseui.shared.common.Checks.ifNullArgument;
-import static eu.wisebed.wiseui.shared.common.Checks.ifNull;
-
 import eu.wisebed.wiseui.shared.dto.BinaryImage;
 import eu.wisebed.wiseui.shared.dto.TestbedConfiguration;
 import org.dozer.DozerBeanMapper;
@@ -36,6 +32,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static eu.wisebed.wiseui.shared.common.Checks.ifNull;
+import static eu.wisebed.wiseui.shared.common.Checks.ifNullArgument;
 
 /**
  * This service provides transactional methods to load and store WiseUI-relevant objects in a database.
@@ -66,24 +65,11 @@ public class PersistenceServiceImpl implements PersistenceService {
 
         LOGGER.info("storeTestbedConfiguration( " + dto + " )");
 
-        TestbedConfigurationBo bo;
-        if (dto.getId() == null) {
-            // Create and persist new persistent object
-            bo = dozerBeanMapper.map(dto, TestbedConfigurationBo.class);
-            testbedConfigurationDao.persist(bo);
-        } else {
-            // Update existing persistent object
-            bo = testbedConfigurationDao.findById(dto.getId());
-            if (bo != null) {
-                bo = dozerBeanMapper.map(dto, TestbedConfigurationBo.class);
-                testbedConfigurationDao.update(bo);
-            } else {
-                LOGGER.error("TestbedConfiguration with id #" + dto.getId()
-                        + " does not exist!");
-            }
-        }
-
+        TestbedConfigurationBo bo = dozerBeanMapper.map(dto, TestbedConfigurationBo.class);
         ifNull(bo, "Error creating TestbedConfigurationBo! (bo is null)");
+
+        testbedConfigurationDao.persist(bo);
+
         return dozerBeanMapper.map(bo, TestbedConfiguration.class);
     }
 
