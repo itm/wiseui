@@ -20,6 +20,7 @@ import eu.wisebed.wiseui.persistence.domain.TestbedConfigurationBo;
 import eu.wisebed.wiseui.persistence.domain.TestbedConfigurationBoWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.io.Resource;
 import org.springframework.oxm.Marshaller;
 import org.springframework.oxm.Unmarshaller;
 
@@ -44,8 +45,6 @@ public class TestbedConfigurationOxmDaoImpl implements TestbedConfigurationDao {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TestbedConfigurationOxmDaoImpl.class);
 
-    private static final String CONFIGURATION_FILE = "src/main/resources/testbed-configurations.xml";
-
     private TestbedConfigurationBoWrapper wrapper;
 
     private Marshaller marshaller;
@@ -54,12 +53,12 @@ public class TestbedConfigurationOxmDaoImpl implements TestbedConfigurationDao {
 
     private String path;
 
-    public TestbedConfigurationOxmDaoImpl() {
-        this(CONFIGURATION_FILE);
-    }
-
-    public TestbedConfigurationOxmDaoImpl(final String path) {
-        this.path = path;
+    public TestbedConfigurationOxmDaoImpl(final Resource resource) {
+        try {
+            this.path = resource.getFile().getPath();
+        } catch (IOException e) {
+            LOGGER.error(e.getMessage(), e);
+        }
     }
 
     @Override

@@ -61,7 +61,7 @@
     </bean>
 
     <bean id="testbedConfigurationDao" class="eu.wisebed.wiseui.persistence.dao.TestbedConfigurationOxmDaoImpl">
-        <constructor-arg index="0" value="testbed-configurations.xml"/>
+        <constructor-arg index="0" value="classpath:testbed-configurations.xml"/>
         <property name="marshaller" ref="castorMarshaller"/>
         <property name="unmarshaller" ref="castorMarshaller"/>
         <property name="wrapper" ref="testbedConfigurationBoWrapper"/>
