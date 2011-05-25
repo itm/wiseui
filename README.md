@@ -17,10 +17,32 @@ What do I need?
 
 All library dependencies are downloaded by Maven.
 
+Build and Start the WiseUI
+--------------------------
+
+On the command-line go to the WiseUI directory. Perform a clean build on the project to make sure, that all Maven artifacts are installed in your local Maven repository `~/.m2/repository`. If you are running Maven for the first time, it will take some time as Maven downloads all project dependencies from the internet.
+
+    $ cd wiseui
+    $ mvn clean install
+    
+In the current configuration all tests should be configured as ignored, but if want to be certain you can skip the tests by appending `-DskipTests` to your Maven command:
+
+    $ mvn clean install -DskipTests    
+
+To start the WiseUI in "hosted mode" change to the `client` directory (where the actual web application resides) and use the GWT Maven plugin goal `gwt:run`:
+
+    $ cd wiseui/client
+    $ mvn gwt:run
+    
+For debug mode use:
+
+    $ mvn gwt:debug    
+
+ 
 Configure Hibernate
 -------------------
 
-In order to have Hibernate properly configured, make sure you declare the following required properties in your local Maven settings file `~/.m2/settings.xml`:
+If you want to configure you own database connection instead of the default HSQL, you can do this by declaring the following properties in your local Maven settings file `~/.m2/settings.xml`:
 
 	<settings>
 	    ...
@@ -41,35 +63,13 @@ In order to have Hibernate properly configured, make sure you declare the follow
 			<activeProfile>inject-hibernate-details-wiseui</activeProfile>
 		</activeProfiles>
 		...
-	</settings>
-
-
-Build and Start the WiseUI
---------------------------
-
-On the command-line go to the WiseUI directory. Perform a clean build on the project to make sure, that all Maven artifacts are installed in your local Maven repository `~/.m2/repository`. If you are running Maven for the first time, it will take some time as Maven downloads all project dependencies from the internet.
-
-    $ cd wiseui
-    $ mvn clean install
-    
-Or, if you don't want to execute the JUnit tests, try:
-
-    $ mvn clean install -DskipTests    
-
-To start the WiseUI in "hosted mode", do the following:
-
-    $ cd wiseui/client
-    $ mvn gwt:run
-    
-For debug mode type:
-
-    $ mvn gwt:debug    
-    
+	</settings>   
+	
 
 Loading Initial Testbed Configurations
 --------------------------
     
-If you want to have an initial set of testbed configurations, you can load this dump into your local MySQL database.
+If you want to have an initial set of testbed configurations, you can load this dump into your local e.g. MySQL database.
 
     $ mysql -u dbuser -p dbpass somedb < wiseui/persistence/src/main/resources/initial_testbed_configs.sql   
 
