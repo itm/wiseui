@@ -39,6 +39,10 @@
 					<g:Label styleName="{style.important}" ui:field="secretReservationKey" />
 				</g:HorizontalPanel>
 				<g:HorizontalPanel>
+					<g:Label text="Username:" />
+					<g:Label styleName="{style.important}" ui:field="username" />
+				</g:HorizontalPanel>
+				<g:HorizontalPanel>
 					<g:Label text="Starts at :" />
 					<g:Label styleName="{style.important}" ui:field="startDate" />
 				</g:HorizontalPanel>

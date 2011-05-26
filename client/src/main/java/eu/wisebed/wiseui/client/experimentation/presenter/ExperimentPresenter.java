@@ -1,10 +1,25 @@
+/*
+ * Copyright 2011 Universität zu Lübeck, Institut für Telematik (ITM),
+ *              Research Academic Computer Technology Institute (RACTI)
+ *
+ * ITM and RACTI license this file under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with the
+ * License. You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package eu.wisebed.wiseui.client.experimentation.presenter;
 
 
 import java.util.Date;
 import java.util.List;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.place.shared.PlaceChangeEvent;
 import com.google.gwt.place.shared.PlaceController;
@@ -18,7 +33,6 @@ import eu.wisebed.wiseui.client.experimentation.event.ReservationTimeStartedEven
 import eu.wisebed.wiseui.client.experimentation.event.ReservationTimeEndedEvent;
 import eu.wisebed.wiseui.client.experimentation.util.StringTimer;
 import eu.wisebed.wiseui.client.experimentation.view.ExperimentView;
-import eu.wisebed.wiseui.client.testbedselection.event.ThrowableEvent;
 import eu.wisebed.wiseui.client.util.EventBusManager;
 import eu.wisebed.wiseui.shared.common.Checks;
 import eu.wisebed.wiseui.shared.dto.ConfidentialReservationData;
@@ -46,11 +60,14 @@ PlaceChangeEvent.Handler{
 		}
 	}
 
+	@SuppressWarnings("unused")
 	private final WiseUiGinjector injector;
 	private ExperimentView view;
+	@SuppressWarnings("unused")
 	private ExperimentationServiceAsync service;
 	private EventBusManager eventBus;
 	private String key;
+	private String username;
 	private Date fromDate;
 	private Date toDate;
 	private List<String> nodeUrns;
@@ -82,7 +99,7 @@ PlaceChangeEvent.Handler{
     public void setupExperimentPresenter(final ConfidentialReservationData data) {
     	setExperimentData(data);
     	initView();
-    	setStartTimer();
+    	initStartTimer();
     }
     
     public void bind() {
@@ -94,21 +111,16 @@ PlaceChangeEvent.Handler{
 	
     @Override
 	public void onReservationTimeStarted(ReservationTimeStartedEvent event) {
-    	GWT.log("onReservationTimeStarted() : presenter with SRK : " + key);
-    	GWT.log("onReservationTimeStarted() : Previous status : " + status.getStatusText() );
     	status = ExperimentStatus.READY;
     	view.setStatus(status.getStatusText());
-    	GWT.log("onReservationTimeStarted() : Current status : " + status.getStatusText() );
-    	setStopTimer();
+    	initStopTimer();
 	}
     
 	@Override
 	public void onReservationTimeEnded(ReservationTimeEndedEvent event) {
-    	GWT.log("onReservationTimeEnded() : presenter with SRK : " + key);
-    	GWT.log("onReservationTimeEnded() : Previous status : " + status.getStatusText() );
     	status = ExperimentStatus.TIMEDOUT;
     	view.setStatus(status.getStatusText());
-    	GWT.log("onReservationTimeEnded() : Current status" + status.getStatusText() );
+    	view.setExperimentTiming("-");
     }
 	
 	@Override
@@ -122,6 +134,7 @@ PlaceChangeEvent.Handler{
     	toDate = data.getTo();
     	nodeUrns = data.getNodeURNs();
     	key = data.getData().get(0).getSecretReservationKey();
+    	username = data.getData().get(0).getUsername();
     	experimentTiming = "-";
         status = ExperimentStatus.PENDING;
     }
@@ -138,6 +151,7 @@ PlaceChangeEvent.Handler{
     	
     	// initialize view
     	view.setSecretReservationKey(key);
+    	view.setUsername(username);
     	view.setStartDate(fromDate.toLocaleString());
     	view.setStopDate(toDate.toLocaleString());
     	view.setExperimentTiming(experimentTiming);
@@ -145,7 +159,7 @@ PlaceChangeEvent.Handler{
     	view.setNodeUrns(nodeUrns);
     }
     
-    private void setStartTimer() {
+    private void initStartTimer() {
     	
     	// reservation start timer counts till the reservation starts
     	reservationStartTimer = new Timer() {
@@ -155,10 +169,10 @@ PlaceChangeEvent.Handler{
 					fromDate.getTime() - (new Date()).getTime();
 				if(diffInMillis <= 0) {
 					this.cancel();
+					eventBus.fireEventFromSource(new ReservationTimeStartedEvent(),this);
 				}else{
 					experimentTiming = "Starting in " + StringTimer.elapsedTimeToString(diffInMillis);
 					view.setExperimentTiming(experimentTiming);
-					eventBus.fireEventFromSource(new ReservationTimeStartedEvent(),this);
 				}
 			}
 		};
@@ -167,7 +181,7 @@ PlaceChangeEvent.Handler{
 		reservationStartTimer.scheduleRepeating(1000);
     }
     
-    private void setStopTimer() {
+    private void initStopTimer() {
     	
     	// reservation stop timer counts till the reservation ends
     	reservationStopTimer = new Timer() {
@@ -177,11 +191,11 @@ PlaceChangeEvent.Handler{
     				toDate.getTime() - (new Date()).getTime();
     			if(diffInMillis <= 0) {
     				this.cancel();
+					eventBus.fireEventFromSource(new ReservationTimeEndedEvent(),this);
     			}else{
     				experimentTiming = "Finishing in " +
     						StringTimer.elapsedTimeToString(diffInMillis);
     				view.setExperimentTiming(experimentTiming);
-					eventBus.fireEventFromSource(new ReservationTimeEndedEvent(),this);
     			}
     		}
     	};

@@ -21,7 +21,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
@@ -85,12 +84,11 @@ public class ReservationServiceImpl extends RemoteServiceServlet implements Rese
 	throws AuthenticationException, ReservationException,
 	ReservationConflictException {
 		
-		// TODO after the joda implementation do we really need the duration 
-		//to be sent from client or calculated right here?
-		final long durationInSeconds = TimeUnit.SECONDS.toSeconds(rsData.getDuration());
+		// start and stop time
 		final DateTime startTime = new DateTime(rsData.getStartTime());
 		final DateTime stopTime =  new DateTime(rsData.getStopTime());
 
+		// make a secret authentication key list with the key sent
 		final List<eu.wisebed.testbed.api.snaa.v1.SecretAuthenticationKey> secretAuthKeys = 
 			new ArrayList<eu.wisebed.testbed.api.snaa.v1.SecretAuthenticationKey>();
 		eu.wisebed.testbed.api.snaa.v1.SecretAuthenticationKey snaaKey = 
@@ -103,9 +101,9 @@ public class ReservationServiceImpl extends RemoteServiceServlet implements Rese
 		// reservation system proxy
 		final RS rs = RSServiceHelper.getRSService(rsEndpointUrl);
 
-		// generate confidential reservation data
+		// make confidential reservation data object
 		eu.wisebed.testbed.api.rs.v1.ConfidentialReservationData reservationData 
-		= new eu.wisebed.testbed.api.rs.v1.ConfidentialReservationData();
+			= new eu.wisebed.testbed.api.rs.v1.ConfidentialReservationData();
 		eu.wisebed.testbed.api.rs.v1.Data data = new eu.wisebed.testbed.api.rs.v1.Data();
 		data.setUrnPrefix(snaaKey.getUrnPrefix());
 		data.setUsername(secretAuthenticationKey.getUsername());
@@ -126,22 +124,20 @@ public class ReservationServiceImpl extends RemoteServiceServlet implements Rese
 		List<eu.wisebed.testbed.api.rs.v1.SecretReservationKey> secretReservationKeys = null;
 		try {
 			secretReservationKeys = rs.makeReservation(APIKeysUtil.copySnaaToRs(secretAuthKeys),
-					reservationData
-			);
+					reservationData);
 		} catch (AuthorizationExceptionException e) {
 			throw new AuthenticationException("Not authorized for reservation");
 		} catch (RSExceptionException e) {
 			e.printStackTrace();
 			throw new ReservationException("RS exception");
 		} catch (ReservervationConflictExceptionException e) {
-			throw new ReservationConflictException("Reservation conflict");
+			throw new ReservationException("Reservation conflict occured");
 		}
 		data.setSecretReservationKey(secretReservationKeys.get(0).getSecretReservationKey());
 		data.setUrnPrefix(secretReservationKeys.get(0).getUrnPrefix());
 
 		LOGGER.debug("Successfully reserved the following nodes: {" + 
-				rsData.getNodes() + "}" + "for " + durationInSeconds +
-		" seconds");
+				rsData.getNodes() + "}");
 
 		return null;
 	}

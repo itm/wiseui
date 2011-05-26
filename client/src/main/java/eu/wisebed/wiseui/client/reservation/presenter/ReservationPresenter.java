@@ -21,25 +21,23 @@ import com.google.inject.Inject;
 import eu.wisebed.wiseui.api.ReservationServiceAsync;
 import eu.wisebed.wiseui.client.main.WiseUiPlace;
 import eu.wisebed.wiseui.client.reservation.view.ReservationView.Presenter;
+import eu.wisebed.wiseui.client.util.EventBusManager;
 
+@SuppressWarnings("unused")
 public class ReservationPresenter implements Presenter{
 
-    private WiseUiPlace place;
-    private ReservationServiceAsync reservationService;
-    private EventBus eventBus;
+	private WiseUiPlace place;
+	private ReservationServiceAsync service;
+	private EventBusManager eventBus;
 
     @Inject
-    public ReservationPresenter(final ReservationServiceAsync reservationService,
+    public ReservationPresenter(final ReservationServiceAsync service,
                                 final EventBus eventBus) {
-        this.reservationService = reservationService;
-        this.eventBus = eventBus;
+        this.service = service;
+        this.eventBus = new EventBusManager(eventBus);
     }
 
     public void setPlace(final WiseUiPlace place) {
         this.place = place;
     }
-    
-    public WiseUiPlace getPlace(){
-    	return place;
-	}
 }
