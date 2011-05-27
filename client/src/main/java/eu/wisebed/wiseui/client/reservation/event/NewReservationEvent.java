@@ -17,14 +17,19 @@
 package eu.wisebed.wiseui.client.reservation.event;
 
 import com.bradrydzewski.gwt.calendar.client.Appointment;
+import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;
 
-public class NewReservationEvent extends GwtEvent<NewReservationEventHandler>{
-	public static Type<NewReservationEventHandler> TYPE = 
-		new Type<NewReservationEventHandler>();
+public class NewReservationEvent extends GwtEvent<NewReservationEvent.Handler>{
+	
+	public static Type<Handler> TYPE = new Type<Handler>();
 
+	public interface Handler extends EventHandler{
+		void onNewReservation(NewReservationEvent event);
+	}
+	
 	@Override
-	public Type<NewReservationEventHandler> getAssociatedType(){
+	public Type<Handler> getAssociatedType(){
 		return TYPE;
 	}
 	
@@ -39,7 +44,7 @@ public class NewReservationEvent extends GwtEvent<NewReservationEventHandler>{
 	}
 
 	@Override
-	protected void dispatch(NewReservationEventHandler handler){
+	protected void dispatch(Handler handler){
 		handler.onNewReservation(this);
 	}
 }

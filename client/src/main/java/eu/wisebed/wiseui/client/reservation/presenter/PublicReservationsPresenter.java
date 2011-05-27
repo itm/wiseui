@@ -38,7 +38,6 @@ import eu.wisebed.wiseui.api.ReservationService;
 import eu.wisebed.wiseui.api.ReservationServiceAsync;
 import eu.wisebed.wiseui.client.reservation.event.EditReservationEvent;
 import eu.wisebed.wiseui.client.reservation.event.ReservationSuccessEvent;
-import eu.wisebed.wiseui.client.reservation.event.ReservationSuccessEventHandler;
 import eu.wisebed.wiseui.client.reservation.event.UpdateNodesSelectedEvent;
 import eu.wisebed.wiseui.client.reservation.view.PublicReservationsView;
 import eu.wisebed.wiseui.client.testbedlist.event.TestbedSelectedEvent;
@@ -59,7 +58,7 @@ import java.util.Set;
  */
 public class PublicReservationsPresenter implements PublicReservationsView.Presenter,
         TestbedSelectedEvent.ConfigurationSelectedHandler, UpdateNodesSelectedEvent.Handler,
-        ReservationSuccessEventHandler, ThrowableEvent.ThrowableHandler, PlaceChangeEvent.Handler {
+        ReservationSuccessEvent.Handler, ThrowableEvent.ThrowableHandler, PlaceChangeEvent.Handler {
 
     private final EventBusManager eventBus;
     private final PublicReservationsView view;

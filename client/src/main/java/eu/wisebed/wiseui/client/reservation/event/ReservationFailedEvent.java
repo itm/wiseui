@@ -16,19 +16,24 @@
  */
 package eu.wisebed.wiseui.client.reservation.event;
 
+import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;
 
-public class ReservationFailedEvent extends GwtEvent<ReservationFailedEventHandler>{
-	public static Type<ReservationFailedEventHandler> TYPE = 
-		new Type<ReservationFailedEventHandler>();
+public class ReservationFailedEvent extends GwtEvent<ReservationFailedEvent.Handler>{
+	
+	public static Type<Handler> TYPE = new Type<Handler>();
 
+	public interface Handler extends EventHandler{
+		void onReservationFailed(ReservationFailedEvent event);
+	}
+	
 	@Override
-	public Type<ReservationFailedEventHandler> getAssociatedType(){
+	public Type<Handler> getAssociatedType(){
 		return TYPE;
 	}
 	
 	@Override
-	protected void dispatch(ReservationFailedEventHandler handler){
+	protected void dispatch(Handler handler){
 		handler.onReservationFailed(this);
 	}
 	

@@ -25,7 +25,6 @@ import eu.wisebed.wiseui.shared.dto.ReservationDetails;
 import eu.wisebed.wiseui.shared.dto.SecretReservationKey;
 import eu.wisebed.wiseui.shared.dto.SecretAuthenticationKey;
 import eu.wisebed.wiseui.shared.exception.AuthenticationException;
-import eu.wisebed.wiseui.shared.exception.ReservationConflictException;
 import eu.wisebed.wiseui.shared.exception.ReservationException;
 
 import java.util.Date;
@@ -37,13 +36,12 @@ import java.util.List;
 @RemoteServiceRelativePath("reservation.rpc")
 public interface ReservationService extends RemoteService {
 
-    SecretReservationKey makeReservation(
+    ConfidentialReservationData makeReservation(
     		SecretAuthenticationKey key,
             String rsEndpointUrl,
             ReservationDetails data) 
     		throws 
-            AuthenticationException, ReservationException,
-            ReservationConflictException;
+            AuthenticationException, ReservationException;
 
     List<PublicReservationData> getPublicReservations(
     		String rsEndpointUrl, 

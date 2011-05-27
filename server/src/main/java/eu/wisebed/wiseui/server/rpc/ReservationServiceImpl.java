@@ -55,7 +55,6 @@ import eu.wisebed.wiseui.shared.dto.ConfidentialReservationData;
 import eu.wisebed.wiseui.shared.dto.SecretAuthenticationKey;
 import eu.wisebed.wiseui.shared.dto.SecretReservationKey;
 import eu.wisebed.wiseui.shared.exception.AuthenticationException;
-import eu.wisebed.wiseui.shared.exception.ReservationConflictException;
 import eu.wisebed.wiseui.shared.exception.ReservationException;
 
 @Singleton
@@ -79,10 +78,9 @@ public class ReservationServiceImpl extends RemoteServiceServlet implements Rese
 	 * @param data    ,an <code>ReservationDetails</code> object
 	 *                               containing the necessary information to make a reservation.
 	 */
-	public SecretReservationKey makeReservation(SecretAuthenticationKey secretAuthenticationKey,
+	public ConfidentialReservationData makeReservation(SecretAuthenticationKey secretAuthenticationKey,
 			String rsEndpointUrl, ReservationDetails rsData)
-	throws AuthenticationException, ReservationException,
-	ReservationConflictException {
+	throws AuthenticationException, ReservationException{
 		
 		// start and stop time
 		final DateTime startTime = new DateTime(rsData.getStartTime());
@@ -111,6 +109,7 @@ public class ReservationServiceImpl extends RemoteServiceServlet implements Rese
 		reservationData.setUserData(secretAuthenticationKey.getUsername());
 		reservationData.getNodeURNs().addAll(rsData.getNodes());
 
+		// use datatypefactory to 
 		DatatypeFactory datatypeFactory;
 		try {
 			datatypeFactory = DatatypeFactory.newInstance();
@@ -123,23 +122,30 @@ public class ReservationServiceImpl extends RemoteServiceServlet implements Rese
 		// retrieve secret reservation keys
 		List<eu.wisebed.testbed.api.rs.v1.SecretReservationKey> secretReservationKeys = null;
 		try {
+			
+			// make reservation and retrieve secret reservation keys from rs
 			secretReservationKeys = rs.makeReservation(APIKeysUtil.copySnaaToRs(secretAuthKeys),
 					reservationData);
+
+			// reformat reservation confidential data , map it and return it
+			data.setSecretReservationKey(secretReservationKeys.get(0).getSecretReservationKey());
+			data.setUrnPrefix(secretReservationKeys.get(0).getUrnPrefix());
+			reservationData.getData().clear();
+			reservationData.getData().add(data);
+			ConfidentialReservationData clientReservationData = 
+				mapper.map(reservationData, ConfidentialReservationData.class);
+			Data clientData = mapper.map(data, Data.class);
+			clientReservationData.getData().add(clientData);
+			LOGGER.debug("Succesfull Reservation \n" + clientReservationData.toString());
+
+			return clientReservationData;
 		} catch (AuthorizationExceptionException e) {
 			throw new AuthenticationException("Not authorized for reservation");
 		} catch (RSExceptionException e) {
-			e.printStackTrace();
 			throw new ReservationException("RS exception");
 		} catch (ReservervationConflictExceptionException e) {
 			throw new ReservationException("Reservation conflict occured");
 		}
-		data.setSecretReservationKey(secretReservationKeys.get(0).getSecretReservationKey());
-		data.setUrnPrefix(secretReservationKeys.get(0).getUrnPrefix());
-
-		LOGGER.debug("Successfully reserved the following nodes: {" + 
-				rsData.getNodes() + "}");
-
-		return null;
 	}
 
 	/**

@@ -16,21 +16,24 @@
  */
 package eu.wisebed.wiseui.client.reservation.event;
 
+import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;
 
-public class MissingReservationParametersEvent extends GwtEvent<
-	MissingReservationParametersEventHandler>{
+public class MissingReservationParametersEvent extends GwtEvent<MissingReservationParametersEvent.Handler>{
 	
-	public static Type<MissingReservationParametersEventHandler> TYPE = 
-		new Type<MissingReservationParametersEventHandler>();
+	public interface Handler extends EventHandler{
+		void onMissingReservationParameters(MissingReservationParametersEvent event);
+	}
+	
+	public static Type<Handler> TYPE = new Type<Handler>();
 
 	@Override
-	public Type<MissingReservationParametersEventHandler> getAssociatedType(){
+	public Type<Handler> getAssociatedType(){
 		return TYPE;
 	}
 	
 	@Override
-	protected void dispatch(MissingReservationParametersEventHandler handler){
+	protected void dispatch(Handler handler){
 		handler.onMissingReservationParameters(this);
 	}
 }

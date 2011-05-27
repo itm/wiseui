@@ -173,7 +173,8 @@ RefreshUserExperimentsEvent.Handler {
 		final Date fromDate = view.getFromDate();
 		final Date toDate = view.getToDate();
 		try{
-			Checks.ifNull(key, "You must be authenticated to a testbed in order to retrieve your reservations");
+			Checks.ifNull(key, "You must be authenticated to the selected" +
+					" testbed in order to retrieve your reservations");
 			Checks.ifNull(fromDate, "You must specify the starting date");
 			Checks.ifNull(toDate, "You must specify the ending date");
 		}catch(RuntimeException cause){

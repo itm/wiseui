@@ -34,22 +34,20 @@ import eu.wisebed.wiseui.api.ReservationServiceAsync;
 import eu.wisebed.wiseui.client.WiseUiGinjector;
 import eu.wisebed.wiseui.client.reservation.event.EditReservationEvent;
 import eu.wisebed.wiseui.client.reservation.event.ReservationFailedEvent;
-import eu.wisebed.wiseui.client.reservation.event.ReservationFailedEventHandler;
 import eu.wisebed.wiseui.client.reservation.event.ReservationSuccessEvent;
-import eu.wisebed.wiseui.client.reservation.event.ReservationSuccessEventHandler;
 import eu.wisebed.wiseui.client.reservation.i18n.ReservationMessages;
 import eu.wisebed.wiseui.client.reservation.view.ReservationEditView;
 import eu.wisebed.wiseui.client.reservation.view.ReservationEditView.Presenter;
 import eu.wisebed.wiseui.client.testbedlist.event.TestbedSelectedEvent;
 import eu.wisebed.wiseui.client.testbedlist.event.TestbedSelectedEvent.ConfigurationSelectedHandler;
 import eu.wisebed.wiseui.client.util.EventBusManager;
+import eu.wisebed.wiseui.shared.dto.ConfidentialReservationData;
 import eu.wisebed.wiseui.shared.dto.Node;
 import eu.wisebed.wiseui.shared.dto.ReservationDetails;
 import eu.wisebed.wiseui.shared.dto.SecretAuthenticationKey;
 import eu.wisebed.wiseui.shared.dto.SecretReservationKey;
 import eu.wisebed.wiseui.shared.dto.TestbedConfiguration;
 import eu.wisebed.wiseui.shared.exception.AuthenticationException;
-import eu.wisebed.wiseui.shared.exception.ReservationConflictException;
 import eu.wisebed.wiseui.shared.exception.ReservationException;
 import eu.wisebed.wiseui.widgets.messagebox.MessageBox;
 import eu.wisebed.wiseui.widgets.messagebox.MessageBox.Button;
@@ -58,7 +56,7 @@ import eu.wisebed.wiseui.widgets.messagebox.MessageBox.Button;
  * @author Soenke Nommensen
  */
 public class ReservationEditPresenter implements Presenter, EditReservationEvent.Handler, ConfigurationSelectedHandler,
-	PlaceChangeEvent.Handler, ReservationSuccessEventHandler, ReservationFailedEventHandler{
+	PlaceChangeEvent.Handler, ReservationSuccessEvent.Handler, ReservationFailedEvent.Handler{
 
     private static final String DEFAULT_NEW_TITLE = "New Reservation";
 
@@ -140,12 +138,13 @@ public class ReservationEditPresenter implements Presenter, EditReservationEvent
         data.setNodes(getNodesSelected());
         data.setUrnPrefix(urnPrefix);
         
-        final AsyncCallback<SecretReservationKey> callback = new AsyncCallback<SecretReservationKey>() {
+        final AsyncCallback<ConfidentialReservationData> callback = new AsyncCallback<ConfidentialReservationData>() {
             public void onFailure(Throwable caught) {
                 eventBus.fireEvent(new ReservationFailedEvent(caught));
             }
 
-            public void onSuccess(SecretReservationKey result) {
+            public void onSuccess(ConfidentialReservationData result) {
+            	GWT.log(result.toString());
                 eventBus.fireEvent(new ReservationSuccessEvent());
             }
         };
@@ -240,10 +239,6 @@ public class ReservationEditPresenter implements Presenter, EditReservationEvent
         } else if (caught instanceof ReservationException) {
         	errorMsg_title = messages.faultyReservationParametersTitle();
         	errorMsg = messages.faultyReservationParameters();
-            GWT.log(errorMsg);
-        } else if (caught instanceof ReservationConflictException) {
-        	errorMsg_title = messages.reservationConflictTitle();
-        	errorMsg = messages.reservationConflict();        	
             GWT.log(errorMsg);
         } else {
         	errorMsg_title = messages.rsServiceErrorTitle();
