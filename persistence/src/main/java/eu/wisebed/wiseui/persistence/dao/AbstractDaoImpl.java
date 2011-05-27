@@ -21,7 +21,7 @@ import javax.persistence.PersistenceContext;
 import java.util.List;
 
 /**
- * Abstract dao that provides implementations for the typical data
+ * Abstract DAO that provides implementations for the typical data
  * access operations.
  *
  * @param <T> Type of the business objects (BOs) on which the DAO shall

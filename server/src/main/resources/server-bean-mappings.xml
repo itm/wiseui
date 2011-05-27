@@ -1,15 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <mappings xmlns="http://dozer.sourceforge.net" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://dozer.sourceforge.net
+          xsi:schemaLocation="http://dozer.sourceforge.net
           http://dozer.sourceforge.net/schema/beanmapping.xsd">
 
-	<mapping>
-		<class-a>eu.wisebed.ns.wiseml._1.Setup$Node</class-a>
-		<class-b>eu.wisebed.wiseui.shared.dto.Node</class-b>
-		<field>
-			<a get-method="isGateway">gateway</a>
-			<b get-method="isGateway">gateway</b>
-		</field>
-	</mapping>
+    <mapping>
+        <class-a>eu.wisebed.ns.wiseml._1.Setup$Node</class-a>
+        <class-b>eu.wisebed.wiseui.shared.dto.Node</class-b>
+        <field>
+            <a get-method="isGateway">gateway</a>
+            <b get-method="isGateway">gateway</b>
+        </field>
+    </mapping>
+
+    <mapping>
+        <class-a>eu.wisebed.testbed.api.rs.v1.ConfidentialReservationData</class-a>
+        <class-b>eu.wisebed.wiseui.shared.dto.ConfidentialReservationData</class-b>
+        <field>
+            <a>data</a>
+            <b>data</b>
+            <a-hint>eu.wisebed.testbed.api.rs.v1.Data</a-hint>
+            <b-hint>eu.wisebed.wiseui.shared.dto.Data</b-hint>
+        </field>
+        <field>
+            <a>nodeURNs</a>
+            <b>nodeURNs</b>
+            <a-hint>java.lang.String</a-hint>
+            <b-hint>java.lang.String</b-hint>
+        </field>
+    </mapping>
+
+    <mapping>
+        <class-a>eu.wisebed.testbed.api.rs.v1.Data</class-a>
+        <class-b>eu.wisebed.wiseui.shared.dto.Data</class-b>
+    </mapping>
 
 </mappings>

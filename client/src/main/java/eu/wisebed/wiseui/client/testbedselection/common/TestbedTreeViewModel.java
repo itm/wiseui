@@ -37,9 +37,9 @@ import java.util.Map;
  */
 public class TestbedTreeViewModel implements TreeViewModel {
 
-    private final TestbedConfiguration configuration;
+    protected final TestbedConfiguration configuration;
 
-    private final List<NodeGroup> groups;
+    protected final List<NodeGroup> groups;
 
     public final SelectionModel<Node> nodeSelectionModel;
 

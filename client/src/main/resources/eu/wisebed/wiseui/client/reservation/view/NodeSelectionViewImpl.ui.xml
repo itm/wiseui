@@ -9,31 +9,17 @@
             height: 100%;
         }
 
-        .buttonPanel {
-            width: 100%;
-            background-color: #d0e4f6;
+        .content {
+            padding: 7px;
         }
-
-		.content {
-			padding: 7px;
-		}
     </ui:style>
 
     <ui:with field='famfamfam' type="eu.wisebed.wiseui.widgets.famfamfam.FamFamFamResources"/>
 
-    <g:DockLayoutPanel styleName="{style.fullLayout}">
-        <g:center>
-            <my:CaptionPanel caption="Node Selection" ui:field="container" styleName="{style.fullLayout}">
-                <g:ScrollPanel styleName="{style.fullLayout}">
-                    <g:SimplePanel styleName="{style.content}" ui:field="treeContainer"/>
-                </g:ScrollPanel>
-            </my:CaptionPanel>
-        </g:center>
-        <g:south size="35">
-            <g:HTMLPanel styleName="{style.buttonPanel}">
-                <!--g:Label>Button Panel</g:Label-->
-            </g:HTMLPanel>
-        </g:south>
-    </g:DockLayoutPanel>
+    <my:CaptionPanel caption="Node Selection" ui:field="container" styleName="{style.fullLayout}">
+        <g:ScrollPanel styleName="{style.fullLayout}">
+            <g:SimplePanel styleName="{style.content}" ui:field="treeContainer"/>
+        </g:ScrollPanel>
+    </my:CaptionPanel>
 
 </ui:UiBinder>

@@ -24,15 +24,15 @@ import com.google.gwt.uibinder.client.UiFactory;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.cellview.client.CellList;
+import com.google.gwt.user.cellview.client.CellTree;
 import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.HasEnabled;
 import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.HasValue;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.datepicker.client.DateBox;
-import com.google.gwt.view.client.HasData;
-import com.google.gwt.view.client.SelectionModel;
+import com.google.gwt.view.client.TreeViewModel;
 import com.google.inject.Singleton;
 import eu.wisebed.wiseui.widgets.HasWidgetsDialogBox;
 
@@ -48,7 +48,7 @@ public class ReservationEditViewImpl extends HasWidgetsDialogBox implements Rese
 
     interface ReservationEditViewImplUiBinder extends UiBinder<Widget, ReservationEditViewImpl> {
     }
-    
+
     @UiField
     TextBox whoTextBox;
     @UiField
@@ -56,69 +56,67 @@ public class ReservationEditViewImpl extends HasWidgetsDialogBox implements Rese
     @UiField
     DateBox endDateBox;
     @UiField
-    TextBox urnPrefixTextBox;
-    @UiField
-    Button addButton;
-    @UiField
-    CellList<String> urnPrefixList;
-    @UiField
-    Button removeButton;
-    @UiField
     Button submitButton;
     @UiField
     Button cancelButton;
-    
+    @UiField
+    SimplePanel treeContainer;
+
     private Presenter presenter;
 
     public ReservationEditViewImpl() {
-		uiBinder.createAndBindUi(this);
-		
+        uiBinder.createAndBindUi(this);
+
         setModal(true);
         setGlassEnabled(true);
         setAnimationEnabled(true);
-	}
-    
+    }
+
+    private CellTree createTree(final TreeViewModel model) {
+        final CellTree.Resources res = GWT.create(CellTree.BasicResources.class);
+        final CellTree cellTree = new CellTree(model, null, res);
+        cellTree.setAnimationEnabled(true);
+        return cellTree;
+    }
+
+    @Override
+    public void setTreeViewModel(final TreeViewModel model) {
+        final CellTree tree = createTree(model);
+        treeContainer.clear();
+        treeContainer.add(tree);
+    }
+
     @UiFactory
     protected ReservationEditViewImpl createDialog() {
         return this;
     }
-    
+
     @UiFactory
     protected CellList<String> createCellList() {
-    	return new CellList<String>(new TextCell());
+        return new CellList<String>(new TextCell());
     }
-    
+
     @UiHandler("submitButton")
     public void onSubmit(final ClickEvent event) {
-    	presenter.submit();
+        presenter.submit();
     }
-    
+
     @UiHandler("cancelButton")
     public void onCancel(final ClickEvent event) {
-    	presenter.cancel();
-    }
-    
-    @UiHandler("addButton")
-    public void handleAddButtonClicked(final ClickEvent event) {
-    	presenter.add();
-    }
-    
-    @UiHandler("removeButton")
-    public void handleRemoveButtonClicked(final ClickEvent event) {
-    	presenter.remove();
+        presenter.cancel();
     }
 
-	@Override
-	public void show(final String title) {
-		setText(title);
-		center();
-		show();
-	}
+    @Override
+    public void show(final String title) {
+        setText(title);
+        center();
+        show();
+    }
 
-	@Override
-	public void setPresenter(final Presenter presenter) {
-		this.presenter = presenter;
-	}
+    @Override
+    public void setPresenter(final Presenter presenter) {
+        this.presenter = presenter;
+    }
 
     @Override
     public HasText getWhoTextBox() {
@@ -134,24 +132,4 @@ public class ReservationEditViewImpl extends HasWidgetsDialogBox implements Rese
     public HasValue<Date> getEndDateBox() {
         return endDateBox;
     }
-
-    @Override
-	public HasText getUrnPrefixHasText() {
-		return urnPrefixTextBox;
-	}
-
-	@Override
-	public HasData<String> getUrnPrefixHasData() {
-		return urnPrefixList;
-	}
-
-	@Override
-	public void setUrnPrefixSelectionModel(final SelectionModel<String> selectionModel) {
-		urnPrefixList.setSelectionModel(selectionModel);
-	}
-
-	@Override
-	public HasEnabled getUrnPrefixRemoveHasEnabled() {
-		return removeButton;
-	}
 }

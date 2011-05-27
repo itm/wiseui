@@ -27,7 +27,6 @@ import eu.wisebed.wiseui.client.main.WiseUiPlace;
 import eu.wisebed.wiseui.client.reservation.presenter.NodeSelectionPresenter;
 import eu.wisebed.wiseui.client.reservation.presenter.PublicReservationsPresenter;
 import eu.wisebed.wiseui.client.reservation.presenter.ReservationEditPresenter;
-import eu.wisebed.wiseui.client.reservation.presenter.ReservationPresenter;
 import eu.wisebed.wiseui.client.reservation.view.NodeSelectionView;
 import eu.wisebed.wiseui.client.reservation.view.PublicReservationsView;
 import eu.wisebed.wiseui.client.reservation.view.ReservationEditView;
@@ -37,7 +36,7 @@ import eu.wisebed.wiseui.client.reservation.view.ReservationView;
  * @author John I. Gakos
  * @author Soenke Nommensen
  */
-public class ReservationActivity extends AbstractActivity {
+public class ReservationActivity extends AbstractActivity implements ReservationView.Presenter {
 
     private WiseUiGinjector injector;
     private WiseUiPlace place;
@@ -47,6 +46,7 @@ public class ReservationActivity extends AbstractActivity {
         this.injector = injector;
     }
 
+    @Override
     public void start(final AcceptsOneWidget panel, final EventBus eventBus) {
         initReservationPanel(panel);
     }
@@ -54,11 +54,10 @@ public class ReservationActivity extends AbstractActivity {
     private void initReservationPanel(final AcceptsOneWidget panel) {
         GWT.log("Init Reservation Panel");
 
-        final ReservationPresenter reservationPresenter = injector.getReservationPresenter();
         final ReservationView reservationView = injector.getReservationView();
 
-        reservationPresenter.setPlace(place);
-        reservationView.setPresenter(reservationPresenter);
+        setPlace(place);
+        reservationView.setPresenter(this);
         panel.setWidget(reservationView.asWidget());
 
         initNodeSelectionPanel(reservationView);

@@ -11,7 +11,7 @@ public class SecretAuthenticationKey implements Serializable {
 
     private int secretAuthenticationKeyID;
 
-	private String username;
+    private String username;
 
     private String secretAuthenticationKey;
 
@@ -22,12 +22,12 @@ public class SecretAuthenticationKey implements Serializable {
     }
 
     public int getSecretAuthenticationKeyID() {
-		return secretAuthenticationKeyID;
-	}
+        return secretAuthenticationKeyID;
+    }
 
-	public void setSecretAuthenticationKeyID(int secretAuthenticationKeyID) {
-		this.secretAuthenticationKeyID = secretAuthenticationKeyID;
-	}
+    public void setSecretAuthenticationKeyID(int secretAuthenticationKeyID) {
+        this.secretAuthenticationKeyID = secretAuthenticationKeyID;
+    }
 
     public String getUsername() {
         return username;
@@ -51,5 +51,15 @@ public class SecretAuthenticationKey implements Serializable {
 
     public void setUrnPrefix(final String urnPrefix) {
         this.urnPrefix = urnPrefix;
+    }
+
+    @Override
+    public String toString() {
+        return "SecretAuthenticationKey{" +
+                "secretAuthenticationKeyID=" + secretAuthenticationKeyID +
+                ", username='" + username + '\'' +
+                ", secretAuthenticationKey='" + secretAuthenticationKey + '\'' +
+                ", urnPrefix='" + urnPrefix + '\'' +
+                '}';
     }
 }

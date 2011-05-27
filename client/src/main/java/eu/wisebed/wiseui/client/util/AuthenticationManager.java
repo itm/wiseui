@@ -39,8 +39,7 @@ public class AuthenticationManager {
 
 	private final List<SecretAuthenticationKey> secretAuthenticationKeys = Lists.newLinkedList();
 
-	private final HashMap<String, SecretAuthenticationKey> map 
-		= new HashMap<String, SecretAuthenticationKey>();
+	private final HashMap<String, SecretAuthenticationKey> map = new HashMap<String, SecretAuthenticationKey>();
 	
 	/**
 	 * Load all authentication keys from the cookie.
@@ -59,7 +58,8 @@ public class AuthenticationManager {
 				return name.startsWith(PREFIX);
 			}
 		});
-		final Collection<SecretAuthenticationKey> keys = Collections2.transform(names, new Function<String, SecretAuthenticationKey>() {
+		final Collection<SecretAuthenticationKey> keys =
+                Collections2.transform(names, new Function<String, SecretAuthenticationKey>() {
 			@Override
 			public SecretAuthenticationKey apply(String name) {
 				return deserialize(Cookies.getCookie(name));
@@ -78,7 +78,7 @@ public class AuthenticationManager {
 		key.setUrnPrefix(tokens[1]);
 		key.setUsername(tokens[2]);
 		key.setSecretAuthenticationKey(tokens[3]);
-		key.setSecretAuthenticationKeyID((new Integer(tokens[4])).intValue());
+		key.setSecretAuthenticationKeyID(new Integer(tokens[4]));
 		return key;
 	}
 

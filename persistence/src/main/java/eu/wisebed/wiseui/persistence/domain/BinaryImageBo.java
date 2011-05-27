@@ -31,9 +31,9 @@ import javax.persistence.Table;
 @Table(name = "binary_image")
 public class BinaryImageBo implements Bo {
 
-	private static final long serialVersionUID = 7836493821143856623L;
+    private static final long serialVersionUID = 7836493821143856623L;
 	
-	@Id
+    @Id
     @GeneratedValue
     private Integer id;
     private String fileName;
@@ -54,6 +54,7 @@ public class BinaryImageBo implements Bo {
         this.contentType = contentType;
     }
 
+    @Override
     public Integer getId() {
         return id;
     }
