@@ -2,7 +2,7 @@ WiseUI
 ======
 
 The WiseUI is a [GWT][gwt] based web client for the [Testbed Runtime][testbedruntime].
-The project is carried out as a joint venture formed by R.A. Computer Technology Institute (CTI, University of Patras)
+The project is carried out as a joint venture formed by R.A. Computer Technology Institute (RACTI, University of Patras)
 and the Institute of Telemactics (ITM, University of Lübeck).
 
 The WiseUI project is related to the research projects [WISEBED][wisebed] and [SmartSantander][smartsantander].
@@ -71,7 +71,7 @@ Loading Initial Testbed Configurations
     
 If you want to have an initial set of testbed configurations, you can load this dump into your local e.g. MySQL database.
 
-    $ mysql -u dbuser -p dbpass somedb < wiseui/persistence/src/main/resources/initial_testbed_configs.sql   
+    $ mysql -u dbuser -p dbpass somedb < wiseui/persistence/src/main/sql/initial_testbed_configs.sql   
 
 This will create a table called `testbed_config` in the database `somedb` containing the intial [WISEBED][wisebed] testbed configurations.
 
