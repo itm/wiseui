@@ -43,6 +43,7 @@
 				<label>End:</label>
 				<br />
 				<d:DateBox addStyleNames="{style.input}" ui:field="endDateBox" />
+                <br />
 
                 <label>Selected nodes:</label>
                 <br />

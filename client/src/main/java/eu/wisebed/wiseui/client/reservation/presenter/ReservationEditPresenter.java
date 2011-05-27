@@ -19,6 +19,7 @@ import eu.wisebed.wiseui.client.reservation.view.ReservationEditView;
 import eu.wisebed.wiseui.client.reservation.view.ReservationEditView.Presenter;
 import eu.wisebed.wiseui.client.testbedlist.event.TestbedSelectedEvent;
 import eu.wisebed.wiseui.client.testbedlist.event.TestbedSelectedEvent.ConfigurationSelectedHandler;
+import eu.wisebed.wiseui.client.testbedselection.common.TestbedTreeViewModel;
 import eu.wisebed.wiseui.client.util.AuthenticationManager;
 import eu.wisebed.wiseui.client.util.EventBusManager;
 import eu.wisebed.wiseui.shared.dto.ConfidentialReservationData;
@@ -150,9 +151,12 @@ public class ReservationEditPresenter implements Presenter, EditReservationEvent
 
     private void setNodesSelected(final Set<Node> nodesSelected) {
         selectedNodes.clear();
+        List<Node> nodes = new ArrayList<Node>(nodesSelected.size());
         for (Node node : nodesSelected) {
             selectedNodes.add(node.getId());
+            nodes.add(node);
         }
+        view.setTreeViewModel(new TestbedTreeViewModel(selectedConfiguration, nodes, null));
     }
 
     public void onPlaceChange(final PlaceChangeEvent event) {
