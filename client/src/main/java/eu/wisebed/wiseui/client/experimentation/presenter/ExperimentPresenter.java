@@ -111,16 +111,20 @@ PlaceChangeEvent.Handler{
 	
     @Override
 	public void onReservationTimeStarted(ReservationTimeStartedEvent event) {
-    	status = ExperimentStatus.READY;
-    	view.setStatus(status.getStatusText());
-    	initStopTimer();
+    	if(event.getSource() == this ){
+    		status = ExperimentStatus.READY;
+    		view.setStatus(status.getStatusText());
+    		initStopTimer();
+    	}
 	}
     
 	@Override
 	public void onReservationTimeEnded(ReservationTimeEndedEvent event) {
-    	status = ExperimentStatus.TIMEDOUT;
-    	view.setStatus(status.getStatusText());
-    	view.setExperimentTiming("-");
+    	if(event.getSource() == this ){
+    		status = ExperimentStatus.TIMEDOUT;
+    		view.setStatus(status.getStatusText());
+    		view.setExperimentTiming("-");
+    	}
     }
 	
 	@Override
@@ -152,14 +156,17 @@ PlaceChangeEvent.Handler{
     	// initialize view
     	view.setSecretReservationKey(key);
     	view.setUsername(username);
-    	view.setStartDate(fromDate.toLocaleString());
-    	view.setStopDate(toDate.toLocaleString());
+    	view.setStartDate(fromDate.toGMTString());
+    	view.setStopDate(toDate.toGMTString());
     	view.setExperimentTiming(experimentTiming);
     	view.setStatus(status.getStatusText());
     	view.setNodeUrns(nodeUrns);
     }
     
     private void initStartTimer() {
+    	
+    	// source is this presenter
+    	final ExperimentPresenter source = this;
     	
     	// reservation start timer counts till the reservation starts
     	reservationStartTimer = new Timer() {
@@ -169,7 +176,7 @@ PlaceChangeEvent.Handler{
 					fromDate.getTime() - (new Date()).getTime();
 				if(diffInMillis <= 0) {
 					this.cancel();
-					eventBus.fireEventFromSource(new ReservationTimeStartedEvent(),this);
+					eventBus.fireEventFromSource(new ReservationTimeStartedEvent(),source);
 				}else{
 					experimentTiming = "Starting in " + StringTimer.elapsedTimeToString(diffInMillis);
 					view.setExperimentTiming(experimentTiming);
@@ -183,6 +190,9 @@ PlaceChangeEvent.Handler{
     
     private void initStopTimer() {
     	
+    	// source is this presenter
+    	final ExperimentPresenter source = this;
+    	
     	// reservation stop timer counts till the reservation ends
     	reservationStopTimer = new Timer() {
     		@Override
@@ -191,7 +201,7 @@ PlaceChangeEvent.Handler{
     				toDate.getTime() - (new Date()).getTime();
     			if(diffInMillis <= 0) {
     				this.cancel();
-					eventBus.fireEventFromSource(new ReservationTimeEndedEvent(),this);
+					eventBus.fireEventFromSource(new ReservationTimeEndedEvent(),source);
     			}else{
     				experimentTiming = "Finishing in " +
     						StringTimer.elapsedTimeToString(diffInMillis);

@@ -62,11 +62,14 @@
 				<table class="{style.buttonTable}">
 					<tr>
 						<td>
-							<g:Button text="Foo"/>
+							<g:Button text="Flash Binary Image"/>
 						</td>
 						<td>
-							<g:Button text="bar"/>
+							<g:Button text="Start Experiment"/>
 						</td>
+						<td>
+							<g:Button text="Stop Experiment"/>
+						</td>						
 					</tr>
 				</table>
 			</g:HTMLPanel>

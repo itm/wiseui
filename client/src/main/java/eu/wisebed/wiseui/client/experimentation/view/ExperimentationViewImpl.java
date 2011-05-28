@@ -132,12 +132,12 @@ public class ExperimentationViewImpl extends Composite implements
 	@UiHandler("inWeek")
     public void handleWeekClick(final ClickEvent event) {
     	
-    	Date today = new Date();
-    	int date = today.getDate();
+    	Date from = fromDateBox.getValue();
+    	int date = from.getDate();
     	date = date + 6;
-    	today.setDate(date);  
+    	from.setDate(date);  
     	
-    	toDateBox.setValue(today);
+    	toDateBox.setValue(from);
     	setWeekDayMonth(true,false,false);
     }
     
@@ -145,12 +145,12 @@ public class ExperimentationViewImpl extends Composite implements
 	@UiHandler("inMonth")
     public void handleMonthClick(final ClickEvent event) {
     	
-    	Date today = new Date();
-    	int month = today.getMonth();
+    	Date from = fromDateBox.getValue();
+    	int month = from.getMonth();
     	month++;
-    	today.setMonth((month >= 12)?11:month);
+    	from.setMonth((month >= 12)?11:month);
     	
-    	toDateBox.setValue(today);
+    	toDateBox.setValue(from);
     	setWeekDayMonth(false,true,false);
     }
     
@@ -158,12 +158,12 @@ public class ExperimentationViewImpl extends Composite implements
 	@UiHandler("inDay")
     public void handleDayClick(final ClickEvent event) {
     	
-    	Date today = new Date();
-    	int date = today.getDate();
+    	Date from = fromDateBox.getValue();
+    	int date = from.getDate();
     	date++;
-    	today.setDate(date);
+    	from.setDate(date);
     	
-    	toDateBox.setValue(today);
+    	toDateBox.setValue(from);
     	setWeekDayMonth(false,false,true);
     }
     

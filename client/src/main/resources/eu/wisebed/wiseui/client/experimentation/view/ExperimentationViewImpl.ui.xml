@@ -4,8 +4,6 @@
 	xmlns:my="urn:import:eu.wisebed.wiseui.widgets"
 	xmlns:d="urn:import:com.google.gwt.user.datepicker.client">
 	
-
-
 	<ui:style>
 		.fullLayout {
 			width: 100%;
@@ -89,8 +87,8 @@
 							To :
 							</td>
 							<td>
-								<g:ToggleButton text="Week" ui:field="inWeek" addStyleNames="{style.rangeButton}"/>
 								<g:ToggleButton text="Month"  ui:field="inMonth" addStyleNames="{style.rangeButton}"/>
+								<g:ToggleButton text="Week" ui:field="inWeek" addStyleNames="{style.rangeButton}"/>								
 								<g:ToggleButton text="Day"   ui:field="inDay" addStyleNames="{style.rangeButton}"/>
 								<d:DateBox ui:field="toDateBox" addStyleNames="{style.dateBox}"/>
 							</td>

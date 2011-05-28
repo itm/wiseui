@@ -312,8 +312,6 @@ public class ReservationServiceImpl extends RemoteServiceServlet implements Rese
 			if(reservationUsername.equals(authenticatedUsername) == false)
 			{
 				result.remove();
-				LOGGER.info("Removing from list CDR with username " + reservationUsername);
-				LOGGER.info("is not equal with " + authenticatedUsername);
 			}
 		}
 
