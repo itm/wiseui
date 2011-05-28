@@ -24,6 +24,15 @@ import eu.wisebed.wiseui.shared.dto.SecretAuthenticationKey;
 @RemoteServiceRelativePath("snaa.rpc")
 public interface SNAAService extends RemoteService {
 
+	/**
+	 * Authenticates a user to a testbed
+	 * @param endpointUrl
+	 * @param urn
+	 * @param username
+	 * @param password
+	 * @return
+	 * @throws AuthenticationException
+	 */
     SecretAuthenticationKey authenticate(
     		String endpointUrl,
     		String urn,

@@ -59,6 +59,16 @@ public class Checks {
     }
 
     /**
+     * @param collection Collection, which shall be tested for Null or empty.
+     * @param message    Error message
+     * @throws RuntimeException
+     */
+    @SuppressWarnings("rawtypes")
+	public static void ifNullOrEmptyArgument(final Collection collection, final String message) {
+        checkArgument(collection != null && !collection.isEmpty(), message);
+    }
+
+    /**
      * @param expression Boolean expression, which shall be tested.
      * @param message    Error message
      * @throws RuntimeException
@@ -93,7 +103,7 @@ public class Checks {
      * @throws RuntimeException
      */
     @SuppressWarnings("rawtypes")
-    public static void ifNullOrEmpty( final Collection collection, final String message) {
+	public static void ifNullOrEmpty(final Collection collection, final String message) {
         check(collection != null && !collection.isEmpty(), message);
     }
 }

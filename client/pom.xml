@@ -159,7 +159,7 @@
                 <version>1.1</version>
                 <configuration>
                     <server>tomcat6</server>
-                    <path>/${project.finalName}</path>
+                    <path>/wiseui-beta</path>
                     <url>${tomcat.manager.url}</url>
                 </configuration>
             </plugin>

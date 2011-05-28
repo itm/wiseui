@@ -49,16 +49,9 @@ public class SNAAServiceImpl extends RemoteServiceServlet implements SNAAService
         this.mapper = mapper;
     }
 
-    private AuthenticationTriple createTriple(final String urn, final String userName, final String password) {
-        final AuthenticationTriple triple = new AuthenticationTriple();
-
-        triple.setUsername(userName);
-        triple.setUrnPrefix(urn);
-        triple.setPassword(password);
-
-        return triple;
-    }
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public SecretAuthenticationKey authenticate(final String endpointUrl,
                                                 final String urn,
@@ -84,5 +77,15 @@ public class SNAAServiceImpl extends RemoteServiceServlet implements SNAAService
         }
 
         return mapper.map(key, SecretAuthenticationKey.class);
+    }
+    
+    private AuthenticationTriple createTriple(final String urn, final String userName, final String password) {
+        final AuthenticationTriple triple = new AuthenticationTriple();
+
+        triple.setUsername(userName);
+        triple.setUrnPrefix(urn);
+        triple.setPassword(password);
+
+        return triple;
     }
 }

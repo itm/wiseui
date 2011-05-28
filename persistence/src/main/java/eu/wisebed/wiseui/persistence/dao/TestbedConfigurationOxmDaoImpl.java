@@ -161,15 +161,15 @@ public class TestbedConfigurationOxmDaoImpl implements TestbedConfigurationDao {
         }
     }
 
-    public void setMarshaller(Marshaller marshaller) {
+    public void setMarshaller(final Marshaller marshaller) {
         this.marshaller = marshaller;
     }
 
-    public void setUnmarshaller(Unmarshaller unmarshaller) {
+    public void setUnmarshaller(final Unmarshaller unmarshaller) {
         this.unmarshaller = unmarshaller;
     }
 
-    public void setWrapper(TestbedConfigurationBoWrapper wrapper) {
+    public void setWrapper(final TestbedConfigurationBoWrapper wrapper) {
         this.wrapper = wrapper;
     }
 }

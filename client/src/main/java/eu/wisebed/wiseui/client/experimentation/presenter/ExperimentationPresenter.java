@@ -16,6 +16,7 @@
  */
 package eu.wisebed.wiseui.client.experimentation.presenter;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -244,6 +245,9 @@ RefreshUserExperimentsEvent.Handler {
 		};
 
 		// make the RPC
-		service.getPrivateReservations(key, rsEndpointUrl,fromDate,toDate,callback);
+		List<SecretAuthenticationKey> secretAuthenticationKeys 
+			= new ArrayList<SecretAuthenticationKey>();
+		secretAuthenticationKeys.add(key);
+		service.getPrivateReservations(rsEndpointUrl,secretAuthenticationKeys,fromDate,toDate,callback);
 	}
 }

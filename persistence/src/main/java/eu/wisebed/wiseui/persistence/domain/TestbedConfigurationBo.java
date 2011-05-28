@@ -35,9 +35,9 @@ import java.util.List;
 public class TestbedConfigurationBo implements Bo {
 
 
-	private static final long serialVersionUID = -820028455524205112L;
+    private static final long serialVersionUID = -820028455524205112L;
 	
-	@Id
+    @Id
     @GeneratedValue
     private Integer id;
     private String name;
@@ -69,6 +69,7 @@ public class TestbedConfigurationBo implements Bo {
         this.isFederated = isFederated;
     }
 
+    @Override
     public Integer getId() {
         return id;
     }

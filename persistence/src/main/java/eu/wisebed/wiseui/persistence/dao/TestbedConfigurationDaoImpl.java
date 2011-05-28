@@ -37,6 +37,7 @@ import java.util.List;
  *
  * @author Soenke Nommensen
  */
+@SuppressWarnings("unused")
 public class TestbedConfigurationDaoImpl
         extends AbstractDaoImpl<TestbedConfigurationBo>
         implements TestbedConfigurationDao {

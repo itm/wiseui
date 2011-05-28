@@ -1,24 +1,4 @@
-/*
- * Copyright 2011 Universität zu Lübeck, Institut für Telematik (ITM),
- *              Research Academic Computer Technology Institute (RACTI)
- *
- * ITM and RACTI license this file under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with the
- * License. You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package eu.wisebed.wiseui.client.reservation.presenter;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
 
 import com.google.common.base.Objects;
 import com.google.gwt.core.client.GWT;
@@ -26,9 +6,6 @@ import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.place.shared.PlaceChangeEvent;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.view.client.ListDataProvider;
-import com.google.gwt.view.client.SelectionChangeEvent;
-import com.google.gwt.view.client.SingleSelectionModel;
 import com.google.inject.Inject;
 import eu.wisebed.wiseui.api.ReservationServiceAsync;
 import eu.wisebed.wiseui.client.WiseUiGinjector;
@@ -40,60 +17,53 @@ import eu.wisebed.wiseui.client.reservation.view.ReservationEditView;
 import eu.wisebed.wiseui.client.reservation.view.ReservationEditView.Presenter;
 import eu.wisebed.wiseui.client.testbedlist.event.TestbedSelectedEvent;
 import eu.wisebed.wiseui.client.testbedlist.event.TestbedSelectedEvent.ConfigurationSelectedHandler;
+import eu.wisebed.wiseui.client.testbedselection.common.TestbedTreeViewModel;
+import eu.wisebed.wiseui.client.util.AuthenticationManager;
 import eu.wisebed.wiseui.client.util.EventBusManager;
 import eu.wisebed.wiseui.shared.dto.ConfidentialReservationData;
+import eu.wisebed.wiseui.shared.dto.Data;
 import eu.wisebed.wiseui.shared.dto.Node;
-import eu.wisebed.wiseui.shared.dto.ReservationDetails;
 import eu.wisebed.wiseui.shared.dto.SecretAuthenticationKey;
+import eu.wisebed.wiseui.shared.dto.SecretReservationKey;
 import eu.wisebed.wiseui.shared.dto.TestbedConfiguration;
 import eu.wisebed.wiseui.shared.exception.AuthenticationException;
 import eu.wisebed.wiseui.shared.exception.ReservationException;
 import eu.wisebed.wiseui.widgets.messagebox.MessageBox;
 import eu.wisebed.wiseui.widgets.messagebox.MessageBox.Button;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
 /**
  * @author Soenke Nommensen
  */
 public class ReservationEditPresenter implements Presenter, EditReservationEvent.Handler, ConfigurationSelectedHandler,
-	PlaceChangeEvent.Handler, ReservationSuccessEvent.Handler, ReservationFailedEvent.Handler{
+        PlaceChangeEvent.Handler, ReservationSuccessEvent.Handler, ReservationFailedEvent.Handler {
 
     private static final String DEFAULT_NEW_TITLE = "New Reservation";
 
     private WiseUiGinjector injector;
-    
     private final EventBusManager eventBus;
-
     private final ReservationEditView view;
-
-    private final ListDataProvider<String> urnPrefixProvider = new ListDataProvider<String>();
-    
-    private final SingleSelectionModel<String> selectionModel = new SingleSelectionModel<String>();
-
-    private TestbedConfiguration configuration;
-    
+    private TestbedConfiguration selectedConfiguration;
     private ReservationServiceAsync service;
-
     private String title = DEFAULT_NEW_TITLE;
-    
-    private List<String> nodes = new ArrayList<String>();
-    
+    private List<String> selectedNodes = new ArrayList<String>();
     private ReservationMessages messages;
 
     @Inject
     public ReservationEditPresenter(final WiseUiGinjector injector,
-    								final EventBus eventBus,
+                                    final EventBus eventBus,
                                     final ReservationEditView view,
                                     final ReservationServiceAsync service,
                                     final ReservationMessages messages) {
-    	this.injector = injector;
+        this.injector = injector;
         this.eventBus = new EventBusManager(eventBus);
         this.view = view;
         this.service = service;
         this.messages = messages;
-        
-        urnPrefixProvider.addDataDisplay(view.getUrnPrefixHasData());
-        view.setUrnPrefixSelectionModel(selectionModel);
-        view.getUrnPrefixRemoveHasEnabled().setEnabled(false);
+
         bind();
     }
 
@@ -103,13 +73,6 @@ public class ReservationEditPresenter implements Presenter, EditReservationEvent
         eventBus.addHandler(PlaceChangeEvent.TYPE, this);
         eventBus.addHandler(ReservationSuccessEvent.TYPE, this);
         eventBus.addHandler(ReservationFailedEvent.TYPE, this);
-        
-        selectionModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
-            @Override
-            public void onSelectionChange(final SelectionChangeEvent event) {
-                view.getUrnPrefixRemoveHasEnabled().setEnabled(null != selectionModel.getSelectedObject());
-            }
-        });
     }
 
     /**
@@ -117,44 +80,52 @@ public class ReservationEditPresenter implements Presenter, EditReservationEvent
      */
     @Override
     public void submit() {
-    	if (getNodesSelected() == null || getNodesSelected().isEmpty()){
-			// TODO: Add a 'suggestion' type message box
-			final String suggestion = "Please select at least one node to submit a reservation.";
-			MessageBox.info("No nodes selected", suggestion, null);
-			return;
-		}
-    	if (urnPrefixProvider.getList().isEmpty()){
-        	final String suggestion = "Please add at least one URN prefix";
-			MessageBox.info("No urnprefix added", suggestion, null);
-			return; 
+        if (selectedNodes == null || selectedNodes.isEmpty()) {
+            // TODO: Add a 'suggestion' type message box
+            final String suggestion = "Please select at least one node to submit a reservation!";
+            MessageBox.info("No nodes selected", suggestion, null);
+            return;
         }
-        final String rsEndpointUrl = configuration.getRsEndpointUrl();
-        final String urnPrefix = urnPrefixProvider.getList().get(0);
-        final SecretAuthenticationKey secretAuthKey = injector.getAuthenticationManager().getMap().get(urnPrefix);
-        final ReservationDetails data = new ReservationDetails();
-        data.setStartTime(view.getStartDateBox().getValue());
-        data.setStopTime(view.getEndDateBox().getValue());
-        data.setNodes(getNodesSelected());
-        data.setUrnPrefix(urnPrefix);
-        
-        final AsyncCallback<ConfidentialReservationData> callback = new AsyncCallback<ConfidentialReservationData>() {
+
+        final String rsEndpointUrl = selectedConfiguration.getRsEndpointUrl();
+
+        final ConfidentialReservationData reservationData = new ConfidentialReservationData();
+        reservationData.setFrom(view.getStartDateBox().getValue());
+        reservationData.setTo(view.getEndDateBox().getValue());
+        reservationData.setUserData(view.getWhoTextBox().getText());
+        reservationData.setNodeURNs(selectedNodes);
+
+        final AuthenticationManager authenticationManager = injector.getAuthenticationManager();
+        final List<SecretAuthenticationKey> authenticationKeys = new ArrayList<SecretAuthenticationKey>();
+
+        for (String urnPrefix : selectedConfiguration.getUrnPrefixList()) {
+            SecretAuthenticationKey secretAuthenticationKey = authenticationManager.getMap().get(urnPrefix);
+            authenticationKeys.add(secretAuthenticationKey);
+            // Set up data object for confidential reservation data
+            Data data = new Data();
+            data.setUrnPrefix(secretAuthenticationKey.getUrnPrefix());
+            data.setUsername(secretAuthenticationKey.getUsername());
+            data.setSecretReservationKey(secretAuthenticationKey.getSecretAuthenticationKey());
+            reservationData.getData().add(data);
+        }
+
+        final AsyncCallback<List<SecretReservationKey>> callback = new AsyncCallback<List<SecretReservationKey>>() {
             public void onFailure(Throwable caught) {
                 eventBus.fireEvent(new ReservationFailedEvent(caught));
             }
 
-            public void onSuccess(ConfidentialReservationData result) {
-            	GWT.log(result.toString());
+            public void onSuccess(List<SecretReservationKey> result) {
                 eventBus.fireEvent(new ReservationSuccessEvent());
             }
         };
         Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
-			
-			@Override
-			public void execute() {
-				service.makeReservation(secretAuthKey, rsEndpointUrl, data, callback);
+
+            @Override
+            public void execute() {
+                service.makeReservation(rsEndpointUrl, authenticationKeys, reservationData, callback);
                 view.hide();
-			}
-		});
+            }
+        });
     }
 
     @Override
@@ -171,79 +142,63 @@ public class ReservationEditPresenter implements Presenter, EditReservationEvent
     }
 
     @Override
-    public void add() {
-    	final String urn = view.getUrnPrefixHasText().getText();
-    	urnPrefixProvider.getList().add(urn);
-    	urnPrefixProvider.refresh();
+    public void onTestbedSelected(final TestbedSelectedEvent event) {
+        selectedConfiguration = event.getConfiguration();
     }
 
-    @Override
-    public void remove() {
-    	final String urn = selectionModel.getSelectedObject();
-    	urnPrefixProvider.getList().remove(urn);
-    	urnPrefixProvider.refresh();
-    	view.getUrnPrefixRemoveHasEnabled().setEnabled(false);
+    private void setNodesSelected(final Set<Node> nodesSelected) {
+        selectedNodes.clear();
+        List<Node> nodes = new ArrayList<Node>(nodesSelected.size());
+        for (Node node : nodesSelected) {
+            selectedNodes.add(node.getId());
+            nodes.add(node);
+        }
+        view.setTreeViewModel(new TestbedTreeViewModel(selectedConfiguration, nodes, null));
     }
 
-    @Override
-    public void onTestbedSelected(final TestbedSelectedEvent event){
-    	configuration = event.getConfiguration();
+    public void onPlaceChange(final PlaceChangeEvent event) {
+        eventBus.removeAll();
     }
 
-    private void setNodesSelected(final Set<Node> nodesSelected){
-    	nodes.clear();
-    	for(Node node: nodesSelected){
-    		nodes.add(node.getId());
-    	}
-    }
-    
-    private List<String> getNodesSelected(){
-    	return this.nodes;
-    }
-   
-    public void onPlaceChange(final PlaceChangeEvent event){
-    	eventBus.removeAll();
-    }
-    
     @Override
     public void onEditReservation(final EditReservationEvent event) {
-    	if (null == configuration){
-    		final String suggestion = "Please select at least one testbed to make a new reservation";
-			MessageBox.info("No testbed selected", suggestion, null);
-			return;
-    	}
-        final String title = Objects.firstNonNull(configuration.getName(), DEFAULT_NEW_TITLE);
-    	view.show(title);
-    	view.getStartDateBox().setValue(event.getAppointment().getStart());
-    	view.getUrnPrefixHasText().setText(configuration.getUrnPrefixList().get(0));
-    	view.getWhoTextBox().setText(injector.getAuthenticationManager().getSecretAuthenticationKeys().get(0).getUsername());
-        if (event.getNodes()!=null)
-        	setNodesSelected(event.getNodes());
+        if (selectedConfiguration == null) {
+            final String suggestion = "Please select at least one testbed to make a new reservation";
+            MessageBox.info("No testbed selected", suggestion, null);
+            return;
+        }
+        final String title = Objects.firstNonNull(selectedConfiguration.getName(), DEFAULT_NEW_TITLE);
+        view.show(title);
+        view.getStartDateBox().setValue(event.getAppointment().getStart());
+        view.getWhoTextBox().setText(injector.getAuthenticationManager().getSecretAuthenticationKeys().get(0).getUsername());
+        if (event.getNodes() != null) {
+            setNodesSelected(event.getNodes());
+        }
     }
-    
+
     public void onReservationSuccess() {
         MessageBox.success(messages.reservationSuccessTitle(), messages.reservationSuccess(), null);
     }
-    
+
     @Override
-    public void onReservationFailed(final ReservationFailedEvent event){
-    	final String errorMsg_title;
-    	final String errorMsg;
-    	final Throwable caught = event.getThrowable();
-    	// TODO: Get exception's message for more descriptive error handling
+    public void onReservationFailed(final ReservationFailedEvent event) {
+        final String errorMsgTitle;
+        final String errorMsg;
+        final Throwable caught = event.getThrowable();
+        // TODO: Get exception's message for more descriptive error handling
         if (caught instanceof AuthenticationException) {
-        	errorMsg_title = messages.authenticationKeysExpiredTitle();
-        	errorMsg = messages.authenticationKeysExpired();
+            errorMsgTitle = messages.authenticationKeysExpiredTitle();
+            errorMsg = messages.authenticationKeysExpired();
             GWT.log(errorMsg);
         } else if (caught instanceof ReservationException) {
-        	errorMsg_title = messages.faultyReservationParametersTitle();
-        	errorMsg = messages.faultyReservationParameters();
+            errorMsgTitle = messages.faultyReservationParametersTitle();
+            errorMsg = messages.faultyReservationParameters();
             GWT.log(errorMsg);
         } else {
-        	errorMsg_title = messages.rsServiceErrorTitle();
-        	errorMsg = messages.rsServiceError();        	
+            errorMsgTitle = messages.rsServiceErrorTitle();
+            errorMsg = messages.rsServiceError();
             GWT.log(errorMsg);
-        }        
-		MessageBox.error(errorMsg_title, errorMsg, caught, null);
+        }
+        MessageBox.error(errorMsgTitle, errorMsg, caught, null);
     }
 }

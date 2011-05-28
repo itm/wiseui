@@ -16,12 +16,10 @@
  */
 package eu.wisebed.wiseui.client.reservation.view;
 
-import com.google.gwt.user.client.ui.HasEnabled;
 import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.view.client.HasData;
-import com.google.gwt.view.client.SelectionModel;
+import com.google.gwt.view.client.TreeViewModel;
 import com.google.inject.ImplementedBy;
 
 import java.util.Date;
@@ -37,31 +35,19 @@ public interface ReservationEditView extends IsWidget {
 	HasValue<Date> getStartDateBox();
 
 	HasValue<Date> getEndDateBox();
-
-	HasText getUrnPrefixHasText();
-	
-	HasData<String> getUrnPrefixHasData();
-	
-	HasEnabled getUrnPrefixRemoveHasEnabled();
-	
-	void setUrnPrefixSelectionModel(SelectionModel<String> selectionModel);
 	
 	void setPresenter(Presenter presenter);
 	
 	void show(String title);
 	
     void hide();
-    
-	// boolean validate();
+
+    void setTreeViewModel(final TreeViewModel model);
 	
 	public interface Presenter {
 		
 		void submit();
 		
 		void cancel();
-		
-		void add();
-		
-		void remove();
 	}
 }

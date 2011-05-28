@@ -24,4 +24,6 @@ import java.io.Serializable;
  * @author Soenke Nommensen
  */
 public interface Bo extends Serializable {
+    
+    Integer getId();
 }
