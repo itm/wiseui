@@ -45,7 +45,6 @@ import eu.wisebed.wiseui.shared.dto.ConfidentialReservationData;
 import eu.wisebed.wiseui.shared.dto.Node;
 import eu.wisebed.wiseui.shared.dto.ReservationDetails;
 import eu.wisebed.wiseui.shared.dto.SecretAuthenticationKey;
-import eu.wisebed.wiseui.shared.dto.SecretReservationKey;
 import eu.wisebed.wiseui.shared.dto.TestbedConfiguration;
 import eu.wisebed.wiseui.shared.exception.AuthenticationException;
 import eu.wisebed.wiseui.shared.exception.ReservationException;

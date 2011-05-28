@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.xml.datatype.DatatypeConfigurationException;
@@ -81,7 +82,7 @@ public class ReservationServiceImpl extends RemoteServiceServlet implements Rese
 	public ConfidentialReservationData makeReservation(SecretAuthenticationKey secretAuthenticationKey,
 			String rsEndpointUrl, ReservationDetails rsData)
 	throws AuthenticationException, ReservationException{
-		
+
 		// start and stop time
 		final DateTime startTime = new DateTime(rsData.getStartTime());
 		final DateTime stopTime =  new DateTime(rsData.getStopTime());
@@ -101,7 +102,7 @@ public class ReservationServiceImpl extends RemoteServiceServlet implements Rese
 
 		// make confidential reservation data object
 		eu.wisebed.testbed.api.rs.v1.ConfidentialReservationData reservationData 
-			= new eu.wisebed.testbed.api.rs.v1.ConfidentialReservationData();
+		= new eu.wisebed.testbed.api.rs.v1.ConfidentialReservationData();
 		eu.wisebed.testbed.api.rs.v1.Data data = new eu.wisebed.testbed.api.rs.v1.Data();
 		data.setUrnPrefix(snaaKey.getUrnPrefix());
 		data.setUsername(secretAuthenticationKey.getUsername());
@@ -122,7 +123,7 @@ public class ReservationServiceImpl extends RemoteServiceServlet implements Rese
 		// retrieve secret reservation keys
 		List<eu.wisebed.testbed.api.rs.v1.SecretReservationKey> secretReservationKeys = null;
 		try {
-			
+
 			// make reservation and retrieve secret reservation keys from rs
 			secretReservationKeys = rs.makeReservation(APIKeysUtil.copySnaaToRs(secretAuthKeys),
 					reservationData);
@@ -221,85 +222,38 @@ public class ReservationServiceImpl extends RemoteServiceServlet implements Rese
 	 * @param current
 	 * @param range
 	 * @return a <code>List</code> of <code>ConfidentialReservationData</code>
+	 * @throws ReservationException
+	 * @throws AuthenticationException 
 	 */
 	public List<ConfidentialReservationData> getPrivateReservations(final SecretAuthenticationKey key, 
-			final String rsEndpointUrl,final Date current, final Range range) throws ReservationException{
-
-		// check input arguments
-		try{
-			ifNullArgument(key,"SecretAuthenticationKey is null");
-			ifNullOrEmptyArgument(rsEndpointUrl, "Reservation Service Endpoint URL not set");
-			ifNullArgument(current, "Current date is not set");
-		}catch(RuntimeException cause){
-			throw new ReservationException(cause.getMessage());
-		}
-
-		LOGGER.debug("current=" + current);
+			final String rsEndpointUrl,final Date current, final Range range) throws AuthenticationException,ReservationException{
 
 		/* Convert from range to date to avoid client-site date calculation */
-		Date start = null;
-		Date end = null;
+		Date from = null;
+		Date to = null;
 		final Calendar calendar = Calendar.getInstance();
 		if (Range.ONE_DAY == range) {
 			calendar.setTime(current);
 			calendar.add(Calendar.DAY_OF_MONTH, 1);
-			start = current;
-			end = calendar.getTime();
+			from = current;
+			to = calendar.getTime();
 		} else if (Range.WEEK == range) {
 			calendar.setTime(current);
 			calendar.add(Calendar.DAY_OF_MONTH, 7);
-			start = current;
-			end = calendar.getTime();
+			from = current;
+			to = calendar.getTime();
 		} else if (Range.MONTH == range) {
 			calendar.setTime(current);
 			final int firstDayOfMonth = calendar.getActualMinimum(Calendar.DAY_OF_MONTH);
 			final int lastDayOfMonth = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
 			calendar.set(Calendar.DAY_OF_MONTH, firstDayOfMonth);
-			start = calendar.getTime();
+			from = calendar.getTime();
 			calendar.set(Calendar.DAY_OF_MONTH, lastDayOfMonth);
-			end = calendar.getTime();
+			to = calendar.getTime();
 		}
-		LOGGER.info("getPrivateReservations( start: " + start + ", end: " + end + " )");
 		
-		// add key to a list
-		final List<eu.wisebed.testbed.api.rs.v1.SecretAuthenticationKey> snaaKeys = 
-			new ArrayList<eu.wisebed.testbed.api.rs.v1.SecretAuthenticationKey>();
-		final eu.wisebed.testbed.api.rs.v1.SecretAuthenticationKey snaaKey = 
-			mapper.map(key, eu.wisebed.testbed.api.rs.v1.SecretAuthenticationKey.class);
-		snaaKeys.add(snaaKey);
-
-		// reservation system proxy
-		final RS rs = RSServiceHelper.getRSService(rsEndpointUrl);
-
-		// set and return results
-		List<eu.wisebed.testbed.api.rs.v1.ConfidentialReservationData> resultList = null;
-		try {
-			GetReservations reservation = new GetReservations();
-			reservation.setFrom(convertDate2XmlGregorianCalendar(start));
-			reservation.setTo(convertDate2XmlGregorianCalendar(end));
-			resultList = rs.getConfidentialReservations(snaaKeys,reservation);
-		} catch (RSExceptionException cause) {
-			throw new ReservationException(cause.getMessage());
-		}
-
-		return new ArrayList<ConfidentialReservationData>(Lists.transform(resultList,
-				new Function<eu.wisebed.testbed.api.rs.v1.ConfidentialReservationData, ConfidentialReservationData>() {
-			@Override
-			public ConfidentialReservationData apply(final eu.wisebed.testbed.api.rs.v1.ConfidentialReservationData r) {
-				
-				// use mapper to copy the confidential reservation data
-				final ConfidentialReservationData confidentialReservationData 
-					= mapper.map(r, ConfidentialReservationData.class);
-				
-				// iterate the data list and copy it
-				for(eu.wisebed.testbed.api.rs.v1.Data d : r.getData()) {
-					final Data data = mapper.map(d, Data.class);
-					confidentialReservationData.getData().add(data);
-				}
-				
-				return confidentialReservationData;
-			}
-		}));
+		// call getPrivateReservations with distinct from,to date objects
+		return getPrivateReservations(key, rsEndpointUrl, from, to);
 	}
 
 	/**
@@ -328,7 +282,7 @@ public class ReservationServiceImpl extends RemoteServiceServlet implements Rese
 		final Date start = from;
 		final Date end = to;
 		LOGGER.info("getPrivateReservations( start: " + start + ", end: " + end + " )");
-		
+
 		// add key to a list
 		final List<eu.wisebed.testbed.api.rs.v1.SecretAuthenticationKey> snaaKeys = 
 			new ArrayList<eu.wisebed.testbed.api.rs.v1.SecretAuthenticationKey>();
@@ -350,21 +304,35 @@ public class ReservationServiceImpl extends RemoteServiceServlet implements Rese
 			throw new ReservationException(cause.getMessage());
 		}
 
+		// filter to the data related to the authenticated user
+		final String authenticatedUsername = snaaKeys.get(0).getUsername();
+		for(Iterator<eu.wisebed.testbed.api.rs.v1.ConfidentialReservationData> result = resultList.iterator();
+			result.hasNext();) {
+			String reservationUsername = result.next().getData().get(0).getUsername();
+			if(reservationUsername.equals(authenticatedUsername) == false)
+			{
+				result.remove();
+				LOGGER.info("Removing from list CDR with username " + reservationUsername);
+				LOGGER.info("is not equal with " + authenticatedUsername);
+			}
+		}
+
+		// use Lists.transform to map the results to DTOs
 		return new ArrayList<ConfidentialReservationData>(Lists.transform(resultList,
 				new Function<eu.wisebed.testbed.api.rs.v1.ConfidentialReservationData, ConfidentialReservationData>() {
 			@Override
 			public ConfidentialReservationData apply(final eu.wisebed.testbed.api.rs.v1.ConfidentialReservationData r) {
-				
+
 				// use mapper to copy the confidential reservation data
 				final ConfidentialReservationData confidentialReservationData 
-					= mapper.map(r, ConfidentialReservationData.class);
-				
+				= mapper.map(r, ConfidentialReservationData.class);
+
 				// iterate the data list and copy it
 				for(eu.wisebed.testbed.api.rs.v1.Data d : r.getData()) {
 					final Data data = mapper.map(d, Data.class);
 					confidentialReservationData.getData().add(data);
 				}
-				
+
 				return confidentialReservationData;
 			}
 		}));
