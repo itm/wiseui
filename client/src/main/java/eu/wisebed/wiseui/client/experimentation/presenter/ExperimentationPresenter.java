@@ -235,7 +235,8 @@ RefreshUserExperimentsEvent.Handler {
 					GWT.log(data.toString());
 					ExperimentPresenter experiment =
 						injector.getExperimentPresenter();
-					experiment.setupExperimentPresenter(data);
+					experiment.setupExperimentPresenter(data,
+							testbedConfiguration.getSessionmanagementEndpointUrl());
 					view.addExperimentPanel(experiment.getView());
 				}
 

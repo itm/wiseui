@@ -17,6 +17,7 @@
 package eu.wisebed.wiseui.client.experimentation.presenter;
 
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -25,6 +26,7 @@ import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.place.shared.PlaceChangeEvent;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 
 import com.google.inject.Inject;
 
@@ -38,6 +40,7 @@ import eu.wisebed.wiseui.client.experimentation.view.ExperimentView;
 import eu.wisebed.wiseui.client.util.EventBusManager;
 import eu.wisebed.wiseui.shared.common.Checks;
 import eu.wisebed.wiseui.shared.dto.ConfidentialReservationData;
+import eu.wisebed.wiseui.shared.dto.SecretReservationKey;
 import eu.wisebed.wiseui.widgets.messagebox.MessageBox;
 
 public class ExperimentPresenter implements ExperimentView.Presenter,
@@ -64,19 +67,20 @@ PlaceChangeEvent.Handler,ExperimentMessageArrivedEvent.Handler{
 	@SuppressWarnings("unused")
 	private final WiseUiGinjector injector;
 	private ExperimentView view;
-	@SuppressWarnings("unused")
 	private ExperimentationServiceAsync service;
 	private EventBusManager eventBus;
-	private String key;
+	private String secretReservationKeyValue;
 	private String username;
+	private String urnPrefix;
 	private Date fromDate;
 	private Date toDate;
 	private List<String> nodeUrns;
 	private String experimentTiming;
 	private Timer reservationStartTimer;
 	private Timer reservationStopTimer;
-	private Timer experimentMessageCollection;
+	private Timer experimentMessageCollectionTimer;
 	private ExperimentStatus status;
+	private String sessionManagementUrl;
 
 	@Inject
 	public ExperimentPresenter(final WiseUiGinjector injector,
@@ -98,8 +102,9 @@ PlaceChangeEvent.Handler,ExperimentMessageArrivedEvent.Handler{
 		return view;
 	}
 
-	public void setupExperimentPresenter(final ConfidentialReservationData data) {
-		setExperimentData(data);
+	public void setupExperimentPresenter(final ConfidentialReservationData data, 
+			final String sessionManagementUrl) {
+		setExperimentData(data,sessionManagementUrl);
 		initView();
 		startReservationStartTimer();
 		startExperimentMessageCollectorTimer();
@@ -120,27 +125,92 @@ PlaceChangeEvent.Handler,ExperimentMessageArrivedEvent.Handler{
 
 	@Override
 	public void startExperiment() {
+
+		// setup callback
+		AsyncCallback<Void> callback = new AsyncCallback<Void>() {
+
+			@Override
+			public void onFailure(Throwable caught) {
+				GWT.log(caught.getMessage());
+				MessageBox.error("Experimentation Service", caught.getMessage(), caught, null);
+			}
+
+			@Override
+			public void onSuccess(Void result) {
+				GWT.log("Experiment controller on server published");
+			}
+			
+		};
+		
+		// setup list of keys
+		List<SecretReservationKey> secretReservationKeys = new ArrayList<SecretReservationKey>();
+		SecretReservationKey secretReservationKey = new SecretReservationKey();
+		secretReservationKey.setSecretReservationKey(secretReservationKeyValue);
+		secretReservationKey.setUrnPrefix(urnPrefix);
+		secretReservationKeys.add(secretReservationKey);
+		
+		// make the rpc call
+		service.startExperimentController(
+				sessionManagementUrl,
+				secretReservationKeys,callback);
+		
+		// start message collection timer
 		startExperimentMessageCollectorTimer();
+		
+		// update status 
 		status = ExperimentStatus.RUNNING;
+		
+		//update view
 		view.setStatus(status.getStatusText());
 		view.deactivateStartExperimentButton();
 		view.activateFlashExperimentButton();
 		view.activateStopExperimentButton();
-		GWT.log("Experiment started!");
 	}
 
 
 	@Override
 	public void stopExperiment() {
-		if(experimentMessageCollection != null) {
-			experimentMessageCollection.cancel();
+		
+		// setup callback
+		AsyncCallback<Void> callback = new AsyncCallback<Void>() {
+
+			@Override
+			public void onFailure(Throwable caught) {
+				GWT.log(caught.getMessage());
+				MessageBox.error("Experimentation Service", caught.getMessage(), caught, null);
+			}
+
+			@Override
+			public void onSuccess(Void result) {
+				GWT.log("Experiment controller on server is now terminated");
+			}
+			
+		};
+		
+		// setup list of keys
+		List<SecretReservationKey> secretReservationKeys = new ArrayList<SecretReservationKey>();
+		SecretReservationKey secretReservationKey = new SecretReservationKey();
+		secretReservationKey.setSecretReservationKey(secretReservationKeyValue);
+		secretReservationKey.setUrnPrefix(urnPrefix);
+		secretReservationKeys.add(secretReservationKey);
+		
+		// make the rpc call
+		service.stopExperimentController(
+				secretReservationKeys,callback);
+				
+		// if experiment message collection timer is not null stop it
+		if(experimentMessageCollectionTimer != null) {
+			experimentMessageCollectionTimer.cancel();
 		}
+		
+		// update status
 		status = ExperimentStatus.STOPPED;
+		
+		// update view
 		view.setStatus(status.getStatusText());
 		view.deactivateStopExperimentButton();
 		view.activateFlashExperimentButton();
 		view.activateStartExperimentButton();
-		GWT.log("Experiment stoped!");	
 	}
 
 	@Override
@@ -163,8 +233,8 @@ PlaceChangeEvent.Handler,ExperimentMessageArrivedEvent.Handler{
 	public void onReservationTimeEnded(ReservationTimeEndedEvent event) {
 		if(event.getSource() == this ){
 			status = ExperimentStatus.TIMEDOUT;
-			if(experimentMessageCollection != null) {
-				experimentMessageCollection.cancel();
+			if(experimentMessageCollectionTimer != null) {
+				experimentMessageCollectionTimer.cancel();
 			}
 			view.setStatus(status.getStatusText());
 			view.setExperimentTiming("-");
@@ -188,13 +258,16 @@ PlaceChangeEvent.Handler,ExperimentMessageArrivedEvent.Handler{
 		eventBus.removeAll();
 	}
 
-	private void setExperimentData(final ConfidentialReservationData data) {
+	private void setExperimentData(final ConfidentialReservationData data,
+			final String url) {
 
 		fromDate = data.getFrom();
 		toDate = data.getTo();
 		nodeUrns = data.getNodeURNs();
-		key = data.getData().get(0).getSecretReservationKey();
+		secretReservationKeyValue = data.getData().get(0).getSecretReservationKey();
 		username = data.getData().get(0).getUsername();
+		urnPrefix = data.getData().get(0).getUrnPrefix();
+		sessionManagementUrl = url;
 		experimentTiming = "-";
 		status = ExperimentStatus.PENDING;
 	}
@@ -202,7 +275,7 @@ PlaceChangeEvent.Handler,ExperimentMessageArrivedEvent.Handler{
 	@SuppressWarnings("deprecation")
 	private void initView() {
 		try{
-			Checks.ifNull(key, "Experiment key is null");
+			Checks.ifNull(secretReservationKeyValue, "Experiment key is null");
 			Checks.ifNull(fromDate, "Experiment start date is null");
 			Checks.ifNull(toDate, "Experiment start date is null");
 		}catch(RuntimeException cause){
@@ -210,7 +283,7 @@ PlaceChangeEvent.Handler,ExperimentMessageArrivedEvent.Handler{
 		}
 
 		// initialize view
-		view.setSecretReservationKey(key);
+		view.setSecretReservationKey(secretReservationKeyValue);
 		view.setUsername(username);
 		view.setStartDate(fromDate.toGMTString());
 		view.setStopDate(toDate.toGMTString());
@@ -285,8 +358,8 @@ PlaceChangeEvent.Handler,ExperimentMessageArrivedEvent.Handler{
 		final ExperimentPresenter source = this;
 
 		//experiment stop timer counts till the reservation ends
-		if(experimentMessageCollection == null) {
-			experimentMessageCollection = new Timer() {
+		if(experimentMessageCollectionTimer == null) {
+			experimentMessageCollectionTimer = new Timer() {
 
 				@Override
 				public void run() {
@@ -296,6 +369,6 @@ PlaceChangeEvent.Handler,ExperimentMessageArrivedEvent.Handler{
 		}
 
 		// start experiment collection timer
-		experimentMessageCollection.scheduleRepeating(500);
+		experimentMessageCollectionTimer.scheduleRepeating(500);
 	}
 }

@@ -104,7 +104,7 @@ public class ReservationServiceImpl extends RemoteServiceServlet implements Rese
                                     final SecretAuthenticationKey s) {
                                 return mapper.map(s, eu.wisebed.testbed.api.rs.v1.SecretAuthenticationKey.class);
                             }
-                        }));
+                        })); 
         eu.wisebed.testbed.api.rs.v1.ConfidentialReservationData rsConfidentialReservationData =
                 mapper.map(confidentialReservationData, eu.wisebed.testbed.api.rs.v1.ConfidentialReservationData.class);
 

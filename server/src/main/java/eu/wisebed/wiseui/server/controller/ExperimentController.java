@@ -17,7 +17,6 @@
 package eu.wisebed.wiseui.server.controller;
 
 import java.net.MalformedURLException;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.Executors;
@@ -29,6 +28,8 @@ import eu.wisebed.wiseui.shared.dto.ExperimentMessage;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.google.inject.Inject;
 
 import de.uniluebeck.itm.tr.util.StringUtils;
 
@@ -42,9 +43,13 @@ import eu.wisebed.testbed.api.wsn.v22.RequestStatus;
 import eu.wisebed.testbed.api.wsn.v22.UnknownReservationIdException_Exception;
 import eu.wisebed.testbed.api.wsn.v22.WSN;
 import eu.wisebed.testbed.api.wsn.v22.SessionManagement;
-import eu.wisebed.wiseui.server.util.APIKeysUtil;
-import eu.wisebed.wiseui.server.util.URLUtil;
 import eu.wisebed.wiseui.shared.exception.ExperimentationException;
+
+import static eu.wisebed.wiseui.server.util.APIKeysUtil.copyRsToWsn;
+import static eu.wisebed.wiseui.server.util.URLUtil.convertHostToZeros;
+
+import static eu.wisebed.wiseui.shared.common.Checks.ifNull;
+import static eu.wisebed.wiseui.shared.common.Checks.ifNullOrEmpty;
 
 @WebService(serviceName = "ControllerService", 
 		targetNamespace = Constants.NAMESPACE_CONTROLLER_SERVICE, 
@@ -54,15 +59,15 @@ public class ExperimentController implements Controller {
 	
 	private final Logger LOGGER 
 		= LoggerFactory.getLogger(ExperimentController.class.getName());
-	private String endPointURL;
-	private int reservationID;
+	private final Queue<ExperimentMessage> experimentMessagesQueue;
+	private String localEndpointUrl;
 	private WSN wsn;
-	private List<SecretReservationKey> keys;
+	private List<SecretReservationKey> secretReservationKeys;
 	private SessionManagement sessionManagement;
-	private final Queue<ExperimentMessage> undeliverdExperimentMessages;
 	
-	public ExperimentController(){
-		undeliverdExperimentMessages = new LinkedList<ExperimentMessage>();
+	@Inject
+	public ExperimentController(final Queue<ExperimentMessage> experimentMessagesQueue){
+		this.experimentMessagesQueue = experimentMessagesQueue;
 	}
 	
 	/**
@@ -71,22 +76,25 @@ public class ExperimentController implements Controller {
 	 * in Experiment monitoring
 	 */
 	public final void startSessionManagement() throws ExperimentationException{
-		LOGGER.debug("Getting an WSN instance ... ");
+		LOGGER.debug("Getting an WSN instance on "
+				+ localEndpointUrl +" ...");
 		
 		// check session management if  exists here
-		if(sessionManagement == null){
-			throw new ExperimentationException("Unintialized session management");
+		try{
+			ifNull(sessionManagement,"Session management service is null");
+		}catch(RuntimeException cause){
+			throw new ExperimentationException(cause.getMessage());
 		}
 		
 		// get controller instance from session management
 		String wsnEndpointURL=null;
 		try {
 			wsnEndpointURL = sessionManagement.getInstance(
-					APIKeysUtil.copyRsToWsn(keys),endPointURL);
+				copyRsToWsn(secretReservationKeys),localEndpointUrl);
 		} catch (ExperimentNotRunningException_Exception cause) {
 			LOGGER.error(cause.getMessage(),cause);
 			throw new ExperimentationException("Experiment not running on " 
-					+ endPointURL);
+					+ localEndpointUrl);
 		} catch (UnknownReservationIdException_Exception cause) {
 			LOGGER.error(cause.getMessage(),cause);
 			throw new ExperimentationException("Unknown reservation ID");
@@ -105,16 +113,19 @@ public class ExperimentController implements Controller {
 	 */
 	public void freeSessionManagement() throws ExperimentationException{
 		
-		LOGGER.info("Freeing session management on ("
-				+ endPointURL +")");
+		LOGGER.info("Freeing session management on "
+				+ localEndpointUrl +" ...");
+		
 		// check session management if  exists here
-		if(sessionManagement == null){
-			throw new ExperimentationException("Unintialized session management");
+		try{
+			ifNull(sessionManagement,"Session management service is null");
+		}catch(RuntimeException cause){
+			throw new ExperimentationException(cause.getMessage());
 		}
 		
 		// trying to free session management
 		try {
-			sessionManagement.free(APIKeysUtil.copyRsToWsn(keys));
+			sessionManagement.free(copyRsToWsn(secretReservationKeys));
 		} catch (ExperimentNotRunningException_Exception cause) {
 			LOGGER.error(cause.getMessage(),cause);
 			throw new ExperimentationException("Experiment is not running");
@@ -122,7 +133,8 @@ public class ExperimentController implements Controller {
 			LOGGER.error(cause.getMessage(),cause);
 			throw new ExperimentationException("Unknown reservation ID provided"); 
 		}
-		LOGGER.info("Session management on ("+ endPointURL +") is now free");
+		
+		LOGGER.info("Session management on ("+ localEndpointUrl +") is now free");
 	}
 
 	/**
@@ -132,21 +144,23 @@ public class ExperimentController implements Controller {
 	 */
 	public void publish() throws MalformedURLException {
 		
-		if(endPointURL.isEmpty() || endPointURL == null)
-			throw new MalformedURLException("Empty or null URL string");
-		
+		try{
+			ifNullOrEmpty(localEndpointUrl,"Empty or null URL string");
+		}catch(RuntimeException cause){
+			throw new MalformedURLException(cause.getMessage());
+		}
+					
 		String bindAllInterfacesUrl = 
-			URLUtil.convertHostToZeros(endPointURL);
-
-		LOGGER.info("Experiment controller (#" + reservationID +")");
-		LOGGER.info("Endpoint URL: " + endPointURL);
+			convertHostToZeros(localEndpointUrl);
+		String key = secretReservationKeys.get(0).getSecretReservationKey();
+		LOGGER.info("Experiment controller (" + key +")");
+		LOGGER.info("Endpoint URL: " + localEndpointUrl);
 		LOGGER.info("Binding  URL: " + bindAllInterfacesUrl);
 
 		Endpoint endpoint = Endpoint.publish(bindAllInterfacesUrl, this);
 		endpoint.setExecutor(Executors.newCachedThreadPool());
 
-		LOGGER.info("Succesfully binded experiment controller (#" + 
-				reservationID +")" + " at " + bindAllInterfacesUrl);
+		LOGGER.info("Succesfully binded experiment controller ("+ key + ")" + " at " + bindAllInterfacesUrl);
 	}
 	
 	@Override
@@ -165,7 +179,7 @@ public class ExperimentController implements Controller {
 			ExperimentMessage experimentMessage = new ExperimentMessage();
 			experimentMessage.setupAsMessage(source, level, data, timeStamp);
 			
-			undeliverdExperimentMessages.add(experimentMessage);
+			experimentMessagesQueue.add(experimentMessage);
 		}
 	}
 
@@ -178,7 +192,7 @@ public class ExperimentController implements Controller {
 			
 			LOGGER.info("Received notification : " + notification);
 			
-			undeliverdExperimentMessages.add(experimentMessage);
+			experimentMessagesQueue.add(experimentMessage);
 		}
 	}
 
@@ -201,25 +215,17 @@ public class ExperimentController implements Controller {
 				LOGGER.info("node ID : " + nodeID);
 				LOGGER.info("value : " + value);
 				
-				undeliverdExperimentMessages.add(experimentMessage);
+				experimentMessagesQueue.add(experimentMessage);
 			}
 		}
 	}
 
 	public String getEndPointURL() {
-		return endPointURL;
+		return localEndpointUrl;
 	}
 
-	public void setEndPointURL(String endPointURL) {
-		this.endPointURL = endPointURL;
-	}
-
-	public int getReservationID() {
-		return reservationID;
-	}
-
-	public void setReservationID(int reservationID) {
-		this.reservationID = reservationID;
+	public void setEndPointURL(final String localEndPointUrl) {
+		this.localEndpointUrl = localEndPointUrl;
 	}
 
 	public WSN getWsn() {
@@ -230,13 +236,15 @@ public class ExperimentController implements Controller {
 		this.wsn = wsn;
 	}
 
-	public List<SecretReservationKey> getKeys() {
-		return keys;
+	public List<SecretReservationKey> getSecretReservationKeys() {
+		return secretReservationKeys;
 	}
 
-	public void setKeys(List<SecretReservationKey> keys) {
-		this.keys = keys;
+	public void setSecretReservationKeys(
+			List<SecretReservationKey> secretReservationKeys) {
+		this.secretReservationKeys = secretReservationKeys;
 	}
+
 
 	public SessionManagement getSessionManagement() {
 		return sessionManagement;
@@ -247,7 +255,7 @@ public class ExperimentController implements Controller {
 	}
 
 	public Queue<ExperimentMessage> getUndelivered() {
-		return undeliverdExperimentMessages;
+		return experimentMessagesQueue;
 	}
 }
 

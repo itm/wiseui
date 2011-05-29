@@ -23,17 +23,21 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
 import eu.wisebed.wiseui.shared.dto.SecretReservationKey;
 import eu.wisebed.wiseui.shared.exception.ExperimentationException;
-import eu.wisebed.wiseui.shared.exception.ReservationException;
 
 @RemoteServiceRelativePath("experimentation.rpc")
 public interface ExperimentationService extends RemoteService {
 	
+	/**
+	 * Starts an experiment controller {@link ExperimentController} on the server side after a request.
+	 * @param sessionManagementUrl
+	 * @param secretReservationKeys
+	 * @throws ExperimentationException
+	 */
 	void startExperimentController(
+		String sessionManagementUrl,
 		List<SecretReservationKey> secretReservationKeys
-		
 		) 
-		throws 
-		ReservationException,ExperimentationException;
+		throws ExperimentationException;
 	
 //	void flashExperimentImage(final int reservationID) 
 //		throws ReservationException,ExperimentationException;
@@ -41,7 +45,13 @@ public interface ExperimentationService extends RemoteService {
 //	ExperimentMessage getNextUndeliveredMessage(final int reservationID)
 //		throws ExperimentationException;
 
-//	void terminateExperiment(final int reservationID) 
-//		throws ExperimentationException;
+	/**
+	 * Stops an experiment controller {@link ExperimentController} on the server side after a request.
+	 * @param secretReservationKeys
+	 */
+	void stopExperimentController(
+			final List<SecretReservationKey> secretReservationKeys
+			)
+			throws ExperimentationException;
 
 }
