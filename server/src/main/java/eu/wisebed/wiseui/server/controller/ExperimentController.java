@@ -26,8 +26,9 @@ import javax.jws.WebService;
 import javax.xml.ws.Endpoint;
 
 import eu.wisebed.wiseui.shared.dto.ExperimentMessage;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import de.uniluebeck.itm.tr.util.StringUtils;
 
@@ -52,15 +53,17 @@ import eu.wisebed.wiseui.shared.exception.ExperimentationException;
 public class ExperimentController implements Controller {
 	
 	private final Logger LOGGER 
-		= Logger.getLogger(ExperimentController.class.getName());
+		= LoggerFactory.getLogger(ExperimentController.class.getName());
 	private String endPointURL;
 	private int reservationID;
 	private WSN wsn;
 	private List<SecretReservationKey> keys;
-	private SessionManagement sessionManagement = null;
-	private final Queue<ExperimentMessage> undelivered = new LinkedList<ExperimentMessage>();
+	private SessionManagement sessionManagement;
+	private final Queue<ExperimentMessage> undeliverdExperimentMessages;
 	
-	public ExperimentController(){}
+	public ExperimentController(){
+		undeliverdExperimentMessages = new LinkedList<ExperimentMessage>();
+	}
 	
 	/**
 	 * Setups and initiates session management for this controller.
@@ -68,7 +71,7 @@ public class ExperimentController implements Controller {
 	 * in Experiment monitoring
 	 */
 	public final void startSessionManagement() throws ExperimentationException{
-		LOGGER.log(Level.DEBUG,"Getting an WSN instance ... ");
+		LOGGER.debug("Getting an WSN instance ... ");
 		
 		// check session management if  exists here
 		if(sessionManagement == null){
@@ -80,20 +83,19 @@ public class ExperimentController implements Controller {
 		try {
 			wsnEndpointURL = sessionManagement.getInstance(
 					APIKeysUtil.copyRsToWsn(keys),endPointURL);
-		} catch (ExperimentNotRunningException_Exception e) {
-			LOGGER.log(Level.FATAL, e);
+		} catch (ExperimentNotRunningException_Exception cause) {
+			LOGGER.error(cause.getMessage(),cause);
 			throw new ExperimentationException("Experiment not running on " 
 					+ endPointURL);
-		} catch (UnknownReservationIdException_Exception e) {
-			LOGGER.log(Level.FATAL, e);
+		} catch (UnknownReservationIdException_Exception cause) {
+			LOGGER.error(cause.getMessage(),cause);
 			throw new ExperimentationException("Unknown reservation ID");
 		}
 		
 		// if all went well set
 		wsn = WSNServiceHelper.getWSNService(wsnEndpointURL);
 		
-		LOGGER.log(Level.DEBUG,"Got an WSN instance URL, endpoint is: " + 
-				wsnEndpointURL);
+		LOGGER.info("Got an WSN instance URL, endpoint is: " + wsnEndpointURL);
 	}
 
 	/**
@@ -103,7 +105,7 @@ public class ExperimentController implements Controller {
 	 */
 	public void freeSessionManagement() throws ExperimentationException{
 		
-		LOGGER.log(Level.INFO,"Freeing session management on ("
+		LOGGER.info("Freeing session management on ("
 				+ endPointURL +")");
 		// check session management if  exists here
 		if(sessionManagement == null){
@@ -113,15 +115,14 @@ public class ExperimentController implements Controller {
 		// trying to free session management
 		try {
 			sessionManagement.free(APIKeysUtil.copyRsToWsn(keys));
-		} catch (ExperimentNotRunningException_Exception e) {
-			LOGGER.log(Level.FATAL, e);
+		} catch (ExperimentNotRunningException_Exception cause) {
+			LOGGER.error(cause.getMessage(),cause);
 			throw new ExperimentationException("Experiment is not running");
-		} catch (UnknownReservationIdException_Exception e) {
-			LOGGER.log(Level.FATAL, e);
+		} catch (UnknownReservationIdException_Exception cause) {
+			LOGGER.error(cause.getMessage(),cause);
 			throw new ExperimentationException("Unknown reservation ID provided"); 
 		}
-		LOGGER.log(Level.INFO,"Session management on ("
-				+ endPointURL +") is now free");
+		LOGGER.info("Session management on ("+ endPointURL +") is now free");
 	}
 
 	/**
@@ -137,20 +138,20 @@ public class ExperimentController implements Controller {
 		String bindAllInterfacesUrl = 
 			URLUtil.convertHostToZeros(endPointURL);
 
-		LOGGER.log(Level.INFO,"Experiment controller (#" + reservationID +")");
-		LOGGER.log(Level.INFO,"Endpoint URL: " + endPointURL);
-		LOGGER.log(Level.INFO,"Binding  URL: " + bindAllInterfacesUrl);
+		LOGGER.info("Experiment controller (#" + reservationID +")");
+		LOGGER.info("Endpoint URL: " + endPointURL);
+		LOGGER.info("Binding  URL: " + bindAllInterfacesUrl);
 
 		Endpoint endpoint = Endpoint.publish(bindAllInterfacesUrl, this);
 		endpoint.setExecutor(Executors.newCachedThreadPool());
 
-		LOGGER.log(Level.INFO,"Succesfully binded experiment controller (#" + 
+		LOGGER.info("Succesfully binded experiment controller (#" + 
 				reservationID +")" + " at " + bindAllInterfacesUrl);
 	}
 	
 	@Override
 	public void experimentEnded() {
-		LOGGER.log(Level.INFO, "Experiment ended");
+		LOGGER.info("Experiment ended");
 	}
 
 	@Override
@@ -164,7 +165,7 @@ public class ExperimentController implements Controller {
 			ExperimentMessage experimentMessage = new ExperimentMessage();
 			experimentMessage.setupAsMessage(source, level, data, timeStamp);
 			
-			undelivered.add(experimentMessage);
+			undeliverdExperimentMessages.add(experimentMessage);
 		}
 	}
 
@@ -175,9 +176,9 @@ public class ExperimentController implements Controller {
 			ExperimentMessage experimentMessage = new ExperimentMessage();
 			experimentMessage.setupAsNotification(notification);
 			
-			LOGGER.log(Level.INFO,"Received notification : " + notification);
+			LOGGER.info("Received notification : " + notification);
 			
-			undelivered.add(experimentMessage);
+			undeliverdExperimentMessages.add(experimentMessage);
 		}
 	}
 
@@ -194,13 +195,13 @@ public class ExperimentController implements Controller {
 				ExperimentMessage experimentMessage = new ExperimentMessage();
 				experimentMessage.setupAsRequestStatus(requestID, nodeID, msg, value);
 				
-				LOGGER.log(Level.INFO,"Received requestStatus id " 
+				LOGGER.info("Received requestStatus id " 
 						+ requestID);
-				LOGGER.log(Level.INFO,"status msg : " + msg);
-				LOGGER.log(Level.INFO,"node ID : " + nodeID);
-				LOGGER.log(Level.INFO,"value : " + value);
+				LOGGER.info("status msg : " + msg);
+				LOGGER.info("node ID : " + nodeID);
+				LOGGER.info("value : " + value);
 				
-				undelivered.add(experimentMessage);
+				undeliverdExperimentMessages.add(experimentMessage);
 			}
 		}
 	}
@@ -246,7 +247,7 @@ public class ExperimentController implements Controller {
 	}
 
 	public Queue<ExperimentMessage> getUndelivered() {
-		return undelivered;
+		return undeliverdExperimentMessages;
 	}
 }
 
