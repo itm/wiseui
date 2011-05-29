@@ -20,6 +20,7 @@ package eu.wisebed.wiseui.client.experimentation.presenter;
 import java.util.Date;
 import java.util.List;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.place.shared.PlaceChangeEvent;
 import com.google.gwt.place.shared.PlaceController;
@@ -29,6 +30,7 @@ import com.google.inject.Inject;
 
 import eu.wisebed.wiseui.api.ExperimentationServiceAsync;
 import eu.wisebed.wiseui.client.WiseUiGinjector;
+import eu.wisebed.wiseui.client.experimentation.event.ExperimentMessageArrivedEvent;
 import eu.wisebed.wiseui.client.experimentation.event.ReservationTimeStartedEvent;
 import eu.wisebed.wiseui.client.experimentation.event.ReservationTimeEndedEvent;
 import eu.wisebed.wiseui.client.experimentation.util.StringTimer;
@@ -40,14 +42,13 @@ import eu.wisebed.wiseui.widgets.messagebox.MessageBox;
 
 public class ExperimentPresenter implements ExperimentView.Presenter,
 ReservationTimeStartedEvent.Handler,ReservationTimeEndedEvent.Handler,
-PlaceChangeEvent.Handler{
-	
+PlaceChangeEvent.Handler,ExperimentMessageArrivedEvent.Handler{
+
 	public enum ExperimentStatus {
 		PENDING			("Pending"),
 		READY			("Ready"),
 		RUNNING			("Running"),
-		CANCELED		("Reservation was cancelled"),
-		TERMINATED		("Terminated by user"),
+		STOPPED			("Stopped"),
 		TIMEDOUT    	("Reservation time out");
 
 		private String text;
@@ -74,143 +75,227 @@ PlaceChangeEvent.Handler{
 	private String experimentTiming;
 	private Timer reservationStartTimer;
 	private Timer reservationStopTimer;
+	private Timer experimentMessageCollection;
 	private ExperimentStatus status;
-	
-    @Inject
-    public ExperimentPresenter(final WiseUiGinjector injector,
-    		final ExperimentationServiceAsync service,
-    		final ExperimentView view,			
-    		final PlaceController placeController,
+
+	@Inject
+	public ExperimentPresenter(final WiseUiGinjector injector,
+			final ExperimentationServiceAsync service,
+			final ExperimentView view,			
+			final PlaceController placeController,
 			final EventBus eventBus) {
-    	
-    	this.injector = injector;
-    	this.view = view;
-    	this.view.setPresenter(this);
-        this.service = service;
-        this.eventBus = new EventBusManager(eventBus);
-        bind();
-    } 
+
+		this.injector = injector;
+		this.view = view;
+		this.view.setPresenter(this);
+		this.service = service;
+		this.eventBus = new EventBusManager(eventBus);
+		bind();
+	} 
 
 
-    public ExperimentView getView() {
-    	return view;
-    }
-        
-    public void setupExperimentPresenter(final ConfidentialReservationData data) {
-    	setExperimentData(data);
-    	initView();
-    	initStartTimer();
-    }
-    
-    public void bind() {
+	public ExperimentView getView() {
+		return view;
+	}
+
+	public void setupExperimentPresenter(final ConfidentialReservationData data) {
+		setExperimentData(data);
+		initView();
+		startReservationStartTimer();
+		startExperimentMessageCollectorTimer();
+	}
+
+	public void bind() {
 		eventBus.addHandler(ReservationTimeStartedEvent.TYPE, this);
 		eventBus.addHandler(ReservationTimeEndedEvent.TYPE, this);
+		eventBus.addHandler(ExperimentMessageArrivedEvent.TYPE, this);
 		eventBus.addHandler(PlaceChangeEvent.TYPE, this);
-    }
-
-	
-    @Override
-	public void onReservationTimeStarted(ReservationTimeStartedEvent event) {
-    	if(event.getSource() == this ){
-    		status = ExperimentStatus.READY;
-    		view.setStatus(status.getStatusText());
-    		initStopTimer();
-    	}
 	}
-    
+
+	@Override
+	public void flashExperimentImage() {
+		GWT.log("Flash experiment image");
+	}
+
+
+	@Override
+	public void startExperiment() {
+		startExperimentMessageCollectorTimer();
+		status = ExperimentStatus.RUNNING;
+		view.setStatus(status.getStatusText());
+		view.deactivateStartExperimentButton();
+		view.activateFlashExperimentButton();
+		view.activateStopExperimentButton();
+		GWT.log("Experiment started!");
+	}
+
+
+	@Override
+	public void stopExperiment() {
+		if(experimentMessageCollection != null) {
+			experimentMessageCollection.cancel();
+		}
+		status = ExperimentStatus.STOPPED;
+		view.setStatus(status.getStatusText());
+		view.deactivateStopExperimentButton();
+		view.activateFlashExperimentButton();
+		view.activateStartExperimentButton();
+		GWT.log("Experiment stoped!");	
+	}
+
+	@Override
+	public void showNodeOutput(final String node) {
+		GWT.log("Showing out for node [" + node +"]");
+	}
+
+
+	@Override
+	public void onReservationTimeStarted(ReservationTimeStartedEvent event) {
+		if(event.getSource() == this ){
+			status = ExperimentStatus.READY;
+			view.setStatus(status.getStatusText());
+			view.activateStartExperimentButton();
+			startReservationStopTimer();
+		}
+	}
+
 	@Override
 	public void onReservationTimeEnded(ReservationTimeEndedEvent event) {
-    	if(event.getSource() == this ){
-    		status = ExperimentStatus.TIMEDOUT;
-    		view.setStatus(status.getStatusText());
-    		view.setExperimentTiming("-");
-    	}
-    }
-	
+		if(event.getSource() == this ){
+			status = ExperimentStatus.TIMEDOUT;
+			if(experimentMessageCollection != null) {
+				experimentMessageCollection.cancel();
+			}
+			view.setStatus(status.getStatusText());
+			view.setExperimentTiming("-");
+			view.deactivateStopExperimentButton();
+			view.deactivateFlashExperimentButton();
+			view.deactivateStartExperimentButton();
+		}
+	}
+
+	@Override
+	public void onExperimentMessageArrival(ExperimentMessageArrivedEvent event) {
+		if(event.getSource() == this ){
+			if(status == ExperimentStatus.RUNNING) {
+				GWT.log("Experiment Message received!");
+			}
+		}
+	}
+
 	@Override
 	public void onPlaceChange(PlaceChangeEvent event) {
 		eventBus.removeAll();
 	}
-    
+
 	private void setExperimentData(final ConfidentialReservationData data) {
-    	
+
 		fromDate = data.getFrom();
-    	toDate = data.getTo();
-    	nodeUrns = data.getNodeURNs();
-    	key = data.getData().get(0).getSecretReservationKey();
-    	username = data.getData().get(0).getUsername();
-    	experimentTiming = "-";
-        status = ExperimentStatus.PENDING;
-    }
-	
-    @SuppressWarnings("deprecation")
-    private void initView() {
-    	try{
-    		Checks.ifNull(key, "Experiment key is null");
-    		Checks.ifNull(fromDate, "Experiment start date is null");
-    		Checks.ifNull(toDate, "Experiment start date is null");
-    	}catch(RuntimeException cause){
-    		MessageBox.error("Error",cause.getMessage(),cause,null);
-    	}
-    	
-    	// initialize view
-    	view.setSecretReservationKey(key);
-    	view.setUsername(username);
-    	view.setStartDate(fromDate.toGMTString());
-    	view.setStopDate(toDate.toGMTString());
-    	view.setExperimentTiming(experimentTiming);
-    	view.setStatus(status.getStatusText());
-    	view.setNodeUrns(nodeUrns);
-    }
-    
-    private void initStartTimer() {
-    	
-    	// source is this presenter
-    	final ExperimentPresenter source = this;
-    	
-    	// reservation start timer counts till the reservation starts
-    	reservationStartTimer = new Timer() {
-			@Override
-			public void run() {
-				long diffInMillis = 
-					fromDate.getTime() - (new Date()).getTime();
-				if(diffInMillis <= 0) {
-					this.cancel();
-					eventBus.fireEventFromSource(new ReservationTimeStartedEvent(),source);
-				}else{
-					experimentTiming = "Starting in " + StringTimer.elapsedTimeToString(diffInMillis);
-					view.setExperimentTiming(experimentTiming);
+		toDate = data.getTo();
+		nodeUrns = data.getNodeURNs();
+		key = data.getData().get(0).getSecretReservationKey();
+		username = data.getData().get(0).getUsername();
+		experimentTiming = "-";
+		status = ExperimentStatus.PENDING;
+	}
+
+	@SuppressWarnings("deprecation")
+	private void initView() {
+		try{
+			Checks.ifNull(key, "Experiment key is null");
+			Checks.ifNull(fromDate, "Experiment start date is null");
+			Checks.ifNull(toDate, "Experiment start date is null");
+		}catch(RuntimeException cause){
+			MessageBox.error("Error",cause.getMessage(),cause,null);
+		}
+
+		// initialize view
+		view.setSecretReservationKey(key);
+		view.setUsername(username);
+		view.setStartDate(fromDate.toGMTString());
+		view.setStopDate(toDate.toGMTString());
+		view.setExperimentTiming(experimentTiming);
+		view.setStatus(status.getStatusText());
+		view.setNodeUrns(nodeUrns);
+		view.deactivateStartExperimentButton();
+		view.deactivateFlashExperimentButton();
+		view.deactivateStopExperimentButton();
+	}
+
+	private void startReservationStartTimer() {
+
+		// source is this presenter
+		final ExperimentPresenter source = this;
+
+		// reservation start timer counts till the reservation starts
+		if(reservationStartTimer == null) {
+			reservationStartTimer = new Timer() {
+
+				@Override
+				public void run() {
+					long diffInMillis = 
+						fromDate.getTime() - (new Date()).getTime();
+					if(diffInMillis <= 0) {
+						this.cancel();
+						eventBus.fireEventFromSource(new ReservationTimeStartedEvent(),source);
+					}else{
+						experimentTiming = "Starting in " + StringTimer.elapsedTimeToString(diffInMillis);
+						view.setExperimentTiming(experimentTiming);
+					}
 				}
-			}
-		};
-        	
-    	// start reservation start timer
+			};
+		}
+
+		// start reservation start timer
 		reservationStartTimer.scheduleRepeating(1000);
-    }
-    
-    private void initStopTimer() {
-    	
-    	// source is this presenter
-    	final ExperimentPresenter source = this;
-    	
-    	// reservation stop timer counts till the reservation ends
-    	reservationStopTimer = new Timer() {
-    		@Override
-    		public void run() {
-    			long diffInMillis = 
-    				toDate.getTime() - (new Date()).getTime();
-    			if(diffInMillis <= 0) {
-    				this.cancel();
-					eventBus.fireEventFromSource(new ReservationTimeEndedEvent(),source);
-    			}else{
-    				experimentTiming = "Finishing in " +
-    						StringTimer.elapsedTimeToString(diffInMillis);
-    				view.setExperimentTiming(experimentTiming);
-    			}
-    		}
-    	};
-    	
-    	// start reservation stop timer
-    	reservationStopTimer.scheduleRepeating(1000);
-    }
+	}
+
+	private void startReservationStopTimer() {
+
+		// source is this presenter
+		final ExperimentPresenter source = this;
+
+		// reservation stop timer counts till the reservation ends
+		if(reservationStopTimer == null) {
+			reservationStopTimer = new Timer() {
+
+				@Override
+				public void run() {
+					long diffInMillis = 
+						toDate.getTime() - (new Date()).getTime();
+					if(diffInMillis <= 0) {
+						this.cancel();
+						eventBus.fireEventFromSource(new ReservationTimeEndedEvent(),source);
+					}else{
+						experimentTiming = "Finishing in " +
+						StringTimer.elapsedTimeToString(diffInMillis);
+						view.setExperimentTiming(experimentTiming);
+					}
+				}
+			};
+		}
+
+		// start reservation stop timer
+		reservationStopTimer.scheduleRepeating(1000);
+	}
+
+	private void startExperimentMessageCollectorTimer() {
+
+		// source is this presenter
+		final ExperimentPresenter source = this;
+
+		//experiment stop timer counts till the reservation ends
+		if(experimentMessageCollection == null) {
+			experimentMessageCollection = new Timer() {
+
+				@Override
+				public void run() {
+					eventBus.fireEventFromSource(new ExperimentMessageArrivedEvent(), source);
+				}
+			};
+		}
+
+		// start experiment collection timer
+		experimentMessageCollection.scheduleRepeating(500);
+	}
 }

@@ -1,7 +1,8 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
-	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+	xmlns:g="urn:import:com.google.gwt.user.client.ui" xmlns:c="urn:import:com.google.gwt.user.cellview.client">
+
 
 	<ui:style>
 		.fullLayout {
@@ -10,8 +11,8 @@
 		}
 		
 		.experimentPanel {
-			height: auto;
-			width: auto;
+			height: 100%;
+			width: 100%;
 			border: 2px solid #d0e4f6;
 		}
 		
@@ -27,49 +28,105 @@
 		.buttonTable {
 			margin-left: 0px;
 			margin-right: auto;
-			padding: 2px;		
+			padding: 2px;
+		}
+		
+		.cellTable {
+			border-bottom: 1px solid #ccc;
+			text-align: left;
+			margin-bottom: 4px;
 		}
 	</ui:style>
-	
-	<g:DockLayoutPanel styleName="{style.fullLayout}">
+	<g:DockLayoutPanel styleName="{style.experimentPanel}"
+		unit="PX">
 		<g:center>
-			<g:FlowPanel addStyleNames="{style.experimentPanel}">
-				<g:HorizontalPanel>
-					<g:Label text="Secret Reservation Key:" />
-					<g:Label styleName="{style.important}" ui:field="secretReservationKey" />
-				</g:HorizontalPanel>
-				<g:HorizontalPanel>
-					<g:Label text="Username:" />
-					<g:Label styleName="{style.important}" ui:field="username" />
-				</g:HorizontalPanel>
-				<g:HorizontalPanel>
-					<g:Label text="Starts at :" />
-					<g:Label styleName="{style.important}" ui:field="startDate" />
-				</g:HorizontalPanel>
-				<g:HorizontalPanel>
-					<g:Label text="Stops at :" />
-					<g:Label styleName="{style.important}" ui:field="stopDate" />
-				</g:HorizontalPanel>
-				<g:Label styleName="{style.important}" ui:field="experimentTiming" />
-				<g:HorizontalPanel>
-					<g:Label text="Status :" />
-					<g:Label styleName="{style.important}" ui:field="status" />
-				</g:HorizontalPanel>
-			</g:FlowPanel>
+			<g:HTMLPanel>
+				<table styleName="{style.fullLayout}">
+					<tr>
+						<td valign='top'>
+							<table styleName="{style.fullLayout}">
+								<tr>
+									<td>
+										<g:Label text="Secret Reservation Key:" />
+									</td>
+									<td>
+										<g:Label styleName="{style.important}" ui:field="secretReservationKey" />
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<g:Label text="Username:" />
+									</td>
+									<td>
+										<g:Label styleName="{style.important}" ui:field="username" />
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<g:Label text="Starts at :" />
+									</td>
+									<td>
+										<g:Label styleName="{style.important}" ui:field="startDate" />
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<g:Label text="Stops at :" />
+									</td>
+									<td>
+										<g:Label styleName="{style.important}" ui:field="stopDate" />
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<g:Label text="Timing :" />
+									</td>
+									<td>
+										<g:Label styleName="{style.important}" ui:field="experimentTiming" />
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<g:Label text="Status :" />
+									</td>
+									<td>
+										<g:Label styleName="{style.important}" ui:field="status" />
+									</td>
+								</tr>
+							</table>
+						</td>
+						<td align='left'>
+							<table cellspacing='0' cellpadding='0' styleName="{style.fullLayout}">
+								<tr>
+									<td valign='top'>
+										<c:CellTable addStyleNames='{style.cellTable}'
+											pageSize='15' ui:field='nodeTable' />
+									</td>
+								</tr>
+								<tr>
+									<td align='center'>
+										<c:SimplePager ui:field='pager' />
+									</td>
+								</tr>
+							</table>
+						</td>
+					</tr>
+				</table>
+			</g:HTMLPanel>
 		</g:center>
 		<g:south size="35">
 			<g:HTMLPanel styleName="{style.buttonPanel}">
 				<table class="{style.buttonTable}">
 					<tr>
 						<td>
-							<g:Button text="Flash Binary Image"/>
+							<g:Button text="Start Experiment" ui:field="startExperimentButton" />
 						</td>
 						<td>
-							<g:Button text="Start Experiment"/>
+							<g:Button text="Flash Binary Image" ui:field="flashImageButton" />
 						</td>
 						<td>
-							<g:Button text="Stop Experiment"/>
-						</td>						
+							<g:Button text="Stop Experiment" ui:field="stopExperimentButton" />
+						</td>
 					</tr>
 				</table>
 			</g:HTMLPanel>

@@ -43,9 +43,9 @@ import eu.wisebed.wiseui.shared.dto.SecretAuthenticationKey;
 public class AuthenticationManager {
 
 	/**
-	 * Cookie validity set to 1 day.
+	 * Cookie validity set to 1 hour.
 	 */
-	private static final long VALIDITY = 1000 * 60 * 60 * 24;
+	private static final long VALIDITY = 1000 * 60 * 60;
 
 	private static final String NAME = AuthenticationManager.class.getName();
 

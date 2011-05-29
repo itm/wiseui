@@ -47,13 +47,27 @@ public interface ExperimentView extends IsWidget {
 	String getStatus();
 	
 	void setNodeUrns(List<String> nodeUrns);
-	
-	List<String> getNodeUrns();
-	
+		
 	void setUsername(String username);
 	
 	String getUsername();
 	
+	void activateStartExperimentButton(); 
+	
+	void activateFlashExperimentButton();
+	
+	void activateStopExperimentButton();
+	
+	void deactivateStartExperimentButton();
+	
+	void deactivateFlashExperimentButton();
+	
+	void deactivateStopExperimentButton();
+	
 	public interface Presenter {
+		void flashExperimentImage();
+		void startExperiment();
+		void stopExperiment();
+		void showNodeOutput(String node);
 	}
 }
