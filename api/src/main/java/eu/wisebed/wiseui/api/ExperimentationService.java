@@ -21,6 +21,7 @@ import java.util.List;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
+import eu.wisebed.wiseui.shared.dto.ExperimentMessage;
 import eu.wisebed.wiseui.shared.dto.SecretReservationKey;
 import eu.wisebed.wiseui.shared.exception.ExperimentationException;
 
@@ -29,29 +30,36 @@ public interface ExperimentationService extends RemoteService {
 	
 	/**
 	 * Starts an experiment controller {@link ExperimentController} on the server side after a request.
-	 * @param sessionManagementUrl
-	 * @param secretReservationKeys
+	 * @param sessionManagementUrl the session management url of the testbed
+	 * @param secretReservationKeys List of {@link SecretReservationKeys}s
 	 * @throws ExperimentationException
 	 */
 	void startExperimentController(
 		String sessionManagementUrl,
-		List<SecretReservationKey> secretReservationKeys
-		) 
-		throws ExperimentationException;
+		List<SecretReservationKey> secretReservationKeys) 
+		throws 
+		ExperimentationException;
 	
 //	void flashExperimentImage(final int reservationID) 
 //		throws ReservationException,ExperimentationException;
 	
-//	ExperimentMessage getNextUndeliveredMessage(final int reservationID)
-//		throws ExperimentationException;
+	/**
+	 * Returns an experiment message back to the client
+	 * @param secretReservationKeys List of {@link SecretReservationKeys}s
+	 * @return an {@link ExperimentMessage} instance
+	 */
+	ExperimentMessage returnExperimentMessage(
+			List<SecretReservationKey> secretReservationKeys)
+			throws 
+			ExperimentationException;
 
 	/**
 	 * Stops an experiment controller {@link ExperimentController} on the server side after a request.
-	 * @param secretReservationKeys
+	 * @param secretReservationKeys List of {@link SecretReservationKeys}s
 	 */
 	void stopExperimentController(
-			final List<SecretReservationKey> secretReservationKeys
-			)
-			throws ExperimentationException;
+			List<SecretReservationKey> secretReservationKeys)
+			throws 
+			ExperimentationException;
 
 }

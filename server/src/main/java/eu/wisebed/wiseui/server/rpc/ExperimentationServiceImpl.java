@@ -29,6 +29,7 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 import eu.wisebed.testbed.api.wsn.WSNServiceHelper;
 import eu.wisebed.testbed.api.wsn.v22.SessionManagement;
+import eu.wisebed.wiseui.shared.dto.ExperimentMessage;
 import eu.wisebed.wiseui.shared.dto.SecretReservationKey;
 
 import org.dozer.Mapper;
@@ -48,6 +49,7 @@ import eu.wisebed.wiseui.server.controller.ExperimentController;
 import eu.wisebed.wiseui.shared.exception.ExperimentationException;
 import static eu.wisebed.wiseui.server.util.URLUtil.getPort;
 import static eu.wisebed.wiseui.server.util.URLUtil.getRandomURLSuffix;
+import static eu.wisebed.wiseui.shared.common.Checks.ifNull;
 
 @Singleton
 public class ExperimentationServiceImpl extends RemoteServiceServlet
@@ -228,53 +230,73 @@ implements ExperimentationService {
 		=	 findExperimentControllerBySecretReservationKey(rsSecretReservationKeys);
 
 		// if controller not found
-		if(controller == null){
-			throw new ExperimentationException("Unexpected. Controller not " +
+		try{
+			ifNull(controller,"Unexpected. Controller not " +
 			"properly set on the server");
+		}catch(RuntimeException cause){
+			throw new ExperimentationException(cause.getMessage());
+
 		}
 
 		// try to free session management
 		controller.freeSessionManagement();
-		
+
 		LOGGER.info("Terminating controller with Secret reservation key = " 
 				+ secretReservationKeys.get(0).getSecretReservationKey());
 
 		// remove the selected controller 
 		experimentControllers.remove(controller);
 	}
-	//	}
-	//	
-	//	/**
-	//	 * Returns an undeliverd message back to the client
-	//	 * @param <code>reservationID</code>, a reservation ID for an experiment
-	//	 */
-	//	@Override
-	//	public ExperimentMessage getNextUndeliveredMessage(final int reservationID)
-	//		throws ExperimentationException {
-	//		
-	//		ExperimentController controller = findExperimentControllerByID(reservationID);
-	//		
-	//		if(controller == null){
-	//			throw new ExperimentationException("Unexpected. Controller not " +
-	//					"properly set on the server");
-	//		}
-	//		
-	//		if(controller.getUndelivered() == null){
-	//			throw new ExperimentationException("Unexpected. Message queue not " +
-	//						"properly set on the controller with id #" + reservationID);
-	//		}	
-	//		ExperimentMessage message = controller.getUndelivered().poll();
-	//		if(message != null)
-	//			message.setReservationID(reservationID);
-	//		
-	//		return message;
-	//	}
-	//
-	
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public ExperimentMessage returnExperimentMessage(
+			List<SecretReservationKey> secretReservationKeys)
+		throws ExperimentationException{
+		
+		// Map local transport objects to remote objects
+		List<eu.wisebed.testbed.api.rs.v1.SecretReservationKey> rsSecretReservationKeys
+		= new ArrayList<eu.wisebed.testbed.api.rs.v1.SecretReservationKey>(
+				Lists.transform(secretReservationKeys,
+						new Function<SecretReservationKey, eu.wisebed.testbed.api.rs.v1.SecretReservationKey>() {
+					@Override
+					public eu.wisebed.testbed.api.rs.v1.SecretReservationKey apply(
+							final SecretReservationKey s) {
+						return mapper.map(s, eu.wisebed.testbed.api.rs.v1.SecretReservationKey.class);
+					}
+				}));
+
+		ExperimentController controller = findExperimentControllerBySecretReservationKey(rsSecretReservationKeys);
+
+		// if controller not found or if it has not queue
+		try{
+			ifNull(controller,"Unexpected. Controller not " +
+			"properly set on the server");
+			ifNull(controller.getMessageQueue(),"Unexpected. Message queue not " +
+			"properly set on the controller");
+		}catch(RuntimeException cause){
+			throw new ExperimentationException(cause.getMessage());
+
+		}
+		
+		// setup an experiment message
+		ExperimentMessage message = controller.getMessageQueue().poll();
+		if(message != null) {
+			String value = rsSecretReservationKeys.get(0).getSecretReservationKey();
+			message.setSecretReservationKeyValue(value);
+		}
+
+		return message;
+	}
+
+
 	/**
 	 * Finds an experiment controller by iterating for it's secret reservation key in the controllers list.
-	 * @param
-	 * @return
+	 * @param a list of RS <code>SecretReservationKey</code>
+	 * @return an ExperimentController instance
 	 */
 	private ExperimentController findExperimentControllerBySecretReservationKey(
 			final List<eu.wisebed.testbed.api.rs.v1.SecretReservationKey> secretReservationKeys){

@@ -97,7 +97,7 @@ public class ExperimentController implements Controller {
 					+ localEndpointUrl);
 		} catch (UnknownReservationIdException_Exception cause) {
 			LOGGER.error(cause.getMessage(),cause);
-			throw new ExperimentationException("Unknown reservation ID");
+			throw new ExperimentationException("Unknown reservation Id");
 		}
 		
 		// if all went well set
@@ -254,7 +254,7 @@ public class ExperimentController implements Controller {
 		this.sessionManagement = sessionManagement;
 	}
 
-	public Queue<ExperimentMessage> getUndelivered() {
+	public Queue<ExperimentMessage> getMessageQueue() {
 		return experimentMessagesQueue;
 	}
 }

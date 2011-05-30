@@ -22,7 +22,7 @@ public class ExperimentMessage implements Serializable {
 
 	private static final long serialVersionUID = -1716821485528278298L;
 
-	private int reservationID;
+	private String secretReservationKeyValue;
 	private ExperimentMessageType experimentMessageType;
 	
 	// required by MESSAGE type
@@ -79,12 +79,12 @@ public class ExperimentMessage implements Serializable {
 		this.value = value;
 	}
 
-	public void setReservationID(final int reservationID) {
-		this.reservationID = reservationID;
+	public void setSecretReservationKeyValue(final String value) {
+		this.secretReservationKeyValue = value;
 	}
 
-	public int getReservationID() {
-		return reservationID;
+	public String getSecretReservationKeyValue() {
+		return secretReservationKeyValue;
 	}
 
 	public ExperimentMessageType getExperimentMessageType() {
@@ -167,4 +167,7 @@ public class ExperimentMessage implements Serializable {
 		this.value = value;
 	}
 	
+	public String toString() {
+		return null;
+	}
 }

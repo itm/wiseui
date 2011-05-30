@@ -222,20 +222,32 @@ PlaceChangeEvent.Handler,ExperimentMessageArrivedEvent.Handler{
 	@Override
 	public void onReservationTimeStarted(ReservationTimeStartedEvent event) {
 		if(event.getSource() == this ){
+
+			// start the reservation stop timer
+			startReservationStopTimer();
+			
+			// update status
 			status = ExperimentStatus.READY;
+			
+			// update view
 			view.setStatus(status.getStatusText());
 			view.activateStartExperimentButton();
-			startReservationStopTimer();
 		}
 	}
 
 	@Override
 	public void onReservationTimeEnded(ReservationTimeEndedEvent event) {
 		if(event.getSource() == this ){
-			status = ExperimentStatus.TIMEDOUT;
-			if(experimentMessageCollectionTimer != null) {
-				experimentMessageCollectionTimer.cancel();
+			
+			// check if experiment stopped already
+			if(status != ExperimentStatus.STOPPED) {
+				stopExperiment();
 			}
+			
+			// update status
+			status = ExperimentStatus.TIMEDOUT;
+			
+			// update view
 			view.setStatus(status.getStatusText());
 			view.setExperimentTiming("-");
 			view.deactivateStopExperimentButton();
