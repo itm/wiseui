@@ -23,7 +23,6 @@ import java.util.List;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.place.shared.PlaceChangeEvent;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -45,7 +44,7 @@ import eu.wisebed.wiseui.widgets.messagebox.MessageBox;
 
 public class ExperimentPresenter implements ExperimentView.Presenter,
 ReservationTimeStartedEvent.Handler,ReservationTimeEndedEvent.Handler,
-PlaceChangeEvent.Handler,ExperimentMessageArrivedEvent.Handler{
+ExperimentMessageArrivedEvent.Handler{
 
 	public enum ExperimentStatus {
 		PENDING			("Pending"),
@@ -64,7 +63,6 @@ PlaceChangeEvent.Handler,ExperimentMessageArrivedEvent.Handler{
 		}
 	}
 
-	@SuppressWarnings("unused")
 	private final WiseUiGinjector injector;
 	private ExperimentView view;
 	private ExperimentationServiceAsync service;
@@ -123,7 +121,6 @@ PlaceChangeEvent.Handler,ExperimentMessageArrivedEvent.Handler{
 		eventBus.addHandler(ReservationTimeStartedEvent.TYPE, this);
 		eventBus.addHandler(ReservationTimeEndedEvent.TYPE, this);
 		eventBus.addHandler(ExperimentMessageArrivedEvent.TYPE, this);
-		eventBus.addHandler(PlaceChangeEvent.TYPE, this);
 	}
 
 	@Override
@@ -135,6 +132,9 @@ PlaceChangeEvent.Handler,ExperimentMessageArrivedEvent.Handler{
 	@Override
 	public void startExperiment() {
 
+		// this instance 
+		final ExperimentPresenter currentExperiment = this;
+		
 		// setup callback
 		AsyncCallback<Void> callback = new AsyncCallback<Void>() {
 
@@ -146,6 +146,9 @@ PlaceChangeEvent.Handler,ExperimentMessageArrivedEvent.Handler{
 
 			@Override
 			public void onSuccess(Void result) {
+				
+				// add the experiment in the active experiment list
+				injector.getExperimentationManager().addExperimentToActiveList(currentExperiment);
 				GWT.log("Experiment controller on server published");
 			}
 			
@@ -180,6 +183,9 @@ PlaceChangeEvent.Handler,ExperimentMessageArrivedEvent.Handler{
 	@Override
 	public void stopExperiment() {
 		
+		// this instance 
+		final ExperimentPresenter currentExperiment = this;
+		
 		// setup callback
 		AsyncCallback<Void> callback = new AsyncCallback<Void>() {
 
@@ -191,6 +197,8 @@ PlaceChangeEvent.Handler,ExperimentMessageArrivedEvent.Handler{
 
 			@Override
 			public void onSuccess(Void result) {
+				// add the experiment in the active experiment list
+				injector.getExperimentationManager().removeExperimentFromActiveList(currentExperiment);
 				GWT.log("Experiment controller on server is now terminated");
 			}
 			
@@ -253,6 +261,11 @@ PlaceChangeEvent.Handler,ExperimentMessageArrivedEvent.Handler{
 				experimentMessageCollectionTimer.cancel();
 			}
 			
+			// if this presenter is on the active list 
+			if(injector.getExperimentationManager().getExperimentFromActiveList(this) != null) {
+				injector.getExperimentationManager().removeExperimentFromActiveList(this);
+			}
+			
 			// update status
 			status = ExperimentStatus.TIMEDOUT;
 			
@@ -273,12 +286,7 @@ PlaceChangeEvent.Handler,ExperimentMessageArrivedEvent.Handler{
 			}
 		}
 	}
-
-	@Override
-	public void onPlaceChange(PlaceChangeEvent event) {
-		eventBus.removeAll();
-	}
-
+	
 	private void setExperimentData(final ConfidentialReservationData data,
 			final String url) {
 

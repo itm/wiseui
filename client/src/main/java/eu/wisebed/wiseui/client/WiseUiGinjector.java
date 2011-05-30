@@ -50,7 +50,7 @@ public interface WiseUiGinjector extends Ginjector, NavigationGinjector, Testbed
     
     ReservationManager getReservationManager();
     
-    ExperimentationManager getExperimentManager();
+    ExperimentationManager getExperimentationManager();
 
     EventBus getEventBus();
 

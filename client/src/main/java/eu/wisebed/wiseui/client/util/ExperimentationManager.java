@@ -23,13 +23,10 @@ import com.google.gwt.core.client.GWT;
 import com.google.inject.Singleton;
 
 import eu.wisebed.wiseui.client.experimentation.presenter.ExperimentPresenter;
-import static eu.wisebed.wiseui.shared.common.Checks.ifNull;
 
 @Singleton
 public class ExperimentationManager {
 
-	final private List<ExperimentPresenter> inactiveExperiments = 
-		new ArrayList<ExperimentPresenter>();
 	final private List<ExperimentPresenter> activeExperiments = 
 		new ArrayList<ExperimentPresenter>();
 	
@@ -37,82 +34,27 @@ public class ExperimentationManager {
 		GWT.log("Init Experimentation Manager");
 	}
 
-	
 	/**
 	 * Adds an {@link ExperimentPresenter} to the active experiment list.
 	 * @param experiment an {@link ExperimentPresenter} instance
 	 * @return
 	 */
-	public boolean addExperimentToActiveList(final ExperimentPresenter experiment) {
-		
-		//if experiment is already in the list don't add it
+	public void addExperimentToActiveList(final ExperimentPresenter experiment) {
 		String key = experiment.getSecretReservationKeyValue();
-		try{
-			ifNull(getExperimentFromActiveList(key),"");
-		}catch(RuntimeException cause) {
-			return false;
-		}
-		
-		// else add it
-		return activeExperiments.add(experiment);
+		GWT.log("Adding experiment with key = "+key+" to the active list");
+		activeExperiments.add(experiment);
 	}
-	
-	/**
-	 * Adds an {@link ExperimentPresenter} to the inactive experiment list.
-	 * @param experiment an {@link ExperimentPresenter} instance
-	 * @return
-	 */
-	public boolean addExperimentToInActiveList(final ExperimentPresenter experiment) {
 		
-		//if experiment is already in the list don't add it
-		String key = experiment.getSecretReservationKeyValue();
-		try{
-			ifNull(getExperimentFromInactiveList(key),"");
-		}catch(RuntimeException cause) {
-			return false;
-		}
-		
-		// else add it
-		return inactiveExperiments.add(experiment);
-	}
-	
 	/**
 	 * Removes an {@link ExperimentPresenter} from the active experiment list.
 	 * @param experiment
-	 * @return
 	 */
-	public boolean removeExperimentFromActiveList(final ExperimentPresenter experiment) {
-		
-		//if experiment is already in the list don't add it
+	public void removeExperimentFromActiveList(final ExperimentPresenter experiment) {
 		String key = experiment.getSecretReservationKeyValue();
-		ExperimentPresenter foundExperiment = getExperimentFromActiveList(key);
-		try{
-			ifNull(foundExperiment,"");
-		}catch(RuntimeException cause) {
-			return false;
-		}
-		
-		return activeExperiments.remove(foundExperiment);
+		GWT.log("Removing experiment with key = "+key+" to the active list");
+		activeExperiments.remove(experiment);
 	}
 	
-	/**
-	 * Removes an {@link ExperimentPresenter} from the inactive experiment list.
-	 * @param experiment
-	 * @return
-	 */
-	public boolean removeExperimentFromInActiveList(final ExperimentPresenter experiment) {
-		
-		//if experiment is already in the list don't add it
-		String key = experiment.getSecretReservationKeyValue();
-		ExperimentPresenter foundExperiment = getExperimentFromInactiveList(key);
-		try{
-			ifNull(foundExperiment,"");
-		}catch(RuntimeException cause) {
-			return false;
-		}
-		
-		return inactiveExperiments.remove(foundExperiment);
-	}
 	
 	/**
 	 * Retrieves an {@link ExperimentPresenter} instance if it is already 
@@ -125,31 +67,31 @@ public class ExperimentationManager {
 		// iterate the list
 		for(ExperimentPresenter experiment : activeExperiments) {
 			if(experiment.getSecretReservationKeyValue().equals(key)) {
+				GWT.log("Experiment with key = " + key +" belongs in the active list");
 				return experiment;
 			}
 		}
 		
 		// nothing found return null
+		GWT.log("Experiment with key = " + key + " does not belong in the active list");
 		return null;
 	}
 	
 	/**
 	 * Retrieves an {@link ExperimentPresenter} instance if it is already 
-	 * in the inactive list.Else returns null.
-	 * @param key a key value
-	 * @return instance of {@link ExperimentPresenter} or null
+	 * in the active list.Else returns null.
+	 * @param an {@link ExperimentPresenter} instance.
+	 * @return instance of {@link ExperimentPresenter} or null.
 	 */
-	public ExperimentPresenter getExperimentFromInactiveList(final String key) {
-		
-		// iterate the list
-		for(ExperimentPresenter experiment : inactiveExperiments) {
-			if(experiment.getSecretReservationKeyValue().equals(key)) {
-				return experiment;
-			}
+	public ExperimentPresenter getExperimentFromActiveList(final ExperimentPresenter experiment) {
+		String key = experiment.getSecretReservationKeyValue();
+		if(activeExperiments.contains(experiment)) {
+			GWT.log("Experiment with key = " + key +" belongs in the active list");
+			return experiment;
 		}
 		
 		// nothing found return null
+		GWT.log("Experiment with key = " + key + " does not belong in the active list");
 		return null;
 	}
-	
 }

@@ -232,11 +232,21 @@ RefreshUserExperimentsEvent.Handler {
 
 				// initialize presenter and add it to the list also add the respected view in the container 
 				for(ConfidentialReservationData data : dataList) {
+					
 					GWT.log(data.toString());
-					ExperimentPresenter experiment =
-						injector.getExperimentPresenter();
-					experiment.setupExperimentPresenter(data,
-							testbedConfiguration.getSessionmanagementEndpointUrl());
+					String key = data.getData().get(0).getSecretReservationKey();
+					
+					// check if experiment is currently an active experiment
+					ExperimentPresenter experiment = 
+						injector.getExperimentationManager().getExperimentFromActiveList(key);
+					
+					if(experiment == null) {
+						// experiment is not in the active list create an instance and print it
+						experiment = injector.getExperimentPresenter();
+						experiment.setupExperimentPresenter(data, 
+								testbedConfiguration.getSessionmanagementEndpointUrl());
+							
+					}
 					view.addExperimentPanel(experiment.getView());
 				}
 

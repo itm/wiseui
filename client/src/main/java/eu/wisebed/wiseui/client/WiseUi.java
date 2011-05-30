@@ -54,7 +54,7 @@ public class WiseUi implements EntryPoint {
         // Init authentication & reservation manager.
         injector.getAuthenticationManager().init();
         injector.getReservationManager().init();
-        injector.getExperimentManager().init();
+        injector.getExperimentationManager().init();
 
         hideLoadingIndicator();
     }
