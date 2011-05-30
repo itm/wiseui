@@ -43,6 +43,7 @@ import eu.wisebed.testbed.api.rs.v1.GetReservations;
 import eu.wisebed.testbed.api.rs.v1.RS;
 import eu.wisebed.testbed.api.rs.v1.RSExceptionException;
 import eu.wisebed.testbed.api.rs.v1.ReservervationConflictExceptionException;
+import eu.wisebed.testbed.api.rs.v1.ReservervationNotFoundExceptionException;
 import eu.wisebed.wiseui.api.ReservationService;
 import eu.wisebed.wiseui.shared.dto.ConfidentialReservationData;
 import eu.wisebed.wiseui.shared.dto.PublicReservationData;
@@ -212,6 +213,8 @@ public class ReservationServiceImpl extends RemoteServiceServlet implements Rese
 		Date from = null;
 		Date to = null;
 		final Calendar calendar = Calendar.getInstance();
+		LOGGER.info(format("getPrivateReservations( %s, %s, %s )", rsEndpointUrl, current.toString(), range.toString()));
+
 		if (Range.ONE_DAY == range) {
 			calendar.setTime(current);
 			calendar.add(Calendar.DAY_OF_MONTH, 1);
@@ -260,7 +263,7 @@ public class ReservationServiceImpl extends RemoteServiceServlet implements Rese
 		// start and end Dates are provided by client
 		final Date start = from;
 		final Date end = to;
-        	LOGGER.debug(format("getPublicReservations#calculatedStartDate=%s, calculatedEndDate=%s", start, end));
+        LOGGER.debug(format("getPrivateReservations#calculatedStartDate=%s, calculatedEndDate=%s", start, end));
 
 		// add key to a list
 		final List<eu.wisebed.testbed.api.rs.v1.SecretAuthenticationKey> snaaKeys = 
@@ -320,10 +323,30 @@ public class ReservationServiceImpl extends RemoteServiceServlet implements Rese
      * {@inheritDoc}
      */
 	@Override
-	public String deleteReservation(String rsEndpountUrl,
-			List<SecretReservationKey> secretReservationKeys,
-			String rsEndpointUrl) throws ReservationException {
-		// TODO Auto-generated method stub
+	public String deleteReservation(String rsEndpointUrl,
+			List<SecretAuthenticationKey> secretAuthenticationKeys,
+			List<SecretReservationKey> secretReservationKeys) 
+		throws ReservationException {
+		
+		final RS rs = RSServiceHelper.getRSService(rsEndpointUrl);
+		final List<eu.wisebed.testbed.api.rs.v1.SecretAuthenticationKey> snaaKeys = 
+			new ArrayList<eu.wisebed.testbed.api.rs.v1.SecretAuthenticationKey>();
+		snaaKeys.add(mapper.map(secretAuthenticationKeys.get(0), 
+				eu.wisebed.testbed.api.rs.v1.SecretAuthenticationKey.class));
+		
+		final List<eu.wisebed.testbed.api.rs.v1.SecretReservationKey> rsKeys = 
+			new ArrayList<eu.wisebed.testbed.api.rs.v1.SecretReservationKey>();
+		rsKeys.add(mapper.map(secretReservationKeys.get(0), 
+				eu.wisebed.testbed.api.rs.v1.SecretReservationKey.class));
+		
+		try {
+			rs.deleteReservation(snaaKeys, rsKeys);
+		} catch (RSExceptionException e) {
+			e.printStackTrace();
+		} catch (ReservervationNotFoundExceptionException e) {
+			e.printStackTrace();
+		}
+		// TODO: What about the return type?
 		return null;
 	}
 

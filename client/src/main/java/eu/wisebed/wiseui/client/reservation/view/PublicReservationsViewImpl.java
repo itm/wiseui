@@ -23,6 +23,7 @@ import com.bradrydzewski.gwt.calendar.client.CalendarSettings;
 import com.bradrydzewski.gwt.calendar.client.CalendarViews;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -36,11 +37,14 @@ import com.google.gwt.user.client.ui.ToggleButton;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.datepicker.client.DateBox;
 import com.google.inject.Singleton;
+
+import eu.wisebed.wiseui.shared.dto.ConfidentialReservationData;
 import eu.wisebed.wiseui.shared.dto.PublicReservationData;
 import eu.wisebed.wiseui.widgets.CaptionPanel;
 import eu.wisebed.wiseui.widgets.ReservationDetailsWidget;
 import eu.wisebed.wiseui.widgets.loading.HasLoadingIndicator;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -104,7 +108,7 @@ public class PublicReservationsViewImpl extends Composite implements PublicReser
     @Override
     public void renderPublicReservations(final List<PublicReservationData> publicReservations) {
         calendarPanel.suspendLayout();
-        container.showLoading("Rendering reservations...");
+        container.showLoading("Rendering public reservations...");
         for (PublicReservationData reservation : publicReservations) {
             addReservation(reservation);
         }
@@ -116,19 +120,52 @@ public class PublicReservationsViewImpl extends Composite implements PublicReser
      * {@inheritDoc}
      */
     @Override
-    public void addReservation(final PublicReservationData reservation) {
+    public Appointment renderPrivateReservation(final ConfidentialReservationData privateReservation){
+    	Appointment reservation = new Appointment();
+    	calendarPanel.suspendLayout();
+    	container.showLoading("Rendering private reservations...");
+    	reservation = addReservation(privateReservation);
+    	container.hideLoading();
+    	calendarPanel.resumeLayout();
+    	return reservation;
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Appointment addReservation(final PublicReservationData reservation) {
         // TODO: Work on a more descriptive representation of reservations
-        Appointment appointment = new Appointment();
-        appointment.setStart(reservation.getFrom());
-        appointment.setEnd(reservation.getTo());
-        appointment.setLocation(reservation.getNodeURNs().get(0));
-        appointment.setTitle(reservation.getUserData());
-        appointment.setCreatedBy(reservation.getUserData());
-        appointment.setDescription(concatList(reservation.getNodeURNs()));
-        appointment.setStyle(AppointmentStyle.RED);
-        calendarPanel.addAppointment(appointment);
+    	Appointment rs = new Appointment();
+        rs.setStart(reservation.getFrom());
+        rs.setEnd(reservation.getTo());
+        rs.setLocation(reservation.getNodeURNs().get(0));
+        rs.setTitle(reservation.getUserData());
+        rs.setCreatedBy(reservation.getUserData());
+        rs.setDescription(concatList(reservation.getNodeURNs()));
+        rs.setStyle(AppointmentStyle.RED);
+        calendarPanel.addAppointment(rs);
+        return rs;
     }
 
+    /**
+     * Remove all reservations that are already rendered for a single user
+     * @param username
+     */
+    @Override
+    public void removeUsersReservations(final String username){
+    	final ArrayList<Appointment> reservations = calendarPanel.getAppointments();
+    	List<Appointment> reservationsForRemoval = new ArrayList<Appointment>();
+    	for(Appointment reservation: reservations){
+    		if (reservation.getCreatedBy().equals(username)) {
+        		reservationsForRemoval.add(reservation);
+    		}
+    	}
+    	for(Appointment reservation : reservationsForRemoval){
+			calendarPanel.removeAppointment(reservation);
+    	}
+    }
+    
     @Override
     public void removeAllAppointments() {
         calendarPanel.clearAppointments();
@@ -140,12 +177,19 @@ public class PublicReservationsViewImpl extends Composite implements PublicReser
     }
 
     @Override
-    public void showReservationDetails(final Appointment appointment) {
+    public void showReservationDetails(final Appointment reservation) {
     	final DecoratedPopupPanel popUp = reservationDetailsWidget.getPopUp();
-    	reservationDetailsWidget.setReservedBy("Reserved by: " + appointment.getCreatedBy());
-    	reservationDetailsWidget.setStart("Start: " + appointment.getStart().toString());
-    	reservationDetailsWidget.setEnd("End: " + appointment.getEnd().toString());
-    	reservationDetailsWidget.setDescription(appointment.getDescription());
+    	reservationDetailsWidget.setReservedBy("Reserved by: " + reservation.getCreatedBy());
+    	reservationDetailsWidget.setStart("Start: " + reservation.getStart().toString());
+    	reservationDetailsWidget.setEnd("End: " + reservation.getEnd().toString());
+    	reservationDetailsWidget.setDescription(reservation.getDescription());
+    	reservationDetailsWidget.getDeleteButton().addClickHandler(new ClickHandler(){
+    		@Override
+    		public void onClick(final ClickEvent event){
+    			presenter.removeReservation(reservation);
+    			popUp.hide();
+    		}
+    	});
         popUp.center();
         popUp.show();
     }

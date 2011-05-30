@@ -32,6 +32,7 @@ import com.google.gwt.user.client.Cookies;
 import com.google.inject.Singleton;
 
 import eu.wisebed.wiseui.shared.dto.SecretAuthenticationKey;
+import eu.wisebed.wiseui.shared.dto.TestbedConfiguration;
 
 
 /**
@@ -150,4 +151,19 @@ public class AuthenticationManager {
 		 }
 		 return urnPrefix;
 	 }
+	 
+    /**
+     * Very simple mechanism to determine, whether the user connected to the current testbed.
+     * TODO: Do this per URN prefix and reduce computational time!
+     * @param testbedConfiguration The {@link TestbedConfiguration} to be checked.
+     * @return Whether the user is connected to the current testbed or not.
+     */
+    public boolean isAuthenticated(final TestbedConfiguration testbedConfiguration) {
+        for (String authenticatedUrnPrefix : getMap().keySet()) {
+        	if (testbedConfiguration.getUrnPrefixList().contains(authenticatedUrnPrefix)){
+                    return true;
+            }
+        }
+        return false;
+    }
 }

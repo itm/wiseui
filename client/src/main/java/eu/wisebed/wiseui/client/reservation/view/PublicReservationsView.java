@@ -26,6 +26,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.datepicker.client.DateBox;
 import com.google.inject.ImplementedBy;
 
+import eu.wisebed.wiseui.shared.dto.ConfidentialReservationData;
 import eu.wisebed.wiseui.shared.dto.Node;
 import eu.wisebed.wiseui.shared.dto.PublicReservationData;
 import eu.wisebed.wiseui.widgets.loading.HasLoadingIndicator;
@@ -45,10 +46,14 @@ public interface PublicReservationsView extends IsWidget {
      * @param publicReservations Public reservation data from the backend.
      */
     void renderPublicReservations(List<PublicReservationData> publicReservations);
+    
+    Appointment renderPrivateReservation(ConfidentialReservationData privateReservation);
 
-    void addReservation(PublicReservationData reservationData);
+    Appointment addReservation(PublicReservationData reservationData);
 
     void removeAllAppointments();
+    
+    void removeUsersReservations(String username);
 
     Calendar getCalendar();
 
@@ -56,7 +61,7 @@ public interface PublicReservationsView extends IsWidget {
 
     HasLoadingIndicator getLoadingIndicator();
 
-    void showReservationDetails(Appointment appointment);
+    void showReservationDetails(Appointment reservation);
 
     public interface Presenter {
 
@@ -72,5 +77,9 @@ public interface PublicReservationsView extends IsWidget {
         void handleTodayClicked();
         
     	void showEditReservationDialog(Appointment reservation, Set<Node> nodes);
+    	
+    	void removeReservation(Appointment reservation);
+    	
+    	boolean isAuthenticated();
     }
 }

@@ -236,22 +236,8 @@ public class TestbedListActivity  extends AbstractActivity implements Presenter,
 	public void onRefreshTestbedList(RefreshTestbedListEvent event) {
 		loadTestbedConfigurations();
 	}
-
-    /**
-     * Very simple mechanism to determine, whether the user connected to the current testbed.
-     * TODO: Do this per URN prefix and reduce computational time!
-     * @param testbedConfiguration The {@link TestbedConfiguration} to be checked.
-     * @return Whether the user is connected to the current testbed or not.
-     */
-    @Override
-    public boolean isAuthenticated(TestbedConfiguration testbedConfiguration) {
-        for (String authenticatedUrnPrefix : authenticationManager.getMap().keySet()) {
-            for (String configurationUrnPrefix : testbedConfiguration.getUrnPrefixList()) {
-                if (authenticatedUrnPrefix.equals(configurationUrnPrefix)) {
-                    return true;
-                }
-            }
-        }
-        return false;
+	
+    public boolean isAuthenticated(final TestbedConfiguration testbedConfiguration) {
+    	return injector.getAuthenticationManager().isAuthenticated(testbedConfiguration);
     }
 }

@@ -20,6 +20,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiTemplate;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DecoratedPopupPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
@@ -49,6 +50,8 @@ public class ReservationDetailsWidget extends Composite{
 	Label end;
 	@UiField
 	TextArea textArea;
+	@UiField
+	Button delete;
 	
 	private static CalendarImplUiBinder uiBinder = 
 		GWT.create(CalendarImplUiBinder.class);
@@ -90,5 +93,9 @@ public class ReservationDetailsWidget extends Composite{
 
 	public void setDescription(final String string){
 		textArea.setText(string);
+	}
+	
+	public Button getDeleteButton(){
+		return delete;
 	}
 }

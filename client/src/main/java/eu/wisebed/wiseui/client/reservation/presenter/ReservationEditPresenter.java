@@ -47,7 +47,7 @@ public class ReservationEditPresenter implements Presenter, EditReservationEvent
     private final EventBusManager eventBus;
     private final ReservationEditView view;
     private TestbedConfiguration selectedConfiguration;
-    private ReservationServiceAsync service;
+    private ReservationServiceAsync reservationService;
     private String title = DEFAULT_NEW_TITLE;
     private List<String> selectedNodes = new ArrayList<String>();
     private ReservationMessages messages;
@@ -61,7 +61,7 @@ public class ReservationEditPresenter implements Presenter, EditReservationEvent
         this.injector = injector;
         this.eventBus = new EventBusManager(eventBus);
         this.view = view;
-        this.service = service;
+        this.reservationService = service;
         this.messages = messages;
 
         bind();
@@ -109,21 +109,14 @@ public class ReservationEditPresenter implements Presenter, EditReservationEvent
             reservationData.getData().add(data);
         }
 
-        final AsyncCallback<List<SecretReservationKey>> callback = new AsyncCallback<List<SecretReservationKey>>() {
+        view.hide();
+        reservationService.makeReservation(rsEndpointUrl, authenticationKeys, reservationData, new AsyncCallback<List<SecretReservationKey>>() {
             public void onFailure(Throwable caught) {
                 eventBus.fireEvent(new ReservationFailedEvent(caught));
             }
 
             public void onSuccess(List<SecretReservationKey> result) {
                 eventBus.fireEvent(new ReservationSuccessEvent());
-            }
-        };
-        Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
-
-            @Override
-            public void execute() {
-                service.makeReservation(rsEndpointUrl, authenticationKeys, reservationData, callback);
-                view.hide();
             }
         });
     }

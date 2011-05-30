@@ -46,7 +46,15 @@ public interface ReservationMessages extends Constants {
 	String reservationFailedTitle();
 
 	String reservationFailed();
-	
+
+	String reservationDeleteFailedTitle();
+
+	String reservationDeleteFailed();
+
+	String reservationDeleteSuccessTitle();
+
+	String reservationDeleteSuccess();
+
 	String authenticationKeysExpiredTitle();
 
 	String authenticationKeysExpired();
@@ -58,4 +66,8 @@ public interface ReservationMessages extends Constants {
 	String rsServiceErrorTitle();
 
 	String rsServiceError();
+
+	String loginRequiredTitle();
+
+	String loginRequired();
 }

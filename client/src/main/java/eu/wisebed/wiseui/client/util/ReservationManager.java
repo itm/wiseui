@@ -22,6 +22,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+import com.bradrydzewski.gwt.calendar.client.Appointment;
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.base.Predicate;
@@ -53,6 +54,9 @@ public class ReservationManager {
 
 	private final HashMap<SecretReservationKey,SecretAuthenticationKey > map = 
 		new HashMap<SecretReservationKey,SecretAuthenticationKey>();
+	
+	private final HashMap<Appointment, SecretReservationKey> privateReservationsMap = 
+		new HashMap<Appointment, SecretReservationKey>();
 
 	/**
 	 * Load all authentication keys from the cookie.
@@ -141,12 +145,28 @@ public class ReservationManager {
 		return secretReservationKeys;
 	}
 
+	public void addReservation(final Appointment reservation, final SecretReservationKey rsKey){
+		privateReservationsMap.put(reservation, rsKey);
+	}
+	
+	public void removeReservation(final Appointment reservation){
+		privateReservationsMap.remove(reservation);
+	}
+
 	/**
 	 * Return the map
 	 * @return SecretReservationKey-to-SecretAuthenticationKey map
 	 */
 	public HashMap<SecretReservationKey,SecretAuthenticationKey> getMap(){
 		return map;
+	}
+	
+	/**
+	 * Return the private reservations map
+	 * @return Appointment-to-String map
+	 */
+	public HashMap<Appointment, SecretReservationKey> getPrivateReservationsMap(){
+		return privateReservationsMap;
 	}
 	
 	/**

@@ -6,6 +6,7 @@
 	<ui:style>
 	.container { width:100%; height: 100%; }
 	.textarea { height:375px; width:100%; }
+	.delete { border-top:2px; float:right }
 	
 	</ui:style>
 	<g:HTMLPanel styleName='{style.container}' ui:field="container">
@@ -15,6 +16,7 @@
 				<g:Label ui:field="start"/>
 				<g:Label ui:field="end"/>
 				<g:TextArea styleName='{style.textarea}' ui:field="textArea"/>
+				<g:Button styleName='{style.delete}' ui:field="delete">Delete</g:Button>
 			</g:VerticalPanel>
 		</g:DecoratedPopupPanel>
 	</g:HTMLPanel>

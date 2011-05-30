@@ -111,9 +111,9 @@ public interface ReservationService extends RemoteService {
 	 * @throws ReservationException
 	 */
 	String deleteReservation(
-			String rsEndpountUrl,
-			List<SecretReservationKey> secretReservationKeys,
-			String rsEndpointUrl)
+			String rsEndpointUrl,
+			List<SecretAuthenticationKey> secretAuthenticationKeys,
+			List<SecretReservationKey> secretReservationKeys)
 	throws
 	ReservationException;
 
