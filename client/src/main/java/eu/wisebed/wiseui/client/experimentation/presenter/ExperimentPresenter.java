@@ -101,6 +101,15 @@ PlaceChangeEvent.Handler,ExperimentMessageArrivedEvent.Handler{
 	public ExperimentView getView() {
 		return view;
 	}
+	
+	public String getSecretReservationKeyValue() {
+		return secretReservationKeyValue;
+	}
+
+
+	public void setSecretReservationKeyValue(String secretReservationKeyValue) {
+		this.secretReservationKeyValue = secretReservationKeyValue;
+	}
 
 	public void setupExperimentPresenter(final ConfidentialReservationData data, 
 			final String sessionManagementUrl) {
@@ -209,7 +218,7 @@ PlaceChangeEvent.Handler,ExperimentMessageArrivedEvent.Handler{
 		// update view
 		view.setStatus(status.getStatusText());
 		view.deactivateStopExperimentButton();
-		view.activateFlashExperimentButton();
+		view.deactivateFlashExperimentButton();
 		view.activateStartExperimentButton();
 	}
 
@@ -239,9 +248,9 @@ PlaceChangeEvent.Handler,ExperimentMessageArrivedEvent.Handler{
 	public void onReservationTimeEnded(ReservationTimeEndedEvent event) {
 		if(event.getSource() == this ){
 			
-			// check if experiment stopped already
-			if(status != ExperimentStatus.STOPPED) {
-				stopExperiment();
+			// if experiment message collection timer is not null stop it
+			if(experimentMessageCollectionTimer != null) {
+				experimentMessageCollectionTimer.cancel();
 			}
 			
 			// update status
@@ -250,9 +259,9 @@ PlaceChangeEvent.Handler,ExperimentMessageArrivedEvent.Handler{
 			// update view
 			view.setStatus(status.getStatusText());
 			view.setExperimentTiming("-");
+			view.deactivateStartExperimentButton();
 			view.deactivateStopExperimentButton();
 			view.deactivateFlashExperimentButton();
-			view.deactivateStartExperimentButton();
 		}
 	}
 
@@ -297,8 +306,8 @@ PlaceChangeEvent.Handler,ExperimentMessageArrivedEvent.Handler{
 		// initialize view
 		view.setSecretReservationKey(secretReservationKeyValue);
 		view.setUsername(username);
-		view.setStartDate(fromDate.toGMTString());
-		view.setStopDate(toDate.toGMTString());
+		view.setStartDate(fromDate.toLocaleString());
+		view.setStopDate(toDate.toLocaleString());
 		view.setExperimentTiming(experimentTiming);
 		view.setStatus(status.getStatusText());
 		view.setNodeUrns(nodeUrns);
