@@ -133,7 +133,6 @@ public class PublicReservationsPresenter implements PublicReservationsView.Prese
             	Appointment reservation = new Appointment();
             	reservation.setStart(startDate);
                 showEditReservationDialog(reservation, nodes);
-                GWT.log("Size:" + view.getCalendar().getAppointments().size());
             }
         });
         view.getDatePicker().addValueChangeHandler(new ValueChangeHandler<Date>() {

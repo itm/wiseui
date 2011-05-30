@@ -37,6 +37,8 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
 
+import eu.wisebed.wiseui.widgets.ImageUploadWidget;
+
 
 public class ExperimentViewImpl extends Composite implements ExperimentView {
 	private static ExperimentPanelViewImplBinder uiBinder = GWT.create(ExperimentPanelViewImplBinder.class);
@@ -46,6 +48,7 @@ public class ExperimentViewImpl extends Composite implements ExperimentView {
 	}
 
 	private Presenter presenter;
+	
 
 	@UiField 
 	Label secretReservationKey;
@@ -55,6 +58,8 @@ public class ExperimentViewImpl extends Composite implements ExperimentView {
 	Label stopDate;
 	@UiField
 	Label experimentTiming;
+	@UiField
+	ImageUploadWidget imageUploadWidget;
 	@UiField
 	Label status;
 	@UiField

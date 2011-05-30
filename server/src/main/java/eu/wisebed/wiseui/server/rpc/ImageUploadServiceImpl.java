@@ -16,6 +16,8 @@
  */
 package eu.wisebed.wiseui.server.rpc;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -27,6 +29,10 @@ import org.slf4j.LoggerFactory;
 
 import com.google.inject.Singleton;
 
+import eu.wisebed.wiseui.api.PersistenceService;
+import eu.wisebed.wiseui.persistence.PersistenceServiceProvider;
+import eu.wisebed.wiseui.shared.dto.BinaryImage;
+
 import gwtupload.server.UploadAction;
 import gwtupload.server.exceptions.UploadActionException;
 
@@ -36,10 +42,10 @@ public class ImageUploadServiceImpl extends UploadAction{
 
 	private static final long serialVersionUID = 8765045952525138205L;
 
-	@SuppressWarnings("unused")
 	private final Logger LOGGER = 
 		LoggerFactory.getLogger(ImageUploadServiceImpl.class.getName());
 	
+	private final PersistenceService persistenceService = PersistenceServiceProvider.newPersistenceService();
 	/**
 	 * Override executeAction to save the received files in a custom place
 	 * and delete these items from session
@@ -47,52 +53,52 @@ public class ImageUploadServiceImpl extends UploadAction{
 	@Override
 	public String executeAction(HttpServletRequest request, 
 			List<FileItem> sessionFiles) throws UploadActionException{
-//		String response = "";
-//		int cont = 0;
-//		
-//		for (FileItem item: sessionFiles){
-//			if (false == item.isFormField()){
-//				cont++;
-//				try {
-//					// Save a temporary file in the default system temp directory
-//					File uploadedFile = File.createTempFile("upload-", ".bin");
-//
-//					item.write(uploadedFile);
-//
-//					FileInputStream content = new FileInputStream(uploadedFile);
-//					BinaryImage image = new BinaryImage();
-//					image.setImageFileName(item.getName());
-//					image.setImageFileSize(item.getSize());
-//					image.setContentStream(content.);
-//					image.setContentType(item.getContentType());
-//					LOGGER.log(Level.INFO, "Storing image: [Filename-> "
-//							+ item.getName() + " ]");
-//					ImageServiceManager.saveImage(image);
-//
-//					// Compose an xml message with the full file information
-//					// which can be parsed in client side
-//					response += "<file-" + cont + "-field>" +
-//						item.getFieldName() + "</file-" + cont + "-field>\n";
-//					response += "<file-" + cont + "-name>" +
-//						item.getName() + "</file-" + cont + "-name>\n";
-//					response += "<file-" + cont + "-size>" +
-//						item.getSize() + "</file-" + cont + "-size>\n";
-//					response += "<file-" + cont + "-type>" +
-//						item.getContentType() + "</file-" + cont + "-type>\n";
-//
-//				} catch (Exception e) {
-//					// TODO Auto-generated catch block
-//					throw new UploadActionException(e);
-//				}
-//			}
-//		}
-//		// Remove files from session because we have a copy of them
-//		removeSessionFileItems(request);
-//		
-//		// Send information of the received files to the client
-//		return "<response>\n" + response + "</response>\n";
+		String response = "";
+		int cont = 0;
 		
-		return null;
+		for (FileItem item: sessionFiles){
+			if (false == item.isFormField()){
+				cont++;
+				try {
+					// Save a temporary file in the default system temp directory
+					File uploadedFile = File.createTempFile("upload-", ".bin");
+
+					item.write(uploadedFile);
+
+					FileInputStream in = new FileInputStream(uploadedFile);
+				    byte fileContent[] = new byte[(int)uploadedFile.length()];
+				    in.read(fileContent);
+
+					BinaryImage image = new BinaryImage();
+					image.setFileName(item.getName());
+					image.setFileSize(item.getSize());
+					image.setContent(fileContent);
+					image.setContentType(item.getContentType());
+					LOGGER.info("Storing image: [Filename-> "+ item.getName() + " ]");
+					persistenceService.storeBinaryImage(image);
+
+					// Compose an xml message with the full file information
+					// which can be parsed in client side
+					response += "<file-" + cont + "-field>" +
+						item.getFieldName() + "</file-" + cont + "-field>\n";
+					response += "<file-" + cont + "-name>" +
+						item.getName() + "</file-" + cont + "-name>\n";
+					response += "<file-" + cont + "-size>" +
+						item.getSize() + "</file-" + cont + "-size>\n";
+					response += "<file-" + cont + "-type>" +
+						item.getContentType() + "</file-" + cont + "-type>\n";
+
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					throw new UploadActionException(e);
+				}
+			}
+		}
+		// Remove files from session because we have a copy of them
+		removeSessionFileItems(request);
+		
+		// Send information of the received files to the client
+		return "<response>\n" + response + "</response>\n";
 	}
 	
 	public void removeItem(HttpServletRequest request, String fieldName) 
