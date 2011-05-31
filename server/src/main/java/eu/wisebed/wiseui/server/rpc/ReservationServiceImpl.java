@@ -1,12 +1,11 @@
-/*
- * Copyright 2011 Universität zu Lübeck, Institut für Telematik (ITM),
- *              Research Academic Computer Technology Institute (RACTI)
+/**
+ * Copyright (C) 2011 Universität zu Lübeck, Institut für Telematik (ITM), Research Academic Computer Technology Institute (RACTI)
  *
- * ITM and RACTI license this file under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with the
- * License. You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *         http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,21 +15,6 @@
  */
 package eu.wisebed.wiseui.server.rpc;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.Iterator;
-import java.util.List;
-
-import javax.xml.datatype.DatatypeConfigurationException;
-import javax.xml.datatype.DatatypeFactory;
-import javax.xml.datatype.XMLGregorianCalendar;
-
-import org.dozer.Mapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
@@ -38,7 +22,6 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import eu.wisebed.testbed.api.rs.RSServiceHelper;
 import eu.wisebed.testbed.api.rs.v1.AuthorizationExceptionException;
-import eu.wisebed.wiseui.shared.dto.Data;
 import eu.wisebed.testbed.api.rs.v1.GetReservations;
 import eu.wisebed.testbed.api.rs.v1.RS;
 import eu.wisebed.testbed.api.rs.v1.RSExceptionException;
@@ -51,31 +34,48 @@ import eu.wisebed.wiseui.shared.dto.SecretAuthenticationKey;
 import eu.wisebed.wiseui.shared.dto.SecretReservationKey;
 import eu.wisebed.wiseui.shared.exception.AuthenticationException;
 import eu.wisebed.wiseui.shared.exception.ReservationException;
+import org.dozer.Mapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
+import javax.xml.datatype.XMLGregorianCalendar;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static eu.wisebed.wiseui.shared.common.Checks.ifNull;
 import static eu.wisebed.wiseui.shared.common.Checks.ifNullArgument;
 import static eu.wisebed.wiseui.shared.common.Checks.ifNullOrEmptyArgument;
-import static java.lang.String.*;
+import static java.lang.String.format;
 
 @Singleton
 public class ReservationServiceImpl extends RemoteServiceServlet implements ReservationService {
 
-	private static final long serialVersionUID = -7715272862718944674L;
+    private static final long serialVersionUID = -7715272862718944674L;
 
-	private static final Logger LOGGER =
-		LoggerFactory.getLogger(ReservationServiceImpl.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ReservationServiceImpl.class);
 
-	private final Mapper mapper;
+    private static final String FROM_KEY = "from";
 
-	@Inject
-	public ReservationServiceImpl(final Mapper mapper) {
-		this.mapper = mapper;
-	}
+    private static final String TO_KEY = "to";
+
+    private final Mapper mapper;
+
+    @Inject
+    public ReservationServiceImpl(final Mapper mapper) {
+        this.mapper = mapper;
+    }
 
     /**
      * {@inheritDoc}
      */
-	@Override
+    @Override
     public List<SecretReservationKey> makeReservation(final String rsEndpointUrl,
                                                       final List<SecretAuthenticationKey> secretAuthenticationKeys,
                                                       final ConfidentialReservationData confidentialReservationData)
@@ -86,7 +86,7 @@ public class ReservationServiceImpl extends RemoteServiceServlet implements Rese
         ifNullArgument(confidentialReservationData, "confidentialReservationData is null");
 
         LOGGER.info(format("makeReservation( %s, %s, %s )",
-                rsEndpointUrl, secretAuthenticationKeys.toString(), confidentialReservationData.toString()));
+                rsEndpointUrl, secretAuthenticationKeys, confidentialReservationData));
 
         // Init remote reservation service with the given endpoint URL
         final RS rs = RSServiceHelper.getRSService(rsEndpointUrl);
@@ -105,7 +105,7 @@ public class ReservationServiceImpl extends RemoteServiceServlet implements Rese
                                     final SecretAuthenticationKey s) {
                                 return mapper.map(s, eu.wisebed.testbed.api.rs.v1.SecretAuthenticationKey.class);
                             }
-                        })); 
+                        }));
         eu.wisebed.testbed.api.rs.v1.ConfidentialReservationData rsConfidentialReservationData =
                 mapper.map(confidentialReservationData, eu.wisebed.testbed.api.rs.v1.ConfidentialReservationData.class);
 
@@ -141,40 +141,21 @@ public class ReservationServiceImpl extends RemoteServiceServlet implements Rese
     /**
      * {@inheritDoc}
      */
-	@Override
+    @Override
     public List<PublicReservationData> getPublicReservations(final String rsEndpointUrl,
-                                                             final Date current,
-                                                             final Range range) throws ReservationException {
+                                                             final Date pivotDate,
+                                                             final Range dateRange) throws ReservationException {
 
         ifNullOrEmptyArgument(rsEndpointUrl, "rsEndpointUrl is null");
-        ifNullArgument(current, "current is null");
+        ifNullArgument(pivotDate, "pivotDate is null");
 
         LOGGER.info(format("getPublicReservations( %s, %s, %s )",
-                rsEndpointUrl, current.toString(), range.toString()));
+                rsEndpointUrl, pivotDate, dateRange));
 
-        /* Convert from range to date to avoid client-site date calculation */
-        Date start = null;
-        Date end = null;
-        final Calendar calendar = Calendar.getInstance();
-        if (Range.ONE_DAY == range) {
-            calendar.setTime(current);
-            calendar.add(Calendar.DAY_OF_MONTH, 1);
-            start = current;
-            end = calendar.getTime();
-        } else if (Range.WEEK == range) {
-            calendar.setTime(current);
-            calendar.add(Calendar.DAY_OF_MONTH, 7);
-            start = current;
-            end = calendar.getTime();
-        } else if (Range.MONTH == range) {
-            calendar.setTime(current);
-            final int firstDayOfMonth = calendar.getActualMinimum(Calendar.DAY_OF_MONTH);
-            final int lastDayOfMonth = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
-            calendar.set(Calendar.DAY_OF_MONTH, firstDayOfMonth);
-            start = calendar.getTime();
-            calendar.set(Calendar.DAY_OF_MONTH, lastDayOfMonth);
-            end = calendar.getTime();
-        }
+        /* Convert from dateRange to date to avoid client-site date calculation */
+        Map<String, Date> fromAndTo = convertRange2Date(pivotDate, dateRange);
+        final Date start = fromAndTo.get(FROM_KEY);
+        final Date end = fromAndTo.get(TO_KEY);
 
         LOGGER.debug(format("getPublicReservations#calculatedStartDate=%s, calculatedEndDate=%s", start, end));
 
@@ -198,161 +179,130 @@ public class ReservationServiceImpl extends RemoteServiceServlet implements Rese
                 }));
     }
 
-	
-    /**
-     * {@inheritDoc}
-     */
-	@Override
-	public List<ConfidentialReservationData> getPrivateReservations(
-			final String rsEndpointUrl,
-			List<SecretAuthenticationKey> secretAuthenticationKeys,
-			final Date current,
-			final Range range) throws AuthenticationException,ReservationException{
-
-		/* Convert from range to date to avoid client-site date calculation */
-		Date from = null;
-		Date to = null;
-		final Calendar calendar = Calendar.getInstance();
-		LOGGER.info(format("getPrivateReservations( %s, %s, %s )", rsEndpointUrl, current.toString(), range.toString()));
-
-		if (Range.ONE_DAY == range) {
-			calendar.setTime(current);
-			calendar.add(Calendar.DAY_OF_MONTH, 1);
-			from = current;
-			to = calendar.getTime();
-		} else if (Range.WEEK == range) {
-			calendar.setTime(current);
-			calendar.add(Calendar.DAY_OF_MONTH, 7);
-			from = current;
-			to = calendar.getTime();
-		} else if (Range.MONTH == range) {
-			calendar.setTime(current);
-			final int firstDayOfMonth = calendar.getActualMinimum(Calendar.DAY_OF_MONTH);
-			final int lastDayOfMonth = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
-			calendar.set(Calendar.DAY_OF_MONTH, firstDayOfMonth);
-			from = calendar.getTime();
-			calendar.set(Calendar.DAY_OF_MONTH, lastDayOfMonth);
-			to = calendar.getTime();
-		}
-		
-		// call getPrivateReservations with distinct from,to date objects		
-		return getPrivateReservations(rsEndpointUrl,secretAuthenticationKeys, from, to);
-	}
-	
-	
-    /**
-     * {@inheritDoc}
-     */
-	@Override
-	public List<ConfidentialReservationData> getPrivateReservations(
-			final String rsEndpointUrl,
-			final List<SecretAuthenticationKey> secretAuthenticationKeys,
-			final Date from,
-			final Date to) throws AuthenticationException, ReservationException {
-
-		// check input arguments
-		try{
-			ifNullArgument(secretAuthenticationKeys,"SecretAuthenticationKey is null");
-			ifNullOrEmptyArgument(rsEndpointUrl, "Reservation Service Endpoint URL not set");
-			ifNullArgument(from, "From date is not set");
-			ifNullArgument(to,"To date is not set");
-		}catch(RuntimeException cause){
-			throw new ReservationException(cause.getMessage());
-		}
-
-		// start and end Dates are provided by client
-		final Date start = from;
-		final Date end = to;
-        LOGGER.debug(format("getPrivateReservations#calculatedStartDate=%s, calculatedEndDate=%s", start, end));
-
-		// add key to a list
-		final List<eu.wisebed.testbed.api.rs.v1.SecretAuthenticationKey> snaaKeys = 
-			new ArrayList<eu.wisebed.testbed.api.rs.v1.SecretAuthenticationKey>();
-		final eu.wisebed.testbed.api.rs.v1.SecretAuthenticationKey snaaKey = 
-			mapper.map(secretAuthenticationKeys.get(0),
-					eu.wisebed.testbed.api.rs.v1.SecretAuthenticationKey.class);
-		snaaKeys.add(snaaKey);
-
-		// reservation system proxy
-		final RS rs = RSServiceHelper.getRSService(rsEndpointUrl);
-
-		// set and return results
-		List<eu.wisebed.testbed.api.rs.v1.ConfidentialReservationData> resultList = null;
-		try {
-			GetReservations reservation = new GetReservations();
-			reservation.setFrom(convertDate2XmlGregorianCalendar(start));
-			reservation.setTo(convertDate2XmlGregorianCalendar(end));
-			resultList = rs.getConfidentialReservations(snaaKeys,reservation);
-		} catch (RSExceptionException cause) {
-			throw new ReservationException(cause.getMessage());
-		}
-
-		// filter to the data related to the authenticated user
-		final String authenticatedUsername = snaaKeys.get(0).getUsername();
-		for(Iterator<eu.wisebed.testbed.api.rs.v1.ConfidentialReservationData> result = resultList.iterator();
-			result.hasNext();) {
-			String reservationUsername = result.next().getData().get(0).getUsername();
-			if(reservationUsername.equals(authenticatedUsername) == false)
-			{
-				result.remove();
-			}
-		}
-
-		// use Lists.transform to map the results to DTOs
-		return new ArrayList<ConfidentialReservationData>(Lists.transform(resultList,
-				new Function<eu.wisebed.testbed.api.rs.v1.ConfidentialReservationData, ConfidentialReservationData>() {
-			@Override
-			public ConfidentialReservationData apply(final eu.wisebed.testbed.api.rs.v1.ConfidentialReservationData r) {
-
-				// use mapper to copy the confidential reservation data
-				final ConfidentialReservationData confidentialReservationData 
-				= mapper.map(r, ConfidentialReservationData.class);
-
-				// iterate the data list and copy it
-				for(eu.wisebed.testbed.api.rs.v1.Data d : r.getData()) {
-					final Data data = mapper.map(d, Data.class);
-					confidentialReservationData.getData().add(data);
-				}
-
-				return confidentialReservationData;
-			}
-		}));
-	}
 
     /**
      * {@inheritDoc}
      */
-	@Override
-	public String deleteReservation(String rsEndpointUrl,
-			List<SecretAuthenticationKey> secretAuthenticationKeys,
-			List<SecretReservationKey> secretReservationKeys) 
-		throws ReservationException {
-		
-		final RS rs = RSServiceHelper.getRSService(rsEndpointUrl);
-		final List<eu.wisebed.testbed.api.rs.v1.SecretAuthenticationKey> snaaKeys = 
-			new ArrayList<eu.wisebed.testbed.api.rs.v1.SecretAuthenticationKey>();
-		snaaKeys.add(mapper.map(secretAuthenticationKeys.get(0), 
-				eu.wisebed.testbed.api.rs.v1.SecretAuthenticationKey.class));
-		
-		final List<eu.wisebed.testbed.api.rs.v1.SecretReservationKey> rsKeys = 
-			new ArrayList<eu.wisebed.testbed.api.rs.v1.SecretReservationKey>();
-		rsKeys.add(mapper.map(secretReservationKeys.get(0), 
-				eu.wisebed.testbed.api.rs.v1.SecretReservationKey.class));
-		
-		try {
-			rs.deleteReservation(snaaKeys, rsKeys);
-		} catch (RSExceptionException e) {
-			e.printStackTrace();
-		} catch (ReservervationNotFoundExceptionException e) {
-			e.printStackTrace();
-		}
-		// TODO: What about the return type?
-		return null;
-	}
+    @Override
+    public List<ConfidentialReservationData> getPrivateReservations(
+            final String rsEndpointUrl,
+            final List<SecretAuthenticationKey> secretAuthenticationKeys,
+            final Date pivotDate,
+            final Range dateRange) throws AuthenticationException, ReservationException {
+
+        ifNullOrEmptyArgument(rsEndpointUrl, "rsEndpointUrl is null");
+        ifNullArgument(secretAuthenticationKeys, "secretAuthenticationKeys is null");
+        ifNullArgument(pivotDate, "pivotDate is null");
+
+        LOGGER.info(format("getPrivateReservations( %s, %s, %s )", rsEndpointUrl, pivotDate.toString(), dateRange.toString()));
+
+        /* Convert from dateRange to date to avoid client-site date calculation */
+        Map<String, Date> fromAndTo = convertRange2Date(pivotDate, dateRange);
+        final Date from = fromAndTo.get(FROM_KEY);
+        final Date to = fromAndTo.get(TO_KEY);
+
+        // call getPrivateReservations with distinct from, to date objects
+        return getPrivateReservations(rsEndpointUrl, secretAuthenticationKeys, from, to);
+    }
 
 
-    private XMLGregorianCalendar convertDate2XmlGregorianCalendar(
-    		final Date date) {
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<ConfidentialReservationData> getPrivateReservations(
+            final String rsEndpointUrl,
+            final List<SecretAuthenticationKey> secretAuthenticationKeys,
+            final Date from,
+            final Date to) throws AuthenticationException, ReservationException {
+
+        ifNullArgument(secretAuthenticationKeys, "SecretAuthenticationKey is null");
+        ifNullOrEmptyArgument(rsEndpointUrl, "Reservation Service Endpoint URL not set");
+        ifNullArgument(from, "From date is not set");
+        ifNullArgument(to, "To date is not set");
+
+        // start and end Dates are provided by client
+        LOGGER.debug(format("getPrivateReservations#calculatedStartDate=%s, calculatedEndDate=%s", from, to));
+
+        // add key to a list
+        final List<eu.wisebed.testbed.api.rs.v1.SecretAuthenticationKey> snaaKeys =
+                new ArrayList<eu.wisebed.testbed.api.rs.v1.SecretAuthenticationKey>();
+        final eu.wisebed.testbed.api.rs.v1.SecretAuthenticationKey snaaKey =
+                mapper.map(secretAuthenticationKeys.get(0),
+                        eu.wisebed.testbed.api.rs.v1.SecretAuthenticationKey.class);
+        snaaKeys.add(snaaKey);
+
+        // reservation system proxy
+        final RS rs = RSServiceHelper.getRSService(rsEndpointUrl);
+
+        // set and return results
+        List<eu.wisebed.testbed.api.rs.v1.ConfidentialReservationData> resultList;
+        try {
+            GetReservations reservation = new GetReservations();
+            reservation.setFrom(convertDate2XmlGregorianCalendar(from));
+            reservation.setTo(convertDate2XmlGregorianCalendar(to));
+            resultList = rs.getConfidentialReservations(snaaKeys, reservation);
+        } catch (final RSExceptionException cause) {
+            throw new ReservationException(cause.getMessage());
+        }
+
+        // filter to the data related to the authenticated user
+        final String authenticatedUsername = snaaKeys.get(0).getUsername();
+        List<eu.wisebed.testbed.api.rs.v1.ConfidentialReservationData> filteredResultList
+                = new ArrayList<eu.wisebed.testbed.api.rs.v1.ConfidentialReservationData>();
+        for (eu.wisebed.testbed.api.rs.v1.ConfidentialReservationData confidentialReservationData : resultList) {
+            String reservationUsername = confidentialReservationData.getData().get(0).getUsername();
+            if (reservationUsername != null && reservationUsername.equals(authenticatedUsername)) {
+                filteredResultList.add(confidentialReservationData);
+            }
+        }
+
+        // use Lists.transform to map the results to DTOs
+        return new ArrayList<ConfidentialReservationData>(Lists.transform(filteredResultList,
+                new Function<eu.wisebed.testbed.api.rs.v1.ConfidentialReservationData, ConfidentialReservationData>() {
+                    @Override
+                    public ConfidentialReservationData apply(
+                            final eu.wisebed.testbed.api.rs.v1.ConfidentialReservationData r) {
+                        return mapper.map(r, ConfidentialReservationData.class);
+                    }
+                }));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void deleteReservation(final String rsEndpointUrl,
+                                  final List<SecretAuthenticationKey> secretAuthenticationKeys,
+                                  final List<SecretReservationKey> secretReservationKeys)
+            throws ReservationException {
+
+        ifNullOrEmptyArgument(rsEndpointUrl, "rsEndpointUrl is null");
+        ifNullArgument(secretAuthenticationKeys, "secretAuthenticationKeys is null");
+        ifNullArgument(secretReservationKeys, "secretReservationKeys is null");
+
+        final RS rs = RSServiceHelper.getRSService(rsEndpointUrl);
+        final List<eu.wisebed.testbed.api.rs.v1.SecretAuthenticationKey> snaaKeys =
+                new ArrayList<eu.wisebed.testbed.api.rs.v1.SecretAuthenticationKey>();
+        snaaKeys.add(mapper.map(secretAuthenticationKeys.get(0),
+                eu.wisebed.testbed.api.rs.v1.SecretAuthenticationKey.class));
+
+        final List<eu.wisebed.testbed.api.rs.v1.SecretReservationKey> rsKeys =
+                new ArrayList<eu.wisebed.testbed.api.rs.v1.SecretReservationKey>();
+        rsKeys.add(mapper.map(secretReservationKeys.get(0),
+                eu.wisebed.testbed.api.rs.v1.SecretReservationKey.class));
+
+        try {
+            rs.deleteReservation(snaaKeys, rsKeys);
+        } catch (final RSExceptionException cause) {
+            throw new ReservationException(cause.getMessage());
+        } catch (ReservervationNotFoundExceptionException cause) {
+            throw new ReservationException(cause.getMessage());
+        }
+    }
+
+
+    private XMLGregorianCalendar convertDate2XmlGregorianCalendar(final Date date) {
         XMLGregorianCalendar xmlGregorianCalendar = null;
 
         final GregorianCalendar calendar = new GregorianCalendar();
@@ -366,5 +316,48 @@ public class ReservationServiceImpl extends RemoteServiceServlet implements Rese
         }
 
         return xmlGregorianCalendar;
+    }
+
+    private Map<String, Date> convertRange2Date(final Date pivotDate, final Range dateRange) {
+        final int ONE_DAY = 1;
+        final int WEEK = 7;
+        final int RESULT_SIZE = 2;
+
+        final Map<String, Date> fromAndTo = new HashMap<String, Date>(RESULT_SIZE);
+
+        Date from = null;
+        Date to = null;
+        final Calendar calendar = Calendar.getInstance();
+
+        if (Range.ONE_DAY == dateRange) {
+            calendar.setTime(pivotDate);
+            calendar.add(Calendar.DAY_OF_MONTH, ONE_DAY);
+            from = pivotDate;
+            to = calendar.getTime();
+        } else if (Range.WEEK == dateRange) {
+            calendar.setTime(pivotDate);
+            calendar.add(Calendar.DAY_OF_MONTH, WEEK);
+            from = pivotDate;
+            to = calendar.getTime();
+        } else if (Range.MONTH == dateRange) {
+            calendar.setTime(pivotDate);
+            final int firstDayOfMonth = calendar.getActualMinimum(Calendar.DAY_OF_MONTH);
+            final int lastDayOfMonth = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
+            calendar.set(Calendar.DAY_OF_MONTH, firstDayOfMonth);
+            from = calendar.getTime();
+            calendar.set(Calendar.DAY_OF_MONTH, lastDayOfMonth);
+            to = calendar.getTime();
+        }
+
+        // If one of the dates would be Null, this is considered as an serious error,
+        // thus we throw an RuntimeException via the ifNull-method.
+        // We don't want to add Null to the result map.
+        ifNull(from, "from is null");
+        ifNull(to, "to is null");
+
+        fromAndTo.put(FROM_KEY, from);
+        fromAndTo.put(TO_KEY, to);
+
+        return fromAndTo;
     }
 }

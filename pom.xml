@@ -208,7 +208,7 @@
                     <dependency>
                         <groupId>de.uniluebeck.itm</groupId>
                         <artifactId>itm-build-tools</artifactId>
-                        <version>1.0</version>
+                        <version>1.0.1</version>
                     </dependency>
                 </dependencies>
                 <configuration>
@@ -216,6 +216,35 @@
                     <headerLocation>LICENSE.txt</headerLocation>
                     <enableRulesSummary>false</enableRulesSummary>
                 </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>com.mycila.maven-license-plugin</groupId>
+                <artifactId>maven-license-plugin</artifactId>
+                <version>1.9.1.1-SNAPSHOT</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>de.uniluebeck.itm</groupId>
+                        <artifactId>itm-build-tools</artifactId>
+                        <version>1.0.1</version>
+                    </dependency>
+                </dependencies>
+                <configuration>
+                    <header>apache2.txt</header>
+                    <strictCheck>true</strictCheck>
+                    <properties>
+                        <year>2011</year>
+                        <institution>Universität zu Lübeck, Institut für Telematik (ITM), Research Academic Computer Technology Institute (RACTI)</institution>
+                    </properties>
+                    <encoding>UTF-8</encoding>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
@@ -375,6 +404,17 @@
         <pluginRepository>
             <id>onejar-maven-plugin.googlecode.com</id>
             <url>http://onejar-maven-plugin.googlecode.com/svn/mavenrepo</url>
+        </pluginRepository>
+        <pluginRepository>
+            <id>mc-release</id>
+            <name>Local Maven repository of releases</name>
+            <url>http://mc-repo.googlecode.com/svn/maven2/releases</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
         </pluginRepository>
         <pluginRepository>
             <id>itm-maven-repository-releases</id>
