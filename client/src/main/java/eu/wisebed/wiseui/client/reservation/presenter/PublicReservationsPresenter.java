@@ -1,12 +1,11 @@
-/*
- * Copyright 2011 Universität zu Lübeck, Institut für Telematik (ITM),
- *              Research Academic Computer Technology Institute (RACTI)
+/**
+ * Copyright (C) 2011 Universität zu Lübeck, Institut für Telematik (ITM), Research Academic Computer Technology Institute (RACTI)
  *
- * ITM and RACTI license this file under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with the
- * License. You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *         http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -65,9 +64,9 @@ import java.util.Set;
 public class PublicReservationsPresenter implements PublicReservationsView.Presenter,
         TestbedSelectedEvent.ConfigurationSelectedHandler, UpdateNodesSelectedEvent.Handler,
         ReservationSuccessEvent.Handler, ThrowableEvent.ThrowableHandler, PlaceChangeEvent.Handler,
-        ReservationDeleteSuccessEvent.Handler, ReservationDeleteFailedEvent.Handler{
+        ReservationDeleteSuccessEvent.Handler, ReservationDeleteFailedEvent.Handler {
 
-	private WiseUiGinjector injector;
+    private WiseUiGinjector injector;
     private final EventBusManager eventBus;
     private final PublicReservationsView view;
     private final ReservationServiceAsync reservationService;
@@ -78,12 +77,12 @@ public class PublicReservationsPresenter implements PublicReservationsView.Prese
 
     @Inject
     public PublicReservationsPresenter(final WiseUiGinjector injector,
-    								   final EventBus eventBus,
+                                       final EventBus eventBus,
                                        final PublicReservationsView view,
                                        final ReservationServiceAsync reservationService,
                                        final CalendarServiceAsync calendarService,
                                        final ReservationMessages messages) {
-    	this.injector = injector;
+        this.injector = injector;
         this.eventBus = new EventBusManager(eventBus);
         this.view = view;
         this.reservationService = reservationService;
@@ -100,18 +99,18 @@ public class PublicReservationsPresenter implements PublicReservationsView.Prese
         eventBus.addHandler(ReservationSuccessEvent.TYPE, this);
         eventBus.addHandler(ReservationDeleteSuccessEvent.TYPE, this);
         eventBus.addHandler(ReservationDeleteFailedEvent.TYPE, this);
-        
+
         view.getCalendar().addOpenHandler(new OpenHandler<Appointment>() {
             @Override
             public void onOpen(final OpenEvent<Appointment> event) {
-            	if (!isAuthenticated()) return;	
+                if (!isAuthenticated()) return;
                 view.showReservationDetails(event.getTarget());
             }
         });
         view.getCalendar().addUpdateHandler(new UpdateHandler<Appointment>() {
             @Override
             public void onUpdate(final UpdateEvent<Appointment> event) {
-            	if (!isAuthenticated()) return;
+                if (!isAuthenticated()) return;
                 boolean commit = Window
                         .confirm(
                                 "Are you sure you want to update the appointment \""
@@ -125,17 +124,17 @@ public class PublicReservationsPresenter implements PublicReservationsView.Prese
         view.getCalendar().addTimeBlockClickHandler(new TimeBlockClickHandler<Date>() {
             @Override
             public void onTimeBlockClick(final TimeBlockClickEvent<Date> event) {
-            	if (!isAuthenticated()) return;
-            	final Date startDate = event.getTarget();
-            	Appointment reservation = new Appointment();
-            	reservation.setStart(startDate);
+                if (!isAuthenticated()) return;
+                final Date startDate = event.getTarget();
+                Appointment reservation = new Appointment();
+                reservation.setStart(startDate);
                 showEditReservationDialog(reservation, nodes);
             }
         });
         view.getDatePicker().addValueChangeHandler(new ValueChangeHandler<Date>() {
             @Override
             public void onValueChange(final ValueChangeEvent<Date> event) {
-            	if (!isAuthenticated()) return;
+                if (!isAuthenticated()) return;
                 view.getCalendar().setDate(event.getValue());
                 GWT.log("onValueChange() => loadReservations()");
                 reloadCalendar(testbedConfiguration, event.getValue());
@@ -216,12 +215,12 @@ public class PublicReservationsPresenter implements PublicReservationsView.Prese
                 } else {
                     // Render the {@link eu.wisebed.wiseui.shared.dto.ReservationDetails}
                     view.renderPublicReservations(publicReservations);
-                    
+
                     // If user is authenticated remove from calendar all reservations that
                     // belong to him and re-render them with secret reservation keys
                     if (isAuthenticated()) view.removeUsersReservations(
-                    		injector.getAuthenticationManager().getMap().get(
-                    				testbedConfiguration.getUrnPrefixList().get(0)).getUsername());
+                            injector.getAuthenticationManager().getMap().get(
+                                    testbedConfiguration.getUrnPrefixList().get(0)).getUsername());
                 }
                 view.getLoadingIndicator().hideLoading();
             }
@@ -236,52 +235,52 @@ public class PublicReservationsPresenter implements PublicReservationsView.Prese
     	final String rsEndpointUrl = testbedConfiguration.getRsEndpointUrl();
     	final List<SecretAuthenticationKey> snaaKeys = injector.getAuthenticationManager().getSecretAuthenticationKeys();
     	final ReservationService.Range range = calcRange();
-    	
         GWT.log("Loading private reservations for Testbed '" + testbedConfiguration.getName() + "'");
-    	reservationService.getPrivateReservations(rsEndpointUrl, snaaKeys, current, range,
-    			new AsyncCallback<List<ConfidentialReservationData>>(){
+        reservationService.getPrivateReservations(rsEndpointUrl, snaaKeys, current, range,
+                new AsyncCallback<List<ConfidentialReservationData>>() {
 
-    		public void onFailure(final Throwable caught){
-                GWT.log("Error fetching private reservation data!\n" + caught.getMessage());
-                eventBus.fireEvent(new ThrowableEvent(caught));
-    		}
-    		
-    		public void onSuccess(final List<ConfidentialReservationData> privateReservations){
-    			for (ConfidentialReservationData reservation : privateReservations){
-        			final Appointment privateReservationRendered = view.renderPrivateReservation(reservation);
-    				SecretReservationKey rsKey = new SecretReservationKey();
-    				rsKey.setUrnPrefix(reservation.getData().get(0).getUrnPrefix());
-    				rsKey.setSecretReservationKey(reservation.getData().get(0).getSecretReservationKey());
-    				injector.getReservationManager().addReservation(privateReservationRendered, rsKey);
-    			}
-    		}
-    	});
-    	
+                    public void onFailure(final Throwable caught) {
+                        GWT.log("Error fetching private reservation data!\n" + caught.getMessage());
+                        eventBus.fireEvent(new ThrowableEvent(caught));
+                    }
+
+                    public void onSuccess(final List<ConfidentialReservationData> privateReservations) {
+                        for (ConfidentialReservationData reservation : privateReservations) {
+                            final Appointment privateReservationRendered = view.renderPrivateReservation(reservation);
+                            SecretReservationKey rsKey = new SecretReservationKey();
+                            rsKey.setUrnPrefix(reservation.getData().get(0).getUrnPrefix());
+                            rsKey.setSecretReservationKey(reservation.getData().get(0).getSecretReservationKey());
+                            injector.getReservationManager().addReservation(privateReservationRendered, rsKey);
+                        }
+                    }
+                });
+
     }
- 
+
     /**
      * Call GWT-RPC deleteReservation(...) from {@link eu.wisebed.wiseui.api.ReservationService}.
      * Deleting reservation from RS service. This action cannot be undone!
      */
-    public void removeReservation(final Appointment reservation){
-    	final String rsEndpointUrl = testbedConfiguration.getRsEndpointUrl();
-    	final List<SecretAuthenticationKey> snaaKeys = injector.getAuthenticationManager().getSecretAuthenticationKeys();
-    	final List<SecretReservationKey> rsKeys = new ArrayList<SecretReservationKey>();
-    	rsKeys.add(injector.getReservationManager().getPrivateReservationsMap().get(reservation));
-    	
-    	GWT.log("Removing reservation...");
-    	reservationService.deleteReservation(rsEndpointUrl, snaaKeys, rsKeys, new AsyncCallback<String>() {
-    		public void onFailure(final Throwable caught){
-    			eventBus.fireEvent(new ReservationDeleteFailedEvent(caught));
-    		}
-    		public void onSuccess(final String result){
-    			// TODO: Better server response handling
-    			eventBus.fireEvent(new ReservationDeleteSuccessEvent(reservation));
-    		}
-    	});
-    	
+
+    public void removeReservation(final Appointment reservation) {
+        final String urnPrefix = testbedConfiguration.getUrnPrefixList().get(0);
+        final String rsEndpointUrl = testbedConfiguration.getRsEndpointUrl();
+        final List<SecretAuthenticationKey> snaaKeys = injector.getAuthenticationManager().getSecretAuthenticationKeys();
+        final List<SecretReservationKey> rsKeys = new ArrayList<SecretReservationKey>();
+        rsKeys.add(injector.getReservationManager().getPrivateReservationsMap().get(reservation));
+
+        GWT.log("Removing reservation...");
+        reservationService.deleteReservation(rsEndpointUrl, snaaKeys, rsKeys, new AsyncCallback<Void>() {
+            public void onFailure(final Throwable caught) {
+                eventBus.fireEvent(new ReservationDeleteFailedEvent(caught));
+            }
+
+            public void onSuccess(final Void result) {
+                eventBus.fireEvent(new ReservationDeleteSuccessEvent(reservation));
+            }
+        });
     }
-    
+
     public void handleBackClicked() {
         final Date current = view.getCalendar().getDate();
         switch (view.getCalendar().getDays()) {
@@ -380,22 +379,23 @@ public class PublicReservationsPresenter implements PublicReservationsView.Prese
             }
         });
     }
-    
+
     /**
      * Reload reservations on calendar. If the user is authenticated to at least one testbed
      * reload calendar by fetching private reservations in order to be aware of the secret
      * reservation keys that belong to this client.
+     *
      * @param testbedConfiguration
      * @param date
      */
-    private void reloadCalendar(final TestbedConfiguration testbedConfiguration, final Date date){
+    private void reloadCalendar(final TestbedConfiguration testbedConfiguration, final Date date) {
         loadPublicReservations(date);
-        if (isAuthenticated()){ 
-        	loadPrivateReservations(date);
+        if (isAuthenticated()) {
+            loadPrivateReservations(date);
         }
     }
-    
-    private ReservationService.Range calcRange(){
+
+    private ReservationService.Range calcRange() {
         ReservationService.Range range;
         switch (view.getCalendar().getDays()) {
             case ONE_DAY:
@@ -409,32 +409,32 @@ public class PublicReservationsPresenter implements PublicReservationsView.Prese
         }
         return range;
     }
-    
-    public void onUpdateNodesSelected(final UpdateNodesSelectedEvent event){
-    	this.nodes = event.getNodes();
+
+    public void onUpdateNodesSelected(final UpdateNodesSelectedEvent event) {
+        this.nodes = event.getNodes();
     }
 
-    public void onReservationSuccess(){
-    	reloadCalendar(testbedConfiguration, view.getCalendar().getDate());
+    public void onReservationSuccess() {
+        reloadCalendar(testbedConfiguration, view.getCalendar().getDate());
     }
 
-    public void showEditReservationDialog(final Appointment reservation, final Set<Node> nodes){
+    public void showEditReservationDialog(final Appointment reservation, final Set<Node> nodes) {
         eventBus.fireEventFromSource(new EditReservationEvent(reservation, nodes), this);
     }
-    
-    public void onReservationDeleteFailed(final ReservationDeleteFailedEvent event){
-    	MessageBox.error(messages.reservationDeleteFailedTitle(), messages.reservationDeleteFailed(), null, null);
+
+    public void onReservationDeleteFailed(final ReservationDeleteFailedEvent event) {
+        MessageBox.error(messages.reservationDeleteFailedTitle(), messages.reservationDeleteFailed(), null, null);
     }
-    
-    public void onReservationDeleteSuccess(final ReservationDeleteSuccessEvent event){
-    	MessageBox.success(messages.reservationDeleteSuccessTitle(), messages.reservationDeleteSuccess(), null);
-    	view.getCalendar().removeAppointment(event.getReservation());
+
+    public void onReservationDeleteSuccess(final ReservationDeleteSuccessEvent event) {
+        MessageBox.success(messages.reservationDeleteSuccessTitle(), messages.reservationDeleteSuccess(), null);
+        view.getCalendar().removeAppointment(event.getReservation());
     }
-    
+
     @Override
-    public boolean isAuthenticated(){
-    	final boolean status = injector.getAuthenticationManager().isAuthenticated(testbedConfiguration);
-    	if (!status) MessageBox.error(messages.loginRequiredTitle(), messages.loginRequired(), null, null);
-    	return status;
+    public boolean isAuthenticated() {
+        final boolean status = injector.getAuthenticationManager().isAuthenticated(testbedConfiguration);
+        if (!status) MessageBox.error(messages.loginRequiredTitle(), messages.loginRequired(), null, null);
+        return status;
     }
 }
