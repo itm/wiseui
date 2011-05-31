@@ -63,12 +63,15 @@ public class ImageUploadServiceImpl extends UploadAction{
 					// Save a temporary file in the default system temp directory
 					File uploadedFile = File.createTempFile("upload-", ".bin");
 
+					// write item to a file
 					item.write(uploadedFile);
 
+					// open and read content from file stream
 					FileInputStream in = new FileInputStream(uploadedFile);
 				    byte fileContent[] = new byte[(int)uploadedFile.length()];
 				    in.read(fileContent);
 
+				    // store content in persistance
 					BinaryImage image = new BinaryImage();
 					image.setFileName(item.getName());
 					image.setFileSize(item.getSize());
@@ -89,11 +92,11 @@ public class ImageUploadServiceImpl extends UploadAction{
 						item.getContentType() + "</file-" + cont + "-type>\n";
 
 				} catch (Exception e) {
-					// TODO Auto-generated catch block
 					throw new UploadActionException(e);
 				}
 			}
 		}
+		
 		// Remove files from session because we have a copy of them
 		removeSessionFileItems(request);
 		

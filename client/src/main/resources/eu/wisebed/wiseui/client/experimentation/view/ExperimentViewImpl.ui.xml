@@ -92,7 +92,7 @@
 										<g:Label text="Upload Image :" />
 									</td>
 									<td>
-										<my:ImageUploadWidget ui:field="imageUploadWidget"/>
+										<g:Label styleName="{style.important}" ui:field="uploadedImageFilename" />
 									</td>
 								</tr>							
 								<tr>
@@ -132,10 +132,13 @@
 							<g:Button text="Start Experiment" ui:field="startExperimentButton" />
 						</td>
 						<td>
-							<g:Button text="Flash Binary Image" ui:field="flashImageButton" />
+							<g:Button text="Flash Experiment Image" ui:field="flashImageButton" />
 						</td>
 						<td>
 							<g:Button text="Stop Experiment" ui:field="stopExperimentButton" />
+						</td>
+						<td>
+							<g:Button text="Download WiseML" ui:field="getWiseMLButton" />
 						</td>
 					</tr>
 				</table>

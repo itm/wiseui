@@ -17,14 +17,11 @@
 package eu.wisebed.wiseui.client.reservation.presenter;
 
 import com.bradrydzewski.gwt.calendar.client.Appointment;
-import com.bradrydzewski.gwt.calendar.client.event.DeleteEvent;
-import com.bradrydzewski.gwt.calendar.client.event.DeleteHandler;
 import com.bradrydzewski.gwt.calendar.client.event.TimeBlockClickEvent;
 import com.bradrydzewski.gwt.calendar.client.event.TimeBlockClickHandler;
 import com.bradrydzewski.gwt.calendar.client.event.UpdateEvent;
 import com.bradrydzewski.gwt.calendar.client.event.UpdateHandler;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.logical.shared.OpenEvent;
 import com.google.gwt.event.logical.shared.OpenHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
@@ -236,7 +233,6 @@ public class PublicReservationsPresenter implements PublicReservationsView.Prese
      * The resulting {@link eu.wisebed.wiseui.shared.dto.ConfidentialReservationData} are rendered in the calendar widget.
      */
     public void loadPrivateReservations(final Date current){    	
-        final String urnPrefix = testbedConfiguration.getUrnPrefixList().get(0);
     	final String rsEndpointUrl = testbedConfiguration.getRsEndpointUrl();
     	final List<SecretAuthenticationKey> snaaKeys = injector.getAuthenticationManager().getSecretAuthenticationKeys();
     	final ReservationService.Range range = calcRange();
@@ -268,7 +264,6 @@ public class PublicReservationsPresenter implements PublicReservationsView.Prese
      * Deleting reservation from RS service. This action cannot be undone!
      */
     public void removeReservation(final Appointment reservation){
-    	final String urnPrefix = testbedConfiguration.getUrnPrefixList().get(0);
     	final String rsEndpointUrl = testbedConfiguration.getRsEndpointUrl();
     	final List<SecretAuthenticationKey> snaaKeys = injector.getAuthenticationManager().getSecretAuthenticationKeys();
     	final List<SecretReservationKey> rsKeys = new ArrayList<SecretReservationKey>();

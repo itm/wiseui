@@ -52,11 +52,17 @@ public interface ExperimentView extends IsWidget {
 	
 	String getUsername();
 	
+	void setUploadedImageFilename(String filename);
+	
+	String getUploadedImageFilename();
+	
 	void activateStartExperimentButton(); 
 	
 	void activateFlashExperimentButton();
 	
 	void activateStopExperimentButton();
+	
+	void activateDownloadWiseMLButton();
 	
 	void deactivateStartExperimentButton();
 	
@@ -64,6 +70,8 @@ public interface ExperimentView extends IsWidget {
 	
 	void deactivateStopExperimentButton();
 	
+	void deactivateDownloadWiseMLButton();
+
 	public interface Presenter {
 		void flashExperimentImage();
 		void startExperiment();

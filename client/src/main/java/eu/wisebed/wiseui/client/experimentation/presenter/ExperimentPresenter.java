@@ -36,15 +36,16 @@ import eu.wisebed.wiseui.client.experimentation.event.ReservationTimeStartedEven
 import eu.wisebed.wiseui.client.experimentation.event.ReservationTimeEndedEvent;
 import eu.wisebed.wiseui.client.experimentation.util.StringTimer;
 import eu.wisebed.wiseui.client.experimentation.view.ExperimentView;
+import eu.wisebed.wiseui.client.experimentation.view.FlashExperimentImageView;
 import eu.wisebed.wiseui.client.util.EventBusManager;
 import eu.wisebed.wiseui.shared.common.Checks;
 import eu.wisebed.wiseui.shared.dto.ConfidentialReservationData;
 import eu.wisebed.wiseui.shared.dto.SecretReservationKey;
 import eu.wisebed.wiseui.widgets.messagebox.MessageBox;
 
-public class ExperimentPresenter implements ExperimentView.Presenter,
-ReservationTimeStartedEvent.Handler,ReservationTimeEndedEvent.Handler,
-ExperimentMessageArrivedEvent.Handler{
+public class ExperimentPresenter implements ExperimentView.Presenter, 
+FlashExperimentImageView.Presenter,ReservationTimeStartedEvent.Handler,
+ReservationTimeEndedEvent.Handler, ExperimentMessageArrivedEvent.Handler{
 
 	public enum ExperimentStatus {
 		PENDING			("Pending"),
@@ -65,11 +66,13 @@ ExperimentMessageArrivedEvent.Handler{
 
 	private final WiseUiGinjector injector;
 	private ExperimentView view;
+	private FlashExperimentImageView imageView;
 	private ExperimentationServiceAsync service;
 	private EventBusManager eventBus;
 	private String secretReservationKeyValue;
 	private String username;
 	private String urnPrefix;
+	private String uploadedImageFilename;
 	private Date fromDate;
 	private Date toDate;
 	private List<String> nodeUrns;
@@ -83,15 +86,19 @@ ExperimentMessageArrivedEvent.Handler{
 	@Inject
 	public ExperimentPresenter(final WiseUiGinjector injector,
 			final ExperimentationServiceAsync service,
-			final ExperimentView view,			
+			final ExperimentView view,
+			final FlashExperimentImageView imageView,
 			final PlaceController placeController,
 			final EventBus eventBus) {
 
 		this.injector = injector;
 		this.view = view;
 		this.view.setPresenter(this);
+		this.imageView = imageView;
+		this.imageView.setPresenter(this);
 		this.service = service;
 		this.eventBus = new EventBusManager(eventBus);
+		this.uploadedImageFilename = "-";
 		bind();
 	} 
 
@@ -125,7 +132,20 @@ ExperimentMessageArrivedEvent.Handler{
 
 	@Override
 	public void flashExperimentImage() {
-		GWT.log("Flash experiment image");
+		String title = "Flash Experiment image"; 
+		GWT.log(title);
+		imageView.show(title);
+	}
+	
+	@Override
+	public void submit() {
+		imageView.hide();
+	}
+
+
+	@Override
+	public void cancel() {
+		imageView.hide();
 	}
 
 
@@ -274,7 +294,7 @@ ExperimentMessageArrivedEvent.Handler{
 			view.setExperimentTiming("-");
 			view.deactivateStartExperimentButton();
 			view.deactivateStopExperimentButton();
-			view.deactivateFlashExperimentButton();
+			//view.deactivateFlashExperimentButton();
 		}
 	}
 
@@ -317,10 +337,11 @@ ExperimentMessageArrivedEvent.Handler{
 		view.setStartDate(fromDate.toLocaleString());
 		view.setStopDate(toDate.toLocaleString());
 		view.setExperimentTiming(experimentTiming);
+		view.setUploadedImageFilename(uploadedImageFilename);
 		view.setStatus(status.getStatusText());
 		view.setNodeUrns(nodeUrns);
 		view.deactivateStartExperimentButton();
-		view.deactivateFlashExperimentButton();
+		//view.deactivateFlashExperimentButton();
 		view.deactivateStopExperimentButton();
 	}
 

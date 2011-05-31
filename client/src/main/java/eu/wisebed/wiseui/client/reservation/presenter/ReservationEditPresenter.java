@@ -2,7 +2,6 @@ package eu.wisebed.wiseui.client.reservation.presenter;
 
 import com.google.common.base.Objects;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.place.shared.PlaceChangeEvent;
 import com.google.gwt.user.client.rpc.AsyncCallback;

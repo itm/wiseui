@@ -59,6 +59,7 @@ implements ExperimentationService {
 	private static final Logger LOGGER = 
 		LoggerFactory.getLogger(ExperimentationServiceImpl.class.getName());
 	private List<ExperimentController> experimentControllers;
+	@SuppressWarnings("unused")
 	private AsyncJobObserver jobs;
 	private final Mapper mapper;
 	private Injector injector;
