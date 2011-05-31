@@ -294,8 +294,8 @@ implements ExperimentationService {
 
 	/**
 	 * Finds an experiment controller by iterating for it's secret reservation key in the controllers list.
-	 * @param a list of RS <code>SecretReservationKey</code>
-	 * @return an ExperimentController instance
+	 * @param secretReservationKeys List of RS <code>SecretReservationKey</code>
+	 * @return ExperimentController instance
 	 */
 	private ExperimentController findExperimentControllerBySecretReservationKey(
 			final List<eu.wisebed.testbed.api.rs.v1.SecretReservationKey> secretReservationKeys){
