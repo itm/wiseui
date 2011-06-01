@@ -221,7 +221,7 @@
             <plugin>
                 <groupId>com.mycila.maven-license-plugin</groupId>
                 <artifactId>maven-license-plugin</artifactId>
-                <version>1.9.1.1-SNAPSHOT</version>
+                <version>1.9.0</version>
                 <dependencies>
                     <dependency>
                         <groupId>de.uniluebeck.itm</groupId>
