@@ -20,6 +20,7 @@ import java.util.List;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
+import eu.wisebed.wiseui.shared.dto.BinaryImage;
 import eu.wisebed.wiseui.shared.dto.ExperimentMessage;
 import eu.wisebed.wiseui.shared.dto.SecretReservationKey;
 import eu.wisebed.wiseui.shared.exception.ExperimentationException;
@@ -38,9 +39,19 @@ public interface ExperimentationService extends RemoteService {
 		List<SecretReservationKey> secretReservationKeys) 
 		throws 
 		ExperimentationException;
-	
-//	void flashExperimentImage(final int reservationID) 
-//		throws ReservationException,ExperimentationException;
+
+	/**
+	 * Flashes an uploaded image to the nodes participating in an experiment.
+	 * @param secretReservationKeys List of {@link SecretReservationKeys}s
+	 * @param imageId image's id stored in persistence
+	 * @throws ExperimentationException
+	 */
+	void flashExperimentImage(
+			List<SecretReservationKey> secretReservationKeys,
+			Integer imageId,
+			List<String> nodeUrns) 
+		throws 
+		ExperimentationException;
 	
 	/**
 	 * Returns an experiment message back to the client
@@ -53,12 +64,19 @@ public interface ExperimentationService extends RemoteService {
 			ExperimentationException;
 
 	/**
-	 * Stops an experiment controller {@link ExperimentController} on the server side after a request.
+	 * Stops an experiment controller {@link ExperimentController} on the server.
 	 * @param secretReservationKeys List of {@link SecretReservationKeys}s
 	 */
 	void stopExperimentController(
 			List<SecretReservationKey> secretReservationKeys)
 			throws 
 			ExperimentationException;
+	
+	/** 
+	 * Returns a list of uploaded {@link BinaryImageBo} on the server. 
+	 */
 
+	List<BinaryImage> getUploadedExperimentImages()
+			throws 
+			ExperimentationException;
 }

@@ -178,6 +178,9 @@ public class ExperimentController implements Controller {
 			ExperimentMessage experimentMessage = new ExperimentMessage();
 			experimentMessage.setupAsMessage(source, level, data, timeStamp);
 			
+			LOGGER.info("Received Message :");
+			LOGGER.info("[" +source+"][" +timeStamp+"][" + level +"][" + data +"]");
+			
 			experimentMessagesQueue.add(experimentMessage);
 		}
 	}

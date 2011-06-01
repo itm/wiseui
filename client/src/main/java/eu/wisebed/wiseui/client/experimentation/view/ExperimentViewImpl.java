@@ -157,7 +157,7 @@ public class ExperimentViewImpl extends Composite implements ExperimentView {
 		return uploadedImageFilename.getText();
 	}
 
-	public void setUploadedImageFilename(final String filename) {
+	public void setFlashedImageFilename(final String filename) {
 		this.uploadedImageFilename.setText(filename);
 	}
 	
@@ -203,7 +203,7 @@ public class ExperimentViewImpl extends Composite implements ExperimentView {
 	
 	@UiHandler("flashImageButton")
 	public void handleFlashImageButtonClick(final ClickEvent e) {
-		presenter.flashExperimentImage();
+		presenter.showFlashExperimentImageView();
 	}
 	
 	@UiHandler("startExperimentButton")

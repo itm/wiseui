@@ -263,7 +263,6 @@ public class PublicReservationsPresenter implements PublicReservationsView.Prese
      */
 
     public void removeReservation(final Appointment reservation) {
-        final String urnPrefix = testbedConfiguration.getUrnPrefixList().get(0);
         final String rsEndpointUrl = testbedConfiguration.getRsEndpointUrl();
         final List<SecretAuthenticationKey> snaaKeys = injector.getAuthenticationManager().getSecretAuthenticationKeys();
         final List<SecretReservationKey> rsKeys = new ArrayList<SecretReservationKey>();

@@ -20,14 +20,17 @@ import java.net.MalformedURLException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 import eu.wisebed.testbed.api.wsn.WSNServiceHelper;
+import eu.wisebed.testbed.api.wsn.v22.Program;
+import eu.wisebed.testbed.api.wsn.v22.ProgramMetaData;
 import eu.wisebed.testbed.api.wsn.v22.SessionManagement;
+import eu.wisebed.wiseui.persistence.PersistenceServiceProvider;
+import eu.wisebed.wiseui.shared.dto.BinaryImage;
 import eu.wisebed.wiseui.shared.dto.ExperimentMessage;
 import eu.wisebed.wiseui.shared.dto.SecretReservationKey;
 
@@ -41,8 +44,10 @@ import com.google.inject.Injector;
 import com.google.inject.Singleton;
 
 import de.uniluebeck.itm.wisebed.cmdlineclient.jobs.AsyncJobObserver;
+import de.uniluebeck.itm.wisebed.cmdlineclient.jobs.Job;
 
 import eu.wisebed.wiseui.api.ExperimentationService;
+import eu.wisebed.wiseui.api.PersistenceService;
 import eu.wisebed.wiseui.server.WiseUiGuiceModule;
 import eu.wisebed.wiseui.server.controller.ExperimentController;
 import eu.wisebed.wiseui.shared.exception.ExperimentationException;
@@ -58,11 +63,12 @@ implements ExperimentationService {
 	private static final Logger LOGGER = 
 		LoggerFactory.getLogger(ExperimentationServiceImpl.class.getName());
 	private List<ExperimentController> experimentControllers;
-	@SuppressWarnings("unused")
 	private AsyncJobObserver jobs;
 	private final Mapper mapper;
 	private Injector injector;
 	private SessionManagement sessionManagmentService;
+	private final PersistenceService persistenceService = PersistenceServiceProvider.newPersistenceService();
+
 
 
 	@Inject
@@ -70,7 +76,7 @@ implements ExperimentationService {
 			final List<ExperimentController> experimentControllers){
 
 		this.mapper = mapper;
-		this.jobs = new AsyncJobObserver(1, TimeUnit.MINUTES);
+		this.jobs = jobs;
 		this.experimentControllers = experimentControllers;
 		this.injector = Guice.createInjector(new WiseUiGuiceModule());
 	}
@@ -87,6 +93,9 @@ implements ExperimentationService {
 		// format local end point url
 		SecretReservationKey key = secretReservationKeys.get(0);
 		String localEndpointUrl = null;
+		
+		//localEndpointUrl = "http://94.64.207.244:"+getPort()+"/controller" + getRandomURLSuffix(key.getSecretReservationKey());
+		
 		try{
 			localEndpointUrl = "http://" +
 			InetAddress.getLocalHost().getCanonicalHostName() +
@@ -139,71 +148,80 @@ implements ExperimentationService {
 
 	}
 
-	//	
-	//	/**
-	//	 *  This method loads an experiment image on the web services.
-	//	 *  @param <code>reservationID</code>, a reservation ID.
-	//	 */
-	//	@Override
-	//	public void flashExperimentImage(final int reservationID)
-	//			throws ReservationException, ExperimentationException {
-	//		
-	//		LOGGER.info("Flashing image for controller with id = " + reservationID);
-	//
-	////		// get reservation
-	////		ReservationDetails reservation =
-	////			ReservationServiceManager.fetchReservation(reservationID);
-	////
-	////		//	get image related file name from reservation
-	////		final String filename = reservation.getImageFileName();
-	////		final Image image =
-	////			ImageServiceManager.fetchImageByFilename(filename);
-	////
-	////		LOGGER.log(Level.INFO, "Image filename \"" + filename +
-	////				"\" for reservation (" + reservationID +")");
-	////
-	////		// Setup for flashing an image
-	////		// form a node list
-	////		List<String> nodeURNs = new ArrayList<String>();
-	////		for(SensorDetails sensor : reservation.getSensors()){
-	////			nodeURNs.add(sensor.getUrn());
-	////		}
-	////
-	////		LOGGER.log(Level.INFO, "Fetched " + nodeURNs.size() + " node URNs");
-	////		@SuppressWarnings("rawtypes")
-	////		List programIndices = new ArrayList();
-	////		for(int i= 0;i < nodeURNs.size();i++){
-	////			LOGGER.log(Level.INFO,"Node URN fetched :" + nodeURNs.get(i));
-	////			programIndices.add(0);
-	////		}
-	////
-	////		// setup image to flash
-	////		List<Program> programs = new ArrayList<Program>();
-	////               try {
-	////			programs.add(ImageUtil.readImage(image,
-	////			        "iSerial",
-	////			        "",
-	////			        "iSense",
-	////			        "1.0"
-	////			));
-	////		} catch (Exception e) {
-	////			LOGGER.log(Level.FATAL, e);
-	////			throw new ExperimentationException();
-	////		}
-	////
-	////		ExperimentController controller =
-	////			findExperimentControllerByID(reservationID);
-	////
-	////        jobs.submit(new Job(
-	////        		"flash nodes",
-	////                controller.getWsn().flashPrograms(
-	////                		nodeURNs, programIndices, programs),
-	////                nodeURNs,
-	////                Job.JobType.flashPrograms
-	////            ));
-	////        jobs.join();
-	//	}
-	//
+	@Override
+	@SuppressWarnings("unchecked")
+	/**
+	 * {@inheritDoc}
+	 */
+	public void flashExperimentImage(
+			final List<SecretReservationKey> secretReservationKeys,
+			final Integer imageId,final List<String> nodeUrns)
+			throws ExperimentationException {
+		
+		// retrieve image
+		BinaryImage image = persistenceService.loadBinaryImage(imageId);
+		
+		LOGGER.info("Flashing image : " + image.getId() + "." + image.getFileName());
+		LOGGER.info("Flashing nodes " + nodeUrns.toString());
+		LOGGER.info("For reservation with keys :" + secretReservationKeys.get(0).getSecretReservationKey());
+		
+		// make program indices list
+		@SuppressWarnings("rawtypes")
+		List programIndicesList = new ArrayList();
+		for(int i=0;i<nodeUrns.size();i++) {
+			programIndicesList.add(0);
+		}
+		
+		// make program list
+		List<Program> programList = new ArrayList<Program>();
+		try{
+			Program program = new Program();
+			ProgramMetaData value = new ProgramMetaData();
+			value.setName(image.getFileName());
+			value.setOther("other"); // TODO these values ???
+			value.setPlatform("platform");
+			value.setVersion("1.0");
+			program.setMetaData(value);
+			program.setProgram(image.getContent());
+			programList.add(program);
+		} catch (Exception cause) {
+			LOGGER.error(cause.getMessage());
+			throw new ExperimentationException(cause.getMessage());
+		}
+		
+		// Map local transport objects to remote objects
+		List<eu.wisebed.testbed.api.rs.v1.SecretReservationKey> rsSecretReservationKeys
+		= new ArrayList<eu.wisebed.testbed.api.rs.v1.SecretReservationKey>(
+				Lists.transform(secretReservationKeys,
+						new Function<SecretReservationKey, eu.wisebed.testbed.api.rs.v1.SecretReservationKey>() {
+					@Override
+					public eu.wisebed.testbed.api.rs.v1.SecretReservationKey apply(
+							final SecretReservationKey s) {
+						return mapper.map(s, eu.wisebed.testbed.api.rs.v1.SecretReservationKey.class);
+					}
+				}));
+		
+		// get experiment controller
+		ExperimentController controller = findExperimentControllerBySecretReservationKey(rsSecretReservationKeys);
+		// if controller not found or if it has not queue
+		try{
+			ifNull(controller,"Unexpected. Controller not " +
+			"properly set on the server");
+			ifNull(controller.getMessageQueue(),"Unexpected. Message queue not " +
+			"properly set on the controller");
+		}catch(RuntimeException cause){
+			throw new ExperimentationException(cause.getMessage());
+
+		}
+		
+		// submit job to job observer
+		jobs.submit(new Job(
+				"(flash nodes)("+secretReservationKeys.get(0).getSecretReservationKey() + ")",
+				controller.getWsn().flashPrograms(nodeUrns, programIndicesList, programList),
+				nodeUrns,Job.JobType.flashPrograms));
+		
+		jobs.join();
+	}
 
 	/**
 	 * {@inheritDoc}
@@ -255,8 +273,8 @@ implements ExperimentationService {
 	@Override
 	public ExperimentMessage returnExperimentMessage(
 			List<SecretReservationKey> secretReservationKeys)
-		throws ExperimentationException{
-		
+	throws ExperimentationException{
+
 		// Map local transport objects to remote objects
 		List<eu.wisebed.testbed.api.rs.v1.SecretReservationKey> rsSecretReservationKeys
 		= new ArrayList<eu.wisebed.testbed.api.rs.v1.SecretReservationKey>(
@@ -269,8 +287,8 @@ implements ExperimentationService {
 					}
 				}));
 
+		// get experiment controller
 		ExperimentController controller = findExperimentControllerBySecretReservationKey(rsSecretReservationKeys);
-
 		// if controller not found or if it has not queue
 		try{
 			ifNull(controller,"Unexpected. Controller not " +
@@ -281,7 +299,7 @@ implements ExperimentationService {
 			throw new ExperimentationException(cause.getMessage());
 
 		}
-		
+
 		// setup an experiment message
 		ExperimentMessage message = controller.getMessageQueue().poll();
 		if(message != null) {
@@ -292,6 +310,21 @@ implements ExperimentationService {
 		return message;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public List<BinaryImage> getUploadedExperimentImages()
+	throws ExperimentationException {
+		List<BinaryImage> availableImages = new ArrayList<BinaryImage>();
+		for(BinaryImage image : persistenceService.loadAllBinaryImages()) {
+			// empty the content is not needed 
+			image.setContent(null);
+			availableImages.add(image);
+		}
+		LOGGER.info("Persistence holds "+ availableImages.size() + " images");
+		return availableImages;
+	}
 
 	/**
 	 * Finds an experiment controller by iterating for it's secret reservation key in the controllers list.

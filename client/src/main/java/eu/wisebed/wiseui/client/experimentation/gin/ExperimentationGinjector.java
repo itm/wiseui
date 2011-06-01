@@ -23,6 +23,7 @@ import eu.wisebed.wiseui.client.experimentation.presenter.ExperimentationPresent
 import eu.wisebed.wiseui.client.experimentation.view.ExperimentView;
 import eu.wisebed.wiseui.client.experimentation.view.ExperimentationView;
 import eu.wisebed.wiseui.client.experimentation.view.FlashExperimentImageView;
+import eu.wisebed.wiseui.client.experimentation.view.ImageUploadWidget;
 
 public interface ExperimentationGinjector extends Ginjector {
 
@@ -37,4 +38,6 @@ public interface ExperimentationGinjector extends Ginjector {
     ExperimentView getExperimentView();
         
     FlashExperimentImageView getFlashExperimentImageView();
+        
+    ImageUploadWidget getImageUploadWidget();
  }

@@ -99,6 +99,9 @@ public class ImageUploadServiceImpl extends UploadAction{
 		// Remove files from session because we have a copy of them
 		removeSessionFileItems(request);
 		
+		// set the count of files
+		response += "<file-count>" + cont + "</file-count>\n";
+		
 		// Send information of the received files to the client
 		return "<response>\n" + response + "</response>\n";
 	}

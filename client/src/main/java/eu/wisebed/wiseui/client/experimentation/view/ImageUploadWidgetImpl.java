@@ -13,12 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package eu.wisebed.wiseui.widgets;
+package eu.wisebed.wiseui.client.experimentation.view;
 
+
+import eu.wisebed.wiseui.client.experimentation.event.SuccessfulImageUploadEvent;
 import gwtupload.client.IUploader;
 import gwtupload.client.MultiUploader;
 import gwtupload.client.IUploadStatus.Status;
-import gwtupload.client.IUploader.Utils;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -26,14 +27,12 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiTemplate;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.xml.client.Document;
-import com.google.gwt.xml.client.XMLParser;
 
-public class ImageUploadWidget extends Composite implements ImageUpload{
+public class ImageUploadWidgetImpl extends Composite implements ImageUploadWidget{
 
-	@UiTemplate("ImageUploadWidget.ui.xml")
+	@UiTemplate("ImageUploadWidgetImpl.ui.xml")
 	interface ImageUploadImplUiBinder extends UiBinder<Widget,
-		ImageUploadWidget>{}
+		ImageUploadWidgetImpl>{}
 
 	@UiField MultiUploader imagePicker = new MultiUploader();
 	
@@ -41,12 +40,10 @@ public class ImageUploadWidget extends Composite implements ImageUpload{
 		GWT.create(ImageUploadImplUiBinder.class);
 	
 	private Presenter presenter;
-	private String imageFileName;
-	private String imageFileNameField;
 
-	public ImageUploadWidget(){
+	public ImageUploadWidgetImpl(){
 		initWidget(uiBinder.createAndBindUi(this));
-        this.imagePicker.addOnFinishUploadHandler(onFinishUploaderHandler);
+        imagePicker.addOnFinishUploadHandler(onFinishUploaderHandler);
 	}
 
 	/**
@@ -59,43 +56,18 @@ public class ImageUploadWidget extends Composite implements ImageUpload{
 	private IUploader.OnFinishUploaderHandler onFinishUploaderHandler = 
 		new IUploader.OnFinishUploaderHandler() {
 		public void onFinish(IUploader uploader) {
-			if (uploader.getStatus() == Status.SUCCESS) {	        
-				Document doc = XMLParser.parse(uploader.getServerResponse());
-				String field = Utils.getXmlNodeValue(doc, "file-1-field");
-				String name = Utils.getXmlNodeValue(doc, "file-1-name");
-				setImageFileName(name);
-				setImageFileNameField(field);
+			if(uploader.getStatus() == Status.SUCCESS) {
+				presenter.getEventBus().fireEventFromSource(
+						new SuccessfulImageUploadEvent(), presenter);
 			}
 		}
 	};
 
-	public void setImageFileName(String imageFileName) {
-		this.imageFileName = imageFileName;
-	}
-	
-	public void setImageFileNameField(String imageFileNameField) {
-		  this.imageFileNameField = imageFileNameField;
-	}
-	
-	public String getImageFileName() {
-		return this.imageFileName;
+	public void setPresenter(Presenter presenter) {
+		this.presenter = presenter;
 	}
 
-	public String getImageFileNameField() {
-		return this.imageFileNameField;
-	}
-	/**
-	 * Check if user selected an image to be flashed
-	 */
-	public boolean checkImageSelected() {
-        return this.imagePicker.getStatus() == Status.DONE;
-    }
-
-	public void setListener(Presenter listener) {
-		this.presenter = listener;
-	}
-
-	public Presenter getListener() {
-		return this.presenter;
+	public Presenter getPresenter() {
+		return presenter;
 	}
 }

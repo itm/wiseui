@@ -34,7 +34,7 @@ public class TestbedConfigurationServiceImpl extends RemoteServiceServlet implem
     private static final Logger LOGGER = LoggerFactory.getLogger(TestbedConfigurationServiceImpl.class);
 
     private final PersistenceService persistenceService;
-
+    
     @Inject
     public TestbedConfigurationServiceImpl(final PersistenceService persistenceService) {
         this.persistenceService = persistenceService;
