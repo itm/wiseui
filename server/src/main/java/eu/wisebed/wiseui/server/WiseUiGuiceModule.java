@@ -21,6 +21,10 @@ import java.util.Queue;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 
+import eu.wisebed.wiseml.controller.WiseMLController;
+import eu.wisebed.wiseml.model.WiseML;
+import eu.wisebed.wiseml.model.setup.Setup;
+import eu.wisebed.wiseml.model.trace.Trace;
 import eu.wisebed.wiseui.shared.dto.ExperimentMessage;
 
 public class WiseUiGuiceModule extends AbstractModule{
@@ -35,6 +39,38 @@ public class WiseUiGuiceModule extends AbstractModule{
 	 */
 	public Queue<ExperimentMessage> provideExperimentMessageQueue() {
 		return new LinkedList<ExperimentMessage>();
+	}
+	
+	@Provides
+	/**
+	 * Provides a WiseML model
+	 */
+	public WiseML provideWiseML() {
+		return new WiseML();
+	}
+	
+	@Provides
+	/**
+	 * Provides a WiseML Setup
+	 */
+	public Setup provideSetup() {
+		return new Setup();
+	}
+	
+	@Provides
+	/**
+	 * Provides a WiseML Trace
+	 */
+	public Trace provideTrace() {
+		return new Trace();
+	}
+	
+	@Provides
+	/**
+	 * Provides a WiseMLController
+	 */
+	public WiseMLController provideWiseMLController() {
+		return new WiseMLController();
 	}
 
 }

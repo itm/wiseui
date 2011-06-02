@@ -218,7 +218,7 @@ public class ExperimentViewImpl extends Composite implements ExperimentView {
 	
 	@UiHandler("getWiseMLButton")
 	public void handleGetWiseMLButtonClick(final ClickEvent e){
-		//presenter.getWiseMLDocument
+		presenter.getWiseMLReport();
 	}
 		
 	private void setupNodeTable(){

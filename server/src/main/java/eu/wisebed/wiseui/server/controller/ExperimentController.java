@@ -16,6 +16,8 @@
 package eu.wisebed.wiseui.server.controller;
 
 import java.net.MalformedURLException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.Executors;
@@ -23,6 +25,12 @@ import java.util.concurrent.Executors;
 import javax.jws.WebService;
 import javax.xml.ws.Endpoint;
 
+import eu.wisebed.wiseml.controller.WiseMLController;
+import eu.wisebed.wiseml.model.WiseML;
+import eu.wisebed.wiseml.model.scenario.Timestamp;
+import eu.wisebed.wiseml.model.setup.Node;
+import eu.wisebed.wiseml.model.setup.Setup;
+import eu.wisebed.wiseml.model.trace.Trace;
 import eu.wisebed.wiseui.shared.dto.ExperimentMessage;
 
 import org.slf4j.Logger;
@@ -50,6 +58,8 @@ import static eu.wisebed.wiseui.server.util.URLUtil.convertHostToZeros;
 import static eu.wisebed.wiseui.shared.common.Checks.ifNull;
 import static eu.wisebed.wiseui.shared.common.Checks.ifNullOrEmpty;
 
+
+
 @WebService(serviceName = "ControllerService", 
 		targetNamespace = Constants.NAMESPACE_CONTROLLER_SERVICE, 
 		portName = "ControllerPort", 
@@ -58,15 +68,25 @@ public class ExperimentController implements Controller {
 	
 	private final Logger LOGGER 
 		= LoggerFactory.getLogger(ExperimentController.class.getName());
-	private final Queue<ExperimentMessage> experimentMessagesQueue;
+	private Queue<ExperimentMessage> experimentMessagesQueue;
 	private String localEndpointUrl;
 	private WSN wsn;
+	private WiseML wiseml;
+	private Setup wisemlSetup;
+	private Trace wisemlTrace;
+	private WiseMLController wisemlController;
 	private List<SecretReservationKey> secretReservationKeys;
 	private SessionManagement sessionManagement;
 	
 	@Inject
-	public ExperimentController(final Queue<ExperimentMessage> experimentMessagesQueue){
-		this.experimentMessagesQueue = experimentMessagesQueue;
+	public ExperimentController(final Queue<ExperimentMessage> experimentMessagesQueue,
+			final WiseML wiseml, final Setup wisemlSetup, final Trace wisemlTrace,
+			final WiseMLController wisemlController){
+		this.setExperimentMessagesQueue(experimentMessagesQueue);
+		this.setWiseml(wiseml);
+		this.setWisemlSetup(wisemlSetup);
+		this.setWisemlTrace(wisemlTrace);
+		this.setWisemlController(wisemlController);
 	}
 	
 	/**
@@ -164,24 +184,48 @@ public class ExperimentController implements Controller {
 	
 	@Override
 	public void experimentEnded() {
+		LOGGER.info(getWiseMLasString());
 		LOGGER.info("Experiment ended");
 	}
 
 	@Override
 	public void receive(List<Message> msgs) {
 		for(Message msg : msgs) {
+			
+			// set experiment message
 			final String source = msg.getSourceNodeId();
 			final String timeStamp = msg.getTimestamp().toXMLFormat();
 			final String data = StringUtils.toHexString(msg.getBinaryData());
 			final String level = msg.getBinaryData()[1] == 0x00 ? "DEBUG" : "FATAL";
-						
+			
+			// create an experimentmessage setup it as message
 			ExperimentMessage experimentMessage = new ExperimentMessage();
 			experimentMessage.setupAsMessage(source, level, data, timeStamp);
 			
 			LOGGER.info("Received Message :");
 			LOGGER.info("[" +source+"][" +timeStamp+"][" + level +"][" + data +"]");
 			
+			// add it the to experiment message queue
 			experimentMessagesQueue.add(experimentMessage);
+			
+			// set node source 
+			eu.wisebed.wiseml.model.setup.Node node = 
+				new eu.wisebed.wiseml.model.setup.Node();
+			node.setId(source);
+			
+			// set message
+			eu.wisebed.wiseml.model.trace.Message message = new 
+				eu.wisebed.wiseml.model.trace.Message();
+			message.setTimestamp((long)msg.getTimestamp().getMillisecond());
+			message.setData("[" + level +"][" + data +"]");
+			
+			// set time stamp
+			Timestamp timestamp = new Timestamp();
+			timestamp.setValue(msg.getTimestamp().toXMLFormat());
+			timestamp.setMessage(Arrays.asList(message));
+			timestamp.setNode(Arrays.asList(node));
+			wisemlTrace.setTimestamp(Arrays.asList(timestamp));
+			LOGGER.info("Added to WiseML trace");
 		}
 	}
 
@@ -221,13 +265,21 @@ public class ExperimentController implements Controller {
 			}
 		}
 	}
-
-	public String getEndPointURL() {
-		return localEndpointUrl;
+	
+	public void prepareWiseMlSetup(final List<String> nodeUrns) {
+		List<Node> nodeList = new ArrayList<Node>();
+		for(String nodeUrn : nodeUrns) {
+			Node node = new Node();
+			node.setId(nodeUrn);
+			nodeList.add(node);
+		}
+		wisemlSetup.setNodes(nodeList);
 	}
-
-	public void setEndPointURL(final String localEndPointUrl) {
-		this.localEndpointUrl = localEndPointUrl;
+		
+	public String getWiseMLasString() {
+		wiseml.setSetup(wisemlSetup);
+		wiseml.setTrace(wisemlTrace);
+		return wisemlController.writeWiseMLAsSTring(wiseml);
 	}
 
 	public WSN getWsn() {
@@ -247,7 +299,6 @@ public class ExperimentController implements Controller {
 		this.secretReservationKeys = secretReservationKeys;
 	}
 
-
 	public SessionManagement getSessionManagement() {
 		return sessionManagement;
 	}
@@ -258,6 +309,55 @@ public class ExperimentController implements Controller {
 
 	public Queue<ExperimentMessage> getMessageQueue() {
 		return experimentMessagesQueue;
+	}
+
+	public void setWisemlTrace(Trace wisemlTrace) {
+		this.wisemlTrace = wisemlTrace;
+	}
+
+	public Trace getWisemlTrace() {
+		return wisemlTrace;
+	}
+
+	public void setWisemlSetup(Setup wisemlSetup) {
+		this.wisemlSetup = wisemlSetup;
+	}
+
+	public Setup getWisemlSetup() {
+		return wisemlSetup;
+	}
+
+	public void setWiseml(WiseML wiseml) {
+		this.wiseml = wiseml;
+	}
+
+	public WiseML getWiseml() {
+		return wiseml;
+	}
+	
+	public String getLocalEndpointUrl() {
+		return localEndpointUrl;
+	}
+
+	public void setLocalEndpointUrl(String localEndpointUrl) {
+		this.localEndpointUrl = localEndpointUrl;
+	}
+
+	public WiseMLController getWisemlController() {
+		return wisemlController;
+	}
+
+	public void setWisemlController(WiseMLController wisemlController) {
+		this.wisemlController = wisemlController;
+	}
+
+	public Queue<ExperimentMessage> getExperimentMessagesQueue() {
+		return experimentMessagesQueue;
+	}
+	
+	public void setExperimentMessagesQueue(
+			Queue<ExperimentMessage> experimentMessagesQueue) {
+		this.experimentMessagesQueue = experimentMessagesQueue;
 	}
 }
 

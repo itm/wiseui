@@ -15,8 +15,7 @@
  */
 package eu.wisebed.wiseui.client.experimentation.presenter;
 
-
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -26,7 +25,6 @@ import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 import com.google.inject.Inject;
-
 import eu.wisebed.wiseui.api.ExperimentationServiceAsync;
 import eu.wisebed.wiseui.client.WiseUiGinjector;
 import eu.wisebed.wiseui.client.experimentation.event.ExperimentMessageArrivedEvent;
@@ -41,6 +39,7 @@ import eu.wisebed.wiseui.client.util.EventBusManager;
 import eu.wisebed.wiseui.shared.common.Checks;
 import eu.wisebed.wiseui.shared.dto.BinaryImage;
 import eu.wisebed.wiseui.shared.dto.ConfidentialReservationData;
+import eu.wisebed.wiseui.shared.dto.ExperimentMessage;
 import eu.wisebed.wiseui.shared.dto.SecretReservationKey;
 import eu.wisebed.wiseui.widgets.messagebox.MessageBox;
 
@@ -103,8 +102,7 @@ ExperimentMessageArrivedEvent.Handler, SuccessfulImageUploadEvent.Handler{
 		this.imageUploadWidget.setPresenter(this);
 		this.service = service;
 		this.eventBus = new EventBusManager(eventBus);
-		this.flashedImageFilename = "-";
-		setSelectedImage(null);
+		this.selectedImage = null;
 		bind();
 	} 
 
@@ -146,7 +144,6 @@ ExperimentMessageArrivedEvent.Handler, SuccessfulImageUploadEvent.Handler{
 		setExperimentData(data,sessionManagementUrl);
 		initView();
 		startReservationStartTimer();
-		startExperimentMessageCollectorTimer();
 	}
 
 	public void bind() {
@@ -186,7 +183,7 @@ ExperimentMessageArrivedEvent.Handler, SuccessfulImageUploadEvent.Handler{
 		};
 
 		// make the rpc
-		service.getUploadedExperimentImages(callback);
+		service.returnUploadedExperimentImages(callback);
 	}
 
 	@Override
@@ -227,17 +224,15 @@ ExperimentMessageArrivedEvent.Handler, SuccessfulImageUploadEvent.Handler{
 
 		};
 
-		// setup list of keys
-		List<SecretReservationKey> secretReservationKeys = new ArrayList<SecretReservationKey>();
-		SecretReservationKey secretReservationKey = new SecretReservationKey();
-		secretReservationKey.setSecretReservationKey(secretReservationKeyValue);
-		secretReservationKey.setUrnPrefix(urnPrefix);
-		secretReservationKeys.add(secretReservationKey);
-
 		// make the rpc call
+		SecretReservationKey key = new SecretReservationKey();
+		key.setSecretReservationKey(secretReservationKeyValue);
+		key.setUrnPrefix(urnPrefix);
+		List<SecretReservationKey> secretReservationKeys = Arrays.asList(key);
 		service.startExperimentController(
 				sessionManagementUrl,
-				secretReservationKeys,callback);
+				secretReservationKeys,
+				nodeUrns,callback);
 
 		// start message collection timer
 		startExperimentMessageCollectorTimer();
@@ -250,6 +245,7 @@ ExperimentMessageArrivedEvent.Handler, SuccessfulImageUploadEvent.Handler{
 		view.deactivateStartExperimentButton();
 		view.activateFlashExperimentButton();
 		view.activateStopExperimentButton();
+		view.activateDownloadWiseMLButton();
 	}
 
 
@@ -277,16 +273,12 @@ ExperimentMessageArrivedEvent.Handler, SuccessfulImageUploadEvent.Handler{
 
 		};
 
-		// setup list of keys
-		List<SecretReservationKey> secretReservationKeys = new ArrayList<SecretReservationKey>();
-		SecretReservationKey secretReservationKey = new SecretReservationKey();
-		secretReservationKey.setSecretReservationKey(secretReservationKeyValue);
-		secretReservationKey.setUrnPrefix(urnPrefix);
-		secretReservationKeys.add(secretReservationKey);
-
 		// make the rpc call
-		service.stopExperimentController(
-				secretReservationKeys,callback);
+		SecretReservationKey key = new SecretReservationKey();
+		key.setSecretReservationKey(secretReservationKeyValue);
+		key.setUrnPrefix(urnPrefix);
+		List<SecretReservationKey> secretReservationKeys = Arrays.asList(key);
+		service.stopExperimentController(secretReservationKeys,callback);
 
 		// if experiment message collection timer is not null stop it
 		if(experimentMessageCollectionTimer != null) {
@@ -318,19 +310,43 @@ ExperimentMessageArrivedEvent.Handler, SuccessfulImageUploadEvent.Handler{
 			@Override
 			public void onSuccess(Void result) {
 				view.setFlashedImageFilename(selectedImage.getFileName());
+				startExperimentMessageCollectorTimer();
 			}
 			
 		};
 		
-		// setup list of keys
-		List<SecretReservationKey> secretReservationKeys = new ArrayList<SecretReservationKey>();
-		SecretReservationKey secretReservationKey = new SecretReservationKey();
-		secretReservationKey.setSecretReservationKey(secretReservationKeyValue);
-		secretReservationKey.setUrnPrefix(urnPrefix);
-		secretReservationKeys.add(secretReservationKey);
+		// make the rpc call
+		SecretReservationKey key = new SecretReservationKey();
+		key.setSecretReservationKey(secretReservationKeyValue);
+		key.setUrnPrefix(urnPrefix);
+		List<SecretReservationKey> secretReservationKeys = Arrays.asList(key);
+		service.flashExperimentImage(secretReservationKeys,selectedImage.getId(),nodeUrns,callback);
+	}
+	
+	@Override
+	public void getWiseMLReport() {
+		// setup callback
+		AsyncCallback<String> callback = new AsyncCallback<String>() {
+
+			@Override
+			public void onFailure(Throwable caught) {
+				GWT.log(caught.getMessage());
+				MessageBox.error("Experimentation Service", caught.getMessage(), caught, null);
+			}
+
+			@Override
+			public void onSuccess(final String result) {
+				GWT.log(result);
+			}
+			
+		};
 		
 		// make the rpc call
-		service.flashExperimentImage(secretReservationKeys,selectedImage.getId(),nodeUrns,callback);
+		SecretReservationKey key = new SecretReservationKey();
+		key.setSecretReservationKey(secretReservationKeyValue);
+		key.setUrnPrefix(urnPrefix);
+		List<SecretReservationKey> secretReservationKeys = Arrays.asList(key);
+		service.returnExperimentWiseMLReport(secretReservationKeys,callback);
 	}
 
 	@Override
@@ -339,7 +355,7 @@ ExperimentMessageArrivedEvent.Handler, SuccessfulImageUploadEvent.Handler{
 	}
 
 
-	@Override
+	@Override 
 	public void onReservationTimeStarted(ReservationTimeStartedEvent event) {
 		if(event.getSource() == this ){
 
@@ -385,7 +401,45 @@ ExperimentMessageArrivedEvent.Handler, SuccessfulImageUploadEvent.Handler{
 	public void onExperimentMessageArrival(ExperimentMessageArrivedEvent event) {
 		if(event.getSource() == this ){
 			if(status == ExperimentStatus.RUNNING) {
-				GWT.log("Experiment Message received!");
+				
+				// setup callback
+				AsyncCallback<ExperimentMessage> callback = new AsyncCallback<ExperimentMessage>() {
+
+					@Override
+					public void onFailure(Throwable caught) {
+						GWT.log(caught.getMessage());
+						MessageBox.error("Experimentation Service", caught.getMessage(), caught, null);
+					}
+
+					@Override
+					public void onSuccess(final ExperimentMessage result) {
+						if(result == null) return;
+						switch(result.getExperimentMessageType()) {
+							case MESSAGE:
+								GWT.log("Source : " + result.getSourceNodeID());
+								GWT.log("Level : " + result.getLevel());
+								GWT.log("Data : " + result.getData());
+								break;
+							case NOTIFICATION:
+								GWT.log("Notification : " + result.getNotificationText());
+								break;
+							case STATUS:
+								GWT.log("RequestStatus ID : " + result.getRequestStatusID());
+								GWT.log("RequestStatus Msg : " + result.getRequestStatusMsg());
+								GWT.log("RequestStatus NodeID : " + result.getNodeID());
+								GWT.log("RequestStatus value : " + result.getValue());
+								break;
+						}
+					}
+					
+				};
+				
+				// make the rpc call
+				SecretReservationKey key = new SecretReservationKey();
+				key.setSecretReservationKey(secretReservationKeyValue);
+				key.setUrnPrefix(urnPrefix);
+				List<SecretReservationKey> secretReservationKeys = Arrays.asList(key);
+				service.returnExperimentMessage(secretReservationKeys, callback);
 			}
 		}
 	}
@@ -409,6 +463,7 @@ ExperimentMessageArrivedEvent.Handler, SuccessfulImageUploadEvent.Handler{
 		urnPrefix = data.getData().get(0).getUrnPrefix();
 		sessionManagementUrl = url;
 		experimentTiming = "-";
+		flashedImageFilename = "-";
 		status = ExperimentStatus.PENDING;
 	}
 
@@ -434,6 +489,7 @@ ExperimentMessageArrivedEvent.Handler, SuccessfulImageUploadEvent.Handler{
 		view.deactivateStartExperimentButton();
 		view.deactivateFlashExperimentButton();
 		view.deactivateStopExperimentButton();
+		view.deactivateDownloadWiseMLButton();
 	}
 
 	private void startReservationStartTimer() {

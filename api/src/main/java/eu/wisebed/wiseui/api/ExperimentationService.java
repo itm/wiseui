@@ -32,11 +32,13 @@ public interface ExperimentationService extends RemoteService {
 	 * Starts an experiment controller {@link ExperimentController} on the server side after a request.
 	 * @param sessionManagementUrl the session management url of the testbed
 	 * @param secretReservationKeys List of {@link SecretReservationKeys}s
+	 * @param nodeUrns List of node urns
 	 * @throws ExperimentationException
 	 */
 	void startExperimentController(
 		String sessionManagementUrl,
-		List<SecretReservationKey> secretReservationKeys) 
+		List<SecretReservationKey> secretReservationKeys,
+		List<String> nodeUrns) 
 		throws 
 		ExperimentationException;
 
@@ -44,6 +46,7 @@ public interface ExperimentationService extends RemoteService {
 	 * Flashes an uploaded image to the nodes participating in an experiment.
 	 * @param secretReservationKeys List of {@link SecretReservationKeys}s
 	 * @param imageId image's id stored in persistence
+	 * @param nodeUrns List of node urns
 	 * @throws ExperimentationException
 	 */
 	void flashExperimentImage(
@@ -72,11 +75,20 @@ public interface ExperimentationService extends RemoteService {
 			throws 
 			ExperimentationException;
 	
+	/**
+	 * Get WiseML report of the experiment
+	 * @param
+	 * @return a seriliazed format of the wiseml document
+	 */
+	String returnExperimentWiseMLReport(
+			List<SecretReservationKey> secretReservationKeys)
+			throws
+			ExperimentationException;
+	
 	/** 
 	 * Returns a list of uploaded {@link BinaryImageBo} on the server. 
 	 */
-
-	List<BinaryImage> getUploadedExperimentImages()
+	List<BinaryImage> returnUploadedExperimentImages()
 			throws 
 			ExperimentationException;
 }

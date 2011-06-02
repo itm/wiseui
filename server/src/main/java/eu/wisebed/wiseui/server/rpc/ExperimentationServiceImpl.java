@@ -87,7 +87,8 @@ implements ExperimentationService {
 	@Override
 	public void startExperimentController(
 			final String sessionManagementUrl,
-			final List<SecretReservationKey> secretReservationKeys)
+			final List<SecretReservationKey> secretReservationKeys,
+			final List<String> nodeUrns)
 	throws ExperimentationException {
 
 		// format local end point url
@@ -119,10 +120,9 @@ implements ExperimentationService {
 					}
 				}));
 
-
 		// setup experiment controller
 		ExperimentController controller = injector.getInstance(ExperimentController.class);
-		controller.setEndPointURL(localEndpointUrl);
+		controller.setLocalEndpointUrl(localEndpointUrl);
 		controller.setSecretReservationKeys(rsSecretReservationKeys);
 		sessionManagmentService =
 			WSNServiceHelper.getSessionManagementService(sessionManagementUrl); 
@@ -135,17 +135,19 @@ implements ExperimentationService {
 			LOGGER.error(cause.getMessage(), cause);
 			throw new ExperimentationException(
 					"Could not public local controller on "
-					+ controller.getEndPointURL() + " (" + cause.getMessage() + ")");
+					+ controller.getLocalEndpointUrl() + " (" + cause.getMessage() + ")");
 
 		}
-		LOGGER.info("Local controller published on url: " + controller.getEndPointURL());		
+		LOGGER.info("Local controller published on url: " + controller.getLocalEndpointUrl());		
 
 		// start session management
 		controller.startSessionManagement();
-
+		
+		// format node list and add it to the controller setup
+		controller.prepareWiseMlSetup(nodeUrns);
+		
 		// add controller to the list of controllers
 		experimentControllers.add(controller);
-
 	}
 
 	@Override
@@ -188,21 +190,9 @@ implements ExperimentationService {
 			LOGGER.error(cause.getMessage());
 			throw new ExperimentationException(cause.getMessage());
 		}
-		
-		// Map local transport objects to remote objects
-		List<eu.wisebed.testbed.api.rs.v1.SecretReservationKey> rsSecretReservationKeys
-		= new ArrayList<eu.wisebed.testbed.api.rs.v1.SecretReservationKey>(
-				Lists.transform(secretReservationKeys,
-						new Function<SecretReservationKey, eu.wisebed.testbed.api.rs.v1.SecretReservationKey>() {
-					@Override
-					public eu.wisebed.testbed.api.rs.v1.SecretReservationKey apply(
-							final SecretReservationKey s) {
-						return mapper.map(s, eu.wisebed.testbed.api.rs.v1.SecretReservationKey.class);
-					}
-				}));
-		
+				
 		// get experiment controller
-		ExperimentController controller = findExperimentControllerBySecretReservationKey(rsSecretReservationKeys);
+		ExperimentController controller = findExperimentControllerBySecretReservationKey(secretReservationKeys);
 		// if controller not found or if it has not queue
 		try{
 			ifNull(controller,"Unexpected. Controller not " +
@@ -230,22 +220,9 @@ implements ExperimentationService {
 	public void stopExperimentController(final List<SecretReservationKey> secretReservationKeys)
 	throws ExperimentationException {
 
-
-		// Map local transport objects to remote objects
-		List<eu.wisebed.testbed.api.rs.v1.SecretReservationKey> rsSecretReservationKeys
-		= new ArrayList<eu.wisebed.testbed.api.rs.v1.SecretReservationKey>(
-				Lists.transform(secretReservationKeys,
-						new Function<SecretReservationKey, eu.wisebed.testbed.api.rs.v1.SecretReservationKey>() {
-					@Override
-					public eu.wisebed.testbed.api.rs.v1.SecretReservationKey apply(
-							final SecretReservationKey s) {
-						return mapper.map(s, eu.wisebed.testbed.api.rs.v1.SecretReservationKey.class);
-					}
-				}));
-
 		// find experiment controller from secret reservation key
 		ExperimentController controller 
-		=	 findExperimentControllerBySecretReservationKey(rsSecretReservationKeys);
+		=	 findExperimentControllerBySecretReservationKey(secretReservationKeys);
 
 		// if controller not found
 		try{
@@ -275,6 +252,87 @@ implements ExperimentationService {
 			List<SecretReservationKey> secretReservationKeys)
 	throws ExperimentationException{
 
+		// get experiment controller
+		ExperimentController controller = findExperimentControllerBySecretReservationKey(secretReservationKeys);
+		// if controller not found or if it has not queue
+		try{
+			ifNull(controller,"Unexpected. Controller not " +
+				"properly set on the server");
+			ifNull(controller.getMessageQueue(),"Unexpected. Message queue not " +
+				"properly set on the controller");
+		}catch(RuntimeException cause){
+			throw new ExperimentationException(cause.getMessage());
+		}
+
+		// setup an experiment message
+		ExperimentMessage message = controller.getMessageQueue().poll();
+		if(message != null) {
+			String value = secretReservationKeys.get(0).getSecretReservationKey();
+			message.setSecretReservationKeyValue(value);
+		}
+
+		return message;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public List<BinaryImage> returnUploadedExperimentImages()
+	throws ExperimentationException {
+		
+		List<BinaryImage> availableImages = new ArrayList<BinaryImage>();
+		for(BinaryImage image : persistenceService.loadAllBinaryImages()) {
+			// empty the content is not needed and it's a download overhead 
+			image.setContent(null);
+			availableImages.add(image);
+		}
+		LOGGER.info("Persistence holds "+ availableImages.size() + " images");
+		return availableImages;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String returnExperimentWiseMLReport(
+			List<SecretReservationKey> secretReservationKeys)
+			throws ExperimentationException {
+		
+		// get experiment controller
+		ExperimentController controller = findExperimentControllerBySecretReservationKey(secretReservationKeys);
+		// if controller not found or if it has not queue
+		try{
+			ifNull(controller,"Unexpected. Controller not " +
+			"properly set on the server");
+			ifNull(controller.getMessageQueue(),"Unexpected. Message queue not " +
+			"properly set on the controller");
+		}catch(RuntimeException cause){
+			throw new ExperimentationException(cause.getMessage());
+
+		}
+		
+		// get wiseml string
+		String wisemlString;
+		try{
+			wisemlString = controller.getWiseMLasString();
+		}catch(Exception cause){
+			LOGGER.error(cause.getMessage());
+			throw new ExperimentationException(cause.getMessage());
+		}
+		LOGGER.info(wisemlString);
+		
+		return wisemlString;
+	}
+
+	/**
+	 * Finds an experiment controller by iterating for it's secret reservation key in the controllers list.
+	 * @param secretReservationKeys List of <code>SecretReservationKey</code>
+	 * @return ExperimentController instance
+	 */
+	private ExperimentController findExperimentControllerBySecretReservationKey(
+			final List<SecretReservationKey> secretReservationKeys){
+		
 		// Map local transport objects to remote objects
 		List<eu.wisebed.testbed.api.rs.v1.SecretReservationKey> rsSecretReservationKeys
 		= new ArrayList<eu.wisebed.testbed.api.rs.v1.SecretReservationKey>(
@@ -287,56 +345,9 @@ implements ExperimentationService {
 					}
 				}));
 
-		// get experiment controller
-		ExperimentController controller = findExperimentControllerBySecretReservationKey(rsSecretReservationKeys);
-		// if controller not found or if it has not queue
-		try{
-			ifNull(controller,"Unexpected. Controller not " +
-			"properly set on the server");
-			ifNull(controller.getMessageQueue(),"Unexpected. Message queue not " +
-			"properly set on the controller");
-		}catch(RuntimeException cause){
-			throw new ExperimentationException(cause.getMessage());
-
-		}
-
-		// setup an experiment message
-		ExperimentMessage message = controller.getMessageQueue().poll();
-		if(message != null) {
-			String value = rsSecretReservationKeys.get(0).getSecretReservationKey();
-			message.setSecretReservationKeyValue(value);
-		}
-
-		return message;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public List<BinaryImage> getUploadedExperimentImages()
-	throws ExperimentationException {
-		List<BinaryImage> availableImages = new ArrayList<BinaryImage>();
-		for(BinaryImage image : persistenceService.loadAllBinaryImages()) {
-			// empty the content is not needed 
-			image.setContent(null);
-			availableImages.add(image);
-		}
-		LOGGER.info("Persistence holds "+ availableImages.size() + " images");
-		return availableImages;
-	}
-
-	/**
-	 * Finds an experiment controller by iterating for it's secret reservation key in the controllers list.
-	 * @param secretReservationKeys List of RS <code>SecretReservationKey</code>
-	 * @return ExperimentController instance
-	 */
-	private ExperimentController findExperimentControllerBySecretReservationKey(
-			final List<eu.wisebed.testbed.api.rs.v1.SecretReservationKey> secretReservationKeys){
-
 		// iterate and compare secret reservation keys
 		for(ExperimentController controller : experimentControllers) {
-			String searchingKey = secretReservationKeys.get(0).getSecretReservationKey() ;
+			String searchingKey = rsSecretReservationKeys.get(0).getSecretReservationKey() ;
 			String controllerKey = controller.getSecretReservationKeys().get(0).getSecretReservationKey();
 			if(searchingKey.equals(controllerKey)){
 				return controller;

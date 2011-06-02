@@ -77,5 +77,6 @@ public interface ExperimentView extends IsWidget {
 		void stopExperiment();
 		void showNodeOutput(String node);
 		void getAvailableImages();
+		void getWiseMLReport();
 	}
 }
