@@ -1,5 +1,6 @@
 /**
- * Copyright (C) 2011 Universität zu Lübeck, Institut für Telematik (ITM), Research Academic Computer Technology Institute (RACTI)
+ * Copyright (C) 2011 Universität zu Lübeck, Institut für Telematik (ITM), Research Academic Computer
+ *                             Technology Institute (RACTI)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,10 +22,10 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import eu.wisebed.testbed.api.snaa.helpers.SNAAServiceHelper;
-import eu.wisebed.testbed.api.snaa.v1.AuthenticationExceptionException;
-import eu.wisebed.testbed.api.snaa.v1.AuthenticationTriple;
-import eu.wisebed.testbed.api.snaa.v1.SNAA;
-import eu.wisebed.testbed.api.snaa.v1.SNAAExceptionException;
+import eu.wisebed.api.snaa.AuthenticationExceptionException;
+import eu.wisebed.api.snaa.AuthenticationTriple;
+import eu.wisebed.api.snaa.SNAA;
+import eu.wisebed.api.snaa.SNAAExceptionException;
 import eu.wisebed.wiseui.api.SNAAService;
 import eu.wisebed.wiseui.shared.exception.AuthenticationException;
 import eu.wisebed.wiseui.shared.dto.SecretAuthenticationKey;
@@ -63,7 +64,7 @@ public class SNAAServiceImpl extends RemoteServiceServlet implements SNAAService
 
         final SNAA snaaService = SNAAServiceHelper.getSNAAService(endpointUrl);
         final AuthenticationTriple triple = createTriple(urn, userName, password);
-        eu.wisebed.testbed.api.snaa.v1.SecretAuthenticationKey key;
+        eu.wisebed.api.snaa.SecretAuthenticationKey key;
 
         try {
             key = snaaService.authenticate(Arrays.asList(triple)).get(0);

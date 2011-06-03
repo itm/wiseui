@@ -1,5 +1,6 @@
 /**
- * Copyright (C) 2011 Universität zu Lübeck, Institut für Telematik (ITM), Research Academic Computer Technology Institute (RACTI)
+ * Copyright (C) 2011 Universität zu Lübeck, Institut für Telematik (ITM), Research Academic Computer
+ *                             Technology Institute (RACTI)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +18,6 @@ package eu.wisebed.wiseui.client.reservation.presenter;
 
 import com.google.common.base.Objects;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.place.shared.PlaceChangeEvent;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -52,6 +52,7 @@ import java.util.Set;
 
 /**
  * @author Soenke Nommensen
+ * @author John I. Gakos
  */
 public class ReservationEditPresenter implements Presenter, EditReservationEvent.Handler, ConfigurationSelectedHandler,
         PlaceChangeEvent.Handler, ReservationSuccessEvent.Handler, ReservationFailedEvent.Handler {
@@ -117,7 +118,7 @@ public class ReservationEditPresenter implements Presenter, EditReservationEvent
             SecretAuthenticationKey secretAuthenticationKey = authenticationManager.getMap().get(urnPrefix);
             authenticationKeys.add(secretAuthenticationKey);
             // Set up data object for confidential reservation data
-            Data data = new Data();
+            final Data data = new Data();
             data.setUrnPrefix(secretAuthenticationKey.getUrnPrefix());
             data.setUsername(secretAuthenticationKey.getUsername());
             data.setSecretReservationKey(secretAuthenticationKey.getSecretAuthenticationKey());
@@ -125,6 +126,7 @@ public class ReservationEditPresenter implements Presenter, EditReservationEvent
         }
 
         view.hide();
+
         reservationService.makeReservation(rsEndpointUrl, authenticationKeys, reservationData, new AsyncCallback<List<SecretReservationKey>>() {
             public void onFailure(Throwable caught) {
                 eventBus.fireEvent(new ReservationFailedEvent(caught));
@@ -176,9 +178,12 @@ public class ReservationEditPresenter implements Presenter, EditReservationEvent
             return;
         }
         final String title = Objects.firstNonNull(selectedConfiguration.getName(), DEFAULT_NEW_TITLE);
-        view.show(title);
+        final AuthenticationManager authenticationManager = injector.getAuthenticationManager();
+        //view.getWhoTextBox().setText(authenticationManager.getSecretAuthenticationKeys().get(0).getUsername());
+        view.getWhoTextBox().setText(event.getAppointment().getCreatedBy());
         view.getStartDateBox().setValue(event.getAppointment().getStart());
-        view.getWhoTextBox().setText(injector.getAuthenticationManager().getSecretAuthenticationKeys().get(0).getUsername());
+        view.getEndDateBox().setValue(event.getAppointment().getEnd());
+        view.show(title);
         if (event.getNodes() != null) {
             setNodesSelected(event.getNodes());
         }

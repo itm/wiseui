@@ -1,5 +1,6 @@
 /**
- * Copyright (C) 2011 Universität zu Lübeck, Institut für Telematik (ITM), Research Academic Computer Technology Institute (RACTI)
+ * Copyright (C) 2011 Universität zu Lübeck, Institut für Telematik (ITM), Research Academic Computer
+ *                             Technology Institute (RACTI)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,7 +28,7 @@ import com.google.common.collect.Lists;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 import eu.wisebed.testbed.api.wsn.WSNServiceHelper;
-import eu.wisebed.testbed.api.wsn.v22.SessionManagement;
+import eu.wisebed.api.sm.SessionManagement;
 import eu.wisebed.wiseui.shared.dto.ExperimentMessage;
 import eu.wisebed.wiseui.shared.dto.SecretReservationKey;
 
@@ -98,14 +99,14 @@ implements ExperimentationService {
 		}
 
 		// Map local transport objects to remote objects
-		List<eu.wisebed.testbed.api.rs.v1.SecretReservationKey> rsSecretReservationKeys
-		= new ArrayList<eu.wisebed.testbed.api.rs.v1.SecretReservationKey>(
+		List<eu.wisebed.api.rs.SecretReservationKey> rsSecretReservationKeys
+		= new ArrayList<eu.wisebed.api.rs.SecretReservationKey>(
 				Lists.transform(secretReservationKeys,
-						new Function<SecretReservationKey, eu.wisebed.testbed.api.rs.v1.SecretReservationKey>() {
+						new Function<SecretReservationKey, eu.wisebed.api.rs.SecretReservationKey>() {
 					@Override
-					public eu.wisebed.testbed.api.rs.v1.SecretReservationKey apply(
+					public eu.wisebed.api.rs.SecretReservationKey apply(
 							final SecretReservationKey s) {
-						return mapper.map(s, eu.wisebed.testbed.api.rs.v1.SecretReservationKey.class);
+						return mapper.map(s, eu.wisebed.api.rs.SecretReservationKey.class);
 					}
 				}));
 
@@ -213,14 +214,14 @@ implements ExperimentationService {
 
 
 		// Map local transport objects to remote objects
-		List<eu.wisebed.testbed.api.rs.v1.SecretReservationKey> rsSecretReservationKeys
-		= new ArrayList<eu.wisebed.testbed.api.rs.v1.SecretReservationKey>(
+		List<eu.wisebed.api.rs.SecretReservationKey> rsSecretReservationKeys
+		= new ArrayList<eu.wisebed.api.rs.SecretReservationKey>(
 				Lists.transform(secretReservationKeys,
-						new Function<SecretReservationKey, eu.wisebed.testbed.api.rs.v1.SecretReservationKey>() {
+						new Function<SecretReservationKey, eu.wisebed.api.rs.SecretReservationKey>() {
 					@Override
-					public eu.wisebed.testbed.api.rs.v1.SecretReservationKey apply(
+					public eu.wisebed.api.rs.SecretReservationKey apply(
 							final SecretReservationKey s) {
-						return mapper.map(s, eu.wisebed.testbed.api.rs.v1.SecretReservationKey.class);
+						return mapper.map(s, eu.wisebed.api.rs.SecretReservationKey.class);
 					}
 				}));
 
@@ -257,14 +258,14 @@ implements ExperimentationService {
 		throws ExperimentationException{
 		
 		// Map local transport objects to remote objects
-		List<eu.wisebed.testbed.api.rs.v1.SecretReservationKey> rsSecretReservationKeys
-		= new ArrayList<eu.wisebed.testbed.api.rs.v1.SecretReservationKey>(
+		List<eu.wisebed.api.rs.SecretReservationKey> rsSecretReservationKeys
+		= new ArrayList<eu.wisebed.api.rs.SecretReservationKey>(
 				Lists.transform(secretReservationKeys,
-						new Function<SecretReservationKey, eu.wisebed.testbed.api.rs.v1.SecretReservationKey>() {
+						new Function<SecretReservationKey, eu.wisebed.api.rs.SecretReservationKey>() {
 					@Override
-					public eu.wisebed.testbed.api.rs.v1.SecretReservationKey apply(
+					public eu.wisebed.api.rs.SecretReservationKey apply(
 							final SecretReservationKey s) {
-						return mapper.map(s, eu.wisebed.testbed.api.rs.v1.SecretReservationKey.class);
+						return mapper.map(s, eu.wisebed.api.rs.SecretReservationKey.class);
 					}
 				}));
 
@@ -298,7 +299,7 @@ implements ExperimentationService {
 	 * @return ExperimentController instance
 	 */
 	private ExperimentController findExperimentControllerBySecretReservationKey(
-			final List<eu.wisebed.testbed.api.rs.v1.SecretReservationKey> secretReservationKeys){
+			final List<eu.wisebed.api.rs.SecretReservationKey> secretReservationKeys){
 
 		// iterate and compare secret reservation keys
 		for(ExperimentController controller : experimentControllers) {

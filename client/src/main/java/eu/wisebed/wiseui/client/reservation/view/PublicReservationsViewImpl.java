@@ -1,5 +1,6 @@
 /**
- * Copyright (C) 2011 Universität zu Lübeck, Institut für Telematik (ITM), Research Academic Computer Technology Institute (RACTI)
+ * Copyright (C) 2011 Universität zu Lübeck, Institut für Telematik (ITM), Research Academic Computer
+ *                             Technology Institute (RACTI)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -109,7 +110,7 @@ public class PublicReservationsViewImpl extends Composite implements PublicReser
         calendarPanel.suspendLayout();
         container.showLoading("Rendering public reservations...");
         for (PublicReservationData reservation : publicReservations) {
-            addReservation(reservation);
+            addReservation(reservation, false);
         }
         container.hideLoading();
         calendarPanel.resumeLayout();
@@ -120,36 +121,40 @@ public class PublicReservationsViewImpl extends Composite implements PublicReser
      */
     @Override
     public Appointment renderPrivateReservation(final ConfidentialReservationData privateReservation){
-    	Appointment reservation = new Appointment();
+    	Appointment appointment;
     	calendarPanel.suspendLayout();
     	container.showLoading("Rendering private reservations...");
-    	reservation = addReservation(privateReservation);
+    	appointment = addReservation(privateReservation, true);
     	container.hideLoading();
     	calendarPanel.resumeLayout();
-    	return reservation;
+    	return appointment;
     }
     
     /**
      * {@inheritDoc}
      */
     @Override
-    public Appointment addReservation(final PublicReservationData reservation) {
+    public Appointment addReservation(final PublicReservationData reservation, boolean confidential) {
         // TODO: Work on a more descriptive representation of reservations
-    	Appointment rs = new Appointment();
-        rs.setStart(reservation.getFrom());
-        rs.setEnd(reservation.getTo());
-        rs.setLocation(reservation.getNodeURNs().get(0));
-        rs.setTitle(reservation.getUserData());
-        rs.setCreatedBy(reservation.getUserData());
-        rs.setDescription(concatList(reservation.getNodeURNs()));
-        rs.setStyle(AppointmentStyle.RED);
-        calendarPanel.addAppointment(rs);
-        return rs;
+    	Appointment appointment = new Appointment();
+        appointment.setStart(reservation.getFrom());
+        appointment.setEnd(reservation.getTo());
+        appointment.setLocation(reservation.getNodeURNs().get(0));
+        appointment.setTitle(reservation.getUserData());
+        appointment.setCreatedBy(reservation.getUserData());
+        appointment.setDescription(concatList(reservation.getNodeURNs()));
+        if (confidential) {
+            appointment.setStyle(AppointmentStyle.RED);
+        } else {
+            appointment.setStyle(AppointmentStyle.GREEN);
+        }
+        calendarPanel.addAppointment(appointment);
+        return appointment;
     }
 
     /**
      * Remove all reservations that are already rendered for a single user
-     * @param username
+     * @param username User's name
      */
     @Override
     public void removeUsersReservations(final String username){

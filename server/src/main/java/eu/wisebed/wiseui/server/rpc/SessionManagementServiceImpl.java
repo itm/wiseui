@@ -1,5 +1,6 @@
 /**
- * Copyright (C) 2011 Universität zu Lübeck, Institut für Telematik (ITM), Research Academic Computer Technology Institute (RACTI)
+ * Copyright (C) 2011 Universität zu Lübeck, Institut für Telematik (ITM), Research Academic Computer
+ *                             Technology Institute (RACTI)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,7 +26,7 @@ import com.google.inject.Singleton;
 
 import de.itm.uniluebeck.tr.wiseml.WiseMLHelper;
 import eu.wisebed.testbed.api.wsn.WSNServiceHelper;
-import eu.wisebed.testbed.api.wsn.v22.SessionManagement;
+import eu.wisebed.api.sm.SessionManagement;
 import eu.wisebed.wiseui.api.SessionManagementService;
 import eu.wisebed.wiseui.shared.exception.WisemlException;
 import eu.wisebed.wiseui.shared.dto.Wiseml;

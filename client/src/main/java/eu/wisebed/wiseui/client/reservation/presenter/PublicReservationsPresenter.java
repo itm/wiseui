@@ -1,5 +1,6 @@
 /**
- * Copyright (C) 2011 Universität zu Lübeck, Institut für Telematik (ITM), Research Academic Computer Technology Institute (RACTI)
+ * Copyright (C) 2011 Universität zu Lübeck, Institut für Telematik (ITM), Research Academic Computer
+ *                             Technology Institute (RACTI)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,17 +44,20 @@ import eu.wisebed.wiseui.client.reservation.i18n.ReservationMessages;
 import eu.wisebed.wiseui.client.reservation.view.PublicReservationsView;
 import eu.wisebed.wiseui.client.testbedlist.event.TestbedSelectedEvent;
 import eu.wisebed.wiseui.client.testbedselection.event.ThrowableEvent;
+import eu.wisebed.wiseui.client.testbedselection.event.WisemlLoadedEvent;
 import eu.wisebed.wiseui.client.util.EventBusManager;
 import eu.wisebed.wiseui.shared.dto.ConfidentialReservationData;
 import eu.wisebed.wiseui.shared.dto.Node;
 import eu.wisebed.wiseui.shared.dto.PublicReservationData;
 import eu.wisebed.wiseui.shared.dto.SecretAuthenticationKey;
 import eu.wisebed.wiseui.shared.dto.SecretReservationKey;
+import eu.wisebed.wiseui.shared.dto.Setup;
 import eu.wisebed.wiseui.shared.dto.TestbedConfiguration;
 import eu.wisebed.wiseui.widgets.messagebox.MessageBox;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -64,7 +68,8 @@ import java.util.Set;
 public class PublicReservationsPresenter implements PublicReservationsView.Presenter,
         TestbedSelectedEvent.ConfigurationSelectedHandler, UpdateNodesSelectedEvent.Handler,
         ReservationSuccessEvent.Handler, ThrowableEvent.ThrowableHandler, PlaceChangeEvent.Handler,
-        ReservationDeleteSuccessEvent.Handler, ReservationDeleteFailedEvent.Handler {
+        ReservationDeleteSuccessEvent.Handler, ReservationDeleteFailedEvent.Handler,
+        WisemlLoadedEvent.WisemlLoadedHandler {
 
     private WiseUiGinjector injector;
     private final EventBusManager eventBus;
@@ -72,7 +77,8 @@ public class PublicReservationsPresenter implements PublicReservationsView.Prese
     private final ReservationServiceAsync reservationService;
     private final CalendarServiceAsync calendarService;
     private TestbedConfiguration testbedConfiguration;
-    private Set<Node> nodes;
+    private Set<Node> selectedNodes = new HashSet<Node>();
+    private List<Node> setupNodes = new ArrayList<Node>();
     private ReservationMessages messages;
 
     @Inject
@@ -104,7 +110,9 @@ public class PublicReservationsPresenter implements PublicReservationsView.Prese
             @Override
             public void onOpen(final OpenEvent<Appointment> event) {
                 if (!isAuthenticated()) return;
-                view.showReservationDetails(event.getTarget());
+                final Appointment appointment = event.getTarget();
+                // TODO SNO Find a way to retrieve reserved nodes associated to this appointment.
+                showEditReservationDialog(appointment, new HashSet<Node>(), true);
             }
         });
         view.getCalendar().addUpdateHandler(new UpdateHandler<Appointment>() {
@@ -128,7 +136,8 @@ public class PublicReservationsPresenter implements PublicReservationsView.Prese
                 final Date startDate = event.getTarget();
                 Appointment reservation = new Appointment();
                 reservation.setStart(startDate);
-                showEditReservationDialog(reservation, nodes);
+                reservation.setEnd(startDate);
+                showEditReservationDialog(reservation, selectedNodes, false);
             }
         });
         view.getDatePicker().addValueChangeHandler(new ValueChangeHandler<Date>() {
@@ -413,15 +422,17 @@ public class PublicReservationsPresenter implements PublicReservationsView.Prese
     }
 
     public void onUpdateNodesSelected(final UpdateNodesSelectedEvent event) {
-        this.nodes = event.getNodes();
+        this.selectedNodes = event.getNodes();
     }
 
     public void onReservationSuccess() {
         reloadCalendar(testbedConfiguration, view.getCalendar().getDate());
     }
 
-    public void showEditReservationDialog(final Appointment reservation, final Set<Node> nodes) {
-        eventBus.fireEventFromSource(new EditReservationEvent(reservation, nodes), this);
+    public void showEditReservationDialog(final Appointment reservation,
+                                          final Set<Node> nodes,
+                                          final boolean readOnly) {
+        eventBus.fireEventFromSource(new EditReservationEvent(reservation, nodes, readOnly), this);
     }
 
     public void onReservationDeleteFailed(final ReservationDeleteFailedEvent event) {
@@ -436,7 +447,15 @@ public class PublicReservationsPresenter implements PublicReservationsView.Prese
     @Override
     public boolean isAuthenticated() {
         final boolean status = injector.getAuthenticationManager().isAuthenticated(testbedConfiguration);
-        if (!status) MessageBox.error(messages.loginRequiredTitle(), messages.loginRequired(), null, null);
+        if (!status) MessageBox.warning(messages.loginRequiredTitle(), messages.loginRequired(), null);
         return status;
+    }
+
+    @Override
+    public void onWisemlLoaded(WisemlLoadedEvent event) {
+        final Setup setup = event.getWiseml().getSetup();
+        if (setup != null) {
+           setupNodes = setup.getNode();
+        }
     }
 }
