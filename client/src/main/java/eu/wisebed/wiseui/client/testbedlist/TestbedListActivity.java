@@ -44,7 +44,6 @@ import eu.wisebed.wiseui.client.testbedlist.view.LoginDialogView;
 import eu.wisebed.wiseui.client.testbedlist.view.TestbedEditView;
 import eu.wisebed.wiseui.client.testbedlist.view.TestbedListView;
 import eu.wisebed.wiseui.client.testbedlist.view.TestbedListView.Presenter;
-import eu.wisebed.wiseui.client.util.AuthenticationManager;
 import eu.wisebed.wiseui.shared.dto.TestbedConfiguration;
 import eu.wisebed.wiseui.widgets.messagebox.MessageBox;
 import eu.wisebed.wiseui.widgets.messagebox.MessageBox.Button;
@@ -61,7 +60,6 @@ public class TestbedListActivity  extends AbstractActivity implements Presenter,
     private final TestbedListView view;
     private WiseUiPlace place;
     private final PlaceController placeController;
-    private final AuthenticationManager authenticationManager;
     private SingleSelectionModel<TestbedConfiguration> configurationSelectionModel;
     private List<TestbedConfiguration> configurations;
     private final TestbedConfigurationServiceAsync configurationService;
@@ -70,13 +68,11 @@ public class TestbedListActivity  extends AbstractActivity implements Presenter,
     public TestbedListActivity(final WiseUiGinjector injector,
                                final TestbedListView view,
                                final PlaceController placeController,
-                               final TestbedConfigurationServiceAsync configurationService,
-                               final AuthenticationManager authenticationManager) {
+                               final TestbedConfigurationServiceAsync configurationService) {
     	this.injector = injector;
         this.view = view;
         this.placeController = placeController;
         this.configurationService = configurationService;
-        this.authenticationManager = authenticationManager;
         
         view.setPresenter(this);
         // Init selection model

@@ -14,11 +14,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package eu.wisebed.wiseui.widgets;
+package eu.wisebed.wiseui.client.experimentation.view;
 
 import com.google.gwt.user.client.ui.IsWidget;
+import com.google.inject.ImplementedBy;
 
-public interface ImageUpload extends IsWidget{
+import eu.wisebed.wiseui.client.util.EventBusManager;
 
-	public interface Presenter{}
+@ImplementedBy(ImageUploadWidgetImpl.class)
+public interface ImageUploadWidget extends IsWidget{
+	
+	void setPresenter(Presenter presenter);
+
+	public interface Presenter{
+		EventBusManager getEventBus();
+	}
 }

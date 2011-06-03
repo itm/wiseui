@@ -37,9 +37,6 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
 
-import eu.wisebed.wiseui.widgets.ImageUploadWidget;
-
-
 public class ExperimentViewImpl extends Composite implements ExperimentView {
 	private static ExperimentPanelViewImplBinder uiBinder = GWT.create(ExperimentPanelViewImplBinder.class);
 
@@ -49,7 +46,6 @@ public class ExperimentViewImpl extends Composite implements ExperimentView {
 
 	private Presenter presenter;
 	
-
 	@UiField 
 	Label secretReservationKey;
 	@UiField 
@@ -59,7 +55,7 @@ public class ExperimentViewImpl extends Composite implements ExperimentView {
 	@UiField
 	Label experimentTiming;
 	@UiField
-	ImageUploadWidget imageUploadWidget;
+	Label uploadedImageFilename;
 	@UiField
 	Label status;
 	@UiField
@@ -70,6 +66,8 @@ public class ExperimentViewImpl extends Composite implements ExperimentView {
 	Button startExperimentButton;
 	@UiField
 	Button stopExperimentButton;
+	@UiField
+	Button getWiseMLButton;
 	@UiField(provided = true)
 	CellTable<String> nodeTable;
 	@UiField(provided = true)
@@ -156,6 +154,14 @@ public class ExperimentViewImpl extends Composite implements ExperimentView {
 		return username.getText();
 	}
 	
+	public String getUploadedImageFilename() {
+		return uploadedImageFilename.getText();
+	}
+
+	public void setFlashedImageFilename(final String filename) {
+		this.uploadedImageFilename.setText(filename);
+	}
+	
 	@Override
 	public void activateStartExperimentButton() {
 		startExperimentButton.setEnabled(true);
@@ -169,6 +175,11 @@ public class ExperimentViewImpl extends Composite implements ExperimentView {
 	@Override
 	public void activateStopExperimentButton() {
 		stopExperimentButton.setEnabled(true);
+	}
+	
+	@Override
+	public void activateDownloadWiseMLButton() {
+		getWiseMLButton.setEnabled(true);
 	}
 	
 	@Override
@@ -186,9 +197,14 @@ public class ExperimentViewImpl extends Composite implements ExperimentView {
 		stopExperimentButton.setEnabled(false);
 	}
 	
+	@Override
+	public void deactivateDownloadWiseMLButton() {
+		getWiseMLButton.setEnabled(false);
+	}
+	
 	@UiHandler("flashImageButton")
 	public void handleFlashImageButtonClick(final ClickEvent e) {
-		presenter.flashExperimentImage();
+		presenter.showFlashExperimentImageView();
 	}
 	
 	@UiHandler("startExperimentButton")
@@ -201,6 +217,11 @@ public class ExperimentViewImpl extends Composite implements ExperimentView {
 		presenter.stopExperiment();
 	}
 	
+	@UiHandler("getWiseMLButton")
+	public void handleGetWiseMLButtonClick(final ClickEvent e){
+		presenter.getWiseMLReport();
+	}
+		
 	private void setupNodeTable(){
 		
 		// if null create it

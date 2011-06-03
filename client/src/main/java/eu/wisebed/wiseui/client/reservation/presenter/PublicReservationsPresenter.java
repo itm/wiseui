@@ -240,12 +240,10 @@ public class PublicReservationsPresenter implements PublicReservationsView.Prese
      * Call GWT-RPC getPrivateReservations(...) from {@link eu.wisebed.wiseui.api.ReservationService}.
      * The resulting {@link eu.wisebed.wiseui.shared.dto.ConfidentialReservationData} are rendered in the calendar widget.
      */
-    public void loadPrivateReservations(final Date current) {
-        final String urnPrefix = testbedConfiguration.getUrnPrefixList().get(0);
-        final String rsEndpointUrl = testbedConfiguration.getRsEndpointUrl();
-        final List<SecretAuthenticationKey> snaaKeys = injector.getAuthenticationManager().getSecretAuthenticationKeys();
-        final ReservationService.Range range = calcRange();
-
+    public void loadPrivateReservations(final Date current){    	
+    	final String rsEndpointUrl = testbedConfiguration.getRsEndpointUrl();
+    	final List<SecretAuthenticationKey> snaaKeys = injector.getAuthenticationManager().getSecretAuthenticationKeys();
+    	final ReservationService.Range range = calcRange();
         GWT.log("Loading private reservations for Testbed '" + testbedConfiguration.getName() + "'");
         reservationService.getPrivateReservations(rsEndpointUrl, snaaKeys, current, range,
                 new AsyncCallback<List<ConfidentialReservationData>>() {
@@ -272,8 +270,8 @@ public class PublicReservationsPresenter implements PublicReservationsView.Prese
      * Call GWT-RPC deleteReservation(...) from {@link eu.wisebed.wiseui.api.ReservationService}.
      * Deleting reservation from RS service. This action cannot be undone!
      */
+
     public void removeReservation(final Appointment reservation) {
-        final String urnPrefix = testbedConfiguration.getUrnPrefixList().get(0);
         final String rsEndpointUrl = testbedConfiguration.getRsEndpointUrl();
         final List<SecretAuthenticationKey> snaaKeys = injector.getAuthenticationManager().getSecretAuthenticationKeys();
         final List<SecretReservationKey> rsKeys = new ArrayList<SecretReservationKey>();
@@ -289,7 +287,6 @@ public class PublicReservationsPresenter implements PublicReservationsView.Prese
                 eventBus.fireEvent(new ReservationDeleteSuccessEvent(reservation));
             }
         });
-
     }
 
     public void handleBackClicked() {
