@@ -95,18 +95,18 @@ implements ExperimentationService {
 		SecretReservationKey key = secretReservationKeys.get(0);
 		String localEndpointUrl = null;
 		
-		//localEndpointUrl = "http://94.64.207.244:"+getPort()+"/controller" + getRandomURLSuffix(key.getSecretReservationKey());
+		localEndpointUrl = "http://94.64.211.238:"+getPort()+"/controller" + getRandomURLSuffix(key.getSecretReservationKey());
 		
-		try{
-			localEndpointUrl = "http://" +
-			InetAddress.getLocalHost().getCanonicalHostName() +
-			":" + getPort() + "/controller"
-			+ getRandomURLSuffix(key.getSecretReservationKey());
-		} catch (UnknownHostException cause) {
-			LOGGER.error(cause.getMessage(),cause);
-			throw new ExperimentationException("Could not publish local " +
-					"controller on" + localEndpointUrl);
-		}
+//		try{
+//			localEndpointUrl = "http://" +
+//			InetAddress.getLocalHost().getCanonicalHostName() +
+//			":" + getPort() + "/controller"
+//			+ getRandomURLSuffix(key.getSecretReservationKey());
+//		} catch (UnknownHostException cause) {
+//			LOGGER.error(cause.getMessage(),cause);
+//			throw new ExperimentationException("Could not publish local " +
+//					"controller on" + localEndpointUrl);
+//		}
 
 		// Map local transport objects to remote objects
 		List<eu.wisebed.testbed.api.rs.v1.SecretReservationKey> rsSecretReservationKeys
@@ -180,9 +180,9 @@ implements ExperimentationService {
 			Program program = new Program();
 			ProgramMetaData value = new ProgramMetaData();
 			value.setName(image.getFileName());
-			value.setOther("other"); // TODO these values ???
-			value.setPlatform("platform");
-			value.setVersion("1.0");
+			value.setOther(""); // TODO these values ???
+			value.setPlatform("");
+			value.setVersion("");
 			program.setMetaData(value);
 			program.setProgram(image.getContent());
 			programList.add(program);

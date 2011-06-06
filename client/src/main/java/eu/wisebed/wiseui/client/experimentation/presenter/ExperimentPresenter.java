@@ -17,6 +17,7 @@ package eu.wisebed.wiseui.client.experimentation.presenter;
 
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import com.google.gwt.core.client.GWT;
@@ -32,7 +33,9 @@ import eu.wisebed.wiseui.client.experimentation.event.ReservationTimeStartedEven
 import eu.wisebed.wiseui.client.experimentation.event.ReservationTimeEndedEvent;
 import eu.wisebed.wiseui.client.experimentation.event.SuccessfulImageUploadEvent;
 import eu.wisebed.wiseui.client.experimentation.util.StringTimer;
+import eu.wisebed.wiseui.client.experimentation.view.ExperimentOutputView;
 import eu.wisebed.wiseui.client.experimentation.view.ExperimentView;
+import eu.wisebed.wiseui.client.experimentation.view.ExperimentWiseMLOutputView;
 import eu.wisebed.wiseui.client.experimentation.view.FlashExperimentImageView;
 import eu.wisebed.wiseui.client.experimentation.view.ImageUploadWidget;
 import eu.wisebed.wiseui.client.util.EventBusManager;
@@ -67,8 +70,10 @@ ExperimentMessageArrivedEvent.Handler, SuccessfulImageUploadEvent.Handler{
 
 	private final WiseUiGinjector injector;
 	private ExperimentView view;
-	private FlashExperimentImageView imageView;
-	private ImageUploadWidget imageUploadWidget;
+	private FlashExperimentImageView imageView; // TODO provide presenters for those three
+	private ImageUploadWidget imageUploadWidget; //
+	private ExperimentWiseMLOutputView wiseMloutputView; //
+	private HashMap<String,ExperimentOutputView> outputMap;
 	private ExperimentationServiceAsync service;
 	private EventBusManager eventBus;
 	private String secretReservationKeyValue;
@@ -91,6 +96,8 @@ ExperimentMessageArrivedEvent.Handler, SuccessfulImageUploadEvent.Handler{
 			final ExperimentationServiceAsync service,
 			final ExperimentView view,
 			final FlashExperimentImageView flashImageView,
+			//final ExperimentOutputView outputView,
+			final ExperimentWiseMLOutputView wiseMloutputView,
 			final EventBus eventBus) {
 
 		this.injector = injector;
@@ -100,6 +107,8 @@ ExperimentMessageArrivedEvent.Handler, SuccessfulImageUploadEvent.Handler{
 		this.imageView.setPresenter(this);
 		this.imageUploadWidget = imageView.getImageUploadWidget();
 		this.imageUploadWidget.setPresenter(this);
+		this.wiseMloutputView = wiseMloutputView;
+		this.outputMap = new HashMap<String,ExperimentOutputView>();
 		this.service = service;
 		this.eventBus = new EventBusManager(eventBus);
 		this.selectedImage = null;
@@ -189,15 +198,7 @@ ExperimentMessageArrivedEvent.Handler, SuccessfulImageUploadEvent.Handler{
 	@Override
 	public void submit() {
 		flashSelectedImage();
-		imageView.hide();
 	}
-
-
-	@Override
-	public void cancel() {
-		imageView.hide();
-	}
-
 
 	@Override
 	public void startExperiment() {
@@ -310,6 +311,7 @@ ExperimentMessageArrivedEvent.Handler, SuccessfulImageUploadEvent.Handler{
 			@Override
 			public void onSuccess(Void result) {
 				view.setFlashedImageFilename(selectedImage.getFileName());
+				imageView.hide();
 				startExperimentMessageCollectorTimer();
 			}
 			
@@ -337,6 +339,8 @@ ExperimentMessageArrivedEvent.Handler, SuccessfulImageUploadEvent.Handler{
 			@Override
 			public void onSuccess(final String result) {
 				GWT.log(result);
+				wiseMloutputView.setWiseMLOutput(result);
+				wiseMloutputView.show("WiseML report");
 			}
 			
 		};
@@ -351,6 +355,7 @@ ExperimentMessageArrivedEvent.Handler, SuccessfulImageUploadEvent.Handler{
 
 	@Override
 	public void showNodeOutput(final String node) {
+		outputMap.get(node).show("Output for " + node );
 		GWT.log("Showing out for node [" + node +"]");
 	}
 
@@ -419,15 +424,20 @@ ExperimentMessageArrivedEvent.Handler, SuccessfulImageUploadEvent.Handler{
 								GWT.log("Source : " + result.getSourceNodeID());
 								GWT.log("Level : " + result.getLevel());
 								GWT.log("Data : " + result.getData());
+								outputMap.get(result.getSourceNodeID()).addOutput(result.toString());
 								break;
 							case NOTIFICATION:
 								GWT.log("Notification : " + result.getNotificationText());
+								for(String node : outputMap.keySet()) {
+									outputMap.get(node).addOutput(result.toString());
+								}
 								break;
 							case STATUS:
 								GWT.log("RequestStatus ID : " + result.getRequestStatusID());
 								GWT.log("RequestStatus Msg : " + result.getRequestStatusMsg());
 								GWT.log("RequestStatus NodeID : " + result.getNodeID());
 								GWT.log("RequestStatus value : " + result.getValue());
+								outputMap.get(result.getNodeID()).addOutput(result.toString());
 								break;
 						}
 					}
@@ -475,6 +485,11 @@ ExperimentMessageArrivedEvent.Handler, SuccessfulImageUploadEvent.Handler{
 			Checks.ifNull(toDate, "Experiment start date is null");
 		}catch(RuntimeException cause){
 			MessageBox.error("Error",cause.getMessage(),cause,null);
+		}
+		
+		// initialize outputviews
+		for(String nodeUrn : nodeUrns) {
+			outputMap.put(nodeUrn, injector.getExperimentOutputView());
 		}
 
 		// initialize view

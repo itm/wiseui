@@ -91,7 +91,7 @@ public class FlashExperimentImageViewImpl extends HasWidgetsDialogBox implements
 
 	@UiHandler("cancelButton")
 	public void handleCancelButtonClick(final ClickEvent event) {
-		presenter.cancel();
+		hide();
 	}
 
 	@Override

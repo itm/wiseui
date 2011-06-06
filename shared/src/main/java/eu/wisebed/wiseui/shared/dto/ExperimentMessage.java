@@ -167,6 +167,20 @@ public class ExperimentMessage implements Serializable {
 	}
 	
 	public String toString() {
-		return null;
+		
+		String value = new String("");
+		
+		switch(this.experimentMessageType) {
+		case MESSAGE: 
+			value = "["+sourceNodeID+"][" +timeStamp+"][" + level +"][" + data +"]";
+		case NOTIFICATION:
+			value = "[Notification][" + notificationText+"]";
+		case STATUS:
+			value = "[RequestStatus][" + requestStatusID + "]" +
+				   "[status msg][" + requestStatusMsg + "]" + 
+				   "[node][" + nodeID + "]" + 
+				   "[value][" + value + "]";			
+		}
+		return value;
 	}
 }

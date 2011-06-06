@@ -1,0 +1,65 @@
+<!--
+
+    Copyright (C) 2011 Universität zu Lübeck, Institut für Telematik (ITM), Research Academic Computer Technology Institute (RACTI)
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+            http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui" xmlns:my="urn:import:eu.wisebed.wiseui.client.experimentation.view">
+
+	<ui:style>
+		.fullLayout {
+			width: 100%;
+			height: 100%;
+		}
+		
+		.important {
+			font-weight: bold;
+		}
+		
+		.buttonPanel {
+			width: 100%;
+			background-color: #d0e4f6;
+		}
+		
+		.buttonTable {
+			padding: 2px;
+		}
+		
+		.content {
+			padding: 5px;
+		}
+		
+		.textArea {
+			width: 700px;
+			height: 500px;
+		}
+	</ui:style>
+	<my:ExperimentWiseMLOutputViewImpl
+		styleName="{style.content}">
+		<g:VerticalPanel>
+			<g:TextArea styleName="{style.textArea}" ui:field="outputTextArea" />
+			<g:HTMLPanel styleName="{style.buttonPanel}">
+				<table class="{style.buttonTable}">
+					<tr>
+						<td>
+							<g:Button text="Close" ui:field="closeButton" />
+						</td>
+					</tr>
+				</table>
+			</g:HTMLPanel>
+		</g:VerticalPanel>
+	</my:ExperimentWiseMLOutputViewImpl>
+</ui:UiBinder> 

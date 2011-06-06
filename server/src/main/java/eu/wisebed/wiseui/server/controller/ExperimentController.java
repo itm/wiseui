@@ -74,6 +74,7 @@ public class ExperimentController implements Controller {
 	private WiseML wiseml;
 	private Setup wisemlSetup;
 	private Trace wisemlTrace;
+	private List<Timestamp> timestampList;
 	private WiseMLController wisemlController;
 	private List<SecretReservationKey> secretReservationKeys;
 	private SessionManagement sessionManagement;
@@ -81,11 +82,12 @@ public class ExperimentController implements Controller {
 	@Inject
 	public ExperimentController(final Queue<ExperimentMessage> experimentMessagesQueue,
 			final WiseML wiseml, final Setup wisemlSetup, final Trace wisemlTrace,
-			final WiseMLController wisemlController){
+			final List<Timestamp> timestampList,final WiseMLController wisemlController){
 		this.setExperimentMessagesQueue(experimentMessagesQueue);
 		this.setWiseml(wiseml);
 		this.setWisemlSetup(wisemlSetup);
 		this.setWisemlTrace(wisemlTrace);
+		this.setTimestampList(timestampList);
 		this.setWisemlController(wisemlController);
 	}
 	
@@ -224,7 +226,7 @@ public class ExperimentController implements Controller {
 			timestamp.setValue(msg.getTimestamp().toXMLFormat());
 			timestamp.setMessage(Arrays.asList(message));
 			timestamp.setNode(Arrays.asList(node));
-			wisemlTrace.setTimestamp(Arrays.asList(timestamp));
+			timestampList.add(timestamp);
 			LOGGER.info("Added to WiseML trace");
 		}
 	}
@@ -236,7 +238,7 @@ public class ExperimentController implements Controller {
 			ExperimentMessage experimentMessage = new ExperimentMessage();
 			experimentMessage.setupAsNotification(notification);
 			
-			LOGGER.info("Received notification : " + notification);
+			LOGGER.info("[Notification][" + notification +"]");
 			
 			experimentMessagesQueue.add(experimentMessage);
 		}
@@ -255,11 +257,10 @@ public class ExperimentController implements Controller {
 				ExperimentMessage experimentMessage = new ExperimentMessage();
 				experimentMessage.setupAsRequestStatus(requestID, nodeID, msg, value);
 				
-				LOGGER.info("Received requestStatus id " 
-						+ requestID);
-				LOGGER.info("status msg : " + msg);
-				LOGGER.info("node ID : " + nodeID);
-				LOGGER.info("value : " + value);
+				LOGGER.info("[RequestStatus][" + requestID + "]" +
+						"[status msg][" + msg + "]" + 
+						"[node][" + nodeID + "]" + 
+						"[value][" + value + "]");
 				
 				experimentMessagesQueue.add(experimentMessage);
 			}
@@ -274,6 +275,10 @@ public class ExperimentController implements Controller {
 			nodeList.add(node);
 		}
 		wisemlSetup.setNodes(nodeList);
+	}
+	
+	public void prepareWiseMlTrace() {
+		wisemlTrace.setTimestamp(timestampList);
 	}
 		
 	public String getWiseMLasString() {
@@ -321,6 +326,14 @@ public class ExperimentController implements Controller {
 
 	public void setWisemlSetup(Setup wisemlSetup) {
 		this.wisemlSetup = wisemlSetup;
+	}
+	
+	public List<Timestamp> getTimestampList() {
+		return timestampList;
+	}
+
+	public void setTimestampList(List<Timestamp> timestampList) {
+		this.timestampList = timestampList;
 	}
 
 	public Setup getWisemlSetup() {
