@@ -1,6 +1,6 @@
 /**
- * Copyright (C) 2011 Universität zu Lübeck, Institut für Telematik (ITM), Research Academic Computer
- *                             Technology Institute (RACTI)
+ * Copyright (C) 2011 Universität zu Lübeck, Institut für Telematik (ITM),
+ *                             Research Academic Computer Technology Institute (RACTI)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,29 +20,34 @@ import java.io.Serializable;
 
 public class SecretReservationKey implements Serializable {
 
-	private static final long serialVersionUID = -1825088754599715036L;
-	
-	private String urnPrefix;
-	
-	private String secretReservationKey;
+    private static final long serialVersionUID = -1825088754599715036L;
 
-	public SecretReservationKey() {
-		
-	}
+    private String urnPrefix;
 
-	public void setUrnPrefix(final String urnPrefix) {
-		this.urnPrefix = urnPrefix;
-	}
+    private String secretReservationKey;
 
-	public String getUrnPrefix() {
-		return urnPrefix;
-	}
+    public SecretReservationKey() {
 
-	public void setSecretReservationKey(final String secretReservationKey) {
-		this.secretReservationKey = secretReservationKey;
-	}
+    }
 
-	public String getSecretReservationKey() {
-		return secretReservationKey;
-	}
+    public SecretReservationKey(String urnPrefix, String secretReservationKey) {
+        this.urnPrefix = urnPrefix;
+        this.secretReservationKey = secretReservationKey;
+    }
+
+    public void setUrnPrefix(final String urnPrefix) {
+        this.urnPrefix = urnPrefix;
+    }
+
+    public String getUrnPrefix() {
+        return urnPrefix;
+    }
+
+    public void setSecretReservationKey(final String secretReservationKey) {
+        this.secretReservationKey = secretReservationKey;
+    }
+
+    public String getSecretReservationKey() {
+        return secretReservationKey;
+    }
 }

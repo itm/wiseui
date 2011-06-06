@@ -1,6 +1,6 @@
 /**
- * Copyright (C) 2011 Universität zu Lübeck, Institut für Telematik (ITM), Research Academic Computer
- *                             Technology Institute (RACTI)
+ * Copyright (C) 2011 Universität zu Lübeck, Institut für Telematik (ITM),
+ *                             Research Academic Computer Technology Institute (RACTI)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -47,6 +47,7 @@ import eu.wisebed.wiseui.widgets.messagebox.MessageBox;
 import eu.wisebed.wiseui.widgets.messagebox.MessageBox.Button;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -67,6 +68,8 @@ public class ReservationEditPresenter implements Presenter, EditReservationEvent
     private String title = DEFAULT_NEW_TITLE;
     private List<String> selectedNodes = new ArrayList<String>();
     private ReservationMessages messages;
+
+    private boolean readOnly = false;
 
     @Inject
     public ReservationEditPresenter(final WiseUiGinjector injector,
@@ -140,15 +143,19 @@ public class ReservationEditPresenter implements Presenter, EditReservationEvent
 
     @Override
     public void cancel() {
-        MessageBox.warning(title, "Do you want to discard your changes?", new MessageBox.Callback() {
+        if (readOnly) {
+            view.hide();
+        } else {
+            MessageBox.warning(title, "Do you want to discard your changes?", new MessageBox.Callback() {
 
-            @Override
-            public void onButtonClicked(final Button button) {
-                if (Button.OK.equals(button)) {
-                    view.hide();
+                @Override
+                public void onButtonClicked(final Button button) {
+                    if (Button.OK.equals(button)) {
+                        view.hide();
+                    }
                 }
-            }
-        });
+            });
+        }
     }
 
     @Override
@@ -177,12 +184,19 @@ public class ReservationEditPresenter implements Presenter, EditReservationEvent
             MessageBox.info("No testbed selected", suggestion, null);
             return;
         }
+
+        readOnly = event.isReadOnly();
+        view.setReadOnly(readOnly);
+
         final String title = Objects.firstNonNull(selectedConfiguration.getName(), DEFAULT_NEW_TITLE);
         final AuthenticationManager authenticationManager = injector.getAuthenticationManager();
-        //view.getWhoTextBox().setText(authenticationManager.getSecretAuthenticationKeys().get(0).getUsername());
-        view.getWhoTextBox().setText(event.getAppointment().getCreatedBy());
-        view.getStartDateBox().setValue(event.getAppointment().getStart());
-        view.getEndDateBox().setValue(event.getAppointment().getEnd());
+        final String createdBy = event.getAppointment().getCreatedBy();
+        final String userName = authenticationManager.getSecretAuthenticationKeys().get(0).getUsername();
+        view.getWhoTextBox().setText(createdBy != null ? createdBy : userName);
+        final Date start = event.getAppointment().getStart();
+        view.getStartDateBox().setValue(start);
+        final Date end = event.getAppointment().getEnd();
+        view.getEndDateBox().setValue(end != null ? end : start);
         view.show(title);
         if (event.getNodes() != null) {
             setNodesSelected(event.getNodes());

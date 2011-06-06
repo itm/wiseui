@@ -1,6 +1,6 @@
 /**
- * Copyright (C) 2011 Universität zu Lübeck, Institut für Telematik (ITM), Research Academic Computer
- *                             Technology Institute (RACTI)
+ * Copyright (C) 2011 Universität zu Lübeck, Institut für Telematik (ITM),
+ *                             Research Academic Computer Technology Institute (RACTI)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -47,13 +47,11 @@ public interface PublicReservationsView extends IsWidget {
      */
     void renderPublicReservations(List<PublicReservationData> publicReservations);
     
-    Appointment renderPrivateReservation(ConfidentialReservationData privateReservation);
+    void renderConfidentialReservations(List<ConfidentialReservationData> confidentialReservations);
 
     Appointment addReservation(PublicReservationData reservationData, boolean confidential);
 
     void removeAllAppointments();
-    
-    void removeUsersReservations(String username);
 
     Calendar getCalendar();
 
@@ -61,15 +59,18 @@ public interface PublicReservationsView extends IsWidget {
 
     HasLoadingIndicator getLoadingIndicator();
 
-    void showReservationDetails(Appointment reservation);
-
     public interface Presenter {
 
         static final int ONE_DAY = 1;
 
         static final int WEEK = 7;
 
-        void loadPublicReservations(Date current);
+        void loadReservations(Date date);
+
+        void registerPublicReservation(Appointment publicReservation, PublicReservationData publicReservationData);
+
+        void registerConfidentialReservation(Appointment confidentialReservation,
+                                             ConfidentialReservationData confidentialReservationData);
 
         void handleBackClicked();
 
@@ -79,7 +80,7 @@ public interface PublicReservationsView extends IsWidget {
         
     	void showEditReservationDialog(Appointment reservation, Set<Node> nodes, boolean readOnly);
     	
-    	void removeReservation(Appointment reservation);
+    	void deleteReservation(Appointment reservation);
     	
     	boolean isAuthenticated();
     }

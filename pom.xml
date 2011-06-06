@@ -240,8 +240,8 @@
                     <strictCheck>true</strictCheck>
                     <properties>
                         <year>2011</year>
-                        <institution>Universität zu Lübeck, Institut für Telematik (ITM), Research Academic Computer
-                            Technology Institute (RACTI)
+                        <institution>Universität zu Lübeck, Institut für Telematik (ITM),
+                            Research Academic Computer Technology Institute (RACTI)
                         </institution>
                     </properties>
                     <encoding>UTF-8</encoding>
@@ -253,7 +253,7 @@
                 <executions>
                     <execution>
                         <goals>
-                            <goal>check</goal>
+                            <goal>format</goal>
                         </goals>
                     </execution>
                 </executions>

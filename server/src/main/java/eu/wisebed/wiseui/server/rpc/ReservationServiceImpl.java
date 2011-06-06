@@ -1,6 +1,6 @@
 /**
- * Copyright (C) 2011 Universität zu Lübeck, Institut für Telematik (ITM), Research Academic Computer
- *                             Technology Institute (RACTI)
+ * Copyright (C) 2011 Universität zu Lübeck, Institut für Telematik (ITM),
+ *                             Research Academic Computer Technology Institute (RACTI)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -161,6 +161,8 @@ public class ReservationServiceImpl extends RemoteServiceServlet implements Rese
         LOGGER.debug(format("getPublicReservations#calculatedStartDate=%s, calculatedEndDate=%s", start, end));
 
         final RS rs = RSServiceHelper.getRSService(rsEndpointUrl);
+        ifNull(rs, "rs is null!");
+
         List<eu.wisebed.api.rs.PublicReservationData> resultList = null;
         try {
             resultList = rs.getReservations(

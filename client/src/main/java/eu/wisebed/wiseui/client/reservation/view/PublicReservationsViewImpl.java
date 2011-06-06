@@ -1,6 +1,6 @@
 /**
- * Copyright (C) 2011 Universität zu Lübeck, Institut für Telematik (ITM), Research Academic Computer
- *                             Technology Institute (RACTI)
+ * Copyright (C) 2011 Universität zu Lübeck, Institut für Telematik (ITM),
+ *                             Research Academic Computer Technology Institute (RACTI)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,28 +23,24 @@ import com.bradrydzewski.gwt.calendar.client.CalendarSettings;
 import com.bradrydzewski.gwt.calendar.client.CalendarViews;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.uibinder.client.UiTemplate;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.DecoratedPopupPanel;
 import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.ToggleButton;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.datepicker.client.DateBox;
 import com.google.inject.Singleton;
-
 import eu.wisebed.wiseui.shared.dto.ConfidentialReservationData;
 import eu.wisebed.wiseui.shared.dto.PublicReservationData;
 import eu.wisebed.wiseui.widgets.CaptionPanel;
 import eu.wisebed.wiseui.widgets.ReservationDetailsWidget;
 import eu.wisebed.wiseui.widgets.loading.HasLoadingIndicator;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -64,7 +60,7 @@ public class PublicReservationsViewImpl extends Composite implements PublicReser
     private Presenter presenter;
 
     private ReservationDetailsWidget reservationDetailsWidget = new ReservationDetailsWidget();
-    
+
     @UiField
     CaptionPanel container;
     @UiField
@@ -87,7 +83,7 @@ public class PublicReservationsViewImpl extends Composite implements PublicReser
     Button todayButton;
 
     public PublicReservationsViewImpl() {
-    	initWidget(uiBinder.createAndBindUi(this));
+        initWidget(uiBinder.createAndBindUi(this));
         initCalendar();
         dateBox.setValue(new Date());
     }
@@ -108,11 +104,10 @@ public class PublicReservationsViewImpl extends Composite implements PublicReser
     @Override
     public void renderPublicReservations(final List<PublicReservationData> publicReservations) {
         calendarPanel.suspendLayout();
-        container.showLoading("Rendering public reservations...");
         for (PublicReservationData reservation : publicReservations) {
-            addReservation(reservation, false);
+            final Appointment appointment = addReservation(reservation, false);
+            presenter.registerPublicReservation(appointment, reservation);
         }
-        container.hideLoading();
         calendarPanel.resumeLayout();
     }
 
@@ -120,23 +115,21 @@ public class PublicReservationsViewImpl extends Composite implements PublicReser
      * {@inheritDoc}
      */
     @Override
-    public Appointment renderPrivateReservation(final ConfidentialReservationData privateReservation){
-    	Appointment appointment;
-    	calendarPanel.suspendLayout();
-    	container.showLoading("Rendering private reservations...");
-    	appointment = addReservation(privateReservation, true);
-    	container.hideLoading();
-    	calendarPanel.resumeLayout();
-    	return appointment;
+    public void renderConfidentialReservations(final List<ConfidentialReservationData> confidentialReservations) {
+        calendarPanel.suspendLayout();
+        for (ConfidentialReservationData reservation : confidentialReservations) {
+            final Appointment appointment = addReservation(reservation, true);
+            presenter.registerConfidentialReservation(appointment, reservation);
+        }
+        calendarPanel.resumeLayout();
     }
-    
+
     /**
      * {@inheritDoc}
      */
     @Override
     public Appointment addReservation(final PublicReservationData reservation, boolean confidential) {
-        // TODO: Work on a more descriptive representation of reservations
-    	Appointment appointment = new Appointment();
+        final Appointment appointment = new Appointment();
         appointment.setStart(reservation.getFrom());
         appointment.setEnd(reservation.getTo());
         appointment.setLocation(reservation.getNodeURNs().get(0));
@@ -146,30 +139,12 @@ public class PublicReservationsViewImpl extends Composite implements PublicReser
         if (confidential) {
             appointment.setStyle(AppointmentStyle.RED);
         } else {
-            appointment.setStyle(AppointmentStyle.GREEN);
+            appointment.setStyle(AppointmentStyle.BLUE_GREY);
         }
         calendarPanel.addAppointment(appointment);
         return appointment;
     }
 
-    /**
-     * Remove all reservations that are already rendered for a single user
-     * @param username User's name
-     */
-    @Override
-    public void removeUsersReservations(final String username){
-    	final ArrayList<Appointment> reservations = calendarPanel.getAppointments();
-    	List<Appointment> reservationsForRemoval = new ArrayList<Appointment>();
-    	for(Appointment reservation: reservations){
-    		if (reservation.getCreatedBy().equals(username)) {
-        		reservationsForRemoval.add(reservation);
-    		}
-    	}
-    	for(Appointment reservation : reservationsForRemoval){
-			calendarPanel.removeAppointment(reservation);
-    	}
-    }
-    
     @Override
     public void removeAllAppointments() {
         calendarPanel.clearAppointments();
@@ -180,23 +155,23 @@ public class PublicReservationsViewImpl extends Composite implements PublicReser
         return container;
     }
 
-    @Override
-    public void showReservationDetails(final Appointment reservation) {
-    	final DecoratedPopupPanel popUp = reservationDetailsWidget.getPopUp();
-    	reservationDetailsWidget.setReservedBy("Reserved by: " + reservation.getCreatedBy());
-    	reservationDetailsWidget.setStart("Start: " + reservation.getStart().toString());
-    	reservationDetailsWidget.setEnd("End: " + reservation.getEnd().toString());
-    	reservationDetailsWidget.setDescription(reservation.getDescription());
-    	reservationDetailsWidget.getDeleteButton().addClickHandler(new ClickHandler(){
-    		@Override
-    		public void onClick(final ClickEvent event){
-    			presenter.removeReservation(reservation);
-    			popUp.hide();
-    		}
-    	});
-        popUp.center();
-        popUp.show();
-    }
+//    @Override
+//    public void showReservationDetails(final Appointment reservation) {
+//    	final DecoratedPopupPanel popUp = reservationDetailsWidget.getPopUp();
+//    	reservationDetailsWidget.setReservedBy("Reserved by: " + reservation.getCreatedBy());
+//    	reservationDetailsWidget.setStart("Start: " + reservation.getStart().toString());
+//    	reservationDetailsWidget.setEnd("End: " + reservation.getEnd().toString());
+//    	reservationDetailsWidget.setDescription(reservation.getDescription());
+//    	reservationDetailsWidget.getDeleteButton().addClickHandler(new ClickHandler(){
+//    		@Override
+//    		public void onClick(final ClickEvent event){
+//    			presenter.deleteReservation(reservation);
+//    			popUp.hide();
+//    		}
+//    	});
+//        popUp.center();
+//        popUp.show();
+//    }
 
     @Override
     public void setPresenter(final Presenter presenter) {
@@ -210,7 +185,7 @@ public class PublicReservationsViewImpl extends Composite implements PublicReser
         weekToggleButton.setDown(false);
         monthToggleButton.setDown(false);
         calendarPanel.setView(CalendarViews.DAY, Presenter.ONE_DAY);
-        presenter.loadPublicReservations(calendarPanel.getDate());
+        presenter.loadReservations(calendarPanel.getDate());
     }
 
     @UiHandler("weekToggleButton")
@@ -219,7 +194,7 @@ public class PublicReservationsViewImpl extends Composite implements PublicReser
         weekToggleButton.setDown(true);
         monthToggleButton.setDown(false);
         calendarPanel.setView(CalendarViews.DAY, Presenter.WEEK);
-        presenter.loadPublicReservations(calendarPanel.getDate());
+        presenter.loadReservations(calendarPanel.getDate());
     }
 
     @UiHandler("monthToggleButton")
@@ -228,7 +203,7 @@ public class PublicReservationsViewImpl extends Composite implements PublicReser
         weekToggleButton.setDown(false);
         monthToggleButton.setDown(true);
         calendarPanel.setView(CalendarViews.MONTH);
-        presenter.loadPublicReservations(calendarPanel.getDate());
+        presenter.loadReservations(calendarPanel.getDate());
     }
 
     @UiHandler("backButton")

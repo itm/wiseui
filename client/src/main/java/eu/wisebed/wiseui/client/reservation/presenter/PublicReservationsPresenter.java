@@ -1,6 +1,6 @@
 /**
- * Copyright (C) 2011 Universität zu Lübeck, Institut für Telematik (ITM), Research Academic Computer
- *                             Technology Institute (RACTI)
+ * Copyright (C) 2011 Universität zu Lübeck, Institut für Telematik (ITM),
+ *                             Research Academic Computer Technology Institute (RACTI)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,7 +46,9 @@ import eu.wisebed.wiseui.client.testbedlist.event.TestbedSelectedEvent;
 import eu.wisebed.wiseui.client.testbedselection.event.ThrowableEvent;
 import eu.wisebed.wiseui.client.testbedselection.event.WisemlLoadedEvent;
 import eu.wisebed.wiseui.client.util.EventBusManager;
+import eu.wisebed.wiseui.client.util.ReservationManager;
 import eu.wisebed.wiseui.shared.dto.ConfidentialReservationData;
+import eu.wisebed.wiseui.shared.dto.Data;
 import eu.wisebed.wiseui.shared.dto.Node;
 import eu.wisebed.wiseui.shared.dto.PublicReservationData;
 import eu.wisebed.wiseui.shared.dto.SecretAuthenticationKey;
@@ -77,6 +79,7 @@ public class PublicReservationsPresenter implements PublicReservationsView.Prese
     private final ReservationServiceAsync reservationService;
     private final CalendarServiceAsync calendarService;
     private TestbedConfiguration testbedConfiguration;
+    private ReservationManager reservationManager;
     private Set<Node> selectedNodes = new HashSet<Node>();
     private List<Node> setupNodes = new ArrayList<Node>();
     private ReservationMessages messages;
@@ -87,12 +90,14 @@ public class PublicReservationsPresenter implements PublicReservationsView.Prese
                                        final PublicReservationsView view,
                                        final ReservationServiceAsync reservationService,
                                        final CalendarServiceAsync calendarService,
+                                       final ReservationManager reservationManager,
                                        final ReservationMessages messages) {
         this.injector = injector;
         this.eventBus = new EventBusManager(eventBus);
         this.view = view;
         this.reservationService = reservationService;
         this.calendarService = calendarService;
+        this.reservationManager = reservationManager;
         this.messages = messages;
         bind();
     }
@@ -105,20 +110,60 @@ public class PublicReservationsPresenter implements PublicReservationsView.Prese
         eventBus.addHandler(ReservationSuccessEvent.TYPE, this);
         eventBus.addHandler(ReservationDeleteSuccessEvent.TYPE, this);
         eventBus.addHandler(ReservationDeleteFailedEvent.TYPE, this);
+        eventBus.addHandler(WisemlLoadedEvent.TYPE, this);
 
         view.getCalendar().addOpenHandler(new OpenHandler<Appointment>() {
             @Override
             public void onOpen(final OpenEvent<Appointment> event) {
-                if (!isAuthenticated()) return;
+                // Default read only status is true
+                boolean readOnly = true;
+
                 final Appointment appointment = event.getTarget();
-                // TODO SNO Find a way to retrieve reserved nodes associated to this appointment.
-                showEditReservationDialog(appointment, new HashSet<Node>(), true);
+
+                // Authenticated users can edit their own reservations
+                if (!isAuthenticated() && appointment.getCreatedBy().equals(getAuthenticatedUserName())) {
+                    readOnly = false;
+                }
+
+                final HashSet<Node> filteredNodes = new HashSet<Node>();
+                final PublicReservationData publicReservationData
+                        = reservationManager.getPublicReservations().get(appointment);
+                final PublicReservationData confidentialReservationData
+                        = reservationManager.getConfidentialReservations().get(appointment);
+
+                // TODO Reduce computational complexity!
+
+                if (publicReservationData != null) {
+                    GWT.log("Found public reservation: " + publicReservationData);
+                    for (String urnPrefix : publicReservationData.getNodeURNs()) {
+                        for (Node node : setupNodes) {
+                            if (node.getId().equals(urnPrefix)) {
+                                filteredNodes.add(node);
+                            }
+                        }
+                    }
+                }
+                if (confidentialReservationData != null) {
+                    GWT.log("Found confidential reservation: " + confidentialReservationData);
+                    for (String urnPrefix : confidentialReservationData.getNodeURNs()) {
+                        for (Node node : setupNodes) {
+                            if (node.getId().equals(urnPrefix)) {
+                                filteredNodes.add(node);
+                            }
+                        }
+                    }
+                }
+
+                showEditReservationDialog(appointment, filteredNodes, readOnly);
             }
         });
         view.getCalendar().addUpdateHandler(new UpdateHandler<Appointment>() {
             @Override
             public void onUpdate(final UpdateEvent<Appointment> event) {
-                if (!isAuthenticated()) return;
+                if (!isAuthenticated()) {
+                    MessageBox.warning(messages.loginRequiredTitle(), messages.loginRequired(), null);
+                    return;
+                }
                 boolean commit = Window
                         .confirm(
                                 "Are you sure you want to update the appointment \""
@@ -132,9 +177,12 @@ public class PublicReservationsPresenter implements PublicReservationsView.Prese
         view.getCalendar().addTimeBlockClickHandler(new TimeBlockClickHandler<Date>() {
             @Override
             public void onTimeBlockClick(final TimeBlockClickEvent<Date> event) {
-                if (!isAuthenticated()) return;
+                if (!isAuthenticated()) {
+                    MessageBox.warning(messages.loginRequiredTitle(), messages.loginRequired(), null);
+                    return;
+                }
                 final Date startDate = event.getTarget();
-                Appointment reservation = new Appointment();
+                final Appointment reservation = new Appointment();
                 reservation.setStart(startDate);
                 reservation.setEnd(startDate);
                 showEditReservationDialog(reservation, selectedNodes, false);
@@ -143,10 +191,9 @@ public class PublicReservationsPresenter implements PublicReservationsView.Prese
         view.getDatePicker().addValueChangeHandler(new ValueChangeHandler<Date>() {
             @Override
             public void onValueChange(final ValueChangeEvent<Date> event) {
-                if (!isAuthenticated()) return;
-                view.getCalendar().setDate(event.getValue());
-                GWT.log("onValueChange() => loadReservations()");
-                reloadCalendar(testbedConfiguration, event.getValue());
+                final Date newDate = event.getValue();
+                view.getCalendar().setDate(newDate);
+                loadReservations(newDate);
             }
         });
     }
@@ -154,7 +201,7 @@ public class PublicReservationsPresenter implements PublicReservationsView.Prese
     @Override
     public void onTestbedSelected(final TestbedSelectedEvent event) {
         testbedConfiguration = event.getConfiguration();
-        reloadCalendar(testbedConfiguration, view.getCalendar().getDate());
+        loadReservations(view.getCalendar().getDate());
     }
 
     @Override
@@ -183,9 +230,10 @@ public class PublicReservationsPresenter implements PublicReservationsView.Prese
     /**
      * Call GWT-RPC getPublicReservations(...) from {@link eu.wisebed.wiseui.api.ReservationService}.
      * The resulting {@link eu.wisebed.wiseui.shared.dto.ReservationDetails} are rendered in the calendar widget.
+     *
+     * @param pivotDate Anchor date for fetching reservation data
      */
-    @Override
-    public void loadPublicReservations(final Date current) {
+    private void loadPublicReservations(final Date pivotDate) {
         view.getLoadingIndicator().showLoading("Reservations");
 
         // Logging
@@ -202,7 +250,7 @@ public class PublicReservationsPresenter implements PublicReservationsView.Prese
                     null);
         }
 
-        // Remove all current calendar entries
+        // Remove all pivotDate calendar entries
         view.removeAllAppointments();
 
         // Determine the date range, which shall be passed to the remote call
@@ -211,7 +259,7 @@ public class PublicReservationsPresenter implements PublicReservationsView.Prese
         // Make the service call
         GWT.log("Loading public reservations for Testbed '" + testbedName + "'");
         reservationService.getPublicReservations(testbedConfiguration.getRsEndpointUrl(),
-                current, range, new AsyncCallback<List<PublicReservationData>>() {
+                pivotDate, range, new AsyncCallback<List<PublicReservationData>>() {
             public void onFailure(Throwable caught) {
                 view.getLoadingIndicator().hideLoading();
                 GWT.log("Error fetching reservation data!\n" + caught.getMessage());
@@ -219,33 +267,50 @@ public class PublicReservationsPresenter implements PublicReservationsView.Prese
             }
 
             public void onSuccess(final List<PublicReservationData> publicReservations) {
-                if (publicReservations == null || publicReservations.isEmpty()) {
-                    GWT.log("No public reservation data found.");
-                } else {
+                if (publicReservations != null && !publicReservations.isEmpty()) {
                     // Render the {@link eu.wisebed.wiseui.shared.dto.ReservationDetails}
                     view.renderPublicReservations(publicReservations);
 
                     // If user is authenticated remove from calendar all reservations that
                     // belong to him and re-render them with secret reservation keys
-                    if (isAuthenticated()) view.removeUsersReservations(
-                            injector.getAuthenticationManager().getMap().get(
-                                    testbedConfiguration.getUrnPrefixList().get(0)).getUsername());
+                    if (isAuthenticated()) {
+                        final List<Appointment> toBeDeleted = new ArrayList<Appointment>();
+                        for (Appointment reservation : view.getCalendar().getAppointments()) {
+                            // TODO We assume here that the user always makes reservations with his IDP user name,
+                            // which may not be always the case!
+                            GWT.log("to be deleted: " + reservation.getCreatedBy());
+                            if (reservation.getCreatedBy().equals(getAuthenticatedUserName())) {
+                                toBeDeleted.add(reservation);
+                            }
+                        }
+                        for (Appointment appointment : toBeDeleted) {
+                            view.getCalendar().removeAppointment(appointment);
+                        }
+                        loadConfidentialReservations(view.getCalendar().getDate());
+                    }
+                } else {
+                    GWT.log("No public reservation data found.");
+                    view.getLoadingIndicator().hideLoading();
                 }
-                view.getLoadingIndicator().hideLoading();
             }
         });
     }
 
     /**
      * Call GWT-RPC getPrivateReservations(...) from {@link eu.wisebed.wiseui.api.ReservationService}.
-     * The resulting {@link eu.wisebed.wiseui.shared.dto.ConfidentialReservationData} are rendered in the calendar widget.
+     * The resulting {@link eu.wisebed.wiseui.shared.dto.ConfidentialReservationData} are rendered in
+     * the calendar widget.
+     *
+     * @param pivotDate Anchor date for fetching reservation data
      */
-    public void loadPrivateReservations(final Date current){    	
-    	final String rsEndpointUrl = testbedConfiguration.getRsEndpointUrl();
-    	final List<SecretAuthenticationKey> snaaKeys = injector.getAuthenticationManager().getSecretAuthenticationKeys();
-    	final ReservationService.Range range = calcRange();
+    private void loadConfidentialReservations(final Date pivotDate) {
+        final String rsEndpointUrl = testbedConfiguration.getRsEndpointUrl();
+        final List<SecretAuthenticationKey> secretAuthenticationKeys
+                = injector.getAuthenticationManager().getSecretAuthenticationKeys();
+        final ReservationService.Range range = calcRange();
         GWT.log("Loading private reservations for Testbed '" + testbedConfiguration.getName() + "'");
-        reservationService.getPrivateReservations(rsEndpointUrl, snaaKeys, current, range,
+
+        reservationService.getPrivateReservations(rsEndpointUrl, secretAuthenticationKeys, pivotDate, range,
                 new AsyncCallback<List<ConfidentialReservationData>>() {
 
                     public void onFailure(final Throwable caught) {
@@ -253,42 +318,72 @@ public class PublicReservationsPresenter implements PublicReservationsView.Prese
                         eventBus.fireEvent(new ThrowableEvent(caught));
                     }
 
-                    public void onSuccess(final List<ConfidentialReservationData> privateReservations) {
-                        for (ConfidentialReservationData reservation : privateReservations) {
-                            final Appointment privateReservationRendered = view.renderPrivateReservation(reservation);
-                            SecretReservationKey rsKey = new SecretReservationKey();
-                            rsKey.setUrnPrefix(reservation.getData().get(0).getUrnPrefix());
-                            rsKey.setSecretReservationKey(reservation.getData().get(0).getSecretReservationKey());
-                            injector.getReservationManager().addReservation(privateReservationRendered, rsKey);
-                        }
+                    public void onSuccess(final List<ConfidentialReservationData> confidentialReservations) {
+                        view.renderConfidentialReservations(confidentialReservations);
+                        view.getLoadingIndicator().hideLoading();
                     }
                 });
+    }
 
+    @Override
+    public void registerPublicReservation(final Appointment publicReservation,
+                                          final PublicReservationData publicReservationData) {
+        reservationManager.getPublicReservations().put(publicReservation, publicReservationData);
+    }
+
+    @Override
+    public void registerConfidentialReservation(final Appointment confidentialReservation,
+                                                final ConfidentialReservationData confidentialReservationData) {
+        reservationManager.getConfidentialReservations()
+                          .put(confidentialReservation, confidentialReservationData);
+    }
+
+    private String getAuthenticatedUserName() {
+        return injector.getAuthenticationManager().getMap().get(
+                testbedConfiguration.getUrnPrefixList().get(0)).getUsername();
     }
 
     /**
      * Call GWT-RPC deleteReservation(...) from {@link eu.wisebed.wiseui.api.ReservationService}.
      * Deleting reservation from RS service. This action cannot be undone!
+     *
+     * @param reservation Appointment to be deleted
      */
-
-    public void removeReservation(final Appointment reservation) {
+    @Override
+    public void deleteReservation(final Appointment reservation) {
+        // Get RS endpoint URL
         final String rsEndpointUrl = testbedConfiguration.getRsEndpointUrl();
-        final List<SecretAuthenticationKey> snaaKeys = injector.getAuthenticationManager().getSecretAuthenticationKeys();
-        final List<SecretReservationKey> rsKeys = new ArrayList<SecretReservationKey>();
-        rsKeys.add(injector.getReservationManager().getPrivateReservationsMap().get(reservation));
 
-        GWT.log("Removing reservation...");
-        reservationService.deleteReservation(rsEndpointUrl, snaaKeys, rsKeys, new AsyncCallback<Void>() {
-            public void onFailure(final Throwable caught) {
-                eventBus.fireEvent(new ReservationDeleteFailedEvent(caught));
-            }
+        // Get secret authentication keys
+        final List<SecretAuthenticationKey> secretAuthenticationKeys
+                = injector.getAuthenticationManager().getSecretAuthenticationKeys();
 
-            public void onSuccess(final Void result) {
-                eventBus.fireEvent(new ReservationDeleteSuccessEvent(reservation));
-            }
-        });
+        // Get secret reservation keys
+        final ConfidentialReservationData confidentialReservationData
+                = reservationManager.getConfidentialReservations().get(reservation);
+        final List<SecretReservationKey> secretReservationKeys
+                = new ArrayList<SecretReservationKey>(confidentialReservationData.getData().size());
+        for (Data data : confidentialReservationData.getData()) {
+            final SecretReservationKey secretReservationKey =
+                    new SecretReservationKey(data.getUrnPrefix(), data.getSecretReservationKey());
+            secretReservationKeys.add(secretReservationKey);
+        }
+
+        // Make the RPC call and handle the result via events
+        GWT.log("Delete reservation: " + confidentialReservationData);
+        reservationService.deleteReservation(rsEndpointUrl, secretAuthenticationKeys, secretReservationKeys,
+                new AsyncCallback<Void>() {
+                    public void onFailure(final Throwable caught) {
+                        eventBus.fireEvent(new ReservationDeleteFailedEvent(caught));
+                    }
+
+                    public void onSuccess(final Void result) {
+                        eventBus.fireEvent(new ReservationDeleteSuccessEvent(reservation));
+                    }
+                });
     }
 
+    @Override
     public void handleBackClicked() {
         final Date current = view.getCalendar().getDate();
         switch (view.getCalendar().getDays()) {
@@ -303,6 +398,7 @@ public class PublicReservationsPresenter implements PublicReservationsView.Prese
         }
     }
 
+    @Override
     public void handleForwardClicked() {
         final Date current = view.getCalendar().getDate();
         switch (view.getCalendar().getDays()) {
@@ -317,11 +413,12 @@ public class PublicReservationsPresenter implements PublicReservationsView.Prese
         }
     }
 
+    @Override
     public void handleTodayClicked() {
         final Date today = new Date();
         view.getCalendar().setDate(today);
         view.getDatePicker().setValue(today);
-        reloadCalendar(testbedConfiguration, today);
+        loadReservations(today);
     }
 
     private void addDays(final Date current, final int days) {
@@ -335,7 +432,7 @@ public class PublicReservationsPresenter implements PublicReservationsView.Prese
             public void onSuccess(final Date result) {
                 view.getCalendar().setDate(result, days);
                 view.getDatePicker().setValue(result);
-                reloadCalendar(testbedConfiguration, result);
+                loadReservations(result);
             }
         });
     }
@@ -351,7 +448,7 @@ public class PublicReservationsPresenter implements PublicReservationsView.Prese
             public void onSuccess(final Date result) {
                 view.getCalendar().setDate(result, days);
                 view.getDatePicker().setValue(result);
-                reloadCalendar(testbedConfiguration, result);
+                loadReservations(result);
             }
         });
     }
@@ -367,7 +464,7 @@ public class PublicReservationsPresenter implements PublicReservationsView.Prese
             public void onSuccess(final Date result) {
                 view.getCalendar().setDate(result);
                 view.getDatePicker().setValue(result);
-                reloadCalendar(testbedConfiguration, result);
+                loadReservations(result);
             }
         });
     }
@@ -383,7 +480,7 @@ public class PublicReservationsPresenter implements PublicReservationsView.Prese
             public void onSuccess(final Date result) {
                 view.getCalendar().setDate(result);
                 view.getDatePicker().setValue(result);
-                reloadCalendar(testbedConfiguration, result);
+                loadReservations(result);
             }
         });
     }
@@ -393,14 +490,12 @@ public class PublicReservationsPresenter implements PublicReservationsView.Prese
      * reload calendar by fetching private reservations in order to be aware of the secret
      * reservation keys that belong to this client.
      *
-     * @param testbedConfiguration
-     * @param date
+     * @param date Date selected in calendar widget
      */
-    private void reloadCalendar(final TestbedConfiguration testbedConfiguration, final Date date) {
+    @Override
+    public void loadReservations(final Date date) {
+        // Load public reservations
         loadPublicReservations(date);
-        if (isAuthenticated()) {
-            loadPrivateReservations(date);
-        }
     }
 
     private ReservationService.Range calcRange() {
@@ -418,24 +513,29 @@ public class PublicReservationsPresenter implements PublicReservationsView.Prese
         return range;
     }
 
+    @Override
     public void onUpdateNodesSelected(final UpdateNodesSelectedEvent event) {
         this.selectedNodes = event.getNodes();
     }
 
+    @Override
     public void onReservationSuccess() {
-        reloadCalendar(testbedConfiguration, view.getCalendar().getDate());
+        loadReservations(view.getCalendar().getDate());
     }
 
+    @Override
     public void showEditReservationDialog(final Appointment reservation,
                                           final Set<Node> nodes,
                                           final boolean readOnly) {
         eventBus.fireEventFromSource(new EditReservationEvent(reservation, nodes, readOnly), this);
     }
 
+    @Override
     public void onReservationDeleteFailed(final ReservationDeleteFailedEvent event) {
         MessageBox.error(messages.reservationDeleteFailedTitle(), messages.reservationDeleteFailed(), null, null);
     }
 
+    @Override
     public void onReservationDeleteSuccess(final ReservationDeleteSuccessEvent event) {
         MessageBox.success(messages.reservationDeleteSuccessTitle(), messages.reservationDeleteSuccess(), null);
         view.getCalendar().removeAppointment(event.getReservation());
@@ -443,16 +543,14 @@ public class PublicReservationsPresenter implements PublicReservationsView.Prese
 
     @Override
     public boolean isAuthenticated() {
-        final boolean status = injector.getAuthenticationManager().isAuthenticated(testbedConfiguration);
-        if (!status) MessageBox.warning(messages.loginRequiredTitle(), messages.loginRequired(), null);
-        return status;
+        return injector.getAuthenticationManager().isAuthenticated(testbedConfiguration);
     }
 
     @Override
-    public void onWisemlLoaded(WisemlLoadedEvent event) {
+    public void onWisemlLoaded(final WisemlLoadedEvent event) {
         final Setup setup = event.getWiseml().getSetup();
         if (setup != null) {
-           setupNodes = setup.getNode();
+            setupNodes = setup.getNode();
         }
     }
 }
