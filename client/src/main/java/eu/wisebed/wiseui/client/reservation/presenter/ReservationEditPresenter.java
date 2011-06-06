@@ -1,5 +1,6 @@
 /**
- * Copyright (C) 2011 Universität zu Lübeck, Institut für Telematik (ITM), Research Academic Computer Technology Institute (RACTI)
+ * Copyright (C) 2011 Universität zu Lübeck, Institut für Telematik (ITM),
+ *                             Research Academic Computer Technology Institute (RACTI)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,11 +47,13 @@ import eu.wisebed.wiseui.widgets.messagebox.MessageBox;
 import eu.wisebed.wiseui.widgets.messagebox.MessageBox.Button;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
 /**
  * @author Soenke Nommensen
+ * @author John I. Gakos
  */
 public class ReservationEditPresenter implements Presenter, EditReservationEvent.Handler, ConfigurationSelectedHandler,
         PlaceChangeEvent.Handler, ReservationSuccessEvent.Handler, ReservationFailedEvent.Handler {
@@ -65,6 +68,8 @@ public class ReservationEditPresenter implements Presenter, EditReservationEvent
     private String title = DEFAULT_NEW_TITLE;
     private List<String> selectedNodes = new ArrayList<String>();
     private ReservationMessages messages;
+
+    private boolean readOnly = false;
 
     @Inject
     public ReservationEditPresenter(final WiseUiGinjector injector,
@@ -116,7 +121,7 @@ public class ReservationEditPresenter implements Presenter, EditReservationEvent
             SecretAuthenticationKey secretAuthenticationKey = authenticationManager.getMap().get(urnPrefix);
             authenticationKeys.add(secretAuthenticationKey);
             // Set up data object for confidential reservation data
-            Data data = new Data();
+            final Data data = new Data();
             data.setUrnPrefix(secretAuthenticationKey.getUrnPrefix());
             data.setUsername(secretAuthenticationKey.getUsername());
             data.setSecretReservationKey(secretAuthenticationKey.getSecretAuthenticationKey());
@@ -124,6 +129,7 @@ public class ReservationEditPresenter implements Presenter, EditReservationEvent
         }
 
         view.hide();
+
         reservationService.makeReservation(rsEndpointUrl, authenticationKeys, reservationData, new AsyncCallback<List<SecretReservationKey>>() {
             public void onFailure(Throwable caught) {
                 eventBus.fireEvent(new ReservationFailedEvent(caught));
@@ -137,15 +143,19 @@ public class ReservationEditPresenter implements Presenter, EditReservationEvent
 
     @Override
     public void cancel() {
-        MessageBox.warning(title, "Do you want to discard your changes?", new MessageBox.Callback() {
+        if (readOnly) {
+            view.hide();
+        } else {
+            MessageBox.warning(title, "Do you want to discard your changes?", new MessageBox.Callback() {
 
-            @Override
-            public void onButtonClicked(final Button button) {
-                if (Button.OK.equals(button)) {
-                    view.hide();
+                @Override
+                public void onButtonClicked(final Button button) {
+                    if (Button.OK.equals(button)) {
+                        view.hide();
+                    }
                 }
-            }
-        });
+            });
+        }
     }
 
     @Override
@@ -174,10 +184,20 @@ public class ReservationEditPresenter implements Presenter, EditReservationEvent
             MessageBox.info("No testbed selected", suggestion, null);
             return;
         }
+
+        readOnly = event.isReadOnly();
+        view.setReadOnly(readOnly);
+
         final String title = Objects.firstNonNull(selectedConfiguration.getName(), DEFAULT_NEW_TITLE);
+        final AuthenticationManager authenticationManager = injector.getAuthenticationManager();
+        final String createdBy = event.getAppointment().getCreatedBy();
+        final String userName = authenticationManager.getSecretAuthenticationKeys().get(0).getUsername();
+        view.getWhoTextBox().setText(createdBy != null ? createdBy : userName);
+        final Date start = event.getAppointment().getStart();
+        view.getStartDateBox().setValue(start);
+        final Date end = event.getAppointment().getEnd();
+        view.getEndDateBox().setValue(end != null ? end : start);
         view.show(title);
-        view.getStartDateBox().setValue(event.getAppointment().getStart());
-        view.getWhoTextBox().setText(injector.getAuthenticationManager().getSecretAuthenticationKeys().get(0).getUsername());
         if (event.getNodes() != null) {
             setNodesSelected(event.getNodes());
         }

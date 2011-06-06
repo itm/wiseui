@@ -1,5 +1,6 @@
 /**
- * Copyright (C) 2011 Universität zu Lübeck, Institut für Telematik (ITM), Research Academic Computer Technology Institute (RACTI)
+ * Copyright (C) 2011 Universität zu Lübeck, Institut für Telematik (ITM),
+ *                             Research Academic Computer Technology Institute (RACTI)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,40 +16,48 @@
  */
 package eu.wisebed.wiseui.client.util;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import com.bradrydzewski.gwt.calendar.client.Appointment;
-import com.google.gwt.core.client.GWT;
 import com.google.inject.Singleton;
 
-import eu.wisebed.wiseui.shared.dto.SecretReservationKey;
+import eu.wisebed.wiseui.shared.dto.ConfidentialReservationData;
+import eu.wisebed.wiseui.shared.dto.PublicReservationData;
 
 @Singleton
 public class ReservationManager {
 
-	private final HashMap<Appointment, SecretReservationKey> privateReservationsMap = 
-		new HashMap<Appointment, SecretReservationKey>();
+	private Map<Appointment, PublicReservationData> publicReservations
+            = new HashMap<Appointment, PublicReservationData>();
 
-	/**
-	 * Load all authentication keys from the cookie.
-	 */
-	public void init() {
-		GWT.log("Init Reservation Manager");
-	}
+	private Map<Appointment, ConfidentialReservationData> confidentialReservations
+            = new HashMap<Appointment, ConfidentialReservationData>();
 
-	public void addReservation(final Appointment reservation, final SecretReservationKey rsKey){
-		privateReservationsMap.put(reservation, rsKey);
-	}
-	
-	public void removeReservation(final Appointment reservation){
-		privateReservationsMap.remove(reservation);
-	}
-	
-	/**
-	 * Return the private reservations map
-	 * @return Appointment-to-String map
-	 */
-	public HashMap<Appointment, SecretReservationKey> getPrivateReservationsMap(){
-		return privateReservationsMap;
-	}
+    public ReservationManager() {
+    }
+
+    public void init() {
+
+    }
+
+    public Map<Appointment, PublicReservationData> getPublicReservations() {
+        return publicReservations;
+    }
+
+    public Map<Appointment, ConfidentialReservationData> getConfidentialReservations() {
+        return confidentialReservations;
+    }
+
+    public List<PublicReservationData> getAllReservations() {
+        final List<PublicReservationData> result = new ArrayList<PublicReservationData>();
+
+        for (PublicReservationData publicReservationData : publicReservations.values()) {
+            result.add(publicReservationData);
+        }
+
+        return result;
+    }
 }

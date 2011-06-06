@@ -1,5 +1,6 @@
 /**
- * Copyright (C) 2011 Universität zu Lübeck, Institut für Telematik (ITM), Research Academic Computer Technology Institute (RACTI)
+ * Copyright (C) 2011 Universität zu Lübeck, Institut für Telematik (ITM),
+ *                             Research Academic Computer Technology Institute (RACTI)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,49 +16,54 @@
  */
 package eu.wisebed.wiseui.client.reservation.event;
 
-import java.util.Set;
-
 import com.bradrydzewski.gwt.calendar.client.Appointment;
 import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;
-
 import eu.wisebed.wiseui.shared.dto.Node;
+
+import java.util.Set;
 
 /**
  * @author Soenke Nommensen
  */
 public class EditReservationEvent extends GwtEvent<EditReservationEvent.Handler> {
 
-	public interface Handler extends EventHandler {
+    public interface Handler extends EventHandler {
 
-		void onEditReservation(EditReservationEvent event);
-	}
+        void onEditReservation(EditReservationEvent event);
+    }
 
-	public static final Type<Handler> TYPE = new Type<Handler>();
+    public static final Type<Handler> TYPE = new Type<Handler>();
 
-	private final Appointment reservation;
-	private final Set<Node> nodes;
+    private final Appointment reservation;
+    private final Set<Node> nodes;
+    private final boolean readOnly;
 
-	public EditReservationEvent(final Appointment reservation, final Set<Node> nodes) {
-		this.reservation = reservation;
-		this.nodes = nodes;
-	}
+    public EditReservationEvent(final Appointment reservation, final Set<Node> nodes, final boolean readOnly) {
+        this.reservation = reservation;
+        this.nodes = nodes;
+        this.readOnly = readOnly;
+    }
 
-	public Appointment getAppointment() {
-		return this.reservation;
-	}
+    public Appointment getAppointment() {
+        return this.reservation;
+    }
 
-	public Set<Node> getNodes(){
-		return this.nodes;
-	}
+    public Set<Node> getNodes() {
+        return this.nodes;
+    }
 
-	@Override
-	public Type<Handler> getAssociatedType() {
-		return TYPE;
-	}
+    public boolean isReadOnly() {
+        return readOnly;
+    }
 
-	@Override
-	protected void dispatch(final Handler handler) {
-		handler.onEditReservation(this);
-	}
+    @Override
+    public Type<Handler> getAssociatedType() {
+        return TYPE;
+    }
+
+    @Override
+    protected void dispatch(final Handler handler) {
+        handler.onEditReservation(this);
+    }
 }

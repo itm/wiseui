@@ -1,5 +1,6 @@
 /**
- * Copyright (C) 2011 Universität zu Lübeck, Institut für Telematik (ITM), Research Academic Computer Technology Institute (RACTI)
+ * Copyright (C) 2011 Universität zu Lübeck, Institut für Telematik (ITM),
+ *                             Research Academic Computer Technology Institute (RACTI)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,16 +16,18 @@
  */
 package eu.wisebed.wiseui.server.controller;
 
-import java.net.MalformedURLException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Queue;
-import java.util.concurrent.Executors;
-
-import javax.jws.WebService;
-import javax.xml.ws.Endpoint;
-
+import com.google.inject.Inject;
+import de.uniluebeck.itm.tr.util.StringUtils;
+import eu.wisebed.api.common.Message;
+import eu.wisebed.api.controller.Controller;
+import eu.wisebed.api.controller.RequestStatus;
+import eu.wisebed.api.rs.SecretReservationKey;
+import eu.wisebed.api.sm.ExperimentNotRunningException_Exception;
+import eu.wisebed.api.sm.SessionManagement;
+import eu.wisebed.api.sm.UnknownReservationIdException_Exception;
+import eu.wisebed.api.wsn.WSN;
+import eu.wisebed.testbed.api.wsn.Constants;
+import eu.wisebed.testbed.api.wsn.WSNServiceHelper;
 import eu.wisebed.wiseml.controller.WiseMLController;
 import eu.wisebed.wiseml.model.WiseML;
 import eu.wisebed.wiseml.model.scenario.Timestamp;
@@ -32,38 +35,29 @@ import eu.wisebed.wiseml.model.setup.Node;
 import eu.wisebed.wiseml.model.setup.Setup;
 import eu.wisebed.wiseml.model.trace.Trace;
 import eu.wisebed.wiseui.shared.dto.ExperimentMessage;
-
+import eu.wisebed.wiseui.shared.exception.ExperimentationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.inject.Inject;
-
-import de.uniluebeck.itm.tr.util.StringUtils;
-
-import eu.wisebed.testbed.api.rs.v1.SecretReservationKey;
-import eu.wisebed.testbed.api.wsn.Constants;
-import eu.wisebed.testbed.api.wsn.WSNServiceHelper;
-import eu.wisebed.testbed.api.wsn.v22.Controller;
-import eu.wisebed.testbed.api.wsn.v22.ExperimentNotRunningException_Exception;
-import eu.wisebed.testbed.api.wsn.v22.Message;
-import eu.wisebed.testbed.api.wsn.v22.RequestStatus;
-import eu.wisebed.testbed.api.wsn.v22.UnknownReservationIdException_Exception;
-import eu.wisebed.testbed.api.wsn.v22.WSN;
-import eu.wisebed.testbed.api.wsn.v22.SessionManagement;
-import eu.wisebed.wiseui.shared.exception.ExperimentationException;
+import javax.jws.WebService;
+import javax.xml.ws.Endpoint;
+import java.net.MalformedURLException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Queue;
+import java.util.concurrent.Executors;
 
 import static eu.wisebed.wiseui.server.util.APIKeysUtil.copyRsToWsn;
 import static eu.wisebed.wiseui.server.util.URLUtil.convertHostToZeros;
-
 import static eu.wisebed.wiseui.shared.common.Checks.ifNull;
 import static eu.wisebed.wiseui.shared.common.Checks.ifNullOrEmpty;
 
 
-
-@WebService(serviceName = "ControllerService", 
-		targetNamespace = Constants.NAMESPACE_CONTROLLER_SERVICE, 
-		portName = "ControllerPort", 
-		endpointInterface = Constants.ENDPOINT_INTERFACE_CONTROLLER_SERVICE)
+@WebService(serviceName = "ControllerService",
+        targetNamespace = Constants.NAMESPACE_CONTROLLER_SERVICE,
+        portName = "ControllerPort",
+        endpointInterface = Constants.ENDPOINT_INTERFACE_CONTROLLER_SERVICE)
 public class ExperimentController implements Controller {
 	
 	private final Logger LOGGER 

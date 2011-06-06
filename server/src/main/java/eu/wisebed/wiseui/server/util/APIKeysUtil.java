@@ -1,5 +1,6 @@
 /**
- * Copyright (C) 2011 Universität zu Lübeck, Institut für Telematik (ITM), Research Academic Computer Technology Institute (RACTI)
+ * Copyright (C) 2011 Universität zu Lübeck, Institut für Telematik (ITM),
+ *                             Research Academic Computer Technology Institute (RACTI)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,19 +19,18 @@ package eu.wisebed.wiseui.server.util;
 import java.util.ArrayList;
 import java.util.List;
 
-import eu.wisebed.testbed.api.rs.v1.SecretReservationKey;
-import eu.wisebed.testbed.api.snaa.v1.SecretAuthenticationKey;
+import eu.wisebed.api.snaa.SecretAuthenticationKey;
 
 public abstract class APIKeysUtil {
 
-	public static List<eu.wisebed.testbed.api.rs.v1.SecretAuthenticationKey> 
+	public static List<SecretAuthenticationKey>
 	copySnaaToRs(final List<SecretAuthenticationKey> snaaKeys) {
-		List<eu.wisebed.testbed.api.rs.v1.SecretAuthenticationKey> newKeys =
+		List<SecretAuthenticationKey> newKeys =
 			new ArrayList<
-			eu.wisebed.testbed.api.rs.v1.SecretAuthenticationKey>();
+			SecretAuthenticationKey>();
 		for (SecretAuthenticationKey snaaKey : snaaKeys) {
-			eu.wisebed.testbed.api.rs.v1.SecretAuthenticationKey key =
-				new eu.wisebed.testbed.api.rs.v1.SecretAuthenticationKey();
+			SecretAuthenticationKey key =
+				new SecretAuthenticationKey();
 			key.setSecretAuthenticationKey(snaaKey.
 					getSecretAuthenticationKey());
 			key.setUrnPrefix(snaaKey.getUrnPrefix());
@@ -40,14 +40,14 @@ public abstract class APIKeysUtil {
 		return newKeys;
 	}
 
-	public static List<eu.wisebed.testbed.api.wsn.v22.SecretReservationKey> 
-	copyRsToWsn(final List<SecretReservationKey> rsKeys) {
-		List<eu.wisebed.testbed.api.wsn.v22.SecretReservationKey> newKeys =
+	public static List<eu.wisebed.api.sm.SecretReservationKey>
+	copyRsToWsn(final List<eu.wisebed.api.rs.SecretReservationKey> rsKeys) {
+		List<eu.wisebed.api.sm.SecretReservationKey> newKeys =
 			new ArrayList<
-			eu.wisebed.testbed.api.wsn.v22.SecretReservationKey>();
-		for (SecretReservationKey rsKey : rsKeys) {
-			eu.wisebed.testbed.api.wsn.v22.SecretReservationKey newKey =
-				new eu.wisebed.testbed.api.wsn.v22.SecretReservationKey();
+			eu.wisebed.api.sm.SecretReservationKey>();
+		for (eu.wisebed.api.rs.SecretReservationKey rsKey : rsKeys) {
+			eu.wisebed.api.sm.SecretReservationKey newKey =
+				new eu.wisebed.api.sm.SecretReservationKey();
 			newKey.setSecretReservationKey(rsKey.getSecretReservationKey());
 			newKey.setUrnPrefix(rsKey.getUrnPrefix());
 			newKeys.add(newKey);

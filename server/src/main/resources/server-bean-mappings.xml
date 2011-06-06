@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 
-    Copyright (C) 2011 Universität zu Lübeck, Institut für Telematik (ITM), Research Academic Computer Technology Institute (RACTI)
+    Copyright (C) 2011 Universität zu Lübeck, Institut für Telematik (ITM),
+                                Research Academic Computer Technology Institute (RACTI)
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -30,12 +31,12 @@
     </mapping>
 
     <mapping>
-        <class-a>eu.wisebed.testbed.api.rs.v1.ConfidentialReservationData</class-a>
+        <class-a>eu.wisebed.api.rs.ConfidentialReservationData</class-a>
         <class-b>eu.wisebed.wiseui.shared.dto.ConfidentialReservationData</class-b>
         <field>
             <a>data</a>
             <b>data</b>
-            <a-hint>eu.wisebed.testbed.api.rs.v1.Data</a-hint>
+            <a-hint>eu.wisebed.api.rs.Data</a-hint>
             <b-hint>eu.wisebed.wiseui.shared.dto.Data</b-hint>
         </field>
         <field>
@@ -47,7 +48,7 @@
     </mapping>
 
     <mapping>
-        <class-a>eu.wisebed.testbed.api.rs.v1.Data</class-a>
+        <class-a>eu.wisebed.api.rs.Data</class-a>
         <class-b>eu.wisebed.wiseui.shared.dto.Data</class-b>
     </mapping>
 

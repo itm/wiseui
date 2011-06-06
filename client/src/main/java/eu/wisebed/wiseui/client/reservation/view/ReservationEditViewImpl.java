@@ -1,5 +1,6 @@
 /**
- * Copyright (C) 2011 Universität zu Lübeck, Institut für Telematik (ITM), Research Academic Computer Technology Institute (RACTI)
+ * Copyright (C) 2011 Universität zu Lübeck, Institut für Telematik (ITM),
+ *                             Research Academic Computer Technology Institute (RACTI)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,6 +26,7 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.cellview.client.CellList;
 import com.google.gwt.user.cellview.client.CellTree;
 import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.HasEnabled;
 import com.google.gwt.user.client.ui.HasText;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -130,5 +132,13 @@ public class ReservationEditViewImpl extends HasWidgetsDialogBox implements Rese
     @Override
     public HasValue<Date> getEndDateBox() {
         return endDateBox;
+    }
+
+    @Override
+    public void setReadOnly(boolean readOnly) {
+        whoTextBox.setEnabled(!readOnly);
+        startDateBox.setEnabled(!readOnly);
+        endDateBox.setEnabled(!readOnly);
+        submitButton.setVisible(!readOnly);
     }
 }
