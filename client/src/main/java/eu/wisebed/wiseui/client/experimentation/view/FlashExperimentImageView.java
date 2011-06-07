@@ -40,6 +40,7 @@ public interface FlashExperimentImageView extends IsWidget {
 		void submit();
 		
 		void setSelectedImage(BinaryImage selected);
-
+		
+		void getAvailableImages();
 	} 
 }

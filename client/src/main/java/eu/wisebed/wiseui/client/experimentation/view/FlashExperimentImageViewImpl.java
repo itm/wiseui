@@ -171,6 +171,8 @@ public class FlashExperimentImageViewImpl extends HasWidgetsDialogBox implements
 				if (selected != null) {
 					presenter.setSelectedImage(selected);
 					flashButton.setEnabled(true);
+				}else{
+					flashButton.setEnabled(false);
 				}
 			}
 		});
