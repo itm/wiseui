@@ -16,30 +16,22 @@
  */
 package eu.wisebed.wiseui.client.experimentation.view;
 
-import java.util.List;
-
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.inject.ImplementedBy;
 
-import eu.wisebed.wiseui.shared.dto.BinaryImage;
-
-@ImplementedBy(FlashExperimentImageViewImpl.class)
-public interface FlashExperimentImageView extends IsWidget {
+@ImplementedBy(ExperimentOutputViewImpl.class)
+public interface ExperimentOutputView extends IsWidget {
 
 	void show(String title);
 	
 	void hide();
 	
-	void setPresenter(Presenter presenter);
+	void addOutput(String output);
 	
-	ImageUploadWidget getImageUploadWidget();
-
-	void setAvailableImages(List<BinaryImage> images);
+	void setOutput(String output);
 	
-	public interface Presenter {
-		void submit();
+	void clearOutput();
 		
-		void setSelectedImage(BinaryImage selected);
-
-	} 
+	public interface Presenter {
+	}
 }

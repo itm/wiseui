@@ -22,12 +22,10 @@ import java.util.List;
 import java.util.Map;
 
 import com.bradrydzewski.gwt.calendar.client.Appointment;
-import com.google.gwt.core.client.GWT;
 import com.google.inject.Singleton;
 
 import eu.wisebed.wiseui.shared.dto.ConfidentialReservationData;
 import eu.wisebed.wiseui.shared.dto.PublicReservationData;
-import eu.wisebed.wiseui.shared.dto.SecretReservationKey;
 
 @Singleton
 public class ReservationManager {

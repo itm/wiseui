@@ -52,8 +52,8 @@ import static eu.wisebed.wiseui.server.util.URLUtil.getRandomURLSuffix;
 import static eu.wisebed.wiseui.shared.common.Checks.ifNull;
 
 @Singleton
-public class ExperimentationServiceImpl extends RemoteServiceServlet
-        implements ExperimentationService {
+public class ExperimentationServiceImpl extends RemoteServiceServlet 
+	implements ExperimentationService {
 
     private static final long serialVersionUID = -6301493806193636782L;
     private static final Logger LOGGER =

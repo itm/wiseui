@@ -16,7 +16,9 @@
  */
 package eu.wisebed.wiseui.server;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
 
 import com.google.inject.AbstractModule;
@@ -24,6 +26,7 @@ import com.google.inject.Provides;
 
 import eu.wisebed.wiseml.controller.WiseMLController;
 import eu.wisebed.wiseml.model.WiseML;
+import eu.wisebed.wiseml.model.scenario.Timestamp;
 import eu.wisebed.wiseml.model.setup.Setup;
 import eu.wisebed.wiseml.model.trace.Trace;
 import eu.wisebed.wiseui.shared.dto.ExperimentMessage;
@@ -60,6 +63,14 @@ public class WiseUiGuiceModule extends AbstractModule{
 	
 	@Provides
 	/**
+	 * Provides a Timestamp List
+	 */
+	public List<Timestamp> provideTimestampList() {
+		return new ArrayList<Timestamp>();
+	}
+	
+	@Provides
+	/**
 	 * Provides a WiseML Trace
 	 */
 	public Trace provideTrace() {
@@ -73,5 +84,4 @@ public class WiseUiGuiceModule extends AbstractModule{
 	public WiseMLController provideWiseMLController() {
 		return new WiseMLController();
 	}
-
 }
