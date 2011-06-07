@@ -181,7 +181,7 @@ public class ReservationEditPresenter implements Presenter, EditReservationEvent
     public void onEditReservation(final EditReservationEvent event) {
         if (selectedConfiguration == null) {
             final String suggestion = "Please select at least one testbed to make a new reservation";
-            MessageBox.info("No testbed selected", suggestion, null);
+            MessageBox.warning("No testbed selected", suggestion, null);
             return;
         }
 
@@ -191,7 +191,11 @@ public class ReservationEditPresenter implements Presenter, EditReservationEvent
         final String title = Objects.firstNonNull(selectedConfiguration.getName(), DEFAULT_NEW_TITLE);
         final AuthenticationManager authenticationManager = injector.getAuthenticationManager();
         final String createdBy = event.getAppointment().getCreatedBy();
-        final String userName = authenticationManager.getSecretAuthenticationKeys().get(0).getUsername();
+        String userName = "";
+        if (authenticationManager.getSecretAuthenticationKeys() != null
+                && !authenticationManager.getSecretAuthenticationKeys().isEmpty()) {
+            userName = authenticationManager.getSecretAuthenticationKeys().get(0).getUsername();
+        }
         view.getWhoTextBox().setText(createdBy != null ? createdBy : userName);
         final Date start = event.getAppointment().getStart();
         view.getStartDateBox().setValue(start);

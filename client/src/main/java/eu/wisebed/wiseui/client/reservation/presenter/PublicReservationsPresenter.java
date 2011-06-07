@@ -45,6 +45,7 @@ import eu.wisebed.wiseui.client.reservation.view.PublicReservationsView;
 import eu.wisebed.wiseui.client.testbedlist.event.TestbedSelectedEvent;
 import eu.wisebed.wiseui.client.testbedselection.event.ThrowableEvent;
 import eu.wisebed.wiseui.client.testbedselection.event.WisemlLoadedEvent;
+import eu.wisebed.wiseui.client.util.AuthenticationManager;
 import eu.wisebed.wiseui.client.util.EventBusManager;
 import eu.wisebed.wiseui.client.util.ReservationManager;
 import eu.wisebed.wiseui.shared.dto.ConfidentialReservationData;
@@ -120,16 +121,9 @@ public class PublicReservationsPresenter implements PublicReservationsView.Prese
 
                 final Appointment appointment = event.getTarget();
 
-                // Authenticated users can edit their own reservations
-                if (!isAuthenticated() && appointment.getCreatedBy().equals(getAuthenticatedUserName())) {
-                    readOnly = false;
-                }
-
                 final HashSet<Node> filteredNodes = new HashSet<Node>();
                 final PublicReservationData publicReservationData
                         = reservationManager.getPublicReservations().get(appointment);
-                final PublicReservationData confidentialReservationData
-                        = reservationManager.getConfidentialReservations().get(appointment);
 
                 // TODO Reduce computational complexity!
 
@@ -143,12 +137,22 @@ public class PublicReservationsPresenter implements PublicReservationsView.Prese
                         }
                     }
                 }
-                if (confidentialReservationData != null) {
-                    GWT.log("Found confidential reservation: " + confidentialReservationData);
-                    for (String urnPrefix : confidentialReservationData.getNodeURNs()) {
-                        for (Node node : setupNodes) {
-                            if (node.getId().equals(urnPrefix)) {
-                                filteredNodes.add(node);
+
+                // Authenticated users can edit their own reservations
+                if (isAuthenticated() && appointment.getCreatedBy().equals(getAuthenticatedUserName())) {
+
+                    readOnly = false;
+
+                    final PublicReservationData confidentialReservationData
+                            = reservationManager.getConfidentialReservations().get(appointment);
+
+                    if (confidentialReservationData != null) {
+                        GWT.log("Found confidential reservation: " + confidentialReservationData);
+                        for (String urnPrefix : confidentialReservationData.getNodeURNs()) {
+                            for (Node node : setupNodes) {
+                                if (node.getId().equals(urnPrefix)) {
+                                    filteredNodes.add(node);
+                                }
                             }
                         }
                     }
@@ -339,8 +343,16 @@ public class PublicReservationsPresenter implements PublicReservationsView.Prese
     }
 
     private String getAuthenticatedUserName() {
-        return injector.getAuthenticationManager().getMap().get(
-                testbedConfiguration.getUrnPrefixList().get(0)).getUsername();
+        final AuthenticationManager authenticationManager = injector.getAuthenticationManager();
+        String userName = null;
+        if (isAuthenticated()) {
+            final String urnPrefix = testbedConfiguration.getUrnPrefixList().get(0);
+            final SecretAuthenticationKey secretAuthenticationKey = authenticationManager.getMap().get(urnPrefix);
+            if (secretAuthenticationKey != null) {
+                userName = secretAuthenticationKey.getUsername();
+            }
+        }
+        return userName;
     }
 
     /**
@@ -543,7 +555,12 @@ public class PublicReservationsPresenter implements PublicReservationsView.Prese
 
     @Override
     public boolean isAuthenticated() {
-        return injector.getAuthenticationManager().isAuthenticated(testbedConfiguration);
+        boolean result = false;
+        final AuthenticationManager authenticationManager = injector.getAuthenticationManager();
+        if (testbedConfiguration != null) {
+            result = authenticationManager.isAuthenticated(testbedConfiguration);
+        }
+        return result;
     }
 
     @Override
