@@ -56,6 +56,7 @@ public class ReservationEditViewImpl extends HasWidgetsDialogBox implements Rese
     DateBox startDateBox;
     @UiField
     DateBox endDateBox;
+    // TODO This should be a list, which can show multiple urnPrefixes + reservations.
     @UiField
     TextBox reservationKeyBox;
     @UiField

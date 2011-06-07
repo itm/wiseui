@@ -185,9 +185,17 @@ public class ReservationEditPresenter implements Presenter, EditReservationEvent
             return;
         }
 
+        // Handle readOnly mode
         readOnly = event.isReadOnly();
         view.setReadOnly(readOnly);
 
+        // Fill in default values
+        view.getWhoTextBox().setText("");
+        view.getReservationKeyBox().setText("");
+        view.getStartDateBox().setValue(new Date());
+        view.getEndDateBox().setValue(new Date());
+
+        // Fill in real values
         final String title = Objects.firstNonNull(selectedConfiguration.getName(), DEFAULT_NEW_TITLE);
         final AuthenticationManager authenticationManager = injector.getAuthenticationManager();
         final String createdBy = event.getAppointment().getCreatedBy();
@@ -201,7 +209,9 @@ public class ReservationEditPresenter implements Presenter, EditReservationEvent
         view.getStartDateBox().setValue(start);
         final Date end = event.getAppointment().getEnd();
         view.getEndDateBox().setValue(end != null ? end : start);
+
         // TODO SNO Refactor. This code looks too complicated and ugly.
+        // Fill in secret reservation key for authenticated users in confidential reservations
         if (!readOnly) {
             final ConfidentialReservationData confidentialReservationData
                     = injector.getReservationManager().getConfidentialReservations().get(event.getAppointment());
@@ -210,7 +220,8 @@ public class ReservationEditPresenter implements Presenter, EditReservationEvent
                 if (dataList != null && !dataList.isEmpty()) {
                     final Data data = dataList.get(0);
                     if (data != null) {
-                        view.getReservationKeyBox().setText(data.getSecretReservationKey());
+                        final String text =  data.getUrnPrefix() + "," + data.getSecretReservationKey();
+                        view.getReservationKeyBox().setText(text);
                     }
                 }
             }
