@@ -38,7 +38,6 @@ import com.google.inject.Singleton;
 import eu.wisebed.wiseui.shared.dto.ConfidentialReservationData;
 import eu.wisebed.wiseui.shared.dto.PublicReservationData;
 import eu.wisebed.wiseui.widgets.CaptionPanel;
-import eu.wisebed.wiseui.widgets.ReservationDetailsWidget;
 import eu.wisebed.wiseui.widgets.loading.HasLoadingIndicator;
 
 import java.util.Date;
@@ -58,8 +57,6 @@ public class PublicReservationsViewImpl extends Composite implements PublicReser
     private static PublicReservationsViewImplUiBinder uiBinder = GWT.create(PublicReservationsViewImplUiBinder.class);
 
     private Presenter presenter;
-
-    private ReservationDetailsWidget reservationDetailsWidget = new ReservationDetailsWidget();
 
     @UiField
     CaptionPanel container;
