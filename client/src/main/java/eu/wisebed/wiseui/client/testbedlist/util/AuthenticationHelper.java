@@ -70,7 +70,7 @@ public class AuthenticationHelper implements AsyncCallback<SecretAuthenticationK
     @Override
     public void onFailure(final Throwable caught) {
         GWT.log(caught.getMessage());
-        current.setState(State.FAILED);
+        current.setState(State.FAILED, caught.getMessage());
         callback.onStateChanged(current, State.FAILED);
         proceedNext();
     }

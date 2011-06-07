@@ -70,10 +70,10 @@ public class SNAAServiceImpl extends RemoteServiceServlet implements SNAAService
             key = snaaService.authenticate(Arrays.asList(triple)).get(0);
         } catch (final AuthenticationExceptionException e) {
             LOGGER.error(AUTHENTICATION_FAILED, e);
-            throw new AuthenticationException(AUTHENTICATION_FAILED, e);
+            throw new AuthenticationException(e.getMessage(), e);
         } catch (final SNAAExceptionException e) {
             LOGGER.error(AUTHENTICATION_FAILED, e);
-            throw new AuthenticationException(AUTHENTICATION_FAILED, e);
+            throw new AuthenticationException(e.getMessage(), e);
         }
 
         return mapper.map(key, SecretAuthenticationKey.class);

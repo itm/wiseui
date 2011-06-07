@@ -27,7 +27,7 @@ public class UrnPrefixInfo {
         CANCELED("Canceled"),
         SKIPPED("Skipped");
 
-        private final String value;
+        private String value;
 
         private State(final String value) {
             this.value = value;
@@ -61,6 +61,11 @@ public class UrnPrefixInfo {
 
     public void setState(final State state) {
         this.state = state;
+    }
+    
+    public void setState(final State state, String msg) {
+        this.state = state;
+        state.value = msg;
     }
 
     public boolean isChecked() {
