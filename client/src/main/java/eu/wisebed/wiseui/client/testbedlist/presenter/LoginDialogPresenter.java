@@ -103,6 +103,7 @@ public class LoginDialogPresenter implements Presenter, ConfigurationSelectedHan
             public void onSuccess(final SecretAuthenticationKey result) {
                 authenticationManager.addSecretAuthenticationKey(result);
                 eventBus.fireEventFromSource(new LoggedInEvent(result), this);
+                eventBus.fireEventFromSource(new RefreshTestbedListEvent(), this);
             }
 
             @Override
@@ -110,7 +111,6 @@ public class LoginDialogPresenter implements Presenter, ConfigurationSelectedHan
                 view.getUsernameEnabled().setEnabled(true);
                 view.getPasswordEnabled().setEnabled(true);
                 view.getSubmitEnabled().setEnabled(true);
-                eventBus.fireEventFromSource(new RefreshTestbedListEvent(), this);
                 if (hideAfterComplete) {
                     view.hide();
                 }
