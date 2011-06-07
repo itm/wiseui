@@ -155,24 +155,6 @@ public class PublicReservationsViewImpl extends Composite implements PublicReser
         return container;
     }
 
-//    @Override
-//    public void showReservationDetails(final Appointment reservation) {
-//    	final DecoratedPopupPanel popUp = reservationDetailsWidget.getPopUp();
-//    	reservationDetailsWidget.setReservedBy("Reserved by: " + reservation.getCreatedBy());
-//    	reservationDetailsWidget.setStart("Start: " + reservation.getStart().toString());
-//    	reservationDetailsWidget.setEnd("End: " + reservation.getEnd().toString());
-//    	reservationDetailsWidget.setDescription(reservation.getDescription());
-//    	reservationDetailsWidget.getDeleteButton().addClickHandler(new ClickHandler(){
-//    		@Override
-//    		public void onClick(final ClickEvent event){
-//    			presenter.deleteReservation(reservation);
-//    			popUp.hide();
-//    		}
-//    	});
-//        popUp.center();
-//        popUp.show();
-//    }
-
     @Override
     public void setPresenter(final Presenter presenter) {
         GWT.log("setPresenter( " + presenter.toString() + " )");

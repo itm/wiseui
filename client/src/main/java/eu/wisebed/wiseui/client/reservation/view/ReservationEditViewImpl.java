@@ -56,6 +56,9 @@ public class ReservationEditViewImpl extends HasWidgetsDialogBox implements Rese
     DateBox startDateBox;
     @UiField
     DateBox endDateBox;
+    // TODO This should be a list, which can show multiple urnPrefixes + reservations.
+    @UiField
+    TextBox reservationKeyBox;
     @UiField
     Button submitButton;
     @UiField
@@ -135,8 +138,12 @@ public class ReservationEditViewImpl extends HasWidgetsDialogBox implements Rese
     }
 
     @Override
+    public HasText getReservationKeyBox() {
+        return reservationKeyBox;
+    }
+
+    @Override
     public void setReadOnly(boolean readOnly) {
-        whoTextBox.setEnabled(!readOnly);
         startDateBox.setEnabled(!readOnly);
         endDateBox.setEnabled(!readOnly);
         submitButton.setVisible(!readOnly);

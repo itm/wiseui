@@ -181,22 +181,51 @@ public class ReservationEditPresenter implements Presenter, EditReservationEvent
     public void onEditReservation(final EditReservationEvent event) {
         if (selectedConfiguration == null) {
             final String suggestion = "Please select at least one testbed to make a new reservation";
-            MessageBox.info("No testbed selected", suggestion, null);
+            MessageBox.warning("No testbed selected", suggestion, null);
             return;
         }
 
+        // Handle readOnly mode
         readOnly = event.isReadOnly();
         view.setReadOnly(readOnly);
 
+        // Fill in default values
+        view.getWhoTextBox().setText("");
+        view.getReservationKeyBox().setText("");
+        view.getStartDateBox().setValue(new Date());
+        view.getEndDateBox().setValue(new Date());
+
+        // Fill in real values
         final String title = Objects.firstNonNull(selectedConfiguration.getName(), DEFAULT_NEW_TITLE);
         final AuthenticationManager authenticationManager = injector.getAuthenticationManager();
         final String createdBy = event.getAppointment().getCreatedBy();
-        final String userName = authenticationManager.getSecretAuthenticationKeys().get(0).getUsername();
+        String userName = "";
+        if (authenticationManager.getSecretAuthenticationKeys() != null
+                && !authenticationManager.getSecretAuthenticationKeys().isEmpty()) {
+            userName = authenticationManager.getSecretAuthenticationKeys().get(0).getUsername();
+        }
         view.getWhoTextBox().setText(createdBy != null ? createdBy : userName);
         final Date start = event.getAppointment().getStart();
         view.getStartDateBox().setValue(start);
         final Date end = event.getAppointment().getEnd();
         view.getEndDateBox().setValue(end != null ? end : start);
+
+        // TODO SNO Refactor. This code looks too complicated and ugly.
+        // Fill in secret reservation key for authenticated users in confidential reservations
+        if (!readOnly) {
+            final ConfidentialReservationData confidentialReservationData
+                    = injector.getReservationManager().getConfidentialReservations().get(event.getAppointment());
+            if (confidentialReservationData != null) {
+                final List<Data> dataList = confidentialReservationData.getData();
+                if (dataList != null && !dataList.isEmpty()) {
+                    final Data data = dataList.get(0);
+                    if (data != null) {
+                        final String text =  data.getUrnPrefix() + "," + data.getSecretReservationKey();
+                        view.getReservationKeyBox().setText(text);
+                    }
+                }
+            }
+        }
         view.show(title);
         if (event.getNodes() != null) {
             setNodesSelected(event.getNodes());

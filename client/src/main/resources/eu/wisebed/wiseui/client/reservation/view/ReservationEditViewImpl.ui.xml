@@ -50,7 +50,7 @@
 			<g:HTMLPanel styleName="{style.innerPadding}">
 				<label>Who:</label>
 				<br />
-				<g:TextBox addStyleNames="{style.input}" ui:field="whoTextBox" />
+				<g:TextBox addStyleNames="{style.input}" ui:field="whoTextBox" readOnly="true"/>
 				<br />
 
 				<label>Start:</label>
@@ -61,6 +61,11 @@
 				<label>End:</label>
 				<br />
 				<d:DateBox addStyleNames="{style.input}" ui:field="endDateBox" />
+                <br />
+
+				<label>Reservation Key:</label>
+				<br />
+				<g:TextBox addStyleNames="{style.input}" ui:field="reservationKeyBox" readOnly="true"/>
                 <br />
 
                 <label>Selected nodes:</label>
