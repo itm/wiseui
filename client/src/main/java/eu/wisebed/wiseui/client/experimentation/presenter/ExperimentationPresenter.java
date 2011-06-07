@@ -243,7 +243,7 @@ RefreshUserExperimentsEvent.Handler {
 					if(experiment == null) {
 						// experiment is not in the active list create an instance and print it
 						experiment = injector.getExperimentPresenter();
-						experiment.setupExperimentPresenter(data, 
+						experiment.setupExperimentPresenter(data,
 								testbedConfiguration.getSessionmanagementEndpointUrl());
 							
 					}

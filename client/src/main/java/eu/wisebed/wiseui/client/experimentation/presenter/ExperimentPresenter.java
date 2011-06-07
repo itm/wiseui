@@ -71,9 +71,9 @@ ExperimentMessageArrivedEvent.Handler, SuccessfulImageUploadEvent.Handler{
 
 	private final WiseUiGinjector injector;
 	private ExperimentView view;
-	private FlashExperimentImageView imageView; // TODO provide presenters for those three
-	private ImageUploadWidget imageUploadWidget; //
-	private ExperimentWiseMLOutputView wiseMloutputView; //
+	private FlashExperimentImageView imageView;
+	private ImageUploadWidget imageUploadWidget; 
+	private ExperimentWiseMLOutputView wiseMloutputView;
 	private HashMap<String,ExperimentOutputView> outputMap;
 	private ExperimentationServiceAsync service;
 	private EventBusManager eventBus;
@@ -97,7 +97,6 @@ ExperimentMessageArrivedEvent.Handler, SuccessfulImageUploadEvent.Handler{
 			final ExperimentationServiceAsync service,
 			final ExperimentView view,
 			final FlashExperimentImageView flashImageView,
-			//final ExperimentOutputView outputView,
 			final ExperimentWiseMLOutputView wiseMloutputView,
 			final EventBus eventBus) {
 
@@ -112,7 +111,6 @@ ExperimentMessageArrivedEvent.Handler, SuccessfulImageUploadEvent.Handler{
 		this.outputMap = new HashMap<String,ExperimentOutputView>();
 		this.service = service;
 		this.eventBus = new EventBusManager(eventBus);
-		this.selectedImage = null;
 		bind();
 	} 
 
@@ -475,7 +473,9 @@ ExperimentMessageArrivedEvent.Handler, SuccessfulImageUploadEvent.Handler{
 		sessionManagementUrl = url;
 		experimentTiming = "-";
 		flashedImageFilename = "-";
+		selectedImage = null;
 		status = ExperimentStatus.PENDING;
+		GWT.log("experiment data are set");
 	}
 
 	@SuppressWarnings("deprecation")
@@ -484,12 +484,14 @@ ExperimentMessageArrivedEvent.Handler, SuccessfulImageUploadEvent.Handler{
 			Checks.ifNull(secretReservationKeyValue, "Experiment key is null");
 			Checks.ifNull(fromDate, "Experiment start date is null");
 			Checks.ifNull(toDate, "Experiment start date is null");
+			Checks.ifNullOrEmpty(nodeUrns, "Node list is null or empty");
 		}catch(RuntimeException cause){
 			MessageBox.error("Error",cause.getMessage(),cause,null);
 		}
 		
 		// initialize outputviews
 		for(String nodeUrn : nodeUrns) {
+			GWT.log("init : " +  nodeUrn);
 			outputMap.put(nodeUrn, injector.getExperimentOutputView());
 		}
 
@@ -506,6 +508,7 @@ ExperimentMessageArrivedEvent.Handler, SuccessfulImageUploadEvent.Handler{
 		view.deactivateFlashExperimentButton();
 		view.deactivateStopExperimentButton();
 		view.deactivateDownloadWiseMLButton();
+		GWT.log("view initialized");
 	}
 
 	private void startReservationStartTimer() {

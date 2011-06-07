@@ -19,6 +19,7 @@ package eu.wisebed.wiseui.client.experimentation.view;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiFactory;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.uibinder.client.UiTemplate;
@@ -30,9 +31,9 @@ import eu.wisebed.wiseui.widgets.HasWidgetsDialogBox;
 
 public class ExperimentOutputViewImpl extends HasWidgetsDialogBox implements ExperimentOutputView {
 	
-	private static ExperimentOutputViewImplBinder uiBinder = GWT.create(ExperimentOutputViewImpl.class);
+	private static ExperimentOutputViewImplBinder uiBinder = GWT.create(ExperimentOutputViewImplBinder.class);
 	
-	@UiTemplate("ExperimentOutputViewImplBinder.ui.xml")
+	@UiTemplate("ExperimentOutputViewImpl.ui.xml")
 	interface ExperimentOutputViewImplBinder extends UiBinder<Widget, ExperimentOutputViewImpl> {
 	}
 	
@@ -43,13 +44,17 @@ public class ExperimentOutputViewImpl extends HasWidgetsDialogBox implements Exp
 	TextArea outputTextArea;
 
 	public ExperimentOutputViewImpl(){
+				
 		uiBinder.createAndBindUi(this);
 
 		setModal(true);
 		setGlassEnabled(true);
 		setAnimationEnabled(true);
+	}
 	
-		outputTextArea.setText("");
+	@UiFactory
+	protected ExperimentOutputViewImpl createDialog() {
+		return this;
 	}
 	
 	@Override

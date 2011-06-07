@@ -19,6 +19,7 @@ package eu.wisebed.wiseui.client.experimentation.view;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiFactory;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.uibinder.client.UiTemplate;
@@ -28,9 +29,9 @@ import com.google.gwt.user.client.ui.Widget;
 
 import eu.wisebed.wiseui.widgets.HasWidgetsDialogBox;
 
-public class ExperimentWiseMLOutputViewImpl extends HasWidgetsDialogBox implements  ExperimentWiseMLOutputView{
+public class ExperimentWiseMLOutputViewImpl extends HasWidgetsDialogBox implements ExperimentWiseMLOutputView{
 	
-	private static ExperimentWiseMLOutputViewImplBinder uiBinder = GWT.create(ExperimentWiseMLOutputViewImpl.class);
+	private static ExperimentWiseMLOutputViewImplBinder uiBinder = GWT.create(ExperimentWiseMLOutputViewImplBinder.class);
 	
 	@UiTemplate("ExperimentWiseMLOutputViewImpl.ui.xml")
 	interface ExperimentWiseMLOutputViewImplBinder extends UiBinder<Widget, ExperimentWiseMLOutputViewImpl> {
@@ -43,14 +44,17 @@ public class ExperimentWiseMLOutputViewImpl extends HasWidgetsDialogBox implemen
 	TextArea outputTextArea;
 
 	public ExperimentWiseMLOutputViewImpl(){
+		
 		uiBinder.createAndBindUi(this);
 
 		setModal(true);
 		setGlassEnabled(true);
 		setAnimationEnabled(true);
-		
-		outputTextArea.setText("");	
-		setScrollPositionAtEnd();
+	}
+	
+	@UiFactory
+	protected ExperimentWiseMLOutputViewImpl createDialog() {
+		return this;
 	}
 	
 	@Override
@@ -68,7 +72,11 @@ public class ExperimentWiseMLOutputViewImpl extends HasWidgetsDialogBox implemen
 	@Override
 	public void addWiseMLOutput(final String wiseMlString) {
 		String previousText = outputTextArea.getText();
-		outputTextArea.setText(previousText + '\n'+ wiseMlString);
+		if(previousText == null) {
+			outputTextArea.setText(wiseMlString);
+		}else {
+			outputTextArea.setText(previousText + '\n'+ wiseMlString);
+		}
 		setScrollPositionAtEnd();
 	}
 	

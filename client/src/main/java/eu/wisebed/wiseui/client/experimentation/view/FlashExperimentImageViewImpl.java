@@ -59,7 +59,7 @@ public class FlashExperimentImageViewImpl extends HasWidgetsDialogBox implements
 	
 	@UiField
 	Label noImageUploaded;
-
+	
 	@UiField(provided=true)
 	ImageUploadWidget imageUploadWidget;
 

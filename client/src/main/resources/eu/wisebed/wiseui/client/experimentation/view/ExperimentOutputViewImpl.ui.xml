@@ -18,7 +18,8 @@
 -->
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
-	xmlns:g="urn:import:com.google.gwt.user.client.ui" xmlns:my="urn:import:eu.wisebed.wiseui.client.experimentation.view">
+	xmlns:g="urn:import:com.google.gwt.user.client.ui" 
+	xmlns:my="urn:import:eu.wisebed.wiseui.client.experimentation.view">
 
 	<ui:style>
 		.fullLayout {
@@ -48,8 +49,7 @@
 			height: 500px;
 		}
 	</ui:style>
-	<my:ExperimentWiseMLOutputViewImpl
-		styleName="{style.content}">
+	<my:ExperimentOutputViewImpl styleName="{style.content}">
 		<g:VerticalPanel>
 			<g:TextArea styleName="{style.textArea}" ui:field="outputTextArea" />
 			<g:HTMLPanel styleName="{style.buttonPanel}">
@@ -62,5 +62,5 @@
 				</table>
 			</g:HTMLPanel>
 		</g:VerticalPanel>
-	</my:ExperimentWiseMLOutputViewImpl>
+	</my:ExperimentOutputViewImpl >
 </ui:UiBinder> 
