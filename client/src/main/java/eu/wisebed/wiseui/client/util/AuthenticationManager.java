@@ -162,15 +162,9 @@ public class AuthenticationManager {
      * @param testbedConfiguration The {@link TestbedConfiguration} to be checked.
      * @return Whether the user is connected to the current testbed or not.
      */
-    public boolean isAuthenticated(final TestbedConfiguration testbedConfiguration) {
-        ifNullArgument(testbedConfiguration, "testbedConfiguration is null!");
+    public boolean isAuthenticated(final TestbedConfiguration testbedConfiguration) {    	
+    	ifNullArgument(testbedConfiguration, "testbedConfiguration is null!");
         ifNull(testbedConfiguration.getUrnPrefixList(), "testbedConfiguration.getUrnPrefixList() is null!");
-        boolean result = false;
-        for (String authenticatedUrnPrefix : map.keySet()) {
-            if (testbedConfiguration.getUrnPrefixList().contains(authenticatedUrnPrefix)) {
-                result = true;
-            }
-        }
-        return result;
+    	return map.keySet().containsAll(testbedConfiguration.getUrnPrefixList());
     }
 }
