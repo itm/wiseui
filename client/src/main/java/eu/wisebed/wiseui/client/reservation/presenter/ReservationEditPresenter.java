@@ -201,6 +201,20 @@ public class ReservationEditPresenter implements Presenter, EditReservationEvent
         view.getStartDateBox().setValue(start);
         final Date end = event.getAppointment().getEnd();
         view.getEndDateBox().setValue(end != null ? end : start);
+        // TODO SNO Refactor. This code looks too complicated and ugly.
+        if (!readOnly) {
+            final ConfidentialReservationData confidentialReservationData
+                    = injector.getReservationManager().getConfidentialReservations().get(event.getAppointment());
+            if (confidentialReservationData != null) {
+                final List<Data> dataList = confidentialReservationData.getData();
+                if (dataList != null && !dataList.isEmpty()) {
+                    final Data data = dataList.get(0);
+                    if (data != null) {
+                        view.getReservationKeyBox().setText(data.getSecretReservationKey());
+                    }
+                }
+            }
+        }
         view.show(title);
         if (event.getNodes() != null) {
             setNodesSelected(event.getNodes());

@@ -37,6 +37,8 @@ public interface ReservationEditView extends IsWidget {
 
 	HasValue<Date> getEndDateBox();
 
+    HasText getReservationKeyBox();
+
     void setReadOnly(boolean readOnly);
 	
 	void setPresenter(Presenter presenter);

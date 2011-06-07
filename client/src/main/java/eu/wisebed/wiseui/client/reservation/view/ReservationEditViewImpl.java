@@ -57,6 +57,8 @@ public class ReservationEditViewImpl extends HasWidgetsDialogBox implements Rese
     @UiField
     DateBox endDateBox;
     @UiField
+    TextBox reservationKeyBox;
+    @UiField
     Button submitButton;
     @UiField
     Button cancelButton;
@@ -135,8 +137,12 @@ public class ReservationEditViewImpl extends HasWidgetsDialogBox implements Rese
     }
 
     @Override
+    public HasText getReservationKeyBox() {
+        return reservationKeyBox;
+    }
+
+    @Override
     public void setReadOnly(boolean readOnly) {
-        whoTextBox.setEnabled(!readOnly);
         startDateBox.setEnabled(!readOnly);
         endDateBox.setEnabled(!readOnly);
         submitButton.setVisible(!readOnly);
