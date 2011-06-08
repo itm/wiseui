@@ -80,8 +80,6 @@ public interface PublicReservationsView extends IsWidget {
         
     	void showEditReservationDialog(Appointment reservation, Set<Node> nodes, boolean readOnly);
     	
-    	void deleteReservation(Appointment reservation);
-    	
     	boolean isAuthenticated();
     }
 }

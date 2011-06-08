@@ -53,5 +53,7 @@ public interface ReservationEditView extends IsWidget {
 		void submit();
 		
 		void cancel();
-	}
+
+        void delete();
+    }
 }
