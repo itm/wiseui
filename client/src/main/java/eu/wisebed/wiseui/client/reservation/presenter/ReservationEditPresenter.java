@@ -138,7 +138,10 @@ public class ReservationEditPresenter implements Presenter, EditReservationEvent
 
         view.hide();
 
-        reservationService.makeReservation(rsEndpointUrl, authenticationKeys, reservationData, new AsyncCallback<List<SecretReservationKey>>() {
+        reservationService.makeReservation(rsEndpointUrl,
+                                           authenticationKeys,
+                                           reservationData,
+                                           new AsyncCallback<List<SecretReservationKey>>() {
             public void onFailure(Throwable caught) {
                 eventBus.fireEvent(new ReservationFailedEvent(caught));
             }

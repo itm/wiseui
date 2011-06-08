@@ -29,12 +29,10 @@ import com.google.inject.Singleton;
 public class ReservationViewImpl extends Composite implements ReservationView {
 
 	@UiTemplate("ReservationViewImpl.ui.xml")
-    interface ReservationViewImplUiBinder extends
-            UiBinder<Widget, ReservationViewImpl> {
+    interface ReservationViewImplUiBinder extends UiBinder<Widget, ReservationViewImpl> {
     }
 
-	private static ReservationViewImplUiBinder uiBinder = GWT
-    	.create(ReservationViewImplUiBinder.class);
+	private static ReservationViewImplUiBinder uiBinder = GWT.create(ReservationViewImplUiBinder.class);
 
 	public ReservationViewImpl() {
 		initWidget(uiBinder.createAndBindUi(this));

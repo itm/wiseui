@@ -19,21 +19,21 @@ package eu.wisebed.wiseui.client.reservation.event;
 import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;
 
-public class LoginRequiredEvent extends GwtEvent<LoginRequiredEvent.Handler>{
-	
-	public static Type<Handler> TYPE = new Type<Handler>();
-	
-	public interface Handler extends EventHandler{
-		void onLoginRequired(LoginRequiredEvent event);
-	}
+public class LoginRequiredEvent extends GwtEvent<LoginRequiredEvent.Handler> {
 
-	@Override
-	public Type<Handler> getAssociatedType(){
-		return TYPE;
-	}
-	
-	@Override
-	protected void dispatch(Handler handler){
-		handler.onLoginRequired(this);
-	}
+    public static final Type<Handler> TYPE = new Type<Handler>();
+
+    public interface Handler extends EventHandler {
+        void onLoginRequired(LoginRequiredEvent event);
+    }
+
+    @Override
+    public Type<Handler> getAssociatedType() {
+        return TYPE;
+    }
+
+    @Override
+    protected void dispatch(Handler handler) {
+        handler.onLoginRequired(this);
+    }
 }
