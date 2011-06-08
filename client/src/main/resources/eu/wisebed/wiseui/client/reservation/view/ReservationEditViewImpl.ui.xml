@@ -76,7 +76,10 @@
 				<table class="{style.buttonTable}">
 					<tr>
 						<td>
-							<g:Button ui:field="submitButton" addStyleNames="{style.button}">Submit</g:Button>
+							<g:Button ui:field="submitButton" addStyleNames="{style.button}">Save</g:Button>
+						</td>
+						<td>
+							<g:Button ui:field="deleteButton" addStyleNames="{style.button}">Delete</g:Button>
 						</td>
 						<td>
 							<g:Button ui:field="cancelButton" addStyleNames="{style.button}">Cancel</g:Button>

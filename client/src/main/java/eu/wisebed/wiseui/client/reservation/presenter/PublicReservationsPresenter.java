@@ -291,6 +291,8 @@ public class PublicReservationsPresenter implements PublicReservationsView.Prese
                             view.getCalendar().removeAppointment(appointment);
                         }
                         loadConfidentialReservations(view.getCalendar().getDate());
+                    } else {
+                        view.getLoadingIndicator().hideLoading();
                     }
                 } else {
                     GWT.log("No public reservation data found.");
@@ -353,46 +355,6 @@ public class PublicReservationsPresenter implements PublicReservationsView.Prese
             }
         }
         return userName;
-    }
-
-    /**
-     * Call GWT-RPC deleteReservation(...) from {@link eu.wisebed.wiseui.api.ReservationService}.
-     * Deleting reservation from RS service. This action cannot be undone!
-     *
-     * @param reservation Appointment to be deleted
-     */
-    @Override
-    public void deleteReservation(final Appointment reservation) {
-        // Get RS endpoint URL
-        final String rsEndpointUrl = testbedConfiguration.getRsEndpointUrl();
-
-        // Get secret authentication keys
-        final List<SecretAuthenticationKey> secretAuthenticationKeys
-                = injector.getAuthenticationManager().getSecretAuthenticationKeys();
-
-        // Get secret reservation keys
-        final ConfidentialReservationData confidentialReservationData
-                = reservationManager.getConfidentialReservations().get(reservation);
-        final List<SecretReservationKey> secretReservationKeys
-                = new ArrayList<SecretReservationKey>(confidentialReservationData.getData().size());
-        for (Data data : confidentialReservationData.getData()) {
-            final SecretReservationKey secretReservationKey =
-                    new SecretReservationKey(data.getUrnPrefix(), data.getSecretReservationKey());
-            secretReservationKeys.add(secretReservationKey);
-        }
-
-        // Make the RPC call and handle the result via events
-        GWT.log("Delete reservation: " + confidentialReservationData);
-        reservationService.deleteReservation(rsEndpointUrl, secretAuthenticationKeys, secretReservationKeys,
-                new AsyncCallback<Void>() {
-                    public void onFailure(final Throwable caught) {
-                        eventBus.fireEvent(new ReservationDeleteFailedEvent(caught));
-                    }
-
-                    public void onSuccess(final Void result) {
-                        eventBus.fireEvent(new ReservationDeleteSuccessEvent(reservation));
-                    }
-                });
     }
 
     @Override

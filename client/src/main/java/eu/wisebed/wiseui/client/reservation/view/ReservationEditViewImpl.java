@@ -60,11 +60,13 @@ public class ReservationEditViewImpl extends HasWidgetsDialogBox implements Rese
     @UiField
     TextBox reservationKeyBox;
     @UiField
+    SimplePanel treeContainer;
+    @UiField
     Button submitButton;
     @UiField
     Button cancelButton;
     @UiField
-    SimplePanel treeContainer;
+    Button deleteButton;
 
     private Presenter presenter;
 
@@ -103,6 +105,11 @@ public class ReservationEditViewImpl extends HasWidgetsDialogBox implements Rese
     @UiHandler("submitButton")
     public void onSubmit(final ClickEvent event) {
         presenter.submit();
+    }
+
+    @UiHandler("deleteButton")
+    public void onDelete(final ClickEvent event) {
+        presenter.delete();
     }
 
     @UiHandler("cancelButton")
@@ -147,5 +154,6 @@ public class ReservationEditViewImpl extends HasWidgetsDialogBox implements Rese
         startDateBox.setEnabled(!readOnly);
         endDateBox.setEnabled(!readOnly);
         submitButton.setVisible(!readOnly);
+        deleteButton.setVisible(!readOnly);
     }
 }

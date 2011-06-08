@@ -16,6 +16,7 @@
  */
 package eu.wisebed.wiseui.client.reservation.presenter;
 
+import com.bradrydzewski.gwt.calendar.client.Appointment;
 import com.google.common.base.Objects;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
@@ -25,6 +26,8 @@ import com.google.inject.Inject;
 import eu.wisebed.wiseui.api.ReservationServiceAsync;
 import eu.wisebed.wiseui.client.WiseUiGinjector;
 import eu.wisebed.wiseui.client.reservation.event.EditReservationEvent;
+import eu.wisebed.wiseui.client.reservation.event.ReservationDeleteFailedEvent;
+import eu.wisebed.wiseui.client.reservation.event.ReservationDeleteSuccessEvent;
 import eu.wisebed.wiseui.client.reservation.event.ReservationFailedEvent;
 import eu.wisebed.wiseui.client.reservation.event.ReservationSuccessEvent;
 import eu.wisebed.wiseui.client.reservation.i18n.ReservationMessages;
@@ -35,6 +38,7 @@ import eu.wisebed.wiseui.client.testbedlist.event.TestbedSelectedEvent.Configura
 import eu.wisebed.wiseui.client.testbedselection.common.TestbedTreeViewModel;
 import eu.wisebed.wiseui.client.util.AuthenticationManager;
 import eu.wisebed.wiseui.client.util.EventBusManager;
+import eu.wisebed.wiseui.client.util.ReservationManager;
 import eu.wisebed.wiseui.shared.dto.ConfidentialReservationData;
 import eu.wisebed.wiseui.shared.dto.Data;
 import eu.wisebed.wiseui.shared.dto.Node;
@@ -65,22 +69,26 @@ public class ReservationEditPresenter implements Presenter, EditReservationEvent
     private final ReservationEditView view;
     private TestbedConfiguration selectedConfiguration;
     private ReservationServiceAsync reservationService;
+    private ReservationManager reservationManager;
     private String title = DEFAULT_NEW_TITLE;
     private List<String> selectedNodes = new ArrayList<String>();
     private ReservationMessages messages;
 
     private boolean readOnly = false;
+    private Appointment appointment = null;
 
     @Inject
     public ReservationEditPresenter(final WiseUiGinjector injector,
                                     final EventBus eventBus,
                                     final ReservationEditView view,
                                     final ReservationServiceAsync service,
+                                    final ReservationManager reservationManager,
                                     final ReservationMessages messages) {
         this.injector = injector;
         this.eventBus = new EventBusManager(eventBus);
         this.view = view;
         this.reservationService = service;
+        this.reservationManager = reservationManager;
         this.messages = messages;
 
         bind();
@@ -141,6 +149,45 @@ public class ReservationEditPresenter implements Presenter, EditReservationEvent
         });
     }
 
+    /**
+     * Call GWT-RPC deleteReservation(...) from {@link eu.wisebed.wiseui.api.ReservationService}.
+     * Deleting reservation from RS service. This action cannot be undone!
+     *
+     * @param reservation Appointment to be deleted
+     */
+    public void deleteReservation(final Appointment reservation) {
+        // Get RS endpoint URL
+        final String rsEndpointUrl = selectedConfiguration.getRsEndpointUrl();
+
+        // Get secret authentication keys
+        final List<SecretAuthenticationKey> secretAuthenticationKeys
+                = injector.getAuthenticationManager().getSecretAuthenticationKeys();
+
+        // Get secret reservation keys
+        final ConfidentialReservationData confidentialReservationData
+                = reservationManager.getConfidentialReservations().get(reservation);
+        final List<SecretReservationKey> secretReservationKeys
+                = new ArrayList<SecretReservationKey>(confidentialReservationData.getData().size());
+        for (Data data : confidentialReservationData.getData()) {
+            final SecretReservationKey secretReservationKey =
+                    new SecretReservationKey(data.getUrnPrefix(), data.getSecretReservationKey());
+            secretReservationKeys.add(secretReservationKey);
+        }
+
+        // Make the RPC call and handle the result via events
+        GWT.log("Delete reservation: " + confidentialReservationData);
+        reservationService.deleteReservation(rsEndpointUrl, secretAuthenticationKeys, secretReservationKeys,
+                new AsyncCallback<Void>() {
+                    public void onFailure(final Throwable caught) {
+                        eventBus.fireEvent(new ReservationDeleteFailedEvent(caught));
+                    }
+
+                    public void onSuccess(final Void result) {
+                        eventBus.fireEvent(new ReservationDeleteSuccessEvent(reservation));
+                    }
+                });
+    }
+
     @Override
     public void cancel() {
         if (readOnly) {
@@ -156,6 +203,24 @@ public class ReservationEditPresenter implements Presenter, EditReservationEvent
                 }
             });
         }
+    }
+
+    @Override
+    public void delete() {
+        if (appointment == null) {
+            return;
+        }
+        MessageBox.warning(title, "Do you want to delete the reservation?", new MessageBox.Callback() {
+
+            @Override
+            public void onButtonClicked(final Button button) {
+                if (Button.OK.equals(button)) {
+                    deleteReservation(appointment);
+                    GWT.log("Deleting reservation made by: " + appointment.getCreatedBy());
+                    view.hide();
+                }
+            }
+        });
     }
 
     @Override
@@ -189,6 +254,9 @@ public class ReservationEditPresenter implements Presenter, EditReservationEvent
         readOnly = event.isReadOnly();
         view.setReadOnly(readOnly);
 
+        // Set appointment
+        appointment = event.getAppointment();
+
         // Fill in default values
         view.getWhoTextBox().setText("");
         view.getReservationKeyBox().setText("");
@@ -198,29 +266,29 @@ public class ReservationEditPresenter implements Presenter, EditReservationEvent
         // Fill in real values
         final String title = Objects.firstNonNull(selectedConfiguration.getName(), DEFAULT_NEW_TITLE);
         final AuthenticationManager authenticationManager = injector.getAuthenticationManager();
-        final String createdBy = event.getAppointment().getCreatedBy();
+        final String createdBy = appointment.getCreatedBy();
         String userName = "";
         if (authenticationManager.getSecretAuthenticationKeys() != null
                 && !authenticationManager.getSecretAuthenticationKeys().isEmpty()) {
             userName = authenticationManager.getSecretAuthenticationKeys().get(0).getUsername();
         }
         view.getWhoTextBox().setText(createdBy != null ? createdBy : userName);
-        final Date start = event.getAppointment().getStart();
+        final Date start = appointment.getStart();
         view.getStartDateBox().setValue(start);
-        final Date end = event.getAppointment().getEnd();
+        final Date end = appointment.getEnd();
         view.getEndDateBox().setValue(end != null ? end : start);
 
         // TODO SNO Refactor. This code looks too complicated and ugly.
         // Fill in secret reservation key for authenticated users in confidential reservations
         if (!readOnly) {
             final ConfidentialReservationData confidentialReservationData
-                    = injector.getReservationManager().getConfidentialReservations().get(event.getAppointment());
+                    = injector.getReservationManager().getConfidentialReservations().get(appointment);
             if (confidentialReservationData != null) {
                 final List<Data> dataList = confidentialReservationData.getData();
                 if (dataList != null && !dataList.isEmpty()) {
                     final Data data = dataList.get(0);
                     if (data != null) {
-                        final String text =  data.getUrnPrefix() + "," + data.getSecretReservationKey();
+                        final String text = data.getUrnPrefix() + "," + data.getSecretReservationKey();
                         view.getReservationKeyBox().setText(text);
                     }
                 }
