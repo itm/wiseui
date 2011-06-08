@@ -26,6 +26,14 @@
         <sessionmanagementEndpointUrl>http://wisebed.itm.uni-luebeck.de:8881/sessions?wsdl
         </sessionmanagementEndpointUrl>
         <urnPrefix>urn:wisebed:uzl1:</urnPrefix>
+        <urnPrefix>urn:wisebed:unigetestbed:</urnPrefix>
+        <urnPrefix>urn:wisebed:ulanc:</urnPrefix>
+        <urnPrefix>urn:wisebed:ctitestbed:</urnPrefix>
+        <urnPrefix>urn:wisebed:tubs:</urnPrefix>
+        <urnPrefix>urn:wisebed:ubern:</urnPrefix>
+        <urnPrefix>urn:wisebed:tud:</urnPrefix>
+        <urnPrefix>urn:wisebed:upc1:</urnPrefix>
+        <urnPrefix>urn:wisebed:fub:</urnPrefix>
     </configuration>
     <configuration isFederated="false">
         <name>WISEBED UZL Testbed</name>

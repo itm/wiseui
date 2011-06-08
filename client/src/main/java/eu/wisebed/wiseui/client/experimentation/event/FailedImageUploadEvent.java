@@ -14,18 +14,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package eu.wisebed.wiseui.client.experimentation.view;
+package eu.wisebed.wiseui.client.experimentation.event;
 
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.inject.ImplementedBy;
+import com.google.gwt.event.shared.EventHandler;
+import com.google.gwt.event.shared.GwtEvent;
 
-@ImplementedBy(ImageUploadWidgetImpl.class)
-public interface ImageUploadWidget extends IsWidget{
+public class FailedImageUploadEvent extends GwtEvent<FailedImageUploadEvent.Handler> {
+
+	public interface Handler extends EventHandler {
+		void onFailedUploadImageEvent(FailedImageUploadEvent event);
+	}
 	
-	void setPresenter(Presenter presenter);
+	public static final Type<FailedImageUploadEvent.Handler> TYPE = new Type<FailedImageUploadEvent.Handler>();
 
-	public interface Presenter{
-		void fireSuccessfullImageUploadEvent();
-		void fireFailedImageUploadEvent();
+	@Override
+	public Type<Handler> getAssociatedType() {
+		return TYPE;
+	}
+
+	@Override
+	protected void dispatch(Handler handler) {
+		handler.onFailedUploadImageEvent(this);
 	}
 }

@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.place.shared.PlaceChangeEvent;
 import com.google.gwt.place.shared.PlaceController;
@@ -67,7 +66,6 @@ RefreshUserExperimentsEvent.Handler {
 		this.view = view;
 		this.eventBus = new EventBusManager(eventBus);
 		bind();
-		GWT.log("Initializing Experimentation Presenter");
 	}
 
 	public void setPlace(WiseUiPlace place) {
@@ -203,7 +201,6 @@ RefreshUserExperimentsEvent.Handler {
 			@Override
 			public void onFailure(Throwable caught) {
 				if(caught instanceof ReservationException) {
-					GWT.log(caught.getMessage());
 					MessageBox.error("Reservation Service", caught.getMessage(), caught, null);
 					view.getLoadingIndicator().hideLoading();
 				}
@@ -233,7 +230,6 @@ RefreshUserExperimentsEvent.Handler {
 				// initialize presenter and add it to the list also add the respected view in the container 
 				for(ConfidentialReservationData data : dataList) {
 					
-					GWT.log(data.toString());
 					String key = data.getData().get(0).getSecretReservationKey();
 					
 					// check if experiment is currently an active experiment
@@ -243,7 +239,7 @@ RefreshUserExperimentsEvent.Handler {
 					if(experiment == null) {
 						// experiment is not in the active list create an instance and print it
 						experiment = injector.getExperimentPresenter();
-						experiment.setupExperimentPresenter(data, 
+						experiment.setupExperimentPresenter(data,
 								testbedConfiguration.getSessionmanagementEndpointUrl());
 							
 					}

@@ -40,8 +40,6 @@ public class ExperimentationManager {
 	 * @return
 	 */
 	public void addExperimentToActiveList(final ExperimentPresenter experiment) {
-		String key = experiment.getSecretReservationKeyValue();
-		GWT.log("Adding experiment with key = "+key+" to the active list");
 		activeExperiments.add(experiment);
 	}
 		
@@ -50,8 +48,6 @@ public class ExperimentationManager {
 	 * @param experiment
 	 */
 	public void removeExperimentFromActiveList(final ExperimentPresenter experiment) {
-		String key = experiment.getSecretReservationKeyValue();
-		GWT.log("Removing experiment with key = "+key+" to the active list");
 		activeExperiments.remove(experiment);
 	}
 	
@@ -66,14 +62,12 @@ public class ExperimentationManager {
 		
 		// iterate the list
 		for(ExperimentPresenter experiment : activeExperiments) {
-			if(experiment.getSecretReservationKeyValue().equals(key)) {
-				GWT.log("Experiment with key = " + key +" belongs in the active list");
+			if(experiment.getUserData().get(0).getSecretReservationKey().equals(key)) {
 				return experiment;
 			}
 		}
 		
 		// nothing found return null
-		GWT.log("Experiment with key = " + key + " does not belong in the active list");
 		return null;
 	}
 	
@@ -84,14 +78,11 @@ public class ExperimentationManager {
 	 * @return instance of {@link ExperimentPresenter} or null.
 	 */
 	public ExperimentPresenter getExperimentFromActiveList(final ExperimentPresenter experiment) {
-		String key = experiment.getSecretReservationKeyValue();
 		if(activeExperiments.contains(experiment)) {
-			GWT.log("Experiment with key = " + key +" belongs in the active list");
 			return experiment;
 		}
 		
 		// nothing found return null
-		GWT.log("Experiment with key = " + key + " does not belong in the active list");
 		return null;
 	}
 }

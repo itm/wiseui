@@ -16,8 +16,6 @@
  */
 package eu.wisebed.wiseui.client.experimentation.view;
 
-
-import eu.wisebed.wiseui.client.experimentation.event.SuccessfulImageUploadEvent;
 import gwtupload.client.IUploader;
 import gwtupload.client.MultiUploader;
 import gwtupload.client.IUploadStatus.Status;
@@ -58,8 +56,7 @@ public class ImageUploadWidgetImpl extends Composite implements ImageUploadWidge
 		new IUploader.OnFinishUploaderHandler() {
 		public void onFinish(IUploader uploader) {
 			if(uploader.getStatus() == Status.SUCCESS) {
-				presenter.getEventBus().fireEventFromSource(
-						new SuccessfulImageUploadEvent(), presenter);
+				presenter.fireSuccessfullImageUploadEvent();
 			}
 		}
 	};

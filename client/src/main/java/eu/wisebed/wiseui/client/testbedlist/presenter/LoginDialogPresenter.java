@@ -22,6 +22,7 @@ import com.google.inject.Inject;
 
 import eu.wisebed.wiseui.api.SNAAServiceAsync;
 import eu.wisebed.wiseui.client.testbedlist.event.LoggedInEvent;
+import eu.wisebed.wiseui.client.testbedlist.event.RefreshTestbedListEvent;
 import eu.wisebed.wiseui.client.testbedlist.event.ShowLoginDialogEvent;
 import eu.wisebed.wiseui.client.testbedlist.event.TestbedSelectedEvent;
 import eu.wisebed.wiseui.client.testbedlist.event.ShowLoginDialogEvent.ShowLoginDialogHandler;
@@ -109,6 +110,7 @@ public class LoginDialogPresenter implements Presenter, ConfigurationSelectedHan
                 view.getUsernameEnabled().setEnabled(true);
                 view.getPasswordEnabled().setEnabled(true);
                 view.getSubmitEnabled().setEnabled(true);
+                eventBus.fireEventFromSource(new RefreshTestbedListEvent(), this);
                 if (hideAfterComplete) {
                     view.hide();
                 }
