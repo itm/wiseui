@@ -153,7 +153,7 @@ public class ExperimentationViewImpl extends Composite implements
     	toDateBox.setValue(from);
     	setWeekDayMonth(false,true,false);
     }
-    
+
     @SuppressWarnings("deprecation")
 	@UiHandler("inDay")
     public void handleDayClick(final ClickEvent event) {
