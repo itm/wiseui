@@ -34,7 +34,7 @@ import eu.wisebed.wiseui.api.PersistenceService;
 import eu.wisebed.wiseui.server.WiseUiGuiceModule;
 import eu.wisebed.wiseui.server.controller.ExperimentController;
 import eu.wisebed.wiseui.shared.dto.BinaryImage;
-import eu.wisebed.wiseui.shared.dto.ExperimentMessage;
+import eu.wisebed.wiseui.shared.dto.Message;
 import eu.wisebed.wiseui.shared.dto.SecretReservationKey;
 import eu.wisebed.wiseui.shared.exception.ExperimentationException;
 import org.dozer.Mapper;
@@ -52,7 +52,7 @@ import static eu.wisebed.wiseui.server.util.URLUtil.getRandomURLSuffix;
 import static eu.wisebed.wiseui.shared.common.Checks.ifNull;
 
 @Singleton
-public class ExperimentationServiceImpl extends RemoteServiceServlet 
+public class ExperimentationServiceImpl extends RemoteServiceServlet
 	implements ExperimentationService {
 
     private static final long serialVersionUID = -6301493806193636782L;
@@ -121,6 +121,7 @@ public class ExperimentationServiceImpl extends RemoteServiceServlet
         ExperimentController controller = injector.getInstance(ExperimentController.class);
         controller.setLocalEndpointUrl(localEndpointUrl);
         controller.setSecretReservationKeys(rsSecretReservationKeys);
+        controller.setNodeUrns(nodeUrns);
         sessionManagmentService =
                 WSNServiceHelper.getSessionManagementService(sessionManagementUrl);
         controller.setSessionManagement(sessionManagmentService);
@@ -139,9 +140,6 @@ public class ExperimentationServiceImpl extends RemoteServiceServlet
 
         // start session management
         controller.startSessionManagement();
-
-        // format node list and add it to the controller setup
-        controller.prepareWiseMlSetup(nodeUrns);
 
         // add controller to the list of controllers
         experimentControllers.add(controller);
@@ -193,9 +191,13 @@ public class ExperimentationServiceImpl extends RemoteServiceServlet
         // if controller not found or if it has not queue
         try {
             ifNull(controller, "Unexpected. Controller not " +
-                    "properly set on the server");
+            	"properly set on the server");
             ifNull(controller.getMessageQueue(), "Unexpected. Message queue not " +
-                    "properly set on the controller");
+            	"properly set on the controller.");
+            ifNull(controller.getRequestStatusQueue(), "Unexpected. Message queue" +
+            	" not properly set on the controller." );
+            ifNull(controller.getNotificationQueue(), "Unexpected. Notification" +
+            	" queue not properly set on the controller.");
         } catch (RuntimeException cause) {
             throw new ExperimentationException(cause.getMessage());
 
@@ -245,7 +247,7 @@ public class ExperimentationServiceImpl extends RemoteServiceServlet
      * {@inheritDoc}
      */
     @Override
-    public ExperimentMessage returnExperimentMessage(
+    public Message returnExperimentMessage(
             List<SecretReservationKey> secretReservationKeys)
             throws ExperimentationException {
 
@@ -254,18 +256,22 @@ public class ExperimentationServiceImpl extends RemoteServiceServlet
         // if controller not found or if it has not queue
         try {
             ifNull(controller, "Unexpected. Controller not " +
-                    "properly set on the server");
+            	"properly set on the server");
             ifNull(controller.getMessageQueue(), "Unexpected. Message queue not " +
-                    "properly set on the controller");
+            	"properly set on the controller.");
+            ifNull(controller.getRequestStatusQueue(), "Unexpected. Message queue" +
+            	" not properly set on the controller." );
+            ifNull(controller.getNotificationQueue(), "Unexpected. Notification" +
+            	" queue not properly set on the controller.");
         } catch (RuntimeException cause) {
             throw new ExperimentationException(cause.getMessage());
         }
 
         // setup an experiment message
-        ExperimentMessage message = controller.getMessageQueue().poll();
+        Message message = controller.getMessageQueue().poll();
         if (message != null) {
             String value = secretReservationKeys.get(0).getSecretReservationKey();
-            message.setSecretReservationKeyValue(value);
+            message.setSecretRecretReservationKey(value);
         }
 
         return message;
@@ -301,18 +307,22 @@ public class ExperimentationServiceImpl extends RemoteServiceServlet
         // if controller not found or if it has not queue
         try {
             ifNull(controller, "Unexpected. Controller not " +
-                    "properly set on the server");
+            	"properly set on the server");
             ifNull(controller.getMessageQueue(), "Unexpected. Message queue not " +
-                    "properly set on the controller");
+      			"properly set on the controller.");
+			ifNull(controller.getRequestStatusQueue(), "Unexpected. Message queue" +
+				" not properly set on the controller." );
+			ifNull(controller.getNotificationQueue(), "Unexpected. Notification" +
+				" queue not properly set on the controller.");
         } catch (RuntimeException cause) {
             throw new ExperimentationException(cause.getMessage());
 
         }
 
-        // get wiseml string
+        // get wise ml string
         String wisemlString;
         try {
-            wisemlString = controller.getWiseMLasString();
+            wisemlString = controller.getWiseMlSerialiazed();
         } catch (Exception cause) {
             LOGGER.error(cause.getMessage());
             throw new ExperimentationException(cause.getMessage());

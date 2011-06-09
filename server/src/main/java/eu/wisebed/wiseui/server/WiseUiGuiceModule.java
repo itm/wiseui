@@ -29,7 +29,8 @@ import eu.wisebed.wiseml.model.WiseML;
 import eu.wisebed.wiseml.model.scenario.Timestamp;
 import eu.wisebed.wiseml.model.setup.Setup;
 import eu.wisebed.wiseml.model.trace.Trace;
-import eu.wisebed.wiseui.shared.dto.ExperimentMessage;
+import eu.wisebed.wiseui.shared.dto.Message;
+import eu.wisebed.wiseui.shared.dto.RequestStatus;
 
 public class WiseUiGuiceModule extends AbstractModule{
 
@@ -39,10 +40,26 @@ public class WiseUiGuiceModule extends AbstractModule{
 	
 	@Provides
 	/**
-	 * Provides a queue of {@link ExperimentMessages}.
+	 * Provides a queue of {@link Message}.
 	 */
-	public Queue<ExperimentMessage> provideExperimentMessageQueue() {
-		return new LinkedList<ExperimentMessage>();
+	public Queue<Message> provideMessageQueue() {
+		return new LinkedList<Message>();
+	}
+	
+	@Provides
+	/**
+	 * Provides a queue of {@link RequestStatus}.
+	 */
+	public Queue<RequestStatus> provideRequestStatusQueue() {
+		return new LinkedList<RequestStatus>();
+	}
+	
+	@Provides
+	/**
+	 * Provides a queue of {@link String}.
+	 */
+	public Queue<String> provideNotificationQueue() {
+		return new LinkedList<String>();
 	}
 	
 	@Provides

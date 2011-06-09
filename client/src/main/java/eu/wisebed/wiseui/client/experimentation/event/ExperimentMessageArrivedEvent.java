@@ -22,7 +22,7 @@ import com.google.gwt.event.shared.GwtEvent;
 public class ExperimentMessageArrivedEvent extends GwtEvent<ExperimentMessageArrivedEvent.Handler> {
 	
 	public interface Handler extends EventHandler {
-		void onExperimentMessageArrival(ExperimentMessageArrivedEvent event);
+		void onMessageArrival(ExperimentMessageArrivedEvent event);
 	}
 
 	public static final Type<ExperimentMessageArrivedEvent.Handler> TYPE = new Type<ExperimentMessageArrivedEvent.Handler>();
@@ -35,6 +35,6 @@ public class ExperimentMessageArrivedEvent extends GwtEvent<ExperimentMessageArr
 
 	@Override
 	protected void dispatch(Handler handler) {
-		handler.onExperimentMessageArrival(this);
+		handler.onMessageArrival(this);
 	}
 }

@@ -41,7 +41,7 @@ import eu.wisebed.wiseui.client.util.EventBusManager;
 import eu.wisebed.wiseui.shared.dto.BinaryImage;
 import eu.wisebed.wiseui.shared.dto.ConfidentialReservationData;
 import eu.wisebed.wiseui.shared.dto.Data;
-import eu.wisebed.wiseui.shared.dto.ExperimentMessage;
+import eu.wisebed.wiseui.shared.dto.Message;
 import eu.wisebed.wiseui.shared.dto.SecretReservationKey;
 import eu.wisebed.wiseui.widgets.messagebox.MessageBox;
 
@@ -206,13 +206,16 @@ ExperimentMessageArrivedEvent.Handler,FlashBinaryImageEvent.Handler{
 		}
 	}
 
+	
+
+	
 	@Override
-	public void onExperimentMessageArrival(ExperimentMessageArrivedEvent event) {
+	public void onMessageArrival(ExperimentMessageArrivedEvent event) {
 		if(event.getSource() == this ){
 			if(status == ExperimentStatus.RUNNING) {
 				
 				// setup callback
-				AsyncCallback<ExperimentMessage> callback = new AsyncCallback<ExperimentMessage>() {
+				AsyncCallback<Message> callback = new AsyncCallback<Message>() {
 
 					@Override
 					public void onFailure(Throwable caught) {
@@ -220,29 +223,10 @@ ExperimentMessageArrivedEvent.Handler,FlashBinaryImageEvent.Handler{
 					}
 
 					@Override
-					public void onSuccess(final ExperimentMessage result) {
+					public void onSuccess(final Message result) {
 						if(result == null) return;
-						switch(result.getExperimentMessageType()) {
-							case MESSAGE:
-								GWT.log("Source : " + result.getSourceNodeID());
-								GWT.log("Level : " + result.getLevel());
-								GWT.log("Data : " + result.getData());
-								outputMap.get(result.getSourceNodeID()).addOutput(result.toString());
-								break;
-							case NOTIFICATION:
-								GWT.log("Notification : " + result.getNotificationText());
-								for(String node : outputMap.keySet()) {
-									outputMap.get(node).addOutput(result.toString());
-								}
-								break;
-							case STATUS:
-								GWT.log("RequestStatus ID : " + result.getRequestStatusID());
-								GWT.log("RequestStatus Msg : " + result.getRequestStatusMsg());
-								GWT.log("RequestStatus NodeID : " + result.getNodeID());
-								GWT.log("RequestStatus value : " + result.getValue());
-								outputMap.get(result.getNodeID()).addOutput(result.toString());
-								break;
-						}
+						GWT.log(result.toString());
+						outputMap.get(result.getSourceNodeId()).addOutput(result.toString());
 					}
 					
 				};

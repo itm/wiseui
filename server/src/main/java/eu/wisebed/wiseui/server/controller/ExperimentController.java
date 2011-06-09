@@ -18,9 +18,7 @@ package eu.wisebed.wiseui.server.controller;
 
 import com.google.inject.Inject;
 import de.uniluebeck.itm.tr.util.StringUtils;
-import eu.wisebed.api.common.Message;
 import eu.wisebed.api.controller.Controller;
-import eu.wisebed.api.controller.RequestStatus;
 import eu.wisebed.api.rs.SecretReservationKey;
 import eu.wisebed.api.sm.ExperimentNotRunningException_Exception;
 import eu.wisebed.api.sm.SessionManagement;
@@ -30,12 +28,15 @@ import eu.wisebed.testbed.api.wsn.Constants;
 import eu.wisebed.testbed.api.wsn.WSNServiceHelper;
 import eu.wisebed.wiseml.controller.WiseMLController;
 import eu.wisebed.wiseml.model.WiseML;
-import eu.wisebed.wiseml.model.scenario.Timestamp;
 import eu.wisebed.wiseml.model.setup.Node;
 import eu.wisebed.wiseml.model.setup.Setup;
 import eu.wisebed.wiseml.model.trace.Trace;
-import eu.wisebed.wiseui.shared.dto.ExperimentMessage;
+import eu.wisebed.wiseui.shared.dto.Message;
+import eu.wisebed.wiseui.shared.dto.RequestStatus;
+import eu.wisebed.wiseui.shared.dto.Status;
 import eu.wisebed.wiseui.shared.exception.ExperimentationException;
+
+import org.dozer.Mapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,7 +44,6 @@ import javax.jws.WebService;
 import javax.xml.ws.Endpoint;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.Executors;
@@ -62,27 +62,37 @@ public class ExperimentController implements Controller {
 	
 	private final Logger LOGGER 
 		= LoggerFactory.getLogger(ExperimentController.class.getName());
-	private Queue<ExperimentMessage> experimentMessagesQueue;
+    private Mapper mapper;
+	private Queue<Message> messageQueue;
+	private Queue<RequestStatus> requestStatusQueue;
+	private Queue<String> notificationQueue;
 	private String localEndpointUrl;
 	private WSN wsn;
 	private WiseML wiseml;
 	private Setup wisemlSetup;
 	private Trace wisemlTrace;
-	private List<Timestamp> timestampList;
 	private WiseMLController wisemlController;
 	private List<SecretReservationKey> secretReservationKeys;
 	private SessionManagement sessionManagement;
+	private List<String> nodeUrns;
 	
 	@Inject
-	public ExperimentController(final Queue<ExperimentMessage> experimentMessagesQueue,
-			final WiseML wiseml, final Setup wisemlSetup, final Trace wisemlTrace,
-			final List<Timestamp> timestampList,final WiseMLController wisemlController){
-		this.setExperimentMessagesQueue(experimentMessagesQueue);
+	public ExperimentController(
+			final Mapper mapper,
+			final WiseML wiseml,
+			final Setup wisemlSetup,
+			final Trace wisemlTrace,
+			final WiseMLController wisemlController,
+			final Queue<RequestStatus> requestStatusQueue,
+			final Queue<Message> messageQueue,
+			final Queue<String> notificationQueue) {
+		this.setMapper(mapper);
 		this.setWiseml(wiseml);
 		this.setWisemlSetup(wisemlSetup);
 		this.setWisemlTrace(wisemlTrace);
-		this.setTimestampList(timestampList);
 		this.setWisemlController(wisemlController);
+		this.setMessageQueue(messageQueue);
+		this.setNodeUrns(new ArrayList<String>());		
 	}
 	
 	/**
@@ -180,47 +190,39 @@ public class ExperimentController implements Controller {
 	
 	@Override
 	public void experimentEnded() {
-		LOGGER.info(getWiseMLasString());
 		LOGGER.info("Experiment ended");
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public void receive(List<Message> msgs) {
-		for(Message msg : msgs) {
+	public void receive(List<eu.wisebed.api.common.Message> msgs) {
+		for(eu.wisebed.api.common.Message msg : msgs) {
 			
 			// set experiment message
 			final String source = msg.getSourceNodeId();
 			final String timeStamp = msg.getTimestamp().toXMLFormat();
 			final String data = StringUtils.toHexString(msg.getBinaryData());
 			final String level = msg.getBinaryData()[1] == 0x00 ? "DEBUG" : "FATAL";
-			
-			// create an experimentmessage setup it as message
-			ExperimentMessage experimentMessage = new ExperimentMessage();
-			experimentMessage.setupAsMessage(source, level, data, timeStamp);
-			
 			LOGGER.info("Received Message :");
 			LOGGER.info("[" +source+"][" +timeStamp+"][" + level +"][" + data +"]");
-			
-			// add it the to experiment message queue
-			experimentMessagesQueue.add(experimentMessage);
-			
-			// set node source 
-			eu.wisebed.wiseml.model.setup.Node node = 
-				new eu.wisebed.wiseml.model.setup.Node();
-			node.setId(source);
-			
-			// set message
-			eu.wisebed.wiseml.model.trace.Message message = new 
+
+						
+			// map message and put it in queue
+			Message message = mapper.map(msg, Message.class);
+			message.setTimestamp(
+					msg.getTimestamp().toGregorianCalendar().getTime());
+			messageQueue.add(message);
+						
+			// set Wiseml message
+			eu.wisebed.wiseml.model.trace.Message traceMessage = new 
 				eu.wisebed.wiseml.model.trace.Message();
-			message.setTimestamp((long)msg.getTimestamp().getMillisecond());
-			message.setData("[" + level +"][" + data +"]");
+			traceMessage.setTimestamp((long)msg.getTimestamp().getMillisecond());
+			traceMessage.setData("[" + level +"][" + data +"]");
+			traceMessage.setId(source);
 			
-			// set time stamp
-			Timestamp timestamp = new Timestamp();
-			timestamp.setValue(msg.getTimestamp().toXMLFormat());
-			timestamp.setMessage(Arrays.asList(message));
-			timestamp.setNode(Arrays.asList(node));
-			timestampList.add(timestamp);
+			// add it to Wiseml trace
+			wisemlTrace.getChildren().add(message);
+			
 			LOGGER.info("Added to WiseML trace");
 		}
 	}
@@ -228,40 +230,39 @@ public class ExperimentController implements Controller {
 	@Override
 	public void receiveNotification(List<String> notifications) {
 		for(String notification : notifications) {
-			
-			ExperimentMessage experimentMessage = new ExperimentMessage();
-			experimentMessage.setupAsNotification(notification);
-			
 			LOGGER.info("[Notification][" + notification +"]");
-			
-			experimentMessagesQueue.add(experimentMessage);
+			notificationQueue.add(notification);
 		}
 	}
 
 	@Override
-	public void receiveStatus(List<RequestStatus> requestStati) {
-		for(RequestStatus requestStatus : requestStati) {
-			final String requestID = requestStatus.getRequestId();
+	public void receiveStatus(List<eu.wisebed.api.controller.RequestStatus> requestStati) {
+		for(eu.wisebed.api.controller.RequestStatus requestStatus : requestStati) {
+
+			RequestStatus reqStatusDto = mapper.map(requestStatus, RequestStatus.class);
 			
 			for(int i=0;i<requestStatus.getStatus().size();i++){
-				final String msg = requestStatus.getStatus().get(i).getMsg();
-				final String nodeID = requestStatus.getStatus().get(i).getNodeId();
-				final String value = requestStatus.getStatus().get(i).getValue().toString();
-					
-				ExperimentMessage experimentMessage = new ExperimentMessage();
-				experimentMessage.setupAsRequestStatus(requestID, nodeID, msg, value);
+				eu.wisebed.api.controller.Status status =
+					requestStatus.getStatus().get(i);
+				final String requestID = requestStatus.getRequestId();
+				final String msg = status.getMsg();
+				final String nodeID = status.getNodeId();
+				final String value = status.getValue().toString();
 				
 				LOGGER.info("[RequestStatus][" + requestID + "]" +
 						"[status msg][" + msg + "]" + 
 						"[node][" + nodeID + "]" + 
 						"[value][" + value + "]");
-				
-				experimentMessagesQueue.add(experimentMessage);
+			
+				reqStatusDto.getStatus().add(mapper.map(status, Status.class)); 
 			}
+			requestStatusQueue.add(reqStatusDto);
 		}
 	}
 	
-	public void prepareWiseMlSetup(final List<String> nodeUrns) {
+	public String getWiseMlSerialiazed() {
+
+		// prepare wiseml setup
 		List<Node> nodeList = new ArrayList<Node>();
 		for(String nodeUrn : nodeUrns) {
 			Node node = new Node();
@@ -269,16 +270,54 @@ public class ExperimentController implements Controller {
 			nodeList.add(node);
 		}
 		wisemlSetup.setNodes(nodeList);
+		wiseml.setSetup(wisemlSetup);
+		LOGGER.info("WiseML Setup is now prepared");
+		
+		// prepare wiseml trace
+		wiseml.setTrace(wisemlTrace);
+
+		// return serialiased wiseml
+		return wisemlController.writeWiseMLAsSTring(wiseml);
 	}
 	
-	public void prepareWiseMlTrace() {
-		wisemlTrace.setTimestamp(timestampList);
+	public Mapper getMapper() {
+		return mapper;
 	}
-		
-	public String getWiseMLasString() {
-		wiseml.setSetup(wisemlSetup);
-		wiseml.setTrace(wisemlTrace);
-		return wisemlController.writeWiseMLAsSTring(wiseml);
+
+	public void setMapper(Mapper mapper) {
+		this.mapper = mapper;
+	}
+	
+	public Queue<Message> getMessageQueue() {
+		return messageQueue;
+	}
+	
+	public void setMessageQueue(Queue<Message> messageQueue) {
+		this.messageQueue = messageQueue;
+	}
+
+	public Queue<RequestStatus> getRequestStatusQueue() {
+		return requestStatusQueue;
+	}
+
+	public void setRequestStatusQueue(Queue<RequestStatus> requestStatusQueue) {
+		this.requestStatusQueue = requestStatusQueue;
+	}
+
+	public Queue<String> getNotificationQueue() {
+		return notificationQueue;
+	}
+
+	public void setNotificationQueue(Queue<String> notificationQueue) {
+		this.notificationQueue = notificationQueue;
+	}
+	
+	public List<String> getNodeUrns() {
+		return nodeUrns;
+	}
+
+	public void setNodeUrns(List<String> nodeUrns) {
+		this.nodeUrns = nodeUrns;
 	}
 
 	public WSN getWsn() {
@@ -306,9 +345,6 @@ public class ExperimentController implements Controller {
 		this.sessionManagement = sessionManagement;
 	}
 
-	public Queue<ExperimentMessage> getMessageQueue() {
-		return experimentMessagesQueue;
-	}
 
 	public void setWisemlTrace(Trace wisemlTrace) {
 		this.wisemlTrace = wisemlTrace;
@@ -322,14 +358,6 @@ public class ExperimentController implements Controller {
 		this.wisemlSetup = wisemlSetup;
 	}
 	
-	public List<Timestamp> getTimestampList() {
-		return timestampList;
-	}
-
-	public void setTimestampList(List<Timestamp> timestampList) {
-		this.timestampList = timestampList;
-	}
-
 	public Setup getWisemlSetup() {
 		return wisemlSetup;
 	}
@@ -356,15 +384,6 @@ public class ExperimentController implements Controller {
 
 	public void setWisemlController(WiseMLController wisemlController) {
 		this.wisemlController = wisemlController;
-	}
-
-	public Queue<ExperimentMessage> getExperimentMessagesQueue() {
-		return experimentMessagesQueue;
-	}
-	
-	public void setExperimentMessagesQueue(
-			Queue<ExperimentMessage> experimentMessagesQueue) {
-		this.experimentMessagesQueue = experimentMessagesQueue;
 	}
 }
 

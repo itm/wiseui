@@ -22,7 +22,7 @@ import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
 import eu.wisebed.wiseui.shared.dto.BinaryImage;
-import eu.wisebed.wiseui.shared.dto.ExperimentMessage;
+import eu.wisebed.wiseui.shared.dto.Message;
 import eu.wisebed.wiseui.shared.dto.SecretReservationKey;
 import eu.wisebed.wiseui.shared.exception.ExperimentationException;
 
@@ -60,9 +60,9 @@ public interface ExperimentationService extends RemoteService {
 	/**
 	 * Returns an experiment message back to the client
 	 * @param secretReservationKeys List of {@link SecretReservationKeys}s
-	 * @return an {@link ExperimentMessage} instance
+	 * @return an {@link Message} instance
 	 */
-	ExperimentMessage returnExperimentMessage(
+	Message returnExperimentMessage(
 			List<SecretReservationKey> secretReservationKeys)
 			throws 
 			ExperimentationException;
