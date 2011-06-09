@@ -17,12 +17,17 @@
 package eu.wisebed.wiseui.server;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 
+import org.dozer.DozerBeanMapper;
+import org.dozer.Mapper;
+
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
+import com.google.inject.Singleton;
 
 import eu.wisebed.wiseml.controller.WiseMLController;
 import eu.wisebed.wiseml.model.WiseML;
@@ -37,6 +42,15 @@ public class WiseUiGuiceModule extends AbstractModule{
 	@Override
 	protected void configure() {		
 	}
+	
+    @Singleton
+    @Provides
+    /**
+     * Provides an configured instance of the {@link DozerBeanMapper}.
+     */
+    public Mapper provideMapper() {
+        return new DozerBeanMapper(Arrays.asList("server-bean-mappings.xml"));
+    }
 	
 	@Provides
 	/**

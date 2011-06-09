@@ -250,6 +250,7 @@ public class ExperimentViewImpl extends Composite implements ExperimentView {
 				String selected = selectionModel.getSelectedObject();
 				if (selected != null) {
 					presenter.showNodeOutput(selected);
+					selectionModel.setSelected(selected, false);
 				}
 			}
 		});

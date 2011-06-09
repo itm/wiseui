@@ -41,16 +41,21 @@
 		}
 		
 		.content {
-			padding: 5px;
+			padding: 7px;
+		}
+		
+		.area {
+			width: auto;
+			height: auto;
 		}
 		
 		.textArea {
 			width: 700px;
-			height: 500px;
+			height : 500px;
 		}
 	</ui:style>
-	<my:ExperimentOutputViewImpl styleName="{style.content}">
-		<g:VerticalPanel>
+	<my:ExperimentOutputViewImpl addStyleNames="{style.area} {style.content}">
+		<g:VerticalPanel styleName="{style.fullLayout}">
 			<g:TextArea styleName="{style.textArea}" ui:field="outputTextArea" />
 			<g:HTMLPanel styleName="{style.buttonPanel}">
 				<table class="{style.buttonTable}">

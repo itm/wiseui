@@ -147,10 +147,10 @@ ExperimentMessageArrivedEvent.Handler,FlashBinaryImageEvent.Handler{
 		view.setFlashedImageFilename(flashedImageFilename);
 		view.setStatus(status.getStatusText());
 		view.setNodeUrns(nodeUrns);
-		view.deactivateStartExperimentButton();
-		view.deactivateFlashExperimentButton();
-		view.deactivateStopExperimentButton();
-		view.deactivateDownloadWiseMLButton();		
+//		view.deactivateStartExperimentButton();
+//		view.deactivateFlashExperimentButton();
+//		view.deactivateStopExperimentButton();
+//		view.deactivateDownloadWiseMLButton();		
 		
 		// start the reservation start timer
 		startReservationStartTimer();
@@ -199,10 +199,10 @@ ExperimentMessageArrivedEvent.Handler,FlashBinaryImageEvent.Handler{
 			// update view
 			view.setStatus(status.getStatusText());
 			view.setExperimentTiming("-");
-			view.deactivateStartExperimentButton();
-			view.deactivateFlashExperimentButton();
-			view.deactivateStopExperimentButton();
-			view.deactivateDownloadWiseMLButton();
+//			view.deactivateStartExperimentButton();
+//			view.deactivateFlashExperimentButton();
+//			view.deactivateStopExperimentButton();
+//			view.deactivateDownloadWiseMLButton();
 		}
 	}
 
@@ -279,6 +279,16 @@ ExperimentMessageArrivedEvent.Handler,FlashBinaryImageEvent.Handler{
 
 				// add the experiment in the active experiment list
 				injector.getExperimentationManager().addExperimentToActiveList(currentExperiment);
+				
+				// update status 
+				status = ExperimentStatus.RUNNING;
+
+				// update view
+				view.setStatus(status.getStatusText());
+				view.deactivateStartExperimentButton();
+				view.activateFlashExperimentButton();
+				view.activateStopExperimentButton();
+				view.activateDownloadWiseMLButton();
 
 				// start collecting messages 
 				startExperimentMessageCollectorTimer();
@@ -298,19 +308,6 @@ ExperimentMessageArrivedEvent.Handler,FlashBinaryImageEvent.Handler{
 				sessionManagementUrl,
 				secretReservationKeys,
 				nodeUrns,callback);
-
-		// start message collection timer
-		startExperimentMessageCollectorTimer();
-
-		// update status 
-		status = ExperimentStatus.RUNNING;
-
-		// update view
-		view.setStatus(status.getStatusText());
-		view.deactivateStartExperimentButton();
-		view.activateFlashExperimentButton();
-		view.activateStopExperimentButton();
-		view.activateDownloadWiseMLButton();
 	}
 
 
