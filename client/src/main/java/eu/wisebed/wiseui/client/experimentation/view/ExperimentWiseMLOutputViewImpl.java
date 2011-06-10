@@ -33,6 +33,14 @@ public class ExperimentWiseMLOutputViewImpl extends HasWidgetsDialogBox implemen
 	
 	private static ExperimentWiseMLOutputViewImplBinder uiBinder = GWT.create(ExperimentWiseMLOutputViewImplBinder.class);
 	
+	@SuppressWarnings("unused")
+	private Presenter presenter;
+	
+	@Override
+	public void setPresenter(final Presenter presenter) {
+		this.presenter = presenter;
+	}
+	
 	@UiTemplate("ExperimentWiseMLOutputViewImpl.ui.xml")
 	interface ExperimentWiseMLOutputViewImplBinder extends UiBinder<Widget, ExperimentWiseMLOutputViewImpl> {
 	}

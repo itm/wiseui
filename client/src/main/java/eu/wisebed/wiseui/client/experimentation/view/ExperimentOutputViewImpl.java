@@ -33,6 +33,9 @@ public class ExperimentOutputViewImpl extends HasWidgetsDialogBox implements Exp
 	
 	private static ExperimentOutputViewImplBinder uiBinder = GWT.create(ExperimentOutputViewImplBinder.class);
 	
+	@SuppressWarnings("unused")
+	private Presenter presenter;
+	
 	@UiTemplate("ExperimentOutputViewImpl.ui.xml")
 	interface ExperimentOutputViewImplBinder extends UiBinder<Widget, ExperimentOutputViewImpl> {
 	}
@@ -56,6 +59,12 @@ public class ExperimentOutputViewImpl extends HasWidgetsDialogBox implements Exp
 	protected ExperimentOutputViewImpl createDialog() {
 		return this;
 	}
+	
+	@Override
+	public void setPresenter(final Presenter presenter){ 
+		this.presenter = presenter;
+	}
+	
 	
 	@Override
 	public void show(String title) {

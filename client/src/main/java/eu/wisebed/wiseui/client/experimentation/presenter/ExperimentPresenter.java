@@ -34,9 +34,7 @@ import eu.wisebed.wiseui.client.experimentation.event.ReservationTimeStartedEven
 import eu.wisebed.wiseui.client.experimentation.event.ReservationTimeEndedEvent;
 import eu.wisebed.wiseui.client.experimentation.event.FlashBinaryImageEvent;
 import eu.wisebed.wiseui.client.experimentation.util.StringTimer;
-import eu.wisebed.wiseui.client.experimentation.view.ExperimentOutputView;
 import eu.wisebed.wiseui.client.experimentation.view.ExperimentView;
-import eu.wisebed.wiseui.client.experimentation.view.ExperimentWiseMLOutputView;
 import eu.wisebed.wiseui.client.util.EventBusManager;
 import eu.wisebed.wiseui.shared.dto.BinaryImage;
 import eu.wisebed.wiseui.shared.dto.ConfidentialReservationData;
@@ -70,8 +68,8 @@ ExperimentMessageArrivedEvent.Handler,FlashBinaryImageEvent.Handler{
 	private final WiseUiGinjector injector;
 	private ExperimentView view;
 	private FlashExperimentImagePresenter flashExperimentImage;
-	private ExperimentWiseMLOutputView wiseMloutputView;
-	private HashMap<String,ExperimentOutputView> outputMap;
+	private ExperimentWiseMLOutputPresenter wiseMlOutput;
+	private HashMap<String,ExperimentOutputPresenter> outputMap;
 	private Date fromDate;
 	private Date toDate;
 	private List<Data> userData;
@@ -91,16 +89,16 @@ ExperimentMessageArrivedEvent.Handler,FlashBinaryImageEvent.Handler{
 			final ExperimentationServiceAsync service,
 			final ExperimentView view,
 			final FlashExperimentImagePresenter flashExperimentImage,
-			final ExperimentWiseMLOutputView wiseMloutputView,
+			final ExperimentWiseMLOutputPresenter wiseMlOutput,
 			final EventBus eventBus) {
 
 		this.injector = injector;
 		this.view = view;
 		this.view.setPresenter(this);
 		this.flashExperimentImage = flashExperimentImage;
-		this.wiseMloutputView = wiseMloutputView;
+		this.wiseMlOutput = wiseMlOutput;
 		this.userData = new ArrayList<Data>();
-		this.outputMap = new HashMap<String,ExperimentOutputView>();
+		this.outputMap = new HashMap<String,ExperimentOutputPresenter>();
 		this.eventBus = new EventBusManager(eventBus);
 		this.service = service;
 		bind();
@@ -135,7 +133,7 @@ ExperimentMessageArrivedEvent.Handler,FlashBinaryImageEvent.Handler{
 		
 		// initialize output views
 		for(String nodeUrn : nodeUrns) {
-			outputMap.put(nodeUrn, injector.getExperimentOutputView());
+			outputMap.put(nodeUrn, injector.getExperimentOutputPresenter());
 		}
 
 		// initialize view
@@ -226,7 +224,7 @@ ExperimentMessageArrivedEvent.Handler,FlashBinaryImageEvent.Handler{
 					public void onSuccess(final Message result) {
 						if(result == null) return;
 						GWT.log(result.toString());
-						outputMap.get(result.getSourceNodeId()).addOutput(result.toString());
+						outputMap.get(result.getSourceNodeId()).getView().addOutput(result.toString());
 					}
 					
 				};
@@ -430,8 +428,8 @@ ExperimentMessageArrivedEvent.Handler,FlashBinaryImageEvent.Handler{
 
 			@Override
 			public void onSuccess(final String result) {
-				wiseMloutputView.setWiseMLOutput(result);
-				wiseMloutputView.show("WiseML report");
+				wiseMlOutput.getView().setWiseMLOutput(result);
+				wiseMlOutput.getView().show("WiseML report");
 			}
 			
 		};
@@ -449,7 +447,7 @@ ExperimentMessageArrivedEvent.Handler,FlashBinaryImageEvent.Handler{
 
 	@Override
 	public void showNodeOutput(final String node) {
-		outputMap.get(node).show("Output for " + node );
+		outputMap.get(node).getView().show("Output for " + node );
 	}
 
 	

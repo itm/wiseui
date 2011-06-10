@@ -31,6 +31,8 @@ public interface ExperimentWiseMLOutputView extends IsWidget {
 	void setWiseMLOutput(String wiseMlString);
 	
 	void clearOutput();
+	
+	void setPresenter(Presenter presenter);
 		
 	public interface Presenter {
 	}

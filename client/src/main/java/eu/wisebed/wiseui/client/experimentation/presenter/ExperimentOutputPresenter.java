@@ -14,26 +14,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package eu.wisebed.wiseui.client.experimentation.view;
+package eu.wisebed.wiseui.client.experimentation.presenter;
 
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.inject.ImplementedBy;
+import com.google.inject.Inject;
 
-@ImplementedBy(ExperimentOutputViewImpl.class)
-public interface ExperimentOutputView extends IsWidget {
+import eu.wisebed.wiseui.client.experimentation.view.ExperimentOutputView;
 
-	void show(String title);
+public class ExperimentOutputPresenter implements ExperimentOutputView.Presenter{
 	
-	void hide();
+	private ExperimentOutputView view;
 	
-	void addOutput(String output);
+	@Inject
+	public ExperimentOutputPresenter(final ExperimentOutputView view) {
+		this.setView(view);
+		this.view.setPresenter(this);
+	}
 	
-	void setOutput(String output);
-	
-	void clearOutput();
-	
-	void setPresenter(Presenter presenter);
-		
-	public interface Presenter {
+	public ExperimentOutputView getView() {
+		return view;
+	}
+
+	public void setView(ExperimentOutputView view) {
+		this.view = view;
 	}
 }

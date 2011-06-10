@@ -92,8 +92,6 @@ public class ExperimentationServiceImpl extends RemoteServiceServlet
         SecretReservationKey key = secretReservationKeys.get(0);
         String localEndpointUrl = null;
 
-//        localEndpointUrl = "http://94.64.211.238:"+getPort()+"/controller" + getRandomURLSuffix(key.getSecretReservationKey());
-
         try {
             localEndpointUrl = "http://" +
                     InetAddress.getLocalHost().getCanonicalHostName() +

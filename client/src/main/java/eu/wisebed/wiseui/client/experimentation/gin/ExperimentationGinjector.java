@@ -19,7 +19,9 @@ package eu.wisebed.wiseui.client.experimentation.gin;
 import com.google.gwt.inject.client.Ginjector;
 
 import eu.wisebed.wiseui.client.experimentation.ExperimentationActivity;
+import eu.wisebed.wiseui.client.experimentation.presenter.ExperimentOutputPresenter;
 import eu.wisebed.wiseui.client.experimentation.presenter.ExperimentPresenter;
+import eu.wisebed.wiseui.client.experimentation.presenter.ExperimentWiseMLOutputPresenter;
 import eu.wisebed.wiseui.client.experimentation.presenter.ExperimentationPresenter;
 import eu.wisebed.wiseui.client.experimentation.presenter.FlashExperimentImagePresenter;
 import eu.wisebed.wiseui.client.experimentation.presenter.ImageUploadWidgetPresenter;
@@ -50,7 +52,11 @@ public interface ExperimentationGinjector extends Ginjector {
         
     ImageUploadWidget getImageUploadWidget();
     
+    ExperimentOutputPresenter getExperimentOutputPresenter();
+    
     ExperimentOutputView getExperimentOutputView();
+    
+    ExperimentWiseMLOutputPresenter getExperimentWiseMLOutputPresenter();
     
     ExperimentWiseMLOutputView getExperimentWiseMLOutputView();
  }
