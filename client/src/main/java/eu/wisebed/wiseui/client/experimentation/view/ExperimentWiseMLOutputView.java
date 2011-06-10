@@ -35,5 +35,6 @@ public interface ExperimentWiseMLOutputView extends IsWidget {
 	void setPresenter(Presenter presenter);
 		
 	public interface Presenter {
+		void fireRefreshWiseMLEvent();
 	}
 }

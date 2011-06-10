@@ -33,7 +33,6 @@ public class ExperimentWiseMLOutputViewImpl extends HasWidgetsDialogBox implemen
 	
 	private static ExperimentWiseMLOutputViewImplBinder uiBinder = GWT.create(ExperimentWiseMLOutputViewImplBinder.class);
 	
-	@SuppressWarnings("unused")
 	private Presenter presenter;
 	
 	@Override
@@ -50,6 +49,9 @@ public class ExperimentWiseMLOutputViewImpl extends HasWidgetsDialogBox implemen
 	
 	@UiField
 	Button clearButton;
+	
+	@UiField
+	Button refreshWiseMlButton;
 		
 	@UiField
 	TextArea outputTextArea;
@@ -83,6 +85,11 @@ public class ExperimentWiseMLOutputViewImpl extends HasWidgetsDialogBox implemen
 	@UiHandler("clearButton")
 	public void handleClearButtonClick(final ClickEvent event) {
 		outputTextArea.setText("");
+	}
+	
+	@UiHandler("refreshWiseMlButton")
+	public void handleRefreshWiseMlButtonClick(final ClickEvent event) {
+		presenter.fireRefreshWiseMLEvent();
 	}
 
 	@Override

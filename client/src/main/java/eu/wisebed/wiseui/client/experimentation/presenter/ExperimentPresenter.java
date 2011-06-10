@@ -33,6 +33,7 @@ import eu.wisebed.wiseui.client.experimentation.event.ExperimentMessageArrivedEv
 import eu.wisebed.wiseui.client.experimentation.event.ReservationTimeStartedEvent;
 import eu.wisebed.wiseui.client.experimentation.event.ReservationTimeEndedEvent;
 import eu.wisebed.wiseui.client.experimentation.event.FlashBinaryImageEvent;
+import eu.wisebed.wiseui.client.experimentation.event.RefreshWiseMLEvent;
 import eu.wisebed.wiseui.client.experimentation.util.StringTimer;
 import eu.wisebed.wiseui.client.experimentation.view.ExperimentView;
 import eu.wisebed.wiseui.client.util.EventBusManager;
@@ -45,7 +46,8 @@ import eu.wisebed.wiseui.widgets.messagebox.MessageBox;
 
 public class ExperimentPresenter implements ExperimentView.Presenter,
 ReservationTimeStartedEvent.Handler,ReservationTimeEndedEvent.Handler,
-ExperimentMessageArrivedEvent.Handler,FlashBinaryImageEvent.Handler{
+ExperimentMessageArrivedEvent.Handler,FlashBinaryImageEvent.Handler,
+RefreshWiseMLEvent.Handler{
 
 
 	public enum ExperimentStatus {
@@ -147,6 +149,7 @@ ExperimentMessageArrivedEvent.Handler,FlashBinaryImageEvent.Handler{
 		view.setNodeUrns(nodeUrns);
 		view.deactivateStartExperimentButton();
 		view.deactivateFlashExperimentButton();
+		view.deactivateResetNodesButton();
 		view.deactivateStopExperimentButton();
 		view.deactivateDownloadWiseMLButton();		
 		
@@ -159,6 +162,7 @@ ExperimentMessageArrivedEvent.Handler,FlashBinaryImageEvent.Handler{
 		eventBus.addHandler(ReservationTimeEndedEvent.TYPE, this);
 		eventBus.addHandler(ExperimentMessageArrivedEvent.TYPE, this);
 		eventBus.addHandler(FlashBinaryImageEvent.TYPE, this);
+		eventBus.addHandler(RefreshWiseMLEvent.TYPE, this);
 	}
 	
 	@Override 
@@ -199,6 +203,7 @@ ExperimentMessageArrivedEvent.Handler,FlashBinaryImageEvent.Handler{
 			view.setExperimentTiming("-");
 			view.deactivateStartExperimentButton();
 			view.deactivateFlashExperimentButton();
+			view.deactivateResetNodesButton();
 			view.deactivateStopExperimentButton();
 			view.deactivateDownloadWiseMLButton();
 		}
@@ -248,6 +253,13 @@ ExperimentMessageArrivedEvent.Handler,FlashBinaryImageEvent.Handler{
 			flashSelectedImage(event.getImageToBeFlashed());
 		}
 	}
+	
+	@Override
+	public void onRefreshWiseMLEvent(RefreshWiseMLEvent event) {
+		if(event.getSource() == wiseMlOutput) {
+			getWiseMLReport();
+		}
+	}
 
 	@Override
 	public void showFlashExperimentImageView() {
@@ -285,6 +297,7 @@ ExperimentMessageArrivedEvent.Handler,FlashBinaryImageEvent.Handler{
 				view.setStatus(status.getStatusText());
 				view.deactivateStartExperimentButton();
 				view.activateFlashExperimentButton();
+				view.activateResetNodesButton();
 				view.activateStopExperimentButton();
 				view.activateDownloadWiseMLButton();
 
@@ -353,6 +366,7 @@ ExperimentMessageArrivedEvent.Handler,FlashBinaryImageEvent.Handler{
 		view.setStatus(status.getStatusText());
 		view.deactivateStopExperimentButton();
 		view.deactivateFlashExperimentButton();
+		view.deactivateResetNodesButton();
 		view.activateStartExperimentButton();
 	}
 	
@@ -418,6 +432,7 @@ ExperimentMessageArrivedEvent.Handler,FlashBinaryImageEvent.Handler{
 	
 	@Override
 	public void getWiseMLReport() {
+
 		// setup callback
 		AsyncCallback<String> callback = new AsyncCallback<String>() {
 

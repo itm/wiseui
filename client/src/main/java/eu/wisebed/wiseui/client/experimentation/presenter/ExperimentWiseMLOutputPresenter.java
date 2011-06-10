@@ -16,18 +16,25 @@
  */
 package eu.wisebed.wiseui.client.experimentation.presenter;
 
+import com.google.gwt.event.shared.EventBus;
 import com.google.inject.Inject;
 
+import eu.wisebed.wiseui.client.experimentation.event.RefreshWiseMLEvent;
 import eu.wisebed.wiseui.client.experimentation.view.ExperimentWiseMLOutputView;
+import eu.wisebed.wiseui.client.util.EventBusManager;
 
 public class ExperimentWiseMLOutputPresenter implements ExperimentWiseMLOutputView.Presenter{
 
 	private ExperimentWiseMLOutputView view;
+	private EventBusManager eventBus;
 	
 	@Inject
-	public ExperimentWiseMLOutputPresenter(final ExperimentWiseMLOutputView view) {
+	public ExperimentWiseMLOutputPresenter(
+			final ExperimentWiseMLOutputView view,
+			final EventBus eventBus) {
 		this.setView(view);
 		this.view.setPresenter(this);
+		this.eventBus = new EventBusManager(eventBus);
 	}
 
 	public void setView(ExperimentWiseMLOutputView view) {
@@ -38,4 +45,9 @@ public class ExperimentWiseMLOutputPresenter implements ExperimentWiseMLOutputVi
 		return view;
 	}
 
+	@Override
+	public void fireRefreshWiseMLEvent() {
+		final ExperimentWiseMLOutputPresenter source = this;
+		eventBus.fireEventFromSource(new RefreshWiseMLEvent(), source);
+	}
 }
