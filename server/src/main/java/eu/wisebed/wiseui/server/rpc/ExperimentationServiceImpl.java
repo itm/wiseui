@@ -293,7 +293,7 @@ public class ExperimentationServiceImpl extends RemoteServiceServlet
             	"properly set on the server");
             ifNull(controller.getMessageQueue(), "Unexpected. Message queue not " +
             	"properly set on the controller.");
-            ifNull(controller.getRequestStatusQueue(), "Unexpected. Message queue" +
+            ifNull(controller.getRequestStatusQueue(), "Unexpected. RequestStatus queue" +
             	" not properly set on the controller." );
             ifNull(controller.getNotificationQueue(), "Unexpected. Notification" +
             	" queue not properly set on the controller.");

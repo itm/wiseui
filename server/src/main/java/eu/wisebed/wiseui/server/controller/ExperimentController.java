@@ -92,6 +92,8 @@ public class ExperimentController implements Controller {
 		this.setWisemlTrace(wisemlTrace);
 		this.setWisemlController(wisemlController);
 		this.setMessageQueue(messageQueue);
+		this.setRequestStatusQueue(requestStatusQueue);
+		this.setNotificationQueue(notificationQueue);
 		this.setNodeUrns(new ArrayList<String>());		
 	}
 	
@@ -213,14 +215,17 @@ public class ExperimentController implements Controller {
 					msg.getTimestamp().toGregorianCalendar().getTime());
 			messageQueue.add(message);
 						
-			// set Wiseml message
+			// set WiseML message
 			eu.wisebed.wiseml.model.trace.Message traceMessage = new 
 				eu.wisebed.wiseml.model.trace.Message();
 			traceMessage.setTimestamp((long)msg.getTimestamp().getMillisecond());
 			traceMessage.setData("[" + level +"][" + data +"]");
 			traceMessage.setId(source);
 			
-			// add it to Wiseml trace
+			// add WiseML message to trace
+			 if(wisemlTrace.getChildren() == null) {
+				wisemlTrace.setChildren(Trace.listFactory());
+			}	
 			wisemlTrace.getChildren().add(message);
 			
 			LOGGER.info("Added to WiseML trace");
