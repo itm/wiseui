@@ -66,6 +66,8 @@ public class ReservationEditViewImpl extends HasWidgetsDialogBox implements Rese
     Button cancelButton;
     @UiField
     Button deleteButton;
+    @UiField
+    Button createButton;
 
     private Presenter presenter;
 
@@ -104,6 +106,11 @@ public class ReservationEditViewImpl extends HasWidgetsDialogBox implements Rese
     @UiHandler("submitButton")
     public void onSubmit(final ClickEvent event) {
         presenter.submit();
+    }
+    
+    @UiHandler("createButton")
+    public void onCreate(final ClickEvent event) {
+        presenter.create();
     }
 
     @UiHandler("deleteButton")
@@ -155,4 +162,18 @@ public class ReservationEditViewImpl extends HasWidgetsDialogBox implements Rese
         submitButton.setVisible(!readOnly);
         deleteButton.setVisible(!readOnly);
     }
+
+	@Override
+	public void setCreate() {
+		submitButton.setVisible(false);
+        deleteButton.setVisible(false);
+        createButton.setVisible(true);
+	}
+
+	@Override
+	public void setUpdate() {
+		submitButton.setVisible(true);
+        deleteButton.setVisible(true);
+		createButton.setVisible(false);
+	}
 }

@@ -24,6 +24,8 @@ import com.bradrydzewski.gwt.calendar.client.event.UpdateHandler;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.OpenEvent;
 import com.google.gwt.event.logical.shared.OpenHandler;
+import com.google.gwt.event.logical.shared.SelectionEvent;
+import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.EventBus;
@@ -35,6 +37,7 @@ import eu.wisebed.wiseui.api.CalendarServiceAsync;
 import eu.wisebed.wiseui.api.ReservationService;
 import eu.wisebed.wiseui.api.ReservationServiceAsync;
 import eu.wisebed.wiseui.client.WiseUiGinjector;
+import eu.wisebed.wiseui.client.reservation.event.CreateReservationEvent;
 import eu.wisebed.wiseui.client.reservation.event.EditReservationEvent;
 import eu.wisebed.wiseui.client.reservation.event.ReservationDeleteFailedEvent;
 import eu.wisebed.wiseui.client.reservation.event.ReservationDeleteSuccessEvent;
@@ -65,6 +68,7 @@ import java.util.Set;
 /**
  * @author John I. Gakos
  * @author Soenke Nommensen
+ * @author Philipp Abraham
  */
 public class PublicReservationsPresenter implements PublicReservationsView.Presenter,
         TestbedSelectedEvent.ConfigurationSelectedHandler, UpdateNodesSelectedEvent.Handler,
@@ -110,6 +114,14 @@ public class PublicReservationsPresenter implements PublicReservationsView.Prese
         eventBus.addHandler(ReservationDeleteSuccessEvent.TYPE, this);
         eventBus.addHandler(ReservationDeleteFailedEvent.TYPE, this);
         eventBus.addHandler(WisemlLoadedEvent.TYPE, this);
+        
+        view.getCalendar().addSelectionHandler(new SelectionHandler<Appointment>() {
+			
+			@Override
+			public void onSelection(SelectionEvent<Appointment> event) {
+				GWT.log(event.getSelectedItem().getTitle()+" selected");
+			}
+		});
 
         view.getCalendar().addOpenHandler(new OpenHandler<Appointment>() {
             @Override
@@ -166,13 +178,14 @@ public class PublicReservationsPresenter implements PublicReservationsView.Prese
                     MessageBox.warning(messages.loginRequiredTitle(), messages.loginRequired(), null);
                     return;
                 }
+                // TODO moving appointments should update reservation
+                
                 boolean commit = Window
                         .confirm(
                                 "Are you sure you want to update the appointment \""
                                         + event.getTarget().getTitle() + "\"");
                 if (!commit) {
                     event.setCancelled(true);
-                    GWT.log("Cancelled Appointment update");
                 }
             }
         });
@@ -187,7 +200,8 @@ public class PublicReservationsPresenter implements PublicReservationsView.Prese
                 final Appointment reservation = new Appointment();
                 reservation.setStart(startDate);
                 reservation.setEnd(startDate);
-                showEditReservationDialog(reservation, selectedNodes, false);
+                eventBus.fireEventFromSource(new CreateReservationEvent(reservation, selectedNodes), this);
+                //showEditReservationDialog(reservation, selectedNodes, false);
             }
         });
         view.getDatePicker().addValueChangeHandler(new ValueChangeHandler<Date>() {

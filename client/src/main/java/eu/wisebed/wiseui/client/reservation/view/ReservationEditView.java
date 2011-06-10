@@ -39,6 +39,10 @@ public interface ReservationEditView extends IsWidget {
     HasText getReservationKeyBox();
 
     void setReadOnly(boolean readOnly);
+    
+    void setCreate();
+    
+    void setUpdate();
 	
 	void setPresenter(Presenter presenter);
 	
@@ -51,6 +55,8 @@ public interface ReservationEditView extends IsWidget {
 	public interface Presenter {
 		
 		void submit();
+		
+		void create();
 		
 		void cancel();
 

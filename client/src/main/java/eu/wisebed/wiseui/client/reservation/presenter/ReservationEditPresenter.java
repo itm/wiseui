@@ -25,6 +25,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 import eu.wisebed.wiseui.api.ReservationServiceAsync;
 import eu.wisebed.wiseui.client.WiseUiGinjector;
+import eu.wisebed.wiseui.client.reservation.event.CreateReservationEvent;
 import eu.wisebed.wiseui.client.reservation.event.EditReservationEvent;
 import eu.wisebed.wiseui.client.reservation.event.ReservationDeleteFailedEvent;
 import eu.wisebed.wiseui.client.reservation.event.ReservationDeleteSuccessEvent;
@@ -57,9 +58,10 @@ import java.util.Set;
 
 /**
  * @author Soenke Nommensen
+ * @author Philipp Abraham
  * @author John I. Gakos
  */
-public class ReservationEditPresenter implements Presenter, EditReservationEvent.Handler, ConfigurationSelectedHandler,
+public class ReservationEditPresenter implements Presenter, CreateReservationEvent.Handler, EditReservationEvent.Handler, ConfigurationSelectedHandler,
         PlaceChangeEvent.Handler, ReservationSuccessEvent.Handler, ReservationFailedEvent.Handler {
 
     private static final String DEFAULT_NEW_TITLE = "New Reservation";
@@ -96,6 +98,7 @@ public class ReservationEditPresenter implements Presenter, EditReservationEvent
 
     private void bind() {
         eventBus.addHandler(EditReservationEvent.TYPE, this);
+        eventBus.addHandler(CreateReservationEvent.TYPE, this);
         eventBus.addHandler(TestbedSelectedEvent.TYPE, this);
         eventBus.addHandler(PlaceChangeEvent.TYPE, this);
         eventBus.addHandler(ReservationSuccessEvent.TYPE, this);
@@ -106,7 +109,7 @@ public class ReservationEditPresenter implements Presenter, EditReservationEvent
      * Sends reservation details to server and books a new reservation.
      */
     @Override
-    public void submit() {
+    public void create() {
         if (selectedNodes == null || selectedNodes.isEmpty()) {
             // TODO: Add a 'suggestion' type message box
             final String suggestion = "Please select at least one node to submit a reservation!";
@@ -151,6 +154,29 @@ public class ReservationEditPresenter implements Presenter, EditReservationEvent
             }
         });
     }
+    
+    /**
+     * Deletes and Creates the Reservation due to lack of Updatefunction on the server
+     */
+    @Override
+    public void submit() {
+    	// delete from data in this.appointment
+    	deleteReservation(this.appointment, new AsyncCallback<Void>() {
+    		@Override
+    		public void onFailure(Throwable caught) {
+    			eventBus.fireEvent(new ReservationDeleteFailedEvent(caught));
+    		}
+    		
+    		@Override
+    		public void onSuccess(Void arg0) {
+    			// create from textboxes
+    	    	create();
+    		}
+		});
+    	
+    	
+        
+    }
 
     /**
      * Call GWT-RPC deleteReservation(...) from {@link eu.wisebed.wiseui.api.ReservationService}.
@@ -158,7 +184,7 @@ public class ReservationEditPresenter implements Presenter, EditReservationEvent
      *
      * @param reservation Appointment to be deleted
      */
-    public void deleteReservation(final Appointment reservation) {
+    public void deleteReservation(final Appointment reservation, AsyncCallback<Void> callback) {
         // Get RS endpoint URL
         final String rsEndpointUrl = selectedConfiguration.getRsEndpointUrl();
 
@@ -179,16 +205,7 @@ public class ReservationEditPresenter implements Presenter, EditReservationEvent
 
         // Make the RPC call and handle the result via events
         GWT.log("Delete reservation: " + confidentialReservationData);
-        reservationService.deleteReservation(rsEndpointUrl, secretAuthenticationKeys, secretReservationKeys,
-                new AsyncCallback<Void>() {
-                    public void onFailure(final Throwable caught) {
-                        eventBus.fireEvent(new ReservationDeleteFailedEvent(caught));
-                    }
-
-                    public void onSuccess(final Void result) {
-                        eventBus.fireEvent(new ReservationDeleteSuccessEvent(reservation));
-                    }
-                });
+        reservationService.deleteReservation(rsEndpointUrl, secretAuthenticationKeys, secretReservationKeys, callback);
     }
 
     @Override
@@ -218,7 +235,15 @@ public class ReservationEditPresenter implements Presenter, EditReservationEvent
             @Override
             public void onButtonClicked(final Button button) {
                 if (Button.OK.equals(button)) {
-                    deleteReservation(appointment);
+                    deleteReservation(appointment, new AsyncCallback<Void>() {
+                        public void onFailure(final Throwable caught) {
+                        	eventBus.fireEvent(new ReservationDeleteFailedEvent(caught));
+                        }
+
+                        public void onSuccess(final Void result) {
+                        	eventBus.fireEvent(new ReservationDeleteSuccessEvent(appointment));
+                        }
+                    });
                     GWT.log("Deleting reservation made by: " + appointment.getCreatedBy());
                     view.hide();
                 }
@@ -245,20 +270,56 @@ public class ReservationEditPresenter implements Presenter, EditReservationEvent
         eventBus.removeAll();
     }
 
+    public void onReservationSuccess() {
+        MessageBox.success(messages.reservationSuccessTitle(), messages.reservationSuccess(), null);
+    }
+
+    @Override
+    public void onReservationFailed(final ReservationFailedEvent event) {
+        final String errorMsgTitle;
+        final String errorMsg;
+        final Throwable caught = event.getThrowable();
+        // TODO: Get exception's message for more descriptive error handling
+        if (caught instanceof AuthenticationException) {
+            errorMsgTitle = messages.authenticationKeysExpiredTitle();
+            errorMsg = messages.authenticationKeysExpired();
+            GWT.log(errorMsg);
+        } else if (caught instanceof ReservationException) {
+            errorMsgTitle = messages.faultyReservationParametersTitle();
+            errorMsg = messages.faultyReservationParameters();
+            GWT.log(errorMsg);
+        } else {
+            errorMsgTitle = messages.rsServiceErrorTitle();
+            errorMsg = messages.rsServiceError();
+            GWT.log(errorMsg);
+        }
+        MessageBox.error(errorMsgTitle, errorMsg, caught, null);
+    }
+
     @Override
     public void onEditReservation(final EditReservationEvent event) {
-        if (selectedConfiguration == null) {
+        prepareDialog(event.getAppointment(), event.isReadOnly(), event.getNodes());
+        view.setUpdate();
+    }
+    
+	@Override
+	public void onCreateReservation(CreateReservationEvent event) {
+		prepareDialog(event.getAppointment(), false, event.getNodes());
+		view.setCreate();
+	}
+	
+	private void prepareDialog(Appointment appointment, boolean readOnly, Set<Node> nodes) {
+		
+		if (selectedConfiguration == null) {
             final String suggestion = "Please select at least one testbed to make a new reservation";
             MessageBox.warning("No testbed selected", suggestion, null);
             return;
         }
+		
+		// Set appointment
+        this.appointment = appointment;
 
-        // Handle readOnly mode
-        readOnly = event.isReadOnly();
         view.setReadOnly(readOnly);
-
-        // Set appointment
-        appointment = event.getAppointment();
 
         // Fill in default values
         view.getWhoTextBox().setText("");
@@ -298,34 +359,9 @@ public class ReservationEditPresenter implements Presenter, EditReservationEvent
             }
         }
         view.show(title);
-        if (event.getNodes() != null) {
-            setNodesSelected(event.getNodes());
+        if (nodes != null) {
+            setNodesSelected(nodes);
         }
-    }
-
-    public void onReservationSuccess() {
-        MessageBox.success(messages.reservationSuccessTitle(), messages.reservationSuccess(), null);
-    }
-
-    @Override
-    public void onReservationFailed(final ReservationFailedEvent event) {
-        final String errorMsgTitle;
-        final String errorMsg;
-        final Throwable caught = event.getThrowable();
-        // TODO: Get exception's message for more descriptive error handling
-        if (caught instanceof AuthenticationException) {
-            errorMsgTitle = messages.authenticationKeysExpiredTitle();
-            errorMsg = messages.authenticationKeysExpired();
-            GWT.log(errorMsg);
-        } else if (caught instanceof ReservationException) {
-            errorMsgTitle = messages.faultyReservationParametersTitle();
-            errorMsg = messages.faultyReservationParameters();
-            GWT.log(errorMsg);
-        } else {
-            errorMsgTitle = messages.rsServiceErrorTitle();
-            errorMsg = messages.rsServiceError();
-            GWT.log(errorMsg);
-        }
-        MessageBox.error(errorMsgTitle, errorMsg, caught, null);
-    }
+		
+	}
 }
