@@ -147,10 +147,10 @@ ExperimentMessageArrivedEvent.Handler,FlashBinaryImageEvent.Handler{
 		view.setFlashedImageFilename(flashedImageFilename);
 		view.setStatus(status.getStatusText());
 		view.setNodeUrns(nodeUrns);
-//		view.deactivateStartExperimentButton();
-//		view.deactivateFlashExperimentButton();
-//		view.deactivateStopExperimentButton();
-//		view.deactivateDownloadWiseMLButton();		
+		view.deactivateStartExperimentButton();
+		view.deactivateFlashExperimentButton();
+		view.deactivateStopExperimentButton();
+		view.deactivateDownloadWiseMLButton();		
 		
 		// start the reservation start timer
 		startReservationStartTimer();
@@ -199,10 +199,10 @@ ExperimentMessageArrivedEvent.Handler,FlashBinaryImageEvent.Handler{
 			// update view
 			view.setStatus(status.getStatusText());
 			view.setExperimentTiming("-");
-//			view.deactivateStartExperimentButton();
-//			view.deactivateFlashExperimentButton();
-//			view.deactivateStopExperimentButton();
-//			view.deactivateDownloadWiseMLButton();
+			view.deactivateStartExperimentButton();
+			view.deactivateFlashExperimentButton();
+			view.deactivateStopExperimentButton();
+			view.deactivateDownloadWiseMLButton();
 		}
 	}
 
