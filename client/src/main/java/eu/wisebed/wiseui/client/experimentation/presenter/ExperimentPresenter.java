@@ -389,6 +389,36 @@ ExperimentMessageArrivedEvent.Handler,FlashBinaryImageEvent.Handler{
 	}
 	
 	@Override
+	public void resetExperimentNodes() {
+		
+		// setup callback
+		AsyncCallback<Void> callback = new AsyncCallback<Void>() {
+
+			@Override
+			public void onFailure(Throwable caught) {
+				MessageBox.error("Experimentation Service", caught.getMessage(), caught, null);
+				
+			}
+
+			@Override
+			public void onSuccess(Void result) {
+				GWT.log("Nodes are now reset!");
+			}
+			
+		};
+		
+		// make the rpc call
+		List<SecretReservationKey> secretReservationKeys = new ArrayList<SecretReservationKey>();
+		for(int i=0;i<userData.size();i++) {
+			SecretReservationKey key = new SecretReservationKey();
+			key.setSecretReservationKey(userData.get(i).getSecretReservationKey());
+			key.setUrnPrefix(userData.get(i).getSecretReservationKey());
+			secretReservationKeys.add(key);
+		}
+		service.resetExperimentNodes(secretReservationKeys,nodeUrns,callback);
+	}
+	
+	@Override
 	public void getWiseMLReport() {
 		// setup callback
 		AsyncCallback<String> callback = new AsyncCallback<String>() {

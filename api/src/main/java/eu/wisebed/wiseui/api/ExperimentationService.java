@@ -56,6 +56,16 @@ public interface ExperimentationService extends RemoteService {
 			List<String> nodeUrns) 
 		throws 
 		ExperimentationException;
+	/**
+	 * Resets a list of nodes participating in an experiment.
+	 * @param secretReservationKeys List of {@link SecretReservationKeys}s
+	 * @param nodeUrns List of node urns
+	 */
+	void resetExperimentNodes(
+			List<SecretReservationKey> secretReservationKeys,
+			List<String> nodeUrns)
+		throws
+		ExperimentationException;
 	
 	/**
 	 * Returns an experiment message back to the client

@@ -63,6 +63,8 @@ public class ExperimentViewImpl extends Composite implements ExperimentView {
 	@UiField
 	Button flashImageButton;
 	@UiField
+	Button resetNodesButton;
+	@UiField
 	Button startExperimentButton;
 	@UiField
 	Button stopExperimentButton;
@@ -166,6 +168,11 @@ public class ExperimentViewImpl extends Composite implements ExperimentView {
 	public void activateStartExperimentButton() {
 		startExperimentButton.setEnabled(true);
 	}
+	
+	@Override
+	public void activateResetNodesButton() {
+		resetNodesButton.setEnabled(true);
+	}
 
 	@Override
 	public void activateFlashExperimentButton() {
@@ -186,6 +193,11 @@ public class ExperimentViewImpl extends Composite implements ExperimentView {
 	public void deactivateStartExperimentButton() {
 		startExperimentButton.setEnabled(false);
 	}
+	
+	@Override
+	public void deactivateResetNodesButton() {
+		resetNodesButton.setEnabled(false);
+	}
 
 	@Override
 	public void deactivateFlashExperimentButton() {
@@ -205,6 +217,11 @@ public class ExperimentViewImpl extends Composite implements ExperimentView {
 	@UiHandler("flashImageButton")
 	public void handleFlashImageButtonClick(final ClickEvent e) {
 		presenter.showFlashExperimentImageView();
+	}
+	
+	@UiHandler("resetExperimentNodes")
+	public void handleResetNodesButtonClick(final ClickEvent e) {
+		presenter.resetExperimentNodes();
 	}
 	
 	@UiHandler("startExperimentButton")

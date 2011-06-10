@@ -60,6 +60,8 @@ public interface ExperimentView extends IsWidget {
 	
 	void activateFlashExperimentButton();
 	
+	void activateResetNodesButton();
+	
 	void activateStopExperimentButton();
 	
 	void activateDownloadWiseMLButton();
@@ -68,6 +70,8 @@ public interface ExperimentView extends IsWidget {
 	
 	void deactivateFlashExperimentButton();
 	
+	void deactivateResetNodesButton();
+	
 	void deactivateStopExperimentButton();
 	
 	void deactivateDownloadWiseMLButton();
@@ -75,6 +79,7 @@ public interface ExperimentView extends IsWidget {
 	public interface Presenter {
 		void showFlashExperimentImageView();
 		void startExperiment();
+		void resetExperimentNodes();
 		void stopExperiment();
 		void showNodeOutput(String node);
 		void getWiseMLReport();

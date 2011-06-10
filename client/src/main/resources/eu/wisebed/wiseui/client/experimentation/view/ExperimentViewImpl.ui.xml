@@ -60,6 +60,9 @@
 							<g:Button text="Flash Experiment Image" ui:field="flashImageButton" />
 						</td>
 						<td>
+							<g:Button text="Reset Experiment nodes" ui:field="resetNodesButton" />
+						</td>
+						<td>
 							<g:Button text="Stop Experiment" ui:field="stopExperimentButton" />
 						</td>
 						<td>

@@ -211,6 +211,42 @@ public class ExperimentationServiceImpl extends RemoteServiceServlet
 
         jobs.join();
     }
+    
+    /**
+     * {@inheritDoc}
+     */
+	@Override
+	public void resetExperimentNodes(
+			List<SecretReservationKey> secretReservationKeys,
+			List<String> nodeUrns) throws ExperimentationException {
+
+		LOGGER.info("Reseting nodes : " + nodeUrns.toString());
+		
+		// get experiment controller
+        ExperimentController controller = findExperimentControllerBySecretReservationKey(secretReservationKeys);
+        // if controller not found or if it has not queue
+        try {
+            ifNull(controller, "Unexpected. Controller not " +
+            	"properly set on the server");
+            ifNull(controller.getMessageQueue(), "Unexpected. Message queue not " +
+            	"properly set on the controller.");
+            ifNull(controller.getRequestStatusQueue(), "Unexpected. Message queue" +
+            	" not properly set on the controller." );
+            ifNull(controller.getNotificationQueue(), "Unexpected. Notification" +
+            	" queue not properly set on the controller.");
+        } catch (RuntimeException cause) {
+            throw new ExperimentationException(cause.getMessage());
+
+        }
+        
+        jobs.submit(new Job(
+                "(reset nodes)(" + secretReservationKeys.get(0).getSecretReservationKey() + ")",
+                controller.getWsn().resetNodes(nodeUrns),
+                nodeUrns,Job.JobType.resetNodes
+        		));
+        
+        jobs.join();
+	}
 
     /**
      * {@inheritDoc}
