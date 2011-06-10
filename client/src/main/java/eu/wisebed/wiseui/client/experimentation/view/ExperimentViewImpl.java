@@ -219,7 +219,7 @@ public class ExperimentViewImpl extends Composite implements ExperimentView {
 		presenter.showFlashExperimentImageView();
 	}
 	
-	@UiHandler("resetExperimentNodes")
+	@UiHandler("resetNodesButton")
 	public void handleResetNodesButtonClick(final ClickEvent e) {
 		presenter.resetExperimentNodes();
 	}
