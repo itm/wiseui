@@ -44,6 +44,9 @@ public class ExperimentOutputViewImpl extends HasWidgetsDialogBox implements Exp
 	Button closeButton;
 	
 	@UiField
+	Button clearButton;
+		
+	@UiField
 	TextArea outputTextArea;
 
 	public ExperimentOutputViewImpl(){
@@ -76,6 +79,11 @@ public class ExperimentOutputViewImpl extends HasWidgetsDialogBox implements Exp
 	@UiHandler("closeButton")
 	public void handleCancelButtonClick(final ClickEvent event) {
 		hide();
+	}
+	
+	@UiHandler("clearButton")
+	public void handleClearButtonClick(final ClickEvent event) {
+		outputTextArea.setText("");
 	}
 
 	@Override

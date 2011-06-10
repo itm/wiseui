@@ -49,6 +49,9 @@ public class ExperimentWiseMLOutputViewImpl extends HasWidgetsDialogBox implemen
 	Button closeButton;
 	
 	@UiField
+	Button clearButton;
+		
+	@UiField
 	TextArea outputTextArea;
 
 	public ExperimentWiseMLOutputViewImpl(){
@@ -75,6 +78,11 @@ public class ExperimentWiseMLOutputViewImpl extends HasWidgetsDialogBox implemen
 	@UiHandler("closeButton")
 	public void handleCancelButtonClick(final ClickEvent event) {
 		hide();
+	}
+	
+	@UiHandler("clearButton")
+	public void handleClearButtonClick(final ClickEvent event) {
+		outputTextArea.setText("");
 	}
 
 	@Override
