@@ -239,7 +239,7 @@ RefreshWiseMLEvent.Handler{
 				for(int i=0;i<userData.size();i++) {
 					SecretReservationKey key = new SecretReservationKey();
 					key.setSecretReservationKey(userData.get(i).getSecretReservationKey());
-					key.setUrnPrefix(userData.get(i).getSecretReservationKey());
+					key.setUrnPrefix(userData.get(i).getUrnPrefix());
 					secretReservationKeys.add(key);
 				}
 				service.returnExperimentMessage(secretReservationKeys, callback);
@@ -312,8 +312,9 @@ RefreshWiseMLEvent.Handler{
 		for(int i=0;i<userData.size();i++) {
 			SecretReservationKey key = new SecretReservationKey();
 			key.setSecretReservationKey(userData.get(i).getSecretReservationKey());
-			key.setUrnPrefix(userData.get(i).getSecretReservationKey());
+			key.setUrnPrefix(userData.get(i).getUrnPrefix());
 			secretReservationKeys.add(key);
+			GWT.log(i+"."+userData.size() + " " + key.toString());
 		}
 		service.startExperimentController(
 				sessionManagementUrl,
@@ -349,7 +350,7 @@ RefreshWiseMLEvent.Handler{
 		for(int i=0;i<userData.size();i++) {
 			SecretReservationKey key = new SecretReservationKey();
 			key.setSecretReservationKey(userData.get(i).getSecretReservationKey());
-			key.setUrnPrefix(userData.get(i).getSecretReservationKey());
+			key.setUrnPrefix(userData.get(i).getUrnPrefix());
 			secretReservationKeys.add(key);
 		}
 		service.stopExperimentController(secretReservationKeys,callback);
@@ -394,7 +395,7 @@ RefreshWiseMLEvent.Handler{
 		for(int i=0;i<userData.size();i++) {
 			SecretReservationKey key = new SecretReservationKey();
 			key.setSecretReservationKey(userData.get(i).getSecretReservationKey());
-			key.setUrnPrefix(userData.get(i).getSecretReservationKey());
+			key.setUrnPrefix(userData.get(i).getUrnPrefix());
 			secretReservationKeys.add(key);
 		}
 		service.flashExperimentImage(secretReservationKeys,image.getId(),nodeUrns,callback);
@@ -424,7 +425,7 @@ RefreshWiseMLEvent.Handler{
 		for(int i=0;i<userData.size();i++) {
 			SecretReservationKey key = new SecretReservationKey();
 			key.setSecretReservationKey(userData.get(i).getSecretReservationKey());
-			key.setUrnPrefix(userData.get(i).getSecretReservationKey());
+			key.setUrnPrefix(userData.get(i).getUrnPrefix());
 			secretReservationKeys.add(key);
 		}
 		service.resetExperimentNodes(secretReservationKeys,nodeUrns,callback);
@@ -454,7 +455,7 @@ RefreshWiseMLEvent.Handler{
 		for(int i=0;i<userData.size();i++) {
 			SecretReservationKey key = new SecretReservationKey();
 			key.setSecretReservationKey(userData.get(i).getSecretReservationKey());
-			key.setUrnPrefix(userData.get(i).getSecretReservationKey());
+			key.setUrnPrefix(userData.get(i).getUrnPrefix());
 			secretReservationKeys.add(key);
 		}
 		service.returnExperimentWiseMLReport(secretReservationKeys,callback);

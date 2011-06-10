@@ -56,7 +56,7 @@ public class ConfidentialReservationData extends PublicReservationData implement
         for (Data dt : data) {
             dataString.append("{SecretReservationKey=" + dt.getSecretReservationKey()
                     + ", username=" + dt.getUsername()
-                    + ", urnPrefix" + dt.getUrnPrefix()
+                    + ", urnPrefix=" + dt.getUrnPrefix()
                     + "}");
         }
 
