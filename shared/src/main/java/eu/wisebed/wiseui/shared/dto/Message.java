@@ -47,6 +47,13 @@ public class Message implements Serializable {
 			   "[level][" + level + "]" +
 			   "[data][" + toHexString(binaryData) +"]";
 	}
+	
+	@SuppressWarnings("deprecation")
+	public String prettyToString() {
+		String level = getBinaryData()[1] == 0x00 ? "DEBUG" : "FATAL";
+
+		return "[" + timestamp.toGMTString() +"]" + "[" + level + "]" + "[" + toHexString(binaryData) +"]";
+	}
 
 	/**
      * Gets the value of the sourceNodeId property.

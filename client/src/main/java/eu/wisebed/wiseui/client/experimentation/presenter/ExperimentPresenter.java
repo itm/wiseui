@@ -228,8 +228,8 @@ RefreshWiseMLEvent.Handler{
 					@Override
 					public void onSuccess(final Message result) {
 						if(result == null) return;
-						GWT.log(result.toString());
-						outputMap.get(result.getSourceNodeId()).getView().addOutput(result.toString());
+						
+						outputMap.get(result.getSourceNodeId()).getView().addOutput(result.prettyToString());
 					}
 					
 				};
@@ -368,6 +368,7 @@ RefreshWiseMLEvent.Handler{
 		view.deactivateStopExperimentButton();
 		view.deactivateFlashExperimentButton();
 		view.deactivateResetNodesButton();
+		view.deactivateDownloadWiseMLButton();
 		view.activateStartExperimentButton();
 	}
 	
@@ -415,7 +416,7 @@ RefreshWiseMLEvent.Handler{
 
 			@Override
 			public void onSuccess(Void result) {
-				GWT.log("Nodes are now reset!");
+				MessageBox.info("Experimentation Service", "Nodes are now reset", null);
 			}
 			
 		};

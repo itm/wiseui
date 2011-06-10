@@ -226,7 +226,7 @@ public class ExperimentController implements Controller {
 			 if(wisemlTrace.getChildren() == null) {
 				wisemlTrace.setChildren(Trace.listFactory());
 			}	
-			wisemlTrace.getChildren().add(message);
+			wisemlTrace.getChildren().add(traceMessage);
 			
 			LOGGER.info("Added to WiseML trace");
 		}

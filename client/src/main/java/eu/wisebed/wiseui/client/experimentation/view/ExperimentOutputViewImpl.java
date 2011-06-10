@@ -89,7 +89,7 @@ public class ExperimentOutputViewImpl extends HasWidgetsDialogBox implements Exp
 	@Override
 	public void addOutput(final String output) {
 		String previousText = outputTextArea.getText();
-		outputTextArea.setText(previousText + '\n'+ output);
+		outputTextArea.setText(previousText + "\n\n"+ output);
 		setScrollPositionAtEnd();		
 	}
 
