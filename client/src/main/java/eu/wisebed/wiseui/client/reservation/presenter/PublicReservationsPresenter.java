@@ -81,7 +81,7 @@ public class PublicReservationsPresenter implements PublicReservationsView.Prese
     private final PublicReservationsView view;
     private final ReservationServiceAsync reservationService;
     private final CalendarServiceAsync calendarService;
-    private TestbedConfiguration testbedConfiguration;
+    private TestbedConfiguration selectedTestbedConfiguration;
     private ReservationManager reservationManager;
     private Set<Node> selectedNodes = new HashSet<Node>();
     private List<Node> setupNodes = new ArrayList<Node>();
@@ -114,14 +114,14 @@ public class PublicReservationsPresenter implements PublicReservationsView.Prese
         eventBus.addHandler(ReservationDeleteSuccessEvent.TYPE, this);
         eventBus.addHandler(ReservationDeleteFailedEvent.TYPE, this);
         eventBus.addHandler(WisemlLoadedEvent.TYPE, this);
-        
+
         view.getCalendar().addSelectionHandler(new SelectionHandler<Appointment>() {
-			
-			@Override
-			public void onSelection(SelectionEvent<Appointment> event) {
-				GWT.log(event.getSelectedItem().getTitle()+" selected");
-			}
-		});
+
+            @Override
+            public void onSelection(SelectionEvent<Appointment> event) {
+                GWT.log(event.getSelectedItem().getTitle() + " selected");
+            }
+        });
 
         view.getCalendar().addOpenHandler(new OpenHandler<Appointment>() {
             @Override
@@ -149,7 +149,7 @@ public class PublicReservationsPresenter implements PublicReservationsView.Prese
                 }
 
                 // Authenticated users can edit their own reservations
-                if (isAuthenticated() && appointment.getCreatedBy().equals(getAuthenticatedUserName())) {
+                if (isAuthenticated() && getAuthenticatedUserName().equals(appointment.getCreatedBy())) {
 
                     readOnly = false;
 
@@ -179,7 +179,7 @@ public class PublicReservationsPresenter implements PublicReservationsView.Prese
                     return;
                 }
                 // TODO moving appointments should update reservation
-                
+
                 boolean commit = Window
                         .confirm(
                                 "Are you sure you want to update the appointment \""
@@ -192,14 +192,17 @@ public class PublicReservationsPresenter implements PublicReservationsView.Prese
         view.getCalendar().addTimeBlockClickHandler(new TimeBlockClickHandler<Date>() {
             @Override
             public void onTimeBlockClick(final TimeBlockClickEvent<Date> event) {
+                final Date startDate = event.getTarget();
+                final Appointment reservation = new Appointment();
+
                 if (!isAuthenticated()) {
                     MessageBox.warning(messages.loginRequiredTitle(), messages.loginRequired(), null);
                     return;
                 }
-                final Date startDate = event.getTarget();
-                final Appointment reservation = new Appointment();
+
                 reservation.setStart(startDate);
                 reservation.setEnd(startDate);
+
                 eventBus.fireEventFromSource(new CreateReservationEvent(reservation, selectedNodes), this);
                 //showEditReservationDialog(reservation, selectedNodes, false);
             }
@@ -216,7 +219,7 @@ public class PublicReservationsPresenter implements PublicReservationsView.Prese
 
     @Override
     public void onTestbedSelected(final TestbedSelectedEvent event) {
-        testbedConfiguration = event.getConfiguration();
+        selectedTestbedConfiguration = event.getConfiguration();
         loadReservations(view.getCalendar().getDate());
     }
 
@@ -230,9 +233,9 @@ public class PublicReservationsPresenter implements PublicReservationsView.Prese
     public void onThrowable(final ThrowableEvent event) {
         view.getLoadingIndicator().hideLoading();
         if (event.getThrowable() == null) return;
-        if (testbedConfiguration != null && testbedConfiguration.getName() != null) {
+        if (selectedTestbedConfiguration != null && selectedTestbedConfiguration.getName() != null) {
             MessageBox.error("Error fetching reservation data for testbed '"
-                    + testbedConfiguration.getName()
+                    + selectedTestbedConfiguration.getName()
                     + "'!",
                     event.getThrowable().getMessage(),
                     event.getThrowable(), null);
@@ -249,16 +252,16 @@ public class PublicReservationsPresenter implements PublicReservationsView.Prese
      *
      * @param pivotDate Anchor date for fetching reservation data
      */
-    private void loadPublicReservations(final Date pivotDate) {
+    private void loadPublicAndMaybeConfidentialReservations(final Date pivotDate) {
         view.getLoadingIndicator().showLoading("Reservations");
 
         // Logging
         String testbedName = "<Unknown testbed>";
-        if (testbedConfiguration != null) {
-            testbedName = testbedConfiguration.getName();
+        if (selectedTestbedConfiguration != null) {
+            testbedName = selectedTestbedConfiguration.getName();
         }
 
-        if (testbedConfiguration == null) {
+        if (selectedTestbedConfiguration == null) {
             final String errorMessage = "Reservation URL not found for Testbed '" + testbedName + "'";
             GWT.log(errorMessage);
             MessageBox.warning("Configuration could not be loaded!",
@@ -274,7 +277,7 @@ public class PublicReservationsPresenter implements PublicReservationsView.Prese
 
         // Make the service call
         GWT.log("Loading public reservations for Testbed '" + testbedName + "'");
-        reservationService.getPublicReservations(testbedConfiguration.getRsEndpointUrl(),
+        reservationService.getPublicReservations(selectedTestbedConfiguration.getRsEndpointUrl(),
                 pivotDate, range, new AsyncCallback<List<PublicReservationData>>() {
             public void onFailure(Throwable caught) {
                 view.getLoadingIndicator().hideLoading();
@@ -292,17 +295,23 @@ public class PublicReservationsPresenter implements PublicReservationsView.Prese
                     if (isAuthenticated()) {
                         final List<Appointment> toBeDeleted = new ArrayList<Appointment>();
                         for (Appointment reservation : view.getCalendar().getAppointments()) {
-                            // TODO We assume here that the user always makes reservations with his IDP user name,
-                            // which may not be always the case!
-                            GWT.log("to be deleted: " + reservation.getCreatedBy());
-                            if (reservation.getCreatedBy().equals(getAuthenticatedUserName())) {
+                            GWT.log("loadPublicAndMaybeConfidentialReservations(): about to delete reservation made by "
+                                    + reservation.getCreatedBy());
+                            // TODO Review: What if userData is null and thus reservation.getCreatedBy() yields null?
+                            // In this case no old appointments will be deleted but new, confidential reservations
+                            // will be added to the calendar as appointments. Thus, we have duplicates!
+                            // Maybe we could match duplicate reservations with their secret reservation keys?
+                            // => using the ReservationManager
+                            if (getAuthenticatedUserName().equals(reservation.getCreatedBy())) {
                                 toBeDeleted.add(reservation);
                             }
                         }
                         for (Appointment appointment : toBeDeleted) {
                             view.getCalendar().removeAppointment(appointment);
                         }
-                        loadConfidentialReservations(view.getCalendar().getDate());
+
+                        // The user is authenticated => load confidential reservations
+                        loadConfidentialReservations(pivotDate);
                     } else {
                         view.getLoadingIndicator().hideLoading();
                     }
@@ -322,11 +331,11 @@ public class PublicReservationsPresenter implements PublicReservationsView.Prese
      * @param pivotDate Anchor date for fetching reservation data
      */
     private void loadConfidentialReservations(final Date pivotDate) {
-        final String rsEndpointUrl = testbedConfiguration.getRsEndpointUrl();
+        final String rsEndpointUrl = selectedTestbedConfiguration.getRsEndpointUrl();
         final List<SecretAuthenticationKey> secretAuthenticationKeys
                 = injector.getAuthenticationManager().getSecretAuthenticationKeys();
         final ReservationService.Range range = calcRange();
-        GWT.log("Loading private reservations for Testbed '" + testbedConfiguration.getName() + "'");
+        GWT.log("Loading private reservations for Testbed '" + selectedTestbedConfiguration.getName() + "'");
 
         reservationService.getPrivateReservations(rsEndpointUrl, secretAuthenticationKeys, pivotDate, range,
                 new AsyncCallback<List<ConfidentialReservationData>>() {
@@ -358,10 +367,10 @@ public class PublicReservationsPresenter implements PublicReservationsView.Prese
 
     private String getAuthenticatedUserName() {
         final AuthenticationManager authenticationManager = injector.getAuthenticationManager();
-        String userName = null;
+        String userName = "<default>"; // TODO Is this really what we want (use an empty string...)?
         if (isAuthenticated()) {
-            final String urnPrefix = testbedConfiguration.getUrnPrefixList().get(0);
-            final SecretAuthenticationKey secretAuthenticationKey = authenticationManager.getMap().get(urnPrefix);
+            final String firstUrnPrefix = selectedTestbedConfiguration.getUrnPrefixList().get(0);
+            final SecretAuthenticationKey secretAuthenticationKey = authenticationManager.getMap().get(firstUrnPrefix);
             if (secretAuthenticationKey != null) {
                 userName = secretAuthenticationKey.getUsername();
             }
@@ -371,40 +380,40 @@ public class PublicReservationsPresenter implements PublicReservationsView.Prese
 
     @Override
     public void handleBackClicked() {
-        final Date current = view.getCalendar().getDate();
+        final Date selectedDate = view.getCalendar().getDate();
         switch (view.getCalendar().getDays()) {
             case ONE_DAY:
-                subtractDays(current, ONE_DAY);
+                subtractDays(selectedDate, ONE_DAY);
                 break;
             case WEEK:
-                subtractDays(current, WEEK);
+                subtractDays(selectedDate, WEEK);
                 break;
             default:
-                subtractMonth(current);
+                subtractMonth(selectedDate);
         }
     }
 
     @Override
     public void handleForwardClicked() {
-        final Date current = view.getCalendar().getDate();
+        final Date selectedDate = view.getCalendar().getDate();
         switch (view.getCalendar().getDays()) {
             case ONE_DAY:
-                addDays(current, ONE_DAY);
+                addDays(selectedDate, ONE_DAY);
                 break;
             case WEEK:
-                addDays(current, WEEK);
+                addDays(selectedDate, WEEK);
                 break;
             default:
-                addMonth(current);
+                addMonth(selectedDate);
         }
     }
 
     @Override
     public void handleTodayClicked() {
-        final Date today = new Date();
-        view.getCalendar().setDate(today);
-        view.getDatePicker().setValue(today);
-        loadReservations(today);
+        final Date now = new Date();
+        view.getCalendar().setDate(now);
+        view.getDatePicker().setValue(now);
+        loadReservations(now);
     }
 
     private void addDays(final Date current, final int days) {
@@ -480,8 +489,7 @@ public class PublicReservationsPresenter implements PublicReservationsView.Prese
      */
     @Override
     public void loadReservations(final Date date) {
-        // Load public reservations
-        loadPublicReservations(date);
+        loadPublicAndMaybeConfidentialReservations(date);
     }
 
     private ReservationService.Range calcRange() {
@@ -531,8 +539,8 @@ public class PublicReservationsPresenter implements PublicReservationsView.Prese
     public boolean isAuthenticated() {
         boolean result = false;
         final AuthenticationManager authenticationManager = injector.getAuthenticationManager();
-        if (testbedConfiguration != null) {
-            result = authenticationManager.isAuthenticated(testbedConfiguration);
+        if (selectedTestbedConfiguration != null) {
+            result = authenticationManager.isAuthenticated(selectedTestbedConfiguration);
         }
         return result;
     }

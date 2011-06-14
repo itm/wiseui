@@ -112,6 +112,12 @@
             <artifactId>hibernate-entitymanager</artifactId>
             <version>${org.hibernate.version}</version>
         </dependency>
+        <!-- Hibernate validator for bean validation -->
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-validator</artifactId>
+            <version>4.1.0.Final</version>
+        </dependency>
         <!-- Ehcache -->
         <!--dependency> <groupId>org.hibernate</groupId> <artifactId>hibernate-ehcache</artifactId>
               <version>${org.hibernate.version}</version> </dependency -->
