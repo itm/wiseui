@@ -172,8 +172,6 @@ public class ReservationEditViewImpl extends HasWidgetsDialogBox implements Rese
 
 	@Override
 	public void setUpdate() {
-		submitButton.setVisible(true);
-        deleteButton.setVisible(true);
 		createButton.setVisible(false);
 	}
 }

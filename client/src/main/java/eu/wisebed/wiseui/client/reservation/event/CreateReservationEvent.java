@@ -24,7 +24,7 @@ import eu.wisebed.wiseui.shared.dto.Node;
 import java.util.Set;
 
 /**
- * @author Soenke Nommensen
+ * @author Philipp Abraham
  */
 public class CreateReservationEvent extends GwtEvent<CreateReservationEvent.Handler> {
 
