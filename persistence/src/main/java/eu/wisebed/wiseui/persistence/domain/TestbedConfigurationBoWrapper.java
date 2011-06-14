@@ -24,9 +24,9 @@ import java.util.List;
  */
 public class TestbedConfigurationBoWrapper {
 
-    private List<TestbedConfigurationBo> testbedConfigurations = new ArrayList<TestbedConfigurationBo>();
-
     private static int ID_GENERATOR = 0;
+
+    private List<TestbedConfigurationBo> testbedConfigurations = new ArrayList<TestbedConfigurationBo>();
 
     public TestbedConfigurationBoWrapper() {
     }

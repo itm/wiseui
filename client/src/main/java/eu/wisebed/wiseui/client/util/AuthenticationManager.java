@@ -32,6 +32,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static eu.wisebed.wiseui.shared.common.Checks.ifNull;
 import static eu.wisebed.wiseui.shared.common.Checks.ifNullArgument;
@@ -58,7 +59,7 @@ public class AuthenticationManager {
 
     private final List<SecretAuthenticationKey> secretAuthenticationKeys = Lists.newLinkedList();
 
-    private final HashMap<String, SecretAuthenticationKey> map = new HashMap<String, SecretAuthenticationKey>();
+    private final Map<String, SecretAuthenticationKey> map = new HashMap<String, SecretAuthenticationKey>();
 
     /**
      * Load all authentication keys from the cookie.
@@ -127,7 +128,7 @@ public class AuthenticationManager {
         return secretAuthenticationKeys;
     }
 
-    public HashMap<String, SecretAuthenticationKey> getMap() {
+    public Map<String, SecretAuthenticationKey> getMap() {
         return map;
     }
 
@@ -162,9 +163,18 @@ public class AuthenticationManager {
      * @param testbedConfiguration The {@link TestbedConfiguration} to be checked.
      * @return Whether the user is connected to the current testbed or not.
      */
-    public boolean isAuthenticated(final TestbedConfiguration testbedConfiguration) {    	
+    public boolean isAuthenticated(final TestbedConfiguration testbedConfiguration) {
     	ifNullArgument(testbedConfiguration, "testbedConfiguration is null!");
         ifNull(testbedConfiguration.getUrnPrefixList(), "testbedConfiguration.getUrnPrefixList() is null!");
-    	return map.keySet().containsAll(testbedConfiguration.getUrnPrefixList());
+
+        boolean isAuthenticated = true;
+        for (String urnPrefix : testbedConfiguration.getUrnPrefixList()) {
+            if (!map.containsKey(urnPrefix)) {
+                isAuthenticated = false;
+                break;
+            }
+        }
+
+        return isAuthenticated;
     }
 }

@@ -56,7 +56,7 @@ public class TestbedConfigurationOxmDaoImpl implements TestbedConfigurationDao {
     public TestbedConfigurationOxmDaoImpl(final Resource resource) {
         try {
             this.path = resource.getFile().getPath();
-        } catch (IOException e) {
+        } catch (final IOException e) {
             LOGGER.error(e.getMessage(), e);
         }
     }
@@ -126,9 +126,9 @@ public class TestbedConfigurationOxmDaoImpl implements TestbedConfigurationDao {
             file = new FileInputStream(path);
             StreamSource source = new StreamSource(file);
             wrapper = (TestbedConfigurationBoWrapper) unmarshaller.unmarshal(source);
-        } catch (FileNotFoundException e) {
+        } catch (final FileNotFoundException e) {
             LOGGER.error(e.getMessage(), e);
-        } catch (IOException e) {
+        } catch (final IOException e) {
             LOGGER.error(e.getMessage(), e);
         } finally {
             if (file != null) {
