@@ -18,12 +18,31 @@
 
 -->
 <configurations>
+    <configuration isFederated="false">
+        <name>SmartSantander TA June 2011</name>
+        <testbedId>11</testbedId>
+        <testbedUrl>http://www.smartsantander.eu</testbedUrl>
+        <snaaEndpointUrl>http://lira.tlmat.unican.es:9001/snaa</snaaEndpointUrl>
+        <sessionmanagementEndpointUrl>http://lira.tlmat.unican.es:9003/sessions</sessionmanagementEndpointUrl>
+        <rsEndpointUrl>http://lira.tlmat.unican.es:9002/rs</rsEndpointUrl>
+        <urnPrefix>urn:smartsantander:testbed-lab-ps:</urnPrefix>
+    </configuration>
+    <configuration isFederated="false">
+        <name>WISEBED UNIGE Testbed</name>
+        <testbedId>10</testbedId>
+        <testbedUrl>http://www.wisebed.eu</testbedUrl>
+        <snaaEndpointUrl>http://testbed.tcs.unige.ch:8890/snaa</snaaEndpointUrl>
+        <sessionmanagementEndpointUrl>http://testbed.tcs.unige.ch:8888/sessions</sessionmanagementEndpointUrl>
+        <rsEndpointUrl>http://testbed.tcs.unige.ch:8889/rs</rsEndpointUrl>
+        <urnPrefix>urn:wisebed:unigetestbed:</urnPrefix>
+    </configuration>
     <configuration isFederated="true">
         <name>WISEBED Federator</name>
         <testbedId>1</testbedId>
         <testbedUrl>http://www.wisebed.eu</testbedUrl>
         <snaaEndpointUrl>http://wisebed.itm.uni-luebeck.de:8883/snaa?wsdl</snaaEndpointUrl>
-        <sessionmanagementEndpointUrl>http://wisebed.itm.uni-luebeck.de:8881/sessions?wsdl</sessionmanagementEndpointUrl>
+        <sessionmanagementEndpointUrl>http://wisebed.itm.uni-luebeck.de:8881/sessions?wsdl
+        </sessionmanagementEndpointUrl>
         <urnPrefix>urn:wisebed:uzl1:</urnPrefix>
         <urnPrefix>urn:wisebed:unigetestbed:</urnPrefix>
         <urnPrefix>urn:wisebed:ulanc:</urnPrefix>

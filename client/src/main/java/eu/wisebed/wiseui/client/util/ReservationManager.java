@@ -30,11 +30,11 @@ import eu.wisebed.wiseui.shared.dto.PublicReservationData;
 @Singleton
 public class ReservationManager {
 
-	private Map<Appointment, PublicReservationData> publicReservations
-            = new HashMap<Appointment, PublicReservationData>();
+	private Map<String, PublicReservationData> publicReservations
+            = new HashMap<String, PublicReservationData>();
 
-	private Map<Appointment, ConfidentialReservationData> confidentialReservations
-            = new HashMap<Appointment, ConfidentialReservationData>();
+	private Map<String, ConfidentialReservationData> confidentialReservations
+            = new HashMap<String, ConfidentialReservationData>();
 
     public ReservationManager() {
     }
@@ -43,11 +43,11 @@ public class ReservationManager {
 
     }
 
-    public Map<Appointment, PublicReservationData> getPublicReservations() {
+    public Map<String, PublicReservationData> getPublicReservations() {
         return publicReservations;
     }
 
-    public Map<Appointment, ConfidentialReservationData> getConfidentialReservations() {
+    public Map<String, ConfidentialReservationData> getConfidentialReservations() {
         return confidentialReservations;
     }
 

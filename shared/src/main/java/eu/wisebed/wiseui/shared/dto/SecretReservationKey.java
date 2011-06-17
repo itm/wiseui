@@ -50,4 +50,12 @@ public class SecretReservationKey implements Serializable {
     public String getSecretReservationKey() {
         return secretReservationKey;
     }
+
+    @Override
+    public String toString() {
+        return "SecretReservationKey{" +
+                "urnPrefix='" + urnPrefix + '\'' +
+                ", secretReservationKey='" + secretReservationKey + '\'' +
+                '}';
+    }
 }

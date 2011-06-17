@@ -67,9 +67,9 @@ public interface PublicReservationsView extends IsWidget {
 
         void loadReservations(Date date);
 
-        void registerPublicReservation(Appointment publicReservation, PublicReservationData publicReservationData);
+        void registerPublicReservation(String appointmentId, PublicReservationData publicReservationData);
 
-        void registerConfidentialReservation(Appointment confidentialReservation,
+        void registerConfidentialReservation(String appointmentId,
                                              ConfidentialReservationData confidentialReservationData);
 
         void handleBackClicked();
@@ -77,8 +77,6 @@ public interface PublicReservationsView extends IsWidget {
         void handleForwardClicked();
 
         void handleTodayClicked();
-        
-    	void showEditReservationDialog(Appointment reservation, Set<Node> nodes, boolean readOnly);
     	
     	boolean isAuthenticated();
     }

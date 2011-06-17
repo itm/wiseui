@@ -18,6 +18,15 @@
 
 -->
 <configurations>
+    <configuration isFederated="false">
+        <name>SmartSantander TA June 2011</name>
+        <testbedId>11</testbedId>
+        <testbedUrl>http://www.smartsantander.eu</testbedUrl>
+        <snaaEndpointUrl>http://lira.tlmat.unican.es:9001/snaa</snaaEndpointUrl>
+        <sessionmanagementEndpointUrl>http://lira.tlmat.unican.es:9003/sessions</sessionmanagementEndpointUrl>
+        <rsEndpointUrl>http://lira.tlmat.unican.es:9002/rs</rsEndpointUrl>
+        <urnPrefix>urn:smartsantander:testbed-lab-ps:</urnPrefix>
+    </configuration>
     <configuration isFederated="true">
         <name>WISEBED Federator</name>
         <testbedId>1</testbedId>

@@ -133,7 +133,8 @@ public class ReservationEditPresenter implements Presenter, CreateReservationEve
             authenticationKeys.add(secretAuthenticationKey);
             // Set up data object for confidential reservation data
             final Data data = new Data();
-            data.setUrnPrefix(secretAuthenticationKey.getUrnPrefix());
+            data.setUrnPrefix(urnPrefix); // or secretAuthenticationKey.getUrnPrefix() ?
+            data.setUrnPrefix(urnPrefix); // or secretAuthenticationKey.geIdtUrnPrefix() ?
             data.setUsername(secretAuthenticationKey.getUsername());
             data.setSecretReservationKey(secretAuthenticationKey.getSecretAuthenticationKey());
             reservationData.getData().add(data);
@@ -182,9 +183,9 @@ public class ReservationEditPresenter implements Presenter, CreateReservationEve
      * Call GWT-RPC deleteReservation(...) from {@link eu.wisebed.wiseui.api.ReservationService}.
      * Deleting reservation from RS service. This action cannot be undone!
      *
-     * @param reservation Appointment to be deleted
+     * @param appointment Appointment to be deleted
      */
-    public void deleteReservation(final Appointment reservation, AsyncCallback<Void> callback) {
+    public void deleteReservation(final Appointment appointment, AsyncCallback<Void> callback) {
         // Get RS endpoint URL
         final String rsEndpointUrl = selectedConfiguration.getRsEndpointUrl();
 
@@ -194,7 +195,7 @@ public class ReservationEditPresenter implements Presenter, CreateReservationEve
 
         // Get secret reservation keys
         final ConfidentialReservationData confidentialReservationData
-                = reservationManager.getConfidentialReservations().get(reservation);
+                = reservationManager.getConfidentialReservations().get(appointment.getId());
         final List<SecretReservationKey> secretReservationKeys
                 = new ArrayList<SecretReservationKey>(confidentialReservationData.getData().size());
         for (Data data : confidentialReservationData.getData()) {
@@ -308,7 +309,7 @@ public class ReservationEditPresenter implements Presenter, CreateReservationEve
 		view.setCreate();
 	}
 	
-	private void prepareDialog(Appointment appointment, boolean readOnly, Set<Node> nodes) {
+	private void prepareDialog(final Appointment appointment, final boolean readOnly, final Set<Node> nodes) {
 		
 		if (selectedConfiguration == null) {
             final String suggestion = "Please select at least one testbed to make a new reservation";
@@ -329,14 +330,8 @@ public class ReservationEditPresenter implements Presenter, CreateReservationEve
 
         // Fill in real values
         final String title = Objects.firstNonNull(selectedConfiguration.getName(), DEFAULT_NEW_TITLE);
-        final AuthenticationManager authenticationManager = injector.getAuthenticationManager();
         final String createdBy = appointment.getCreatedBy();
-        String userName = "";
-        if (authenticationManager.getSecretAuthenticationKeys() != null
-                && !authenticationManager.getSecretAuthenticationKeys().isEmpty()) {
-            userName = authenticationManager.getSecretAuthenticationKeys().get(0).getUsername();
-        }
-        view.getWhoTextBox().setText(createdBy != null ? createdBy : userName);
+        view.getWhoTextBox().setText(createdBy != null ? createdBy : getAuthenticatedUserName());
         final Date start = appointment.getStart();
         view.getStartDateBox().setValue(start);
         final Date end = appointment.getEnd();
@@ -346,7 +341,7 @@ public class ReservationEditPresenter implements Presenter, CreateReservationEve
         // Fill in secret reservation key for authenticated users in confidential reservations
         if (!readOnly) {
             final ConfidentialReservationData confidentialReservationData
-                    = injector.getReservationManager().getConfidentialReservations().get(appointment);
+                    = injector.getReservationManager().getConfidentialReservations().get(appointment.getId());
             if (confidentialReservationData != null) {
                 final List<Data> dataList = confidentialReservationData.getData();
                 if (dataList != null && !dataList.isEmpty()) {
@@ -364,4 +359,19 @@ public class ReservationEditPresenter implements Presenter, CreateReservationEve
         }
 		
 	}
+
+    // Quick Hack
+    private String getAuthenticatedUserName() {
+        final AuthenticationManager authenticationManager = injector.getAuthenticationManager();
+        String userName = "-1"; // TODO Is this really what we want (use an empty string...)?
+        if (authenticationManager.isAuthenticated(selectedConfiguration)) {
+            final String firstUrnPrefix = selectedConfiguration.getUrnPrefixList().get(0);
+            final SecretAuthenticationKey secretAuthenticationKey = authenticationManager.getMap().get(firstUrnPrefix);
+            if (secretAuthenticationKey != null) {
+                userName = secretAuthenticationKey.getUsername();
+                GWT.log("getAuthenticatedUserName: " + userName + " for prefix: " + firstUrnPrefix);
+            }
+        }
+        return userName;
+    }
 }

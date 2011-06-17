@@ -103,7 +103,7 @@ public class PublicReservationsViewImpl extends Composite implements PublicReser
         calendarPanel.suspendLayout();
         for (PublicReservationData reservation : publicReservations) {
             final Appointment appointment = addReservation(reservation, false);
-            presenter.registerPublicReservation(appointment, reservation);
+            presenter.registerPublicReservation(appointment.getId(), reservation);
         }
         calendarPanel.resumeLayout();
     }
@@ -116,7 +116,7 @@ public class PublicReservationsViewImpl extends Composite implements PublicReser
         calendarPanel.suspendLayout();
         for (ConfidentialReservationData reservation : confidentialReservations) {
             final Appointment appointment = addReservation(reservation, true);
-            presenter.registerConfidentialReservation(appointment, reservation);
+            presenter.registerConfidentialReservation(appointment.getId(), reservation);
         }
         calendarPanel.resumeLayout();
     }
@@ -127,6 +127,8 @@ public class PublicReservationsViewImpl extends Composite implements PublicReser
     @Override
     public Appointment addReservation(final PublicReservationData reservation, boolean confidential) {
         final Appointment appointment = new Appointment();
+        // User data and hash code is used as appointment ID
+        appointment.setId(reservation.getUserData() + reservation.hashCode());
         appointment.setStart(reservation.getFrom());
         appointment.setEnd(reservation.getTo());
         appointment.setLocation(reservation.getNodeURNs().get(0));

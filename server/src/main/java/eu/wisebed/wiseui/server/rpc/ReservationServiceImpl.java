@@ -114,12 +114,14 @@ public class ReservationServiceImpl extends RemoteServiceServlet implements Rese
         List<eu.wisebed.api.rs.SecretReservationKey> rsResult;
         try {
             rsResult = rs.makeReservation(rsSecretAuthenticationKeys, rsConfidentialReservationData);
-        } catch (AuthorizationExceptionException e) {
+        } catch (final AuthorizationExceptionException e) {
+            LOGGER.error(e.getMessage(), e);
             throw new AuthenticationException("Not authorized for reservation");
-        } catch (RSExceptionException e) {
-            e.printStackTrace();
+        } catch (final RSExceptionException e) {
+            LOGGER.error(e.getMessage(), e);
             throw new ReservationException("RS exception");
-        } catch (ReservervationConflictExceptionException e) {
+        } catch (final ReservervationConflictExceptionException e) {
+            LOGGER.error(e.getMessage(), e);
             throw new ReservationException("Reservation conflict");
         }
         ifNull(rsResult, "rsReservation is null");
@@ -131,7 +133,9 @@ public class ReservationServiceImpl extends RemoteServiceServlet implements Rese
                             @Override
                             public SecretReservationKey apply(
                                     final eu.wisebed.api.rs.SecretReservationKey srk) {
-                                return mapper.map(srk, SecretReservationKey.class);
+                                final SecretReservationKey secretReservationKey = mapper.map(srk, SecretReservationKey.class);
+                                LOGGER.debug("makeReservation: " + secretReservationKey.toString());
+                                return secretReservationKey;
                             }
                         }));
         ifNull(result, "result is null");
@@ -157,26 +161,36 @@ public class ReservationServiceImpl extends RemoteServiceServlet implements Rese
         Map<String, Date> fromAndTo = convertRange2Date(pivotDate, dateRange);
         final Date start = fromAndTo.get(FROM_KEY);
         final Date end = fromAndTo.get(TO_KEY);
+        ifNull(start, "start is null!");
+        ifNull(end, "end is null!");
 
         LOGGER.debug(format("getPublicReservations#calculatedStartDate=%s, calculatedEndDate=%s", start, end));
 
         final RS rs = RSServiceHelper.getRSService(rsEndpointUrl);
         ifNull(rs, "rs is null!");
 
-        List<eu.wisebed.api.rs.PublicReservationData> resultList = null;
+        List<eu.wisebed.api.rs.PublicReservationData> resultList;
         try {
             resultList = rs.getReservations(
                     convertDate2XmlGregorianCalendar(start),
                     convertDate2XmlGregorianCalendar(end));
-        } catch (RSExceptionException e) {
-            LOGGER.error(e.getMessage(), e);
+        } catch (final RSExceptionException e) {
+            final String messagePrefix = "Reservation Exception during remote call 'getReservations'!\n";
+            LOGGER.error(messagePrefix + e.getMessage(), e);
+            throw new ReservationException(messagePrefix + e.getMessage());
+        } catch (final Exception e) {
+            final String messagePrefix = "Unexpected Exception during remote call 'getReservations'!\n";
+            LOGGER.error(messagePrefix + e.getMessage(), e);
+            throw new ReservationException(messagePrefix + e.getMessage());
         }
+        ifNull(resultList, "resultList is null!");
         return new ArrayList<PublicReservationData>(Lists.transform(resultList,
                 new Function<eu.wisebed.api.rs.PublicReservationData, PublicReservationData>() {
                     @Override
                     public PublicReservationData apply(final eu.wisebed.api.rs.PublicReservationData r) {
                         final PublicReservationData publicReservationData;
                         publicReservationData = mapper.map(r, PublicReservationData.class);
+                        LOGGER.debug(format("getPublicReservations: %s", publicReservationData));
                         return publicReservationData;
                     }
                 }));
@@ -187,7 +201,7 @@ public class ReservationServiceImpl extends RemoteServiceServlet implements Rese
      * {@inheritDoc}
      */
     @Override
-    public List<ConfidentialReservationData> getPrivateReservations(
+    public List<ConfidentialReservationData> getConfidentialReservations(
             final String rsEndpointUrl,
             final List<SecretAuthenticationKey> secretAuthenticationKeys,
             final Date pivotDate,
@@ -197,15 +211,16 @@ public class ReservationServiceImpl extends RemoteServiceServlet implements Rese
         ifNullArgument(secretAuthenticationKeys, "secretAuthenticationKeys is null");
         ifNullArgument(pivotDate, "pivotDate is null");
 
-        LOGGER.info(format("getPrivateReservations( %s, %s, %s )", rsEndpointUrl, pivotDate.toString(), dateRange.toString()));
+        LOGGER.info(format("getConfidentialReservations( %s, %s, %s )",
+                rsEndpointUrl, pivotDate.toString(), dateRange.toString()));
 
         /* Convert from dateRange to date to avoid client-site date calculation */
         Map<String, Date> fromAndTo = convertRange2Date(pivotDate, dateRange);
         final Date from = fromAndTo.get(FROM_KEY);
         final Date to = fromAndTo.get(TO_KEY);
 
-        // call getPrivateReservations with distinct from, to date objects
-        return getPrivateReservations(rsEndpointUrl, secretAuthenticationKeys, from, to);
+        // call getConfidentialReservations with distinct from, to date objects
+        return getConfidentialReservations(rsEndpointUrl, secretAuthenticationKeys, from, to);
     }
 
 
@@ -213,7 +228,7 @@ public class ReservationServiceImpl extends RemoteServiceServlet implements Rese
      * {@inheritDoc}
      */
     @Override
-    public List<ConfidentialReservationData> getPrivateReservations(
+    public List<ConfidentialReservationData> getConfidentialReservations(
             final String rsEndpointUrl,
             final List<SecretAuthenticationKey> secretAuthenticationKeys,
             final Date from,
@@ -225,18 +240,32 @@ public class ReservationServiceImpl extends RemoteServiceServlet implements Rese
         ifNullArgument(to, "To date is not set");
 
         // start and end Dates are provided by client
-        LOGGER.debug(format("getPrivateReservations#calculatedStartDate=%s, calculatedEndDate=%s", from, to));
+        LOGGER.debug(format("getConfidentialReservations#startDate=%s, endDate=%s", from, to));
 
-        // add key to a list
-        final List<eu.wisebed.api.rs.SecretAuthenticationKey> snaaKeys =
-                new ArrayList<eu.wisebed.api.rs.SecretAuthenticationKey>();
-        final eu.wisebed.api.rs.SecretAuthenticationKey snaaKey =
-                mapper.map(secretAuthenticationKeys.get(0),
-                        eu.wisebed.api.rs.SecretAuthenticationKey.class);
-        snaaKeys.add(snaaKey);
+//        // add key to a list
+//        final List<eu.wisebed.api.rs.SecretAuthenticationKey> snaaKeys =
+//                new ArrayList<eu.wisebed.api.rs.SecretAuthenticationKey>();
+//        final eu.wisebed.api.rs.SecretAuthenticationKey snaaKey =
+//                mapper.map(secretAuthenticationKeys.get(0),
+//                        eu.wisebed.api.rs.SecretAuthenticationKey.class);
+//        snaaKeys.add(snaaKey);
+
+        final List<eu.wisebed.api.rs.SecretAuthenticationKey> rsSecretAuthenticationKeys
+                = new ArrayList<eu.wisebed.api.rs.SecretAuthenticationKey>(Lists.transform(secretAuthenticationKeys,
+                new Function<SecretAuthenticationKey, eu.wisebed.api.rs.SecretAuthenticationKey>() {
+                    @Override
+                    public eu.wisebed.api.rs.SecretAuthenticationKey apply(
+                            final SecretAuthenticationKey secretAuthenticationKey) {
+                        final eu.wisebed.api.rs.SecretAuthenticationKey snaaSecretAuthenticationKey;
+                        snaaSecretAuthenticationKey
+                                = mapper.map(secretAuthenticationKey, eu.wisebed.api.rs.SecretAuthenticationKey.class);
+                        return snaaSecretAuthenticationKey;
+                    }
+                }));
 
         // reservation system proxy
         final RS rs = RSServiceHelper.getRSService(rsEndpointUrl);
+        ifNull(rs, "rs is null!");
 
         // set and return results
         List<eu.wisebed.api.rs.ConfidentialReservationData> resultList;
@@ -244,29 +273,33 @@ public class ReservationServiceImpl extends RemoteServiceServlet implements Rese
             GetReservations reservation = new GetReservations();
             reservation.setFrom(convertDate2XmlGregorianCalendar(from));
             reservation.setTo(convertDate2XmlGregorianCalendar(to));
-            resultList = rs.getConfidentialReservations(snaaKeys, reservation);
+            resultList = rs.getConfidentialReservations(rsSecretAuthenticationKeys, reservation);
         } catch (final RSExceptionException cause) {
+            LOGGER.error(cause.getMessage(), cause);
             throw new ReservationException(cause.getMessage());
         }
 
-        // filter to the data related to the authenticated user
-        final String authenticatedUsername = snaaKeys.get(0).getUsername();
-        List<eu.wisebed.api.rs.ConfidentialReservationData> filteredResultList
-                = new ArrayList<eu.wisebed.api.rs.ConfidentialReservationData>();
-        for (eu.wisebed.api.rs.ConfidentialReservationData confidentialReservationData : resultList) {
-            String reservationUsername = confidentialReservationData.getData().get(0).getUsername();
-            if (reservationUsername != null && reservationUsername.equals(authenticatedUsername)) {
-                filteredResultList.add(confidentialReservationData);
-            }
-        }
+//        // filter to the data related to the authenticated user
+//        final String authenticatedUsername = snaaKeys.get(0).getUsername();
+//        List<eu.wisebed.api.rs.ConfidentialReservationData> filteredResultList
+//                = new ArrayList<eu.wisebed.api.rs.ConfidentialReservationData>();
+//        for (eu.wisebed.api.rs.ConfidentialReservationData confidentialReservationData : resultList) {
+//            String reservationUsername = confidentialReservationData.getData().get(0).getUsername();
+//            if (reservationUsername != null && reservationUsername.equals(authenticatedUsername)) {
+//                filteredResultList.add(confidentialReservationData);
+//            }
+//        }
 
         // use Lists.transform to map the results to DTOs
-        return new ArrayList<ConfidentialReservationData>(Lists.transform(filteredResultList,
+        return new ArrayList<ConfidentialReservationData>(Lists.transform(resultList,
                 new Function<eu.wisebed.api.rs.ConfidentialReservationData, ConfidentialReservationData>() {
                     @Override
                     public ConfidentialReservationData apply(
-                            final eu.wisebed.api.rs.ConfidentialReservationData r) {
-                        return mapper.map(r, ConfidentialReservationData.class);
+                            final eu.wisebed.api.rs.ConfidentialReservationData c) {
+                        ConfidentialReservationData confidentialReservationData
+                                = mapper.map(c, ConfidentialReservationData.class);
+                        LOGGER.debug("getConfidentialReservations: " + confidentialReservationData);
+                        return confidentialReservationData;
                     }
                 }));
     }

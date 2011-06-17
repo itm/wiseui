@@ -254,6 +254,6 @@ public class ExperimentationPresenter implements ExperimentationView.Presenter,
         List<SecretAuthenticationKey> secretAuthenticationKeys
                 = new ArrayList<SecretAuthenticationKey>();
         secretAuthenticationKeys.add(key);
-        service.getPrivateReservations(rsEndpointUrl, secretAuthenticationKeys, fromDate, toDate, callback);
+        service.getConfidentialReservations(rsEndpointUrl, secretAuthenticationKeys, fromDate, toDate, callback);
     }
 }

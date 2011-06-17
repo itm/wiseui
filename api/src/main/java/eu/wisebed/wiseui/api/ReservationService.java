@@ -76,7 +76,7 @@ public interface ReservationService extends RemoteService {
      * @throws AuthenticationException
      * @throws ReservationException
      */
-    List<ConfidentialReservationData> getPrivateReservations(
+    List<ConfidentialReservationData> getConfidentialReservations(
             String rsEndpointUrl,
             List<SecretAuthenticationKey> secretAuthenticationKeys,
             Date pivotDate,
@@ -95,7 +95,7 @@ public interface ReservationService extends RemoteService {
      * @throws AuthenticationException
      * @throws ReservationException
      */
-    List<ConfidentialReservationData> getPrivateReservations(
+    List<ConfidentialReservationData> getConfidentialReservations(
             String rsEndpointUrl,
             List<SecretAuthenticationKey> secretAuthenticationKeys,
             Date from,

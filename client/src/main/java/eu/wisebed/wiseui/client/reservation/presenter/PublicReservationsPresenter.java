@@ -133,10 +133,9 @@ public class PublicReservationsPresenter implements PublicReservationsView.Prese
 
                 final HashSet<Node> filteredNodes = new HashSet<Node>();
                 final PublicReservationData publicReservationData
-                        = reservationManager.getPublicReservations().get(appointment);
+                        = reservationManager.getPublicReservations().get(appointment.getId());
 
                 // TODO Reduce computational complexity!
-
                 if (publicReservationData != null) {
                     GWT.log("Found public reservation: " + publicReservationData);
                     for (String urnPrefix : publicReservationData.getNodeURNs()) {
@@ -149,26 +148,28 @@ public class PublicReservationsPresenter implements PublicReservationsView.Prese
                 }
 
                 // Authenticated users can edit their own reservations
-                if (isAuthenticated() && getAuthenticatedUserName().equals(appointment.getCreatedBy())) {
-
+                if (isAuthenticated()
+                        && reservationManager.getConfidentialReservations().containsKey(appointment.getId())) {
                     readOnly = false;
 
                     final PublicReservationData confidentialReservationData
-                            = reservationManager.getConfidentialReservations().get(appointment);
+                            = reservationManager.getConfidentialReservations().get(appointment.getId());
 
                     if (confidentialReservationData != null) {
                         GWT.log("Found confidential reservation: " + confidentialReservationData);
                         for (String urnPrefix : confidentialReservationData.getNodeURNs()) {
                             for (Node node : setupNodes) {
                                 if (node.getId().equals(urnPrefix)) {
-                                    filteredNodes.add(node);
+                                    if (!filteredNodes.contains(node)) {
+                                        filteredNodes.add(node);
+                                    }
                                 }
                             }
                         }
                     }
                 }
 
-                showEditReservationDialog(appointment, filteredNodes, readOnly);
+                eventBus.fireEventFromSource(new EditReservationEvent(appointment, filteredNodes, readOnly), this);
             }
         });
         view.getCalendar().addUpdateHandler(new UpdateHandler<Appointment>() {
@@ -272,6 +273,10 @@ public class PublicReservationsPresenter implements PublicReservationsView.Prese
         // Remove all pivotDate calendar entries
         view.removeAllAppointments();
 
+        // Remove all registered reservations from the ReservationManager
+        reservationManager.getPublicReservations().clear();
+        reservationManager.getConfidentialReservations().clear();
+
         // Determine the date range, which shall be passed to the remote call
         final ReservationService.Range range = calcRange();
 
@@ -292,26 +297,39 @@ public class PublicReservationsPresenter implements PublicReservationsView.Prese
 
                     // If user is authenticated remove from calendar all reservations that
                     // belong to him and re-render them with secret reservation keys
+                    boolean loadConfidentialReservations = false;
                     if (isAuthenticated()) {
                         final List<Appointment> toBeDeleted = new ArrayList<Appointment>();
-                        for (Appointment reservation : view.getCalendar().getAppointments()) {
-                            GWT.log("loadPublicAndMaybeConfidentialReservations(): about to delete reservation made by "
-                                    + reservation.getCreatedBy());
-                            // TODO Review: What if userData is null and thus reservation.getCreatedBy() yields null?
-                            // In this case no old appointments will be deleted but new, confidential reservations
-                            // will be added to the calendar as appointments. Thus, we have duplicates!
-                            // Maybe we could match duplicate reservations with their secret reservation keys?
-                            // => using the ReservationManager
-                            if (getAuthenticatedUserName().equals(reservation.getCreatedBy())) {
-                                toBeDeleted.add(reservation);
+                        for (Appointment appointment : view.getCalendar().getAppointments()) {
+                            for (PublicReservationData publicReservationData : publicReservations) {
+                                final String reservationId =
+                                        publicReservationData.getUserData() + publicReservationData.hashCode();
+                                GWT.log("authenticatedUserName: "
+                                        + getAuthenticatedUserName(selectedTestbedConfiguration.getUrnPrefixList().get(0)));
+                                GWT.log("appointment.getCreatedBy: " + appointment.getCreatedBy());
+                                if (reservationId.equals(appointment.getId())
+                                        // TODO SNO
+                                        && getAuthenticatedUserName(selectedTestbedConfiguration.getUrnPrefixList().get(0))
+                                        .equals(appointment.getCreatedBy())
+                                        ) {
+                                    toBeDeleted.add(appointment);
+                                    GWT.log("loadPublicAndMaybeConfidentialReservations(): about to delete reservation made by "
+                                            + appointment.getCreatedBy());
+                                    loadConfidentialReservations = true;
+                                }
                             }
                         }
                         for (Appointment appointment : toBeDeleted) {
                             view.getCalendar().removeAppointment(appointment);
+                            reservationManager.getPublicReservations().remove(appointment.getId());
                         }
 
                         // The user is authenticated => load confidential reservations
-                        loadConfidentialReservations(pivotDate);
+                        if (loadConfidentialReservations) {
+                            loadConfidentialReservations(pivotDate);
+                        } else {
+                            view.getLoadingIndicator().hideLoading();
+                        }
                     } else {
                         view.getLoadingIndicator().hideLoading();
                     }
@@ -324,7 +342,7 @@ public class PublicReservationsPresenter implements PublicReservationsView.Prese
     }
 
     /**
-     * Call GWT-RPC getPrivateReservations(...) from {@link eu.wisebed.wiseui.api.ReservationService}.
+     * Call GWT-RPC getConfidentialReservations(...) from {@link eu.wisebed.wiseui.api.ReservationService}.
      * The resulting {@link eu.wisebed.wiseui.shared.dto.ConfidentialReservationData} are rendered in
      * the calendar widget.
      *
@@ -332,12 +350,16 @@ public class PublicReservationsPresenter implements PublicReservationsView.Prese
      */
     private void loadConfidentialReservations(final Date pivotDate) {
         final String rsEndpointUrl = selectedTestbedConfiguration.getRsEndpointUrl();
-        final List<SecretAuthenticationKey> secretAuthenticationKeys
-                = injector.getAuthenticationManager().getSecretAuthenticationKeys();
+        final List<SecretAuthenticationKey> secretAuthenticationKeys = new ArrayList<SecretAuthenticationKey>();
+        final AuthenticationManager authenticationManager = injector.getAuthenticationManager();
+        for (String urnPrefix : selectedTestbedConfiguration.getUrnPrefixList()) {
+            secretAuthenticationKeys.add(authenticationManager.getMap().get(urnPrefix));
+        }
+
         final ReservationService.Range range = calcRange();
         GWT.log("Loading private reservations for Testbed '" + selectedTestbedConfiguration.getName() + "'");
 
-        reservationService.getPrivateReservations(rsEndpointUrl, secretAuthenticationKeys, pivotDate, range,
+        reservationService.getConfidentialReservations(rsEndpointUrl, secretAuthenticationKeys, pivotDate, range,
                 new AsyncCallback<List<ConfidentialReservationData>>() {
 
                     public void onFailure(final Throwable caught) {
@@ -346,33 +368,44 @@ public class PublicReservationsPresenter implements PublicReservationsView.Prese
                     }
 
                     public void onSuccess(final List<ConfidentialReservationData> confidentialReservations) {
-                        view.renderConfidentialReservations(confidentialReservations);
+                        List<ConfidentialReservationData> filteredConfidentialReservations
+                                = new ArrayList<ConfidentialReservationData>();
+                        for (ConfidentialReservationData c : confidentialReservations) {
+                            if ((c.getData() == null) || (c.getData().isEmpty())) {
+                                continue;
+                            }
+                            final String userName = c.getData().get(0).getUsername();
+                            final String urnPrefix = c.getData().get(0).getUrnPrefix();
+                            if (getAuthenticatedUserName(selectedTestbedConfiguration.getUrnPrefixList().get(0)).equals(userName)) {
+                                filteredConfidentialReservations.add(c);
+                            }
+                        }
+                        view.renderConfidentialReservations(filteredConfidentialReservations);
                         view.getLoadingIndicator().hideLoading();
                     }
                 });
     }
 
     @Override
-    public void registerPublicReservation(final Appointment publicReservation,
+    public void registerPublicReservation(final String appointmentId,
                                           final PublicReservationData publicReservationData) {
-        reservationManager.getPublicReservations().put(publicReservation, publicReservationData);
+        reservationManager.getPublicReservations().put(appointmentId, publicReservationData);
     }
 
     @Override
-    public void registerConfidentialReservation(final Appointment confidentialReservation,
+    public void registerConfidentialReservation(final String appointmentId,
                                                 final ConfidentialReservationData confidentialReservationData) {
-        reservationManager.getConfidentialReservations()
-                          .put(confidentialReservation, confidentialReservationData);
+        reservationManager.getConfidentialReservations().put(appointmentId, confidentialReservationData);
     }
 
-    private String getAuthenticatedUserName() {
+    private String getAuthenticatedUserName(final String urnPrefix) {
         final AuthenticationManager authenticationManager = injector.getAuthenticationManager();
-        String userName = "<default>"; // TODO Is this really what we want (use an empty string...)?
+        String userName = "-1"; // TODO Is this really what we want (use an empty string...)?
         if (isAuthenticated()) {
-            final String firstUrnPrefix = selectedTestbedConfiguration.getUrnPrefixList().get(0);
-            final SecretAuthenticationKey secretAuthenticationKey = authenticationManager.getMap().get(firstUrnPrefix);
+            final SecretAuthenticationKey secretAuthenticationKey = authenticationManager.getMap().get(urnPrefix);
             if (secretAuthenticationKey != null) {
                 userName = secretAuthenticationKey.getUsername();
+                GWT.log("getAuthenticatedUserName: " + userName + " for prefix: " + urnPrefix);
             }
         }
         return userName;
@@ -518,15 +551,19 @@ public class PublicReservationsPresenter implements PublicReservationsView.Prese
     }
 
     @Override
-    public void showEditReservationDialog(final Appointment reservation,
-                                          final Set<Node> nodes,
-                                          final boolean readOnly) {
-        eventBus.fireEventFromSource(new EditReservationEvent(reservation, nodes, readOnly), this);
-    }
-
-    @Override
     public void onReservationDeleteFailed(final ReservationDeleteFailedEvent event) {
-        MessageBox.error(messages.reservationDeleteFailedTitle(), messages.reservationDeleteFailed(), null, null);
+        String errorMessage = messages.reservationDeleteFailed();
+        Throwable throwable = null;
+        if (event != null && event.getThrowable() != null) {
+            throwable = event.getThrowable();
+            errorMessage = messages.reservationDeleteFailed()
+                    + "\n"
+                    + throwable.getMessage();
+        }
+        MessageBox.error(messages.reservationDeleteFailedTitle(),
+                errorMessage,
+                throwable,
+                null);
     }
 
     @Override
