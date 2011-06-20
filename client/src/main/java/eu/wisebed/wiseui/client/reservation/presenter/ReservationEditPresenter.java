@@ -320,6 +320,7 @@ public class ReservationEditPresenter implements Presenter, CreateReservationEve
 		// Set appointment
         this.appointment = appointment;
 
+        this.readOnly = readOnly;
         view.setReadOnly(readOnly);
 
         // Fill in default values
