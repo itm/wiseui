@@ -376,6 +376,7 @@ public class PublicReservationsPresenter implements PublicReservationsView.Prese
                             }
                             final String userName = c.getData().get(0).getUsername();
                             final String urnPrefix = c.getData().get(0).getUrnPrefix();
+                            // TODO
                             if (getAuthenticatedUserName(selectedTestbedConfiguration.getUrnPrefixList().get(0)).equals(userName)) {
                                 filteredConfidentialReservations.add(c);
                             }

@@ -25,7 +25,7 @@
         <snaaEndpointUrl>http://lira.tlmat.unican.es:9001/snaa</snaaEndpointUrl>
         <sessionmanagementEndpointUrl>http://lira.tlmat.unican.es:9003/sessions</sessionmanagementEndpointUrl>
         <rsEndpointUrl>http://lira.tlmat.unican.es:9002/rs</rsEndpointUrl>
-        <urnPrefix>urn:smartsantander:testbed-lab-ps:</urnPrefix>
+        <urnPrefix>urn:smartsantander:testbed:</urnPrefix>
     </configuration>
     <configuration isFederated="true">
         <name>WISEBED Federator</name>
