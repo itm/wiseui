@@ -18,22 +18,39 @@ package eu.wisebed.wiseui.client.reservation.event;
 
 import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;
+import eu.wisebed.wiseui.shared.dto.SecretReservationKey;
 
-public class ReservationSuccessEvent extends GwtEvent<ReservationSuccessEvent.Handler>{
-	
-	public static Type<Handler> TYPE = new Type<Handler>();
-	
-	public interface Handler extends EventHandler{
-		void onReservationSuccess();
-	}
+import java.util.List;
 
-	@Override
-	public Type<Handler> getAssociatedType(){
-		return TYPE;
-	}
-	
-	@Override
-	protected void dispatch(Handler handler){
-		handler.onReservationSuccess();
-	}
+public class ReservationSuccessEvent extends GwtEvent<ReservationSuccessEvent.Handler> {
+
+    public static Type<Handler> TYPE = new Type<Handler>();
+
+    private List<SecretReservationKey> secretReservationKeyList;
+
+    public interface Handler extends EventHandler {
+        void onReservationSuccess(ReservationSuccessEvent event);
+    }
+
+    public ReservationSuccessEvent(final List<SecretReservationKey> secretReservationKeyList) {
+        this.secretReservationKeyList = secretReservationKeyList;
+    }
+
+    @Override
+    public Type<Handler> getAssociatedType() {
+        return TYPE;
+    }
+
+    @Override
+    protected void dispatch(final Handler handler) {
+        handler.onReservationSuccess(this);
+    }
+
+    public static Type<Handler> getTYPE() {
+        return TYPE;
+    }
+
+    public List<SecretReservationKey> getSecretReservationKeyList() {
+        return secretReservationKeyList;
+    }
 }

@@ -99,8 +99,7 @@
         </dependency>
         <dependency>
             <groupId>de.uniluebeck.itm</groupId>
-            <artifactId>tr.wisebed-cmdline-client</artifactId>
-            <version>0.5.4-SNAPSHOT</version>
+            <artifactId>tr.scripting-client</artifactId>
         </dependency>
     </dependencies>
     <build>

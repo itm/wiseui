@@ -547,7 +547,7 @@ public class PublicReservationsPresenter implements PublicReservationsView.Prese
     }
 
     @Override
-    public void onReservationSuccess() {
+    public void onReservationSuccess(final ReservationSuccessEvent event) {
         loadReservations(view.getCalendar().getDate());
     }
 

@@ -143,40 +143,39 @@ public class ReservationEditPresenter implements Presenter, CreateReservationEve
         view.hide();
 
         reservationService.makeReservation(rsEndpointUrl,
-                                           authenticationKeys,
-                                           reservationData,
-                                           new AsyncCallback<List<SecretReservationKey>>() {
-            public void onFailure(Throwable caught) {
-                eventBus.fireEvent(new ReservationFailedEvent(caught));
-            }
+                authenticationKeys,
+                reservationData,
+                new AsyncCallback<List<SecretReservationKey>>() {
+                    public void onFailure(Throwable caught) {
+                        eventBus.fireEvent(new ReservationFailedEvent(caught));
+                    }
 
-            public void onSuccess(List<SecretReservationKey> result) {
-                eventBus.fireEvent(new ReservationSuccessEvent());
-            }
-        });
+                    public void onSuccess(List<SecretReservationKey> result) {
+                        eventBus.fireEvent(new ReservationSuccessEvent(result));
+                    }
+                });
     }
-    
+
     /**
      * Deletes and Creates the Reservation due to the lack of an Update-function on the server.
      */
     @Override
     public void submit() {
-    	// delete from data in this.appointment
-    	deleteReservation(this.appointment, new AsyncCallback<Void>() {
-    		@Override
-    		public void onFailure(Throwable caught) {
-    			eventBus.fireEvent(new ReservationDeleteFailedEvent(caught));
-    		}
-    		
-    		@Override
-    		public void onSuccess(Void arg0) {
-    			// create from textboxes
-    	    	create();
-    		}
-		});
-    	
-    	
-        
+        // delete from data in this.appointment
+        deleteReservation(this.appointment, new AsyncCallback<Void>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                eventBus.fireEvent(new ReservationDeleteFailedEvent(caught));
+            }
+
+            @Override
+            public void onSuccess(Void arg0) {
+                // create from textboxes
+                create();
+            }
+        });
+
+
     }
 
     /**
@@ -184,7 +183,7 @@ public class ReservationEditPresenter implements Presenter, CreateReservationEve
      * Deleting reservation from RS service. This action cannot be undone!
      *
      * @param appointment Appointment to be deleted
-     * @param callback Handle the result of the remote call with this callback
+     * @param callback    Handle the result of the remote call with this callback
      */
     public void deleteReservation(final Appointment appointment, AsyncCallback<Void> callback) {
         // Get RS endpoint URL
@@ -239,11 +238,11 @@ public class ReservationEditPresenter implements Presenter, CreateReservationEve
                 if (Button.OK.equals(button)) {
                     deleteReservation(appointment, new AsyncCallback<Void>() {
                         public void onFailure(final Throwable caught) {
-                        	eventBus.fireEvent(new ReservationDeleteFailedEvent(caught));
+                            eventBus.fireEvent(new ReservationDeleteFailedEvent(caught));
                         }
 
                         public void onSuccess(final Void result) {
-                        	eventBus.fireEvent(new ReservationDeleteSuccessEvent(appointment));
+                            eventBus.fireEvent(new ReservationDeleteSuccessEvent(appointment));
                         }
                     });
                     GWT.log("Deleting reservation made by: " + appointment.getCreatedBy());
@@ -272,8 +271,20 @@ public class ReservationEditPresenter implements Presenter, CreateReservationEve
         eventBus.removeAll();
     }
 
-    public void onReservationSuccess() {
-        MessageBox.success(messages.reservationSuccessTitle(), messages.reservationSuccess(), null);
+    public void onReservationSuccess(ReservationSuccessEvent event) {
+        String secretReservationKeys = "";
+        if (event != null && event.getSecretReservationKeyList() != null) {
+            for (SecretReservationKey srk : event.getSecretReservationKeyList()) {
+                secretReservationKeys += srk.getUrnPrefix();
+                secretReservationKeys += ",";
+                secretReservationKeys += srk.getSecretReservationKey();
+                secretReservationKeys += "\n";
+            }
+        }
+        MessageBox.success(
+                messages.reservationSuccessTitle(),
+                messages.reservationSuccess() + "\n\n" + secretReservationKeys,
+                null);
     }
 
     @Override
@@ -303,22 +314,22 @@ public class ReservationEditPresenter implements Presenter, CreateReservationEve
         prepareDialog(event.getAppointment(), event.isReadOnly(), event.getNodes());
         view.setUpdate();
     }
-    
-	@Override
-	public void onCreateReservation(CreateReservationEvent event) {
-		prepareDialog(event.getAppointment(), false, event.getNodes());
-		view.setCreate();
-	}
-	
-	private void prepareDialog(final Appointment appointment, final boolean readOnly, final Set<Node> nodes) {
-		
-		if (selectedConfiguration == null) {
+
+    @Override
+    public void onCreateReservation(CreateReservationEvent event) {
+        prepareDialog(event.getAppointment(), false, event.getNodes());
+        view.setCreate();
+    }
+
+    private void prepareDialog(final Appointment appointment, final boolean readOnly, final Set<Node> nodes) {
+
+        if (selectedConfiguration == null) {
             final String suggestion = "Please select at least one testbed to make a new reservation";
             MessageBox.warning("No testbed selected", suggestion, null);
             return;
         }
-		
-		// Set appointment
+
+        // Set appointment
         this.appointment = appointment;
 
         this.readOnly = readOnly;
@@ -359,8 +370,8 @@ public class ReservationEditPresenter implements Presenter, CreateReservationEve
         if (nodes != null) {
             setNodesSelected(nodes);
         }
-		
-	}
+
+    }
 
     // TODO Quick Hack
     private String getAuthenticatedUserName() {
