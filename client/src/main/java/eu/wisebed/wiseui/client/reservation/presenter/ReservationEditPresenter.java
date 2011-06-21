@@ -157,7 +157,7 @@ public class ReservationEditPresenter implements Presenter, CreateReservationEve
     }
     
     /**
-     * Deletes and Creates the Reservation due to lack of Updatefunction on the server
+     * Deletes and Creates the Reservation due to the lack of an Update-function on the server.
      */
     @Override
     public void submit() {
@@ -184,6 +184,7 @@ public class ReservationEditPresenter implements Presenter, CreateReservationEve
      * Deleting reservation from RS service. This action cannot be undone!
      *
      * @param appointment Appointment to be deleted
+     * @param callback Handle the result of the remote call with this callback
      */
     public void deleteReservation(final Appointment appointment, AsyncCallback<Void> callback) {
         // Get RS endpoint URL
@@ -361,7 +362,7 @@ public class ReservationEditPresenter implements Presenter, CreateReservationEve
 		
 	}
 
-    // Quick Hack
+    // TODO Quick Hack
     private String getAuthenticatedUserName() {
         final AuthenticationManager authenticationManager = injector.getAuthenticationManager();
         String userName = "-1"; // TODO Is this really what we want (use an empty string...)?
