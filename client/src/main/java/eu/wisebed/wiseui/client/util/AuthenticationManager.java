@@ -190,7 +190,8 @@ public class AuthenticationManager {
             final SecretAuthenticationKey secretAuthenticationKey = map.get(firstUrnPrefix);
             if (secretAuthenticationKey != null) {
                 userName = secretAuthenticationKey.getUsername();
-                GWT.log("AuthenticationManager.getAuthenticatedUserName: " + userName + " for prefix: " + firstUrnPrefix);
+                GWT.log("AuthenticationManager.getAuthenticatedUserName: "
+                        + userName + " for prefix: " + firstUrnPrefix);
             }
         }
         return userName;
