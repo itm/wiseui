@@ -304,13 +304,16 @@ public class PublicReservationsPresenter implements PublicReservationsView.Prese
                             for (PublicReservationData publicReservationData : publicReservations) {
                                 final String reservationId =
                                         publicReservationData.getUserData() + publicReservationData.hashCode();
-                                GWT.log("authenticatedUserName: "
-                                        + getAuthenticatedUserName(selectedTestbedConfiguration.getUrnPrefixList().get(0)));
+                                final String authenticatedUserName
+                                        = injector.getAuthenticationManager()
+                                                  .getAuthenticatedUserName(selectedTestbedConfiguration);
+                                GWT.log("authenticatedUserName: " + authenticatedUserName);
                                 GWT.log("appointment.getCreatedBy: " + appointment.getCreatedBy());
                                 if (reservationId.equals(appointment.getId())
                                         // TODO SNO
-                                        && getAuthenticatedUserName(selectedTestbedConfiguration.getUrnPrefixList().get(0))
-                                        .equals(appointment.getCreatedBy())
+                                        && injector.getAuthenticationManager()
+                                                   .getAuthenticatedUserName(selectedTestbedConfiguration)
+                                                   .equals(appointment.getCreatedBy())
                                         ) {
                                     toBeDeleted.add(appointment);
                                     GWT.log("loadPublicAndMaybeConfidentialReservations(): about to delete reservation made by "
@@ -377,7 +380,10 @@ public class PublicReservationsPresenter implements PublicReservationsView.Prese
                             final String userName = c.getData().get(0).getUsername();
                             final String urnPrefix = c.getData().get(0).getUrnPrefix();
                             // TODO
-                            if (getAuthenticatedUserName(selectedTestbedConfiguration.getUrnPrefixList().get(0)).equals(userName)) {
+                            final String authenticatedUserName
+                                    = injector.getAuthenticationManager()
+                                              .getAuthenticatedUserName(selectedTestbedConfiguration);
+                            if (authenticatedUserName.equals(userName)) {
                                 filteredConfidentialReservations.add(c);
                             }
                         }
@@ -397,19 +403,6 @@ public class PublicReservationsPresenter implements PublicReservationsView.Prese
     public void registerConfidentialReservation(final String appointmentId,
                                                 final ConfidentialReservationData confidentialReservationData) {
         reservationManager.getConfidentialReservations().put(appointmentId, confidentialReservationData);
-    }
-
-    private String getAuthenticatedUserName(final String urnPrefix) {
-        final AuthenticationManager authenticationManager = injector.getAuthenticationManager();
-        String userName = "-1"; // TODO Is this really what we want (use an empty string...)?
-        if (isAuthenticated()) {
-            final SecretAuthenticationKey secretAuthenticationKey = authenticationManager.getMap().get(urnPrefix);
-            if (secretAuthenticationKey != null) {
-                userName = secretAuthenticationKey.getUsername();
-                GWT.log("getAuthenticatedUserName: " + userName + " for prefix: " + urnPrefix);
-            }
-        }
-        return userName;
     }
 
     @Override

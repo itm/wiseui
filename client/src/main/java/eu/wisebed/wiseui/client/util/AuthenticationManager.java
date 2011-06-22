@@ -179,9 +179,9 @@ public class AuthenticationManager {
     }
 
     /**
-     * TODO Review and maybe improve detection mechanism
-     * @param testbedConfiguration
-     * @return
+     * TODO Review and maybe improve detection mechanism.
+     * @param testbedConfiguration The currently selected configuration.
+     * @return The name of the authenticated user for the currently selected testbed.
      */
     public String getAuthenticatedUserName(final TestbedConfiguration testbedConfiguration) {
         String userName = "-1"; // TODO Is this really what we want (use an empty string...)?
