@@ -177,4 +177,22 @@ public class AuthenticationManager {
 
         return isAuthenticated;
     }
+
+    /**
+     * TODO Review and maybe improve detection mechanism
+     * @param testbedConfiguration
+     * @return
+     */
+    public String getAuthenticatedUserName(final TestbedConfiguration testbedConfiguration) {
+        String userName = "-1"; // TODO Is this really what we want (use an empty string...)?
+        if (isAuthenticated(testbedConfiguration)) {
+            final String firstUrnPrefix = testbedConfiguration.getUrnPrefixList().get(0);
+            final SecretAuthenticationKey secretAuthenticationKey = map.get(firstUrnPrefix);
+            if (secretAuthenticationKey != null) {
+                userName = secretAuthenticationKey.getUsername();
+                GWT.log("AuthenticationManager.getAuthenticatedUserName: " + userName + " for prefix: " + firstUrnPrefix);
+            }
+        }
+        return userName;
+    }
 }

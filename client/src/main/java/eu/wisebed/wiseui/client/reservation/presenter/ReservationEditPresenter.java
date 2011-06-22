@@ -344,7 +344,9 @@ public class ReservationEditPresenter implements Presenter, CreateReservationEve
         // Fill in real values
         final String title = Objects.firstNonNull(selectedConfiguration.getName(), DEFAULT_NEW_TITLE);
         final String createdBy = appointment.getCreatedBy();
-        view.getWhoTextBox().setText(createdBy != null ? createdBy : getAuthenticatedUserName());
+        final String authenticatedUserName
+                = injector.getAuthenticationManager().getAuthenticatedUserName(selectedConfiguration);
+        view.getWhoTextBox().setText(createdBy != null ? createdBy : authenticatedUserName);
         final Date start = appointment.getStart();
         view.getStartDateBox().setValue(start);
         final Date end = appointment.getEnd();
@@ -371,20 +373,5 @@ public class ReservationEditPresenter implements Presenter, CreateReservationEve
             setNodesSelected(nodes);
         }
 
-    }
-
-    // TODO Quick Hack
-    private String getAuthenticatedUserName() {
-        final AuthenticationManager authenticationManager = injector.getAuthenticationManager();
-        String userName = "-1"; // TODO Is this really what we want (use an empty string...)?
-        if (authenticationManager.isAuthenticated(selectedConfiguration)) {
-            final String firstUrnPrefix = selectedConfiguration.getUrnPrefixList().get(0);
-            final SecretAuthenticationKey secretAuthenticationKey = authenticationManager.getMap().get(firstUrnPrefix);
-            if (secretAuthenticationKey != null) {
-                userName = secretAuthenticationKey.getUsername();
-                GWT.log("getAuthenticatedUserName: " + userName + " for prefix: " + firstUrnPrefix);
-            }
-        }
-        return userName;
     }
 }

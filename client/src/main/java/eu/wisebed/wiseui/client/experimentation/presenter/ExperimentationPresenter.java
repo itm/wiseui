@@ -105,18 +105,12 @@ public class ExperimentationPresenter implements ExperimentationView.Presenter,
     @Override
     public void onRefreshUserExperiments(RefreshUserExperimentsEvent event) {
 
-        try {
-            Checks.ifNull(testbedConfiguration, "No testbed selected");
-        } catch (RuntimeException cause) {
-            MessageBox.error("Error", cause.getMessage(), cause, null);
+        if (testbedConfiguration == null) {
+            MessageBox.warning("Warning", "No testbed selected!", null);
             return;
         }
-
-        try {
-            Checks.ifNullOrEmpty(testbedConfiguration.getUrnPrefixList(),
-                    "Null or empty URN prefix list for selected testbed");
-        } catch (RuntimeException cause) {
-            MessageBox.error("Error", cause.getMessage(), cause, null);
+        if (testbedConfiguration.getUrnPrefixList() == null || testbedConfiguration.getUrnPrefixList().isEmpty()) {
+            MessageBox.warning("Warning", "Selected testbed has no URN prefixes!", null);
             return;
         }
 
@@ -153,16 +147,12 @@ public class ExperimentationPresenter implements ExperimentationView.Presenter,
     public void getUserReservations() {
 
         // get testbedconfiguration
-        List<String> urnPrefixList = testbedConfiguration.getUrnPrefixList();
-        String rsEndpointUrl = testbedConfiguration.getRsEndpointUrl();
-        try {
-            Checks.ifNull(urnPrefixList, "No testbed selected");
-            Checks.ifNull(rsEndpointUrl, "No testbed selected");
-        } catch (RuntimeException cause) {
-            MessageBox.error("Error", cause.getMessage(), cause, null);
+        final List<String> urnPrefixList = testbedConfiguration.getUrnPrefixList();
+        final String rsEndpointUrl = testbedConfiguration.getRsEndpointUrl();
+        if (urnPrefixList == null || rsEndpointUrl == null) {
+            MessageBox.warning("Warning", "No testbed selected", null);
             return;
         }
-
 
         // the secret authentication key & two dates are required
         String urnPrefix = urnPrefixList.get(0);
@@ -170,22 +160,25 @@ public class ExperimentationPresenter implements ExperimentationView.Presenter,
                 injector.getAuthenticationManager().getMap().get(urnPrefix);
         final Date fromDate = view.getFromDate();
         final Date toDate = view.getToDate();
-        try {
-            Checks.ifNull(key, "You must be authenticated to the selected" +
-                    " testbed in order to retrieve your reservations");
-            Checks.ifNull(fromDate, "You must specify the starting date");
-            Checks.ifNull(toDate, "You must specify the ending date");
-        } catch (RuntimeException cause) {
-            MessageBox.error("Error", cause.getMessage(), cause, null);
+        if (key == null) {
+            MessageBox.warning("Warning", "You must be authenticated to the selected" +
+                    " testbed in order to retrieve your reservations", null);
+            return;
+        }
+        if (fromDate == null) {
+            MessageBox.warning("Warning", "You must specify the starting date", null);
+            return;
+        }
+        if (toDate == null) {
+            MessageBox.warning("Warning", "You must specify the ending date", null);
             return;
         }
 
         // sanity test for the dates
         if (fromDate.after(toDate)) {
-            MessageBox.error("Error", "Starting date cannot be after ending date", null, null);
+            MessageBox.warning("Warning", "Starting date cannot be after ending date!", null);
             return;
         }
-
 
         // loading
         view.getLoadingIndicator().showLoading("Loading reservations");
@@ -206,30 +199,36 @@ public class ExperimentationPresenter implements ExperimentationView.Presenter,
                     }
 
                     @Override
-                    public void onSuccess(List<ConfidentialReservationData> dataList) {
+                    public void onSuccess(List<ConfidentialReservationData> reservationDataList) {
 
                         // check if results are null
-                        try {
-                            Checks.ifNull(dataList, "Null reservations returned");
-                        } catch (RuntimeException cause) {
-                            MessageBox.error("Error", cause.getMessage(), cause, null);
+                        if (reservationDataList == null || reservationDataList.isEmpty()) {
+                            MessageBox.warning("No reservation found", "There are no reservations for you.", null);
                             view.getLoadingIndicator().hideLoading();
                             return;
                         }
 
-                        // check if results are empty
-                        try {
-                            Checks.ifNullOrEmpty(dataList, "There are no reservations for you");
-                        } catch (RuntimeException cause) {
-                            MessageBox.info("Reservation Service", cause.getMessage(), null);
-                            view.getLoadingIndicator().hideLoading();
-                            return;
+                        List<ConfidentialReservationData> filteredReservations
+                                = new ArrayList<ConfidentialReservationData>();
+
+                        for (ConfidentialReservationData c : reservationDataList) {
+                            final String authenticatedUserName
+                                    = injector.getAuthenticationManager()
+                                              .getAuthenticatedUserName(testbedConfiguration);
+                            if ((c.getData() == null) || (c.getData().isEmpty())) {
+                                continue;
+                            }
+                            final String userName = c.getData().get(0).getUsername();
+                            final String urnPrefix = c.getData().get(0).getUrnPrefix();
+                            if (authenticatedUserName.equals(userName)) {
+                                filteredReservations.add(c);
+                            }
                         }
 
                         // initialize presenter and add it to the list also add the respected view in the container
-                        for (ConfidentialReservationData data : dataList) {
+                        for (ConfidentialReservationData data : filteredReservations) {
 
-                            String key = data.getData().get(0).getSecretReservationKey();
+                            final String key = data.getData().get(0).getSecretReservationKey();
 
                             // check if experiment is currently an active experiment
                             ExperimentPresenter experiment =
@@ -251,8 +250,7 @@ public class ExperimentationPresenter implements ExperimentationView.Presenter,
                 };
 
         // make the RPC
-        List<SecretAuthenticationKey> secretAuthenticationKeys
-                = new ArrayList<SecretAuthenticationKey>();
+        List<SecretAuthenticationKey> secretAuthenticationKeys = new ArrayList<SecretAuthenticationKey>();
         secretAuthenticationKeys.add(key);
         service.getConfidentialReservations(rsEndpointUrl, secretAuthenticationKeys, fromDate, toDate, callback);
     }
