@@ -10,7 +10,7 @@
 
     <properties>
         <gwt.version>2.3.0</gwt.version>
-        <tr.version>0.7</tr.version>
+        <tr.version>0.7.1</tr.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <!--
           Persistence default configuration
