@@ -50,8 +50,7 @@ public class WiseUiModule extends AbstractGinModule {
     PlaceHistoryHandler providePlaceHistoryHandler(
             final WiseUiPlaceHistoryMapper mapper,
             final PlaceController placeController, final EventBus eventBus) {
-        final PlaceHistoryHandler historyHandler = new PlaceHistoryHandler(
-                mapper);
+        final PlaceHistoryHandler historyHandler = new PlaceHistoryHandler(mapper);
         historyHandler.register(placeController, eventBus, new WiseUiPlace());
         return historyHandler;
     }

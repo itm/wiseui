@@ -23,6 +23,8 @@ import com.google.inject.servlet.ServletModule;
 import de.uniluebeck.itm.wisebed.cmdlineclient.jobs.AsyncJobObserver;
 import eu.wisebed.wiseui.api.PersistenceService;
 import eu.wisebed.wiseui.persistence.PersistenceServiceProvider;
+import eu.wisebed.wiseui.server.controller.WiseUiControllerClient;
+import eu.wisebed.wiseui.server.controller.WiseUiListener;
 import eu.wisebed.wiseui.server.rpc.CalendarServiceImpl;
 import eu.wisebed.wiseui.server.rpc.ExperimentationServiceImpl;
 import eu.wisebed.wiseui.server.rpc.ImageUploadServiceImpl;
@@ -71,22 +73,17 @@ public class WiseUiGuiceServletModule extends ServletModule {
     public PersistenceService providePersistenceService() {
         return PersistenceServiceProvider.newPersistenceService();
     }
-    
-    @Singleton
-    @Provides
+
     /**
-     * Provides a list of experiment controllers of the {@link ExperimentController}.
+     * Provides a non-singleton instance of an {@link eu.wisebed.wiseui.server.controller.WiseUiListener}.
      */
-    public List<ExperimentController> provideExperimentControllers() {
-    	return new ArrayList<ExperimentController>();
+    @Provides
+    public WiseUiListener provideWiseUiListener(final Mapper mapper) {
+        return new WiseUiListener(mapper);
     }
-    
-    @Singleton
+
     @Provides
-    /**
-     * Provides a configured instance of the async job observer
-     */
-    public AsyncJobObserver provideAsyncJobObserver() {
-		return new AsyncJobObserver(1, TimeUnit.MINUTES);
+    public WiseUiControllerClient provideWiseUiControllerClient(final WiseUiListener listener) {
+        return new WiseUiControllerClient(listener);
     }
 }

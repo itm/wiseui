@@ -113,7 +113,7 @@ public class ReservationEditPresenter implements Presenter, CreateReservationEve
         if (selectedNodes == null || selectedNodes.isEmpty()) {
             // TODO: Add a 'suggestion' type message box
             final String suggestion = "Please select at least one node to submit a reservation!";
-            MessageBox.info("No nodes selected", suggestion, null);
+            MessageBox.warning("No nodes selected", suggestion, null);
             return;
         }
 

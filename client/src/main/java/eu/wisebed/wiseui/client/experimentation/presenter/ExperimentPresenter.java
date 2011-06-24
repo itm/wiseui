@@ -236,12 +236,12 @@ RefreshWiseMLEvent.Handler{
 				
 				// make the rpc call
 				List<SecretReservationKey> secretReservationKeys = new ArrayList<SecretReservationKey>();
-				for(int i=0;i<userData.size();i++) {
-					SecretReservationKey key = new SecretReservationKey();
-					key.setSecretReservationKey(userData.get(i).getSecretReservationKey());
-					key.setUrnPrefix(userData.get(i).getUrnPrefix());
-					secretReservationKeys.add(key);
-				}
+                for (Data anUserData : userData) {
+                    SecretReservationKey key = new SecretReservationKey();
+                    key.setSecretReservationKey(anUserData.getSecretReservationKey());
+                    key.setUrnPrefix(anUserData.getUrnPrefix());
+                    secretReservationKeys.add(key);
+                }
 				service.returnExperimentMessage(secretReservationKeys, callback);
 			}
 		}
