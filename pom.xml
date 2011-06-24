@@ -84,11 +84,11 @@
                 <artifactId>tr.wiseml</artifactId>
                 <version>${tr.version}</version>
             </dependency>
-            <!--dependency>
+            <dependency>
                 <groupId>de.uniluebeck.itm</groupId>
                 <artifactId>tr.scripting-client</artifactId>
                 <version>${tr.version}</version>
-            </dependency-->
+            </dependency>
             <!-- GWT dependencies (from central repo) -->
             <dependency>
                 <groupId>com.google.gwt</groupId>
