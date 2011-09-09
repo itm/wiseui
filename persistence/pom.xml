@@ -10,7 +10,6 @@
     <groupId>eu.wisebed.wiseui</groupId>
     <artifactId>persistence</artifactId>
     <packaging>jar</packaging>
-    <version>0.5</version>
     <name>WiseUI - Persistence</name>
     <properties>
         <maven.compiler.source>1.6</maven.compiler.source>

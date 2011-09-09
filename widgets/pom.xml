@@ -9,7 +9,6 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>eu.wisebed.wiseui</groupId>
     <artifactId>widgets</artifactId>
-    <version>0.5</version>
     <name>WiseUI - Widgets</name>
     <packaging>jar</packaging>
     <dependencyManagement>
@@ -67,7 +66,6 @@
                         </goals>
                     </execution>
                 </executions>
-                <version>2.2.0</version>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

@@ -9,7 +9,6 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>eu.wisebed.wiseui</groupId>
     <artifactId>server</artifactId>
-    <version>0.5</version>
     <name>WiseUI - Server</name>
     <packaging>jar</packaging>
     <properties>

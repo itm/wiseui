@@ -10,7 +10,6 @@
     <groupId>eu.wisebed.wiseui</groupId>
     <artifactId>shared</artifactId>
     <packaging>jar</packaging>
-    <version>0.5</version>
     <name>WiseUI - Shared</name>
     <properties>
         <maven.compiler.source>1.6</maven.compiler.source>
